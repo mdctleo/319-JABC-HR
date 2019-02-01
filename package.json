@@ -1,0 +1,13 @@
+{
+  "name": "jabc-hr",
+  "version": "1.0.0",
+  "description": "an HR management solution for JABC",
+  "main": "index.js",
+  "repository": "git@gitlab.com:cpsc319-2018w2/jabc/oecm/jabc-hr.git",
+  "author": "Team OECM, UBC Vancouver 2019",
+  "license": "BSD-3-Clause-Clear",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  }
+}
