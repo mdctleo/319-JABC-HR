@@ -1,11 +1,11 @@
-# Summary
+**Summary**
 
 (give a brief overview of the work performed)
 
-# Major changes
+**Major changes**
 
 (describe major changes, if any - in bullet point form)
 
-# TODOs
+**TODOs**
 
 (describe any additional work required for this ticket, if any)
