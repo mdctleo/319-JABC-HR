@@ -2,3 +2,13 @@
 node_modules/
 backend/*.js*
 util/*.js*
+
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/usage.statistics.xml
+
+
+src/*.js
+src/*.map
+src/**/*.js
+src/**/*.map

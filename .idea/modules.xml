@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/jabc-hr.iml" filepath="$PROJECT_DIR$/.idea/jabc-hr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jabc-hr.iml" filepath="$PROJECT_DIR$/jabc-hr.iml" />
     </modules>
   </component>
 </project>
