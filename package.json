@@ -8,7 +8,7 @@
   "license": "BSD-3-Clause-Clear",
   "scripts": {
     "build": "tsc",
-    "start": "node ./src/app.js"
+    "start": "node app.js"
   },
   "devDependencies": {
     "chai": "^4.2.0",
