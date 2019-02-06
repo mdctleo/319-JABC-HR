@@ -9,3 +9,13 @@ Features are to be developed in branches off of master, and merged into master w
 1. Create a feature branch off of master in the format [initials]/[JIRA issue number]. For example, the associated branch name for a developer named "Paul Carter" who is assigned the ticket JA-12 (write unit tests for database facade) would be `pc/JA-12`.
 2. Once you have completed the feature to your satisfaction, please make a pull request with the title [Jira Issue number]: [brief description], and tag all team members for review. For example, the pull request title for the branch `pc/JA-12` would be "JA-12: write unit tests for DBFacade".
 3. Do _not_ merge branches into master without the approval of at least one other team member.
+
+## Backend
+1. Run `yarn build` from the root directory to compile TypeScript source files.
+2. Run `yarn start` from the root directory to start the server.
+3. The server will be listening on port 8080.
+
+## Frontend
+1. Run `yarn build` from the root of `frontend/` to compile React source files.
+2. Run `yarn build` from directory to start client.
+3. The client will exist on port 3000.
