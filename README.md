@@ -11,11 +11,11 @@ Features are to be developed in branches off of master, and merged into master w
 3. Do _not_ merge branches into master without the approval of at least one other team member.
 
 ## Backend
-1. At root directory run yarn build to compile typescripts
-2. At root directory run yarn start to start the server
-3. The server will be listening on port 8080
+1. Run `yarn build` from the root directory to compile TypeScript source files.
+2. Run `yarn start` from the root directory to start the server.
+3. The server will be listening on port 8080.
 
 ## Frontend
-1. At frontend directory run yarn build to compile react scripts
-2. At root directory run yarn start to start client
-3. The client will be on port 3000
+1. Run `yarn build` from the root of `frontend/` to compile React source files.
+2. Run `yarn build` from directory to start client.
+3. The client will exist on port 3000.
