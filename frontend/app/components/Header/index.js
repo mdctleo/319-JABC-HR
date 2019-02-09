@@ -18,16 +18,16 @@ class Header extends React.PureComponent {
           <img src={logo} id="jabc-nav-logo" />
         </Link>
         <div id="nav-link-container">
-          <Link class="nav-link" to="/profile">
+          <Link className="nav-link" to="/profile">
             My Profile
           </Link>
-          <Link class="nav-link" to="/performance">
+          <Link className="nav-link" to="/performance">
             Performance
           </Link>
-          <Link class="nav-link" to="/onboarding">
+          <Link className="nav-link" to="/onboarding">
             Onboarding
           </Link>
-          <Link class="nav-link" id="nav-link-logout" to="/">
+          <Link className="nav-link" id="nav-link-logout" to="/">
             Logout
           </Link>
         </div>
