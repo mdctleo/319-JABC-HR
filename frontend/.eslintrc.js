@@ -8,7 +8,7 @@ const prettierOptions = JSON.parse(
 module.exports = {
   parser: 'babel-eslint',
   extends: ['airbnb', 'prettier', 'prettier/react'],
-  plugins: ['prettier', 'redux-saga', 'react', 'jsx-a11y'],
+  plugins: ['prettier', 'redux-saga', 'react'],
   env: {
     jest: true,
     browser: true,
@@ -53,10 +53,6 @@ module.exports = {
         controlComponents: ['Input'],
       },
     ],
-    'jsx-a11y/label-has-for': 0,
-    'jsx-a11y/mouse-events-have-key-events': 2,
-    'jsx-a11y/role-has-required-aria-props': 2,
-    'jsx-a11y/role-supports-aria-props': 2,
     'max-len': 0,
     'newline-per-chained-call': 0,
     'no-confusing-arrow': 0,

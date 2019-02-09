@@ -10,10 +10,16 @@
  */
 
 import React from 'react';
+import Button from '@material-ui/core/Button';
 
 /* eslint-disable react/prefer-stateless-function */
 export default class HomePage extends React.PureComponent {
   render() {
-    return <h1>Welcome!</h1>;
+    return (
+      <div>
+        <h1>Welcome!</h1>
+        <Button>Wow</Button>
+      </div>
+    );
   }
 }

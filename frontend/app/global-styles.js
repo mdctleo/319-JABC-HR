@@ -65,9 +65,6 @@ const GlobalStyle = createGlobalStyle`
 
   h1 {
     color: #404040;
-    position: relative;
-    left: 50px;
-    top: 100px;
   }
   
   #jabc-nav-logo {

@@ -14,14 +14,24 @@ class Header extends React.PureComponent {
   render() {
     return (
       <div id="nav-bar">
-        <img src={logo} id="jabc-nav-logo"/>
+        <Link to="/">
+          <img src={logo} id="jabc-nav-logo" />
+        </Link>
         <div id="nav-link-container">
-          <Link class="nav-link" to="/profile">My Profile</Link>
-          <Link class="nav-link" to="/performance">Performance</Link>
-          <Link class="nav-link" to="/onboarding">Onboarding</Link>
-          <Link class="nav-link" id="nav-link-logout" to="/">Logout</Link>
+          <Link class="nav-link" to="/profile">
+            My Profile
+          </Link>
+          <Link class="nav-link" to="/performance">
+            Performance
+          </Link>
+          <Link class="nav-link" to="/onboarding">
+            Onboarding
+          </Link>
+          <Link class="nav-link" id="nav-link-logout" to="/">
+            Logout
+          </Link>
         </div>
-        <img src={colourbar} id="jabc-nav-colour-bar"/>
+        <img src={colourbar} id="jabc-nav-colour-bar" />
       </div>
     );
   }

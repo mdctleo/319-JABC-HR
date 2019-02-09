@@ -16,20 +16,28 @@ import Performance from 'containers/Performance/Loadable';
 import Onboarding from 'containers/Onboarding/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
+import styled from 'styled-components';
 import GlobalStyle from '../../global-styles';
 import Header from '../../components/Header';
+
+const Contents = styled.div`
+  margin-top: 90px;
+  padding: 20px;
+`;
 
 export default function App() {
   return (
     <div>
-      <Header/>
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/profile" component={Profile} />
-        <Route exact path="/performance" component={Performance} />
-        <Route exact path="/onboarding" component={Onboarding} />
-        <Route component={NotFoundPage} />
-      </Switch>
+      <Header />
+      <Contents>
+        <Switch>
+          <Route exact path="/" component={HomePage} />
+          <Route exact path="/profile" component={Profile} />
+          <Route exact path="/performance" component={Performance} />
+          <Route exact path="/onboarding" component={Onboarding} />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </Contents>
       <GlobalStyle />
     </div>
   );
