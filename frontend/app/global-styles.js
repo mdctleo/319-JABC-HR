@@ -77,6 +77,31 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 10px;
   }
+  
+  /* Profile Page Styles */
+
+  .profile-card {
+    width: 75%;
+  }
+  
+  .profile-card-table td{
+    border: none;
+    border-spacing: 0px;
+  }
+  
+  .profile-card-table td:nth-child(odd){
+    padding: 0;
+    line-height: 13px;
+  }
+
+  .profile-card-table td:nth-child(even){
+    padding: 0;
+    padding-left: 30px;
+  }
+  
+  .profile-card-spacer {
+    height: 20px;
+  }
 `;
 
 export default GlobalStyle;
