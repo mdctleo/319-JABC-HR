@@ -4,7 +4,7 @@
  *
  */
 
-import { LOGIN } from './constants';
+import { LOGIN, LOGIN_ERROR } from './constants';
 
 export function login(email, password) {
   return {
@@ -13,6 +13,13 @@ export function login(email, password) {
       email,
       password,
     },
+  };
+}
+
+export function loginError(message) {
+  return {
+    type: LOGIN_ERROR,
+    message,
   };
 }
 

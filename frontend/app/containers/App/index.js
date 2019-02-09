@@ -15,6 +15,9 @@ import HomePage from 'containers/HomePage/Loadable';
 import Profile from 'containers/Profile/Loadable';
 import Performance from 'containers/Performance/Loadable';
 import Onboarding from 'containers/Onboarding/Loadable';
+import Employees from 'containers/Employees/Loadable';
+import Roles from 'containers/Roles/Loadable';
+
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
 import Login from 'containers/Login';
@@ -26,6 +29,7 @@ import Header from '../../components/Header';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import { withRouter } from 'react-router'
 
 import { makeSelectGlobal } from './selectors';
 import actions from './actions';
@@ -39,13 +43,15 @@ export class App extends React.PureComponent {
   render() {
     const mainApp = (
       <div>
-        <Header />
+        <Header userRole={this.props.data.user && this.props.data.user.role} />
         <Contents>
           <Switch>
             <Route exact path="/" component={HomePage} />
-            <Route exact path="/profile" component={Profile} />
-            <Route exact path="/performance" component={Performance} />
-            <Route exact path="/onboarding" component={Onboarding} />
+            <Route path="/profile" component={Profile} />
+            <Route path="/performance" component={Performance} />
+            <Route path="/onboarding" component={Onboarding} />
+            <Route path="/employees" component={Employees} />
+            <Route path="/roles" component={Roles} />
             <Route component={NotFoundPage} />
           </Switch>
         </Contents>
@@ -81,5 +87,6 @@ const withConnect = connect(
 );
 
 export default compose(
+  withRouter,
   withConnect,
 )(App);

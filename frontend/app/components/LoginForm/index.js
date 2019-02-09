@@ -55,6 +55,10 @@ const styles = theme => ({
     marginTop: -35,
     marginLeft: -12,
   },
+  errorMessage: {
+    color: 'red',
+    fontWeight: 'bold',
+  },
 });
 
 class LoginForm extends React.PureComponent {
@@ -103,6 +107,11 @@ class LoginForm extends React.PureComponent {
                 onChange={this.props.changeText}
               />
             </FormControl>
+            {this.props.errorMessage && (
+              <Typography className={classes.errorMessage} variant="body2">
+                {this.props.errorMessage}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -113,7 +122,9 @@ class LoginForm extends React.PureComponent {
             >
               Log in
             </Button>
-            {this.props.loggingIn && <CircularProgress size={24} className={classes.buttonProgress} />}
+            {this.props.loggingIn && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
           </form>
         </Paper>
       </div>
@@ -128,6 +139,7 @@ LoginForm.propTypes = {
   password: PropTypes.string,
   login: PropTypes.func.isRequired,
   loggingIn: PropTypes.bool,
+  errorMessage: PropTypes.string,
 };
 
 export default withStyles(styles)(LoginForm);

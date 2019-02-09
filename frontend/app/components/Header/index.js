@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import logo from 'images/jabc-wide-logo.png';
 import colourbar from 'images/jabc-colour-bar.png';
@@ -27,6 +28,16 @@ class Header extends React.PureComponent {
           <Link className="nav-link" to="/onboarding">
             Onboarding
           </Link>
+          {this.props.userRole >= 2 && (
+            <Link className="nav-link" to="/employees">
+              Employees
+            </Link>
+          )}
+          {this.props.userRole >= 3 && (
+            <Link className="nav-link" to="/roles">
+              Roles
+            </Link>
+          )}
           <Link className="nav-link" id="nav-link-logout" to="/">
             Logout
           </Link>
@@ -37,6 +48,8 @@ class Header extends React.PureComponent {
   }
 }
 
-Header.propTypes = {};
+Header.propTypes = {
+  userRole: PropTypes.number,
+};
 
 export default Header;

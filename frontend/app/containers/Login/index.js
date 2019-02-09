@@ -37,6 +37,7 @@ export class Login extends React.PureComponent {
         password={this.state.password}
         login={() => this.props.login(this.state.email, this.state.password)}
         loggingIn={this.props.data.loggingIn}
+        errorMessage={this.props.data.errorMessage}
       />
     );
   }
