@@ -24,7 +24,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
-
+import Button from '@material-ui/core/Button';
 let counter = 0;
 function createData(firstName, lastName, employeeID, position) {
   counter += 1;
@@ -165,6 +165,14 @@ let EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography></Typography>)}
+      </div>
+     <div>
+        {numSelected > 0 ? (
+          <button class="primary-button" id="generate-report-button">
+            Generate Report
+          </button>
+        ) : (
+          <div></div>)}
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>

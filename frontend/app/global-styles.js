@@ -43,6 +43,10 @@ const GlobalStyle = createGlobalStyle`
     color: #ff5000;
   }
 
+  .nav-link:active {
+    color: #ff5000;
+  }
+
   #nav-link-logout {
     color:  #00954d;
   }
@@ -99,6 +103,22 @@ const GlobalStyle = createGlobalStyle`
  
   .profile-card-subtitle {
     margin-bottom: 50px;
+  }
+
+  .primary-button {
+    color: white;
+    background-color: #ff6726;
+    border-radius: 15px;
+    transition: 0.3s;
+  }
+
+  .primary-button:hover {
+    background-color: #e0591f;
+  }
+
+  #generate-report-button {
+    margin-left: 50px;
+    width: 150px;
   }
 `;
 
