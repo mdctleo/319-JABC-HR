@@ -21,7 +21,7 @@ export default class Profile extends React.PureComponent {
         <h1>Jane Smith</h1>
         <Card className="profile-card">
           <CardContent>
-            <Typography variant="subtitle1" color="textSecondary">
+            <Typography className="profile-card-subtitle" variant="subtitle1" color="textSecondary">
               Employee Information
             </Typography>
             <Table className="profile-card-table">
@@ -38,6 +38,14 @@ export default class Profile extends React.PureComponent {
                   <TableCell align="left">Position:</TableCell>
                   <TableCell align="left">Developer</TableCell>
                 </TableRow>
+                <TableRow>
+                  <TableCell align="left">Vacation Days:</TableCell>
+                  <TableCell align="left">XXX</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align="left">FTE:</TableCell>
+                  <TableCell align="left">XXX</TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </CardContent>
@@ -45,7 +53,7 @@ export default class Profile extends React.PureComponent {
         <div className="profile-card-spacer" />
         <Card className="profile-card">
           <CardContent>
-            <Typography variant="subtitle1" color="textSecondary">
+            <Typography className="profile-card-subtitle" variant="subtitle1" color="textSecondary">
               Contact Information
             </Typography>
             <Table className="profile-card-table">
