@@ -36,7 +36,6 @@ import actions from './actions';
 
 const Contents = styled.div`
   margin-top: 90px;
-  padding: 20px;
 `;
 
 export class App extends React.PureComponent {
