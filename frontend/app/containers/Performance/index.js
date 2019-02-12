@@ -27,6 +27,9 @@ const styles = theme => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
   },
+  card: {
+    width: '100%',
+  },
 });
 
 /* eslint-disable react/prefer-stateless-function */
@@ -39,12 +42,14 @@ class Performance extends React.PureComponent {
 
     return (
       <div className={classes.root}>
+        <h1>My Performance Reports</h1>
         <Grid className={classes.grid} container spacing={24}>
-          <Grid xs={12} md={3}>
-            <PerformanceSideNav/>
+          <Grid item xs={12} md={4}>
+            <Paper className={classes.card}>
+              <PerformanceSideNav/>
+            </Paper>
           </Grid>
-          <Grid item xs={12} md={9}>
-            <h1>My Performance Report</h1>
+          <Grid item xs={12} md={8}>
             <PerformanceMain/>
           </Grid>
         </Grid>

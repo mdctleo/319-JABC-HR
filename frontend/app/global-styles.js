@@ -69,6 +69,8 @@ const GlobalStyle = createGlobalStyle`
 
   h1 {
     color: #404040;
+    margin-left: 2.5%;
+    margin-top: 120px;
   }
   
   #jabc-nav-logo {
@@ -86,6 +88,7 @@ const GlobalStyle = createGlobalStyle`
 
   .profile-card {
     width: 75%;
+    margin-left: 30px;
   }
 
   .profile-card-table td{

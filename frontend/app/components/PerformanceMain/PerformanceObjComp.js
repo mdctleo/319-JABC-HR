@@ -10,6 +10,7 @@ const styles = theme => ({
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2,
+    marginLeft: '2.5%',
   },
   objective: {
     color: '#FF5000'

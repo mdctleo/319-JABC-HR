@@ -203,11 +203,12 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
 const styles = theme => ({
   root: {
-    width: '100%',
+    width: '95%',
     marginTop: theme.spacing.unit * 3,
+    marginLeft: '2.5%',
   },
   table: {
-    minWidth: 1020,
+    minWidth: 800,
   },
   tableWrapper: {
     overflowX: 'auto',
