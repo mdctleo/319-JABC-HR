@@ -19,3 +19,9 @@ Features are to be developed in branches off of master, and merged into master w
 1. Run `yarn build` from the root of `frontend/` to compile React source files.
 2. Run `yarn start` from directory to start client.
 3. The client will exist on port 3000.
+
+## Docker compose 
+
+1. Ensure you have [docker](https://www.docker.com/get-started) installed on your machine. 
+2. Run `docker-compose up` from the root directory to start the system. 
+3. You should be able to access JABC on `localhost:3000`
