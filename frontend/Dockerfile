@@ -4,11 +4,9 @@ ADD . /home/
 
 WORKDIR /home/
 
-RUN npm install -g -s --no-progress yarn
-
-RUN yarn
-
-RUN yarn build
+RUN npm install -g -s --no-progress yarn && \
+    yarn && \
+    yarn build
 
 EXPOSE 3000
 

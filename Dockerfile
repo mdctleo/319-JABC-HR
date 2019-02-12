@@ -1,4 +1,4 @@
-FROM node:6.9.5-alpine
+FROM node:8.15.0-alpine
 
 ADD . /home/
 
