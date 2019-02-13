@@ -12,18 +12,40 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  title: {
+    marginLeft: '2.5%',
+  },
+  card: {
+    marginLeft: '30px',
+    marginBottom: '20px',
+    paddingTop: '5px',
+    paddingBottom: '5px',
+    width: '75%',
+    backgroundColor: '#00954D',
+  },
+  title: {
+    color: 'white',
+    marginLeft: '2.5%',
+  },
+});
+
 
 /* eslint-disable react/prefer-stateless-function */
-export default class Profile extends React.PureComponent {
+class Profile extends React.PureComponent {
   render() {
+    const { classes } = this.props;
     return (
       <div>
         <h1>Jane Smith</h1>
+        <Card className={classes.card}>
+          <Typography className={classes.title} variant="subheading">Employee Information</Typography>
+        </Card>
         <Card className="profile-card">
           <CardContent>
-            <Typography className="profile-card-subtitle" variant="subtitle1" color="textSecondary">
-              Employee Information
-            </Typography>
             <Table className="profile-card-table">
               <TableBody>
                 <TableRow>
@@ -51,11 +73,11 @@ export default class Profile extends React.PureComponent {
           </CardContent>
         </Card>
         <div className="profile-card-spacer" />
+        <Card className={classes.card}>
+          <Typography className={classes.title} variant="subheading">Contact Information</Typography>
+        </Card>
         <Card className="profile-card">
           <CardContent>
-            <Typography className="profile-card-subtitle" variant="subtitle1" color="textSecondary">
-              Contact Information
-            </Typography>
             <Table className="profile-card-table">
               <TableBody>
                 <TableRow>
@@ -76,3 +98,9 @@ export default class Profile extends React.PureComponent {
     );
   }
 }
+
+Performance.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Profile);

@@ -69,6 +69,9 @@ const GlobalStyle = createGlobalStyle`
 
   h1 {
     color: #404040;
+    margin-left: 2.5%;
+    margin-top: 120px;
+    margin-bottom: 50px;
   }
   
   #jabc-nav-logo {
@@ -86,6 +89,7 @@ const GlobalStyle = createGlobalStyle`
 
   .profile-card {
     width: 75%;
+    margin-left: 30px;
   }
 
   .profile-card-table td{
@@ -98,27 +102,89 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .profile-card-spacer {
-    height: 20px;
+    height: 40px;
   }
  
   .profile-card-subtitle {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
+    color: #ff5000;
   }
 
   .primary-button {
     color: white;
-    background-color: #ff6726;
+    background-color: #77BC43;
     border-radius: 15px;
     transition: 0.3s;
   }
 
   .primary-button:hover {
-    background-color: #e0591f;
+    background-color: #6ca93d;
   }
 
   #generate-report-button {
     margin-left: 50px;
     width: 150px;
+  }
+
+  /* Onboarding Page Styles */
+  #onboarding-content{
+    padding-top:25px;
+  }
+  #onboarding-content .onboarding-card, #onboarding-content .documents{
+    max-width:900px;
+    margin:auto;
+    position: relative;
+  }
+  #onboarding-content .onboarding-img{
+    background-position: top;
+    height: 250px;
+  }
+  #onboarding-content .onboarding-option{
+    height: 100px;
+    padding: 0px;
+  }
+  #onboarding-content .onboarding-option button{
+    width: 100%;
+    height: 100%;
+    border-radius: 0px;
+    outline: none;
+    font-size: 20px;
+  }
+  #onboarding-content h2{
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    font-weight: normal;
+    max-width: 100px;
+    text-align: center
+  }
+  #onboarding-content button.tertiary{
+    background: #CAD72F;
+    color: white;
+  }
+  #onboarding-content button.tertiary:hover{
+    background-color: #8d9620;
+  }
+  #onboarding-content .documents{
+    margin-top:25px;
+  }
+  #onboarding-content .document-card{
+    width: 100%;
+  }
+  #onboarding-content .success-snack{
+    background: #F3892D;
+  }
+  .faq-section{
+    margin-top:25px;
+  }
+  .onboarding-modal{
+    position: absolute;
+    width: 50%;
+    background-color: white;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    padding: 25px;
   }
 `;
 

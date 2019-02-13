@@ -35,8 +35,7 @@ import { makeSelectGlobal } from './selectors';
 import actions from './actions';
 
 const Contents = styled.div`
-  margin-top: 90px;
-  padding: 20px;
+  margin-top: 80px;
 `;
 
 export class App extends React.PureComponent {
