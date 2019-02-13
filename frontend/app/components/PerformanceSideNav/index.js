@@ -13,7 +13,7 @@ import Avatar from "@material-ui/core/Avatar/Avatar";
 const styles = theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    height: '100vh',
+    height: '88vh',
     overflow: 'scroll'
   },
   greenAvatar: {

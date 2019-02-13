@@ -22,7 +22,7 @@ const styles = theme => ({
   }
 });
 
-class PerformanceComment extends React.PureComponent {
+class PerformanceCommentPrompt extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -33,17 +33,12 @@ class PerformanceComment extends React.PureComponent {
     return (
       <div>
         <Avatar alt="Remy Sharp"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Gregor_Kiczales_AOSD.jpg/220px-Gregor_Kiczales_AOSD.jpg"
+                src="https://pbs.twimg.com/profile_images/1016349674675015680/U_Xb558c_400x400.jpg"
                 className={classes.bigAvatar}/>
         <TextField
           className={classes.textField}
-          defaultValue="Hello World"
-          label={"Gregor"}
-          value={this.props.comment}
           margin="normal"
-          InputProps={{
-            readOnly: true,
-          }}
+          placeholder={"Press Enter to comment...."}
           multiline={true}
           rowsMax={3}
           variant="outlined"
@@ -54,12 +49,11 @@ class PerformanceComment extends React.PureComponent {
 
 }
 
-PerformanceComment.propTypes = {
+PerformanceCommentPrompt.propTypes = {
   classes: PropTypes.object.isRequired,
-  comment: PropTypes.string,
   picPath: PropTypes.string
 };
 //
 
-export default withStyles(styles)(PerformanceComment);
+export default withStyles(styles)(PerformanceCommentPrompt);
 
