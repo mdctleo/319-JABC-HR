@@ -23,8 +23,6 @@ export function loginError(message) {
   };
 }
 
-const actions = {
+export default {
   login,
 };
-
-export default actions;

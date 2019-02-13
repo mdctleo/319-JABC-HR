@@ -38,9 +38,14 @@ class Header extends React.PureComponent {
               Roles
             </Link>
           )}
-          <Link className="nav-link" id="nav-link-logout" to="/">
+          <a
+            href="#"
+            className="nav-link"
+            id="nav-link-logout"
+            onClick={this.props.logout}
+          >
             Logout
-          </Link>
+          </a>
         </div>
         <img src={colourbar} id="jabc-nav-colour-bar" />
       </div>
@@ -50,6 +55,7 @@ class Header extends React.PureComponent {
 
 Header.propTypes = {
   userRole: PropTypes.number,
+  logout: PropTypes.func,
 };
 
 export default Header;
