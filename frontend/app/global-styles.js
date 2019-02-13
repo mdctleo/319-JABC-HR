@@ -128,8 +128,8 @@ const GlobalStyle = createGlobalStyle`
   #onboarding-content{
     padding-top:25px;
   }
-  #onboarding-content .onboarding-card{
-    max-width:800px;
+  #onboarding-content .onboarding-card, #onboarding-content .documents{
+    max-width:900px;
     margin:auto;
     position: relative;
   }
@@ -162,6 +162,15 @@ const GlobalStyle = createGlobalStyle`
   }
   #onboarding-content button.tertiary:hover{
     background-color: #8d9620;
+  }
+  #onboarding-content .documents{
+    margin-top:25px;
+  }
+  #onboarding-content .document-card{
+    width: 100%;
+  }
+  #onboarding-content .success-snack{
+    background: #F3892D;
   }
   .faq-section{
     margin-top:25px;

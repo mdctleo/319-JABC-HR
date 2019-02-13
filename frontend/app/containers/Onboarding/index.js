@@ -5,8 +5,8 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -18,20 +18,93 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import UploadIcon from '@material-ui/icons/FileCopy';
 import CallIcon from '@material-ui/icons/Call';
 import DraftIcon from '@material-ui/icons/Drafts';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Fab from '@material-ui/core/Fab';
+import Snackbar from '@material-ui/core/Snackbar';
+import TextField from '@material-ui/core/TextField';
 
 import onboardingImg from 'images/onboarding.png';
+
+const DocumentContainer = (props => {
+  const docs = props.documents.map((document, index) => (
+    <Grid key={document.id} item xs={12} sm={6}>
+      <Card className="document-card">
+        <CardContent>
+          <Typography className="title" color="textSecondary" gutterBottom>
+            {document.name}
+          </Typography>
+          <Typography component="p">{document.description}</Typography>
+          {!document.done && (
+            <div>
+              <Fab
+                color="primary"
+                component="label"
+                size="medium"
+                style={{marginRight:15,marginTop:15}}
+              >
+                <UploadIcon/>
+                <input
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={e => props.onFileLoad(e, props.documents, index)}
+                  data-document-id={document.id}
+                />
+              </Fab>
+              <TextField
+                disabled
+                id="standard-disabled"
+                value={document.fileName}
+                margin="normal"
+                style={{width:'calc(100% - 80px)'}}
+              />
+            </div>
+          )}
+        </CardContent>
+        {!document.done && (
+          <CardActions>
+            <Button size="small" color="primary" onClick={ e => props.onUpload(document, index)}>Upload</Button>
+            <Button size="small" color="secondary">Download template</Button>
+          </CardActions>
+        )}
+        {document.done && (
+          <CardActions>
+            <Button size="small" color="primary">Download</Button>
+          </CardActions>
+        )}
+      </Card>
+    </Grid>
+  ));
+  return (
+    <Grid container spacing={16} style={{ paddingTop: 25 }}>
+      {docs}
+    </Grid>
+  );
+});
+
+DocumentContainer.propTypes = {
+  documents: PropTypes.array.isRequired,
+  onFileLoad: PropTypes.func.isRequired,
+  onUpload: PropTypes.func.isRequired,
+};
 
 /* eslint-disable react/prefer-stateless-function */
 export default class Onboarding extends React.PureComponent {
   state = {
+    tabValue: 0,
     openHelp: false,
     openFAQ: false,
+    documentsActive: [],
+    documentsDone: [],
+    openSnack: false,
   };
 
   handleOpenHelp = () => {
@@ -50,6 +123,62 @@ export default class Onboarding extends React.PureComponent {
     this.setState({ openFAQ: false });
   };
 
+  handleChangeTab = (event, value) => {
+    this.setState({ tabValue: value });
+  };
+
+  documents = [
+    {
+      id: 1,
+      name: 'Criminal record',
+      description: 'Please upload your criminal record.',
+      dueDate: '20/02/2019',
+      done: false,
+      fileName: 'None',
+    },
+    {
+      id: 2,
+      name: 'Visa',
+      description: 'Please upload your visa.',
+      dueDate: '20/02/2019',
+      done: false,
+      fileName: 'None',
+    },
+    {
+      id: 3,
+      name: 'Insurance form',
+      description: 'Please upload your insurance form.',
+      dueDate: '20/02/2019',
+      done: true,
+      fileName: 'None',
+    },
+  ];
+
+  fileLoad(e, documents, i) {
+    const newDocuments = documents;
+    newDocuments[i].fileName = e.target.files[0].name;
+    this.setState({ documentsActive: newDocuments });
+    this.forceUpdate();
+  }
+
+  componentDidMount(){
+    const documentsActive = this.documents.filter( document => !document.done );
+    this.setState({documentsActive: documentsActive});
+    const documentsDone = this.documents.filter( document => document.done );
+    this.setState({documentsDone: documentsDone});
+  }
+
+  documentUpload(document, i){
+    const newDocument = document;
+    const newDocumentsActive = this.state.documentsActive;
+    const newDocumentsDone = this.state.documentsDone;
+    newDocument.done = true;
+    newDocumentsActive.splice(i, 1);
+    newDocumentsDone.push(newDocument);
+
+    this.setState({ documentsActive: newDocumentsActive, documentsDone: newDocumentsDone, openSnack: true });
+    this.forceUpdate();
+  }
 
   render() {
     return (
@@ -63,7 +192,7 @@ export default class Onboarding extends React.PureComponent {
           <h2 className="onboarding-header">Welcome, John!</h2>
           <Grid container spacing={0}>
             <Grid item xs={6} className="onboarding-option">
-              <Button variant="contained" color="primary"># Documents left</Button>
+              <Button variant="contained" color="primary">{this.state.documentsActive.length} Documents left</Button>
             </Grid>
             <Grid item xs={3} className="onboarding-option faq">
               <Button variant="contained" className="tertiary" onClick={this.handleOpenFAQ}>FAQ</Button>
@@ -134,7 +263,30 @@ export default class Onboarding extends React.PureComponent {
             </Grid>
           </Grid>
         </Card>
+        <div className="documents">
+          <AppBar position="static">
+            <Tabs value={this.state.tabValue} onChange={this.handleChangeTab}>
+              <Tab label={`Active (${this.state.documentsActive.length})`} />
+              <Tab label={`Done (${this.state.documentsDone.length})`} />
+            </Tabs>
+          </AppBar>
+          {this.state.tabValue === 0 && <DocumentContainer documents={this.state.documentsActive} onFileLoad={ (e,docs,i) => this.fileLoad(e,docs,i)} onUpload={ (doc,i) => this.documentUpload(doc,i)}></DocumentContainer>}
+          {this.state.tabValue === 1 && <DocumentContainer documents={this.state.documentsDone} onFileLoad={this.fileLoad}></DocumentContainer>}
+        </div>
+        <Snackbar
+          open={this.state.openSnack}
+          autoHideDuration={3000}
+          onClose={()=>this.setState({ openSnack: false })}
+          ContentProps={{
+            'aria-describedby': 'snackbar-fab-message-id',
+            className:"success-snack",
+          }}
+          message={<span id="snackbar-fab-message-id">Document completed</span>}
+        />
       </div>
     );
   }
 }
+Onboarding.contextTypes = {
+  muiTheme: PropTypes.object,
+};
