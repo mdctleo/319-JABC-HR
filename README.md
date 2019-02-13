@@ -10,6 +10,12 @@ Features are to be developed in branches off of master, and merged into master w
 2. Once you have completed the feature to your satisfaction, please make a pull request with the title [Jira Issue number]: [brief description], and tag all team members for review. For example, the pull request title for the branch `pc/JA-12` would be "JA-12: write unit tests for DBFacade".
 3. Do _not_ merge branches into master without the approval of at least one other team member.
 
+
+## Requirements 
+ 
+[Docker](https://www.docker.com/get-started) and [Yarn](https://yarnpkg.com/lang/en/docs/install/) should be installed on your machine. 
+ 
+
 ## Backend
 1. Run `yarn build` from the root directory to compile TypeScript source files.
 2. Run `yarn start` from the root directory to start the server.
@@ -19,3 +25,7 @@ Features are to be developed in branches off of master, and merged into master w
 1. Run `yarn build` from the root of `frontend/` to compile React source files.
 2. Run `yarn start` from directory to start client.
 3. The client will exist on port 3000.
+
+## Docker compose 
+1. Run `docker-compose up` from the root directory to start the system. 
+2. You should be able to access the JABC system on `localhost:3000`
