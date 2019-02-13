@@ -8,7 +8,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import PerformanceSideNav from 'components/PerformanceSideNav'
 import PerformanceMain from "../../components/PerformanceMain";
 
@@ -17,10 +16,8 @@ import PerformanceMain from "../../components/PerformanceMain";
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    height: '100vh'
-  },
-  grid:{
-    height: '100vh'
+    height: '88vh',
+    padding: theme.spacing.unit
   },
   paper: {
     padding: theme.spacing.unit * 2,
@@ -33,6 +30,11 @@ const styles = theme => ({
 class Performance extends React.PureComponent {
   constructor(props){
     super(props);
+    document.body.style.overflow = 'hidden'
+  }
+
+  componentWillUnmount() {
+    document.body.style.overflow = 'scroll'
   }
   render() {
     const { classes } = this.props;
@@ -44,7 +46,6 @@ class Performance extends React.PureComponent {
             <PerformanceSideNav/>
           </Grid>
           <Grid item xs={12} md={9}>
-            <h1>My Performance Report</h1>
             <PerformanceMain/>
           </Grid>
         </Grid>
