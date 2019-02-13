@@ -25,8 +25,12 @@ const styles = theme => ({
     paddingTop: '5px',
     paddingBottom: '5px',
     width: '75%',
-    backgroundColor: '#ceefaa',
-  }
+    backgroundColor: '#00954D',
+  },
+  title: {
+    color: 'white',
+    marginLeft: '2.5%',
+  },
 });
 
 
@@ -38,7 +42,7 @@ class Profile extends React.PureComponent {
       <div>
         <h1>Jane Smith</h1>
         <Card className={classes.card}>
-          <Typography className={classes.title} variant="h6">Employee Information</Typography>
+          <Typography className={classes.title} variant="subheading">Employee Information</Typography>
         </Card>
         <Card className="profile-card">
           <CardContent>
@@ -70,7 +74,7 @@ class Profile extends React.PureComponent {
         </Card>
         <div className="profile-card-spacer" />
         <Card className={classes.card}>
-          <Typography className={classes.title} variant="h6">Contact Information</Typography>
+          <Typography className={classes.title} variant="subheading">Contact Information</Typography>
         </Card>
         <Card className="profile-card">
           <CardContent>

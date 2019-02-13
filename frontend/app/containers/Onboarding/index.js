@@ -189,7 +189,7 @@ export default class Onboarding extends React.PureComponent {
             image={onboardingImg}
             title="Contemplative Reptile"
           />
-          <h2 className="onboarding-header">Welcome, John!</h2>
+          <h2 className="onboarding-header">Welcome, Jane!</h2>
           <Grid container spacing={0}>
             <Grid item xs={6} className="onboarding-option">
               <Button variant="contained" color="primary">{this.state.documentsActive.length} Documents left</Button>

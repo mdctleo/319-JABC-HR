@@ -17,6 +17,7 @@ const styles = theme => ({
   },
   title: {
     marginLeft: '2.5%',
+    color: 'white',
   },
   card: {
     marginLeft: '2.5%',
@@ -24,7 +25,7 @@ const styles = theme => ({
     paddingTop: '5px',
     paddingBottom: '5px',
     width: '95%',
-    backgroundColor: '#ceefaa',
+    backgroundColor: '#00954D',
   }
 });
 
@@ -40,7 +41,7 @@ class PerformanceMain extends React.PureComponent {
     return (
       <div>
         <Card className={classes.card}>
-          <Typography className={classes.title} variant="h5">2018</Typography>
+          <Typography className={classes.title} variant="h6">2018</Typography>
         </Card>
         <div className={classes.root}>
           <PerformanceObjComp
