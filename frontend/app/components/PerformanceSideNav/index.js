@@ -9,6 +9,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import Grid from "@material-ui/core/Grid/Grid";
 import green from "@material-ui/core/es/colors/green";
 import Avatar from "@material-ui/core/Avatar/Avatar";
+import Card from '@material-ui/core/Card';
 
 const styles = theme => ({
   root: {
@@ -19,7 +20,7 @@ const styles = theme => ({
   greenAvatar: {
     margin: 10,
     color: '#fff',
-    backgroundColor: green[500],
+    backgroundColor: '#ff6726',
   },
 });
 
@@ -32,6 +33,7 @@ class PerformanceSideNav extends React.PureComponent {
     const {classes} = this.props;
     return (
       <div className={classes.root}>
+        <Card raised>  
           <List component="nav">
             <ListItem button>
               <Avatar className={classes.greenAvatar}>
@@ -106,8 +108,8 @@ class PerformanceSideNav extends React.PureComponent {
               <ListItemText primary="2016 Performance Report"/>
             </ListItem>
           </List>
+       </Card>
       </div>
-
     );
   }
 

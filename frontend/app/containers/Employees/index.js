@@ -159,9 +159,7 @@ let EnhancedTableToolbar = props => {
 
   return (
     <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
+      className={classNames(classes.root, classes.highlight)}
     >
     <div className={classes.title}>
         {numSelected > 0 ? (

@@ -40,16 +40,19 @@ class Performance extends React.PureComponent {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
-        <Grid className={classes.grid} container spacing={24}>
-          <Grid xs={12} md={3}>
-            <PerformanceSideNav/>
+      <div>
+        <h1 className={classes.title}>My Performance Reports</h1>
+        <div className={classes.root}>
+          <Grid className={classes.grid} container spacing={24}>
+            <Grid xs={12} md={4}>
+              <PerformanceSideNav/>
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <PerformanceMain/>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={9}>
-            <PerformanceMain/>
-          </Grid>
-        </Grid>
-      </div> //
+        </div> 
+      </div>
     );
   }
 }
