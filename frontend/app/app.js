@@ -25,6 +25,29 @@ import '!file-loader?name=[name].[ext]!./images/favicon.ico';
 /* eslint-enable import/no-unresolved, import/extensions */
 
 import configureStore from './configureStore';
+// Theming
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
+  palette: {
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#02873A',
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    secondary: {
+      // light: will be calculated from palette.secondary.main,
+      main: '#F3892D',
+      // dark: will be calculated from palette.secondary.main,
+      // contrastText: will be calculated to contrast with palette.secondary.main
+      contrastText: '#FFF',
+    },
+  },
+});
 
 // Create redux store with history
 const initialState = {};
@@ -33,11 +56,13 @@ const MOUNT_NODE = document.getElementById('app');
 
 const render = () => {
   ReactDOM.render(
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <App />
-      </ConnectedRouter>
-    </Provider>,
+    <MuiThemeProvider theme={theme}>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <App />
+        </ConnectedRouter>
+      </Provider>
+    </MuiThemeProvider>,
     MOUNT_NODE,
   );
 };

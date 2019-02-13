@@ -123,6 +123,58 @@ const GlobalStyle = createGlobalStyle`
     margin-left: 50px;
     width: 150px;
   }
+
+  /* Onboarding Page Styles */
+  #onboarding-content{
+    padding-top:25px;
+  }
+  #onboarding-content .onboarding-card{
+    max-width:800px;
+    margin:auto;
+    position: relative;
+  }
+  #onboarding-content .onboarding-img{
+    background-position: top;
+    height: 250px;
+  }
+  #onboarding-content .onboarding-option{
+    height: 100px;
+    padding: 0px;
+  }
+  #onboarding-content .onboarding-option button{
+    width: 100%;
+    height: 100%;
+    border-radius: 0px;
+    outline: none;
+    font-size: 20px;
+  }
+  #onboarding-content h2{
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    font-weight: normal;
+    max-width: 100px;
+    text-align: center
+  }
+  #onboarding-content button.tertiary{
+    background: #CAD72F;
+    color: white;
+  }
+  #onboarding-content button.tertiary:hover{
+    background-color: #8d9620;
+  }
+  .faq-section{
+    margin-top:25px;
+  }
+  .onboarding-modal{
+    position: absolute;
+    width: 50%;
+    background-color: white;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    padding: 25px;
+  }
 `;
 
 export default GlobalStyle;
