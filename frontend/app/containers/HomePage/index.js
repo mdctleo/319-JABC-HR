@@ -18,7 +18,6 @@ export default class HomePage extends React.PureComponent {
     return (
       <div>
         <h1>Welcome!</h1>
-        <Button>Wow</Button>
       </div>
     );
   }
