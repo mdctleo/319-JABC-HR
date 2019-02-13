@@ -27,7 +27,8 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Button from '@material-ui/core/Button';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import AppBar from '@material-ui/core/AppBar';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 
 let counter = 0;
 function createData(firstName, lastName, employeeID, position) {
@@ -158,9 +159,7 @@ let EnhancedTableToolbar = props => {
 
   return (
     <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
+      className={classNames(classes.root, classes.highlight)}
     >
     <div className={classes.title}>
         {numSelected > 0 ? (
@@ -217,6 +216,50 @@ const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto',
   },
+  tabsIndicator: {
+    backgroundColor: '#ff5000',
+  },
+  tabsRoot: {
+    borderBottom: '1px solid #e8e8e8',
+  },
+  tabRoot: {
+    textTranform: 'initial',
+    minWidth: 72,
+    fontWeight: theme.typography.fontWeightRegular,
+    marginRight: theme.spacing.unit * 4,
+    '&.hover': {
+      color: '#40a9ff',
+      opacity: 1,
+    },
+    '&$tabSelected': {
+      color: '#ff5000',
+      fontWeight: theme.typography.fontWeightMedium,
+    },
+    '&:focus': {
+      color: '#ff5000',
+    },
+  },
+  tabSelected: {},
+  typography: {
+    padding: theme.spacing.unit * 3,
+  },
+  container: {
+    marginLeft: '30px',
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
+  fieldContainer: {
+    width: '100%',
+    marginBottom: '15px',
+  },
+  employeeName: {
+    marginTop: '30px',
+    marginBottom: '30px',
+  }
 });
 
 
@@ -226,7 +269,7 @@ class EnhancedTable extends React.Component {
     orderBy: 'lastName',
     selected: [],
     selectedProfile: 0,
-    value: 0,
+    value: 1,
     data: [
       createData('Mikayla', 'Preete', 918984, 'Developer'),
       createData('James', 'Yoo', 902873, 'Developer'),
@@ -320,6 +363,11 @@ class EnhancedTable extends React.Component {
     this.setState({ value });
   };
 
+  handleBackButton = (event, value) => {
+    this.setState({ value: 1 });
+    this.setState({ selectedProfile: 0 });
+  }
+
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
@@ -407,16 +455,108 @@ class EnhancedTable extends React.Component {
         /></Paper>) : 
         (<Paper className={classes.root}>
         <div className={classes.root}>
-        <AppBar position="static">
-          <Tabs value={value} onChange={this.handleChange}>
-            <Tab label="Profile" />
-            <Tab label="Performance" />
-            <Tab label="Onboarding" />
+        <div>
+          <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }} 
+                onChange={this.handleChange}>
+            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                 onClick={this.handleBackButton} label="<  Back" />           
+            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }} 
+                 label="Profile" />
+            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                 label="Performance" />
+            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }} 
+                 label="Onboarding" />
           </Tabs>
-        </AppBar>
-        {value === 0 && <h1>John Doe</h1>}
-        {value === 1 && <h1>Performance Reports</h1>}
-        {value === 2 && <h1>Onboarding</h1>}
+       </div> 
+        {value === 1 && 
+         <div>
+           <Typography className={classes.employeeName} variant="h5">John Doe</Typography>
+           <form className={classes.container} noValidation autocomplete="off">
+             <div className={classes.fieldContainer}>      
+               <Typography variant="subtitle1" color="textSecondary">Name</Typography>
+             </div>
+             <div className={classes.fieldContainer}>
+                 <TextField
+                   id="outlined-firstName"
+                   label="First Name"
+                   defaultValue="John"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+                 <TextField
+                   id="outlined-lastName"
+                   label="Last Name"
+                   defaultValue="Doe"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <Typography variant="subtitle1" color="textSecondary">Employee Information</Typography>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="outlined-empID"
+                   label="Employee ID"
+                   defaultValue="234123"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+                 <TextField
+                   id="outlined-sin"
+                   label="SIN"
+                   defaultValue="234123"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+                 <TextField
+                   id="outlined-vacation"
+                   label="Vacation Days"
+                   defaultValue="14"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+                 <TextField
+                   id="outlined-fte"
+                   label="FTE"
+                   defaultValue="XXX"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <Typography variant="subtitle1" color="textSecondary">Contact Information</Typography>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="outlined-address"
+                   label="Address"
+                   multiline
+                   rowsMax="4"
+                   defaultValue="123 Somewhere Street Vancouver BC"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+                 <TextField
+                   id="outlined-name"
+                   label="Phone number"
+                   defaultValue="(604) 555-5555"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+           </form>
+         </div>}
+        {value === 2 && <h1>Performance Reports</h1>}
+        {value === 3 && <h1>Onboarding</h1>}
       </div>
       </Paper>)}
       </div>

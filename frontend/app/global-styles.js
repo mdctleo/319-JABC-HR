@@ -71,6 +71,7 @@ const GlobalStyle = createGlobalStyle`
     color: #404040;
     margin-left: 2.5%;
     margin-top: 120px;
+    margin-bottom: 50px;
   }
   
   #jabc-nav-logo {
@@ -101,11 +102,12 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .profile-card-spacer {
-    height: 20px;
+    height: 40px;
   }
  
   .profile-card-subtitle {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
+    color: #ff5000;
   }
 
   .primary-button {
