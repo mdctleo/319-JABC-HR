@@ -61,8 +61,7 @@ export class App extends React.PureComponent {
 
     return (
       <div>
-        {/* JATJ: Change this */}
-        {true ? mainApp : loginPage}
+        {this.props.data.user ? mainApp : loginPage}
         <GlobalStyle />
       </div>
     );
