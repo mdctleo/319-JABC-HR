@@ -41,7 +41,7 @@ class Performance extends React.PureComponent {
 
     return (
       <div>
-        <h1 className={classes.title}>My Performance Reports</h1>
+        {/*<h1 className={classes.title}>My Performance Reports</h1>*/}
         <div className={classes.root}>
           <Grid className={classes.grid} container spacing={24}>
             <Grid xs={12} md={4}>

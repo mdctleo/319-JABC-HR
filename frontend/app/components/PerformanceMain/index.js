@@ -40,10 +40,10 @@ class PerformanceMain extends React.PureComponent {
 
     return (
       <div>
-        <Card className={classes.card}>
-          <Typography className={classes.title} variant="h6">2018</Typography>
-        </Card>
         <div className={classes.root}>
+          <Card className={classes.card}>
+            <Typography className={classes.title} variant="h6">My 2018 Performance Report</Typography>
+          </Card>
           <PerformanceObjComp
             type={'Objective'}
             description={'Host at least two youth conference in a year'}
