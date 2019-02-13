@@ -34,7 +34,7 @@ import TextField from '@material-ui/core/TextField';
 
 import onboardingImg from 'images/onboarding.png';
 
-const DocumentContainer = (props => {
+const DocumentsContainer = (props => {
   const docs = props.documents.map((document, index) => (
     <Grid key={document.id} item xs={12} sm={6}>
       <Card className="document-card">
@@ -43,6 +43,7 @@ const DocumentContainer = (props => {
             {document.name}
           </Typography>
           <Typography component="p">{document.description}</Typography>
+          <Typography component="p"><b>Due: </b> {document.dueDate}</Typography>
           {!document.done && (
             <div>
               <Fab
@@ -71,7 +72,7 @@ const DocumentContainer = (props => {
         </CardContent>
         {!document.done && (
           <CardActions>
-            <Button size="small" color="primary" onClick={ e => props.onUpload(document, index)}>Upload</Button>
+            <Button size="small" color="primary" onClick={ () => props.onUpload(document, index)}>Upload</Button>
             <Button size="small" color="secondary">Download template</Button>
           </CardActions>
         )}
@@ -90,7 +91,7 @@ const DocumentContainer = (props => {
   );
 });
 
-DocumentContainer.propTypes = {
+DocumentsContainer.propTypes = {
   documents: PropTypes.array.isRequired,
   onFileLoad: PropTypes.func.isRequired,
   onUpload: PropTypes.func.isRequired,
@@ -162,21 +163,30 @@ export default class Onboarding extends React.PureComponent {
   }
 
   componentDidMount(){
-    const documentsActive = this.documents.filter( document => !document.done );
-    this.setState({documentsActive: documentsActive});
-    const documentsDone = this.documents.filter( document => document.done );
-    this.setState({documentsDone: documentsDone});
+    const newDocumentsActive = this.documents.filter( document => !document.done );
+    this.setState({
+      documentsActive: newDocumentsActive,
+    });
+    const newDocumentsDone = this.documents.filter( document => document.done );
+    this.setState({
+      documentsDone: newDocumentsDone,
+    });
   }
 
-  documentUpload(document, i){
-    const newDocument = document;
-    const newDocumentsActive = this.state.documentsActive;
-    const newDocumentsDone = this.state.documentsDone;
-    newDocument.done = true;
-    newDocumentsActive.splice(i, 1);
-    newDocumentsDone.push(newDocument);
-
-    this.setState({ documentsActive: newDocumentsActive, documentsDone: newDocumentsDone, openSnack: true });
+  documentUpload(document, i) {
+    this.setState(prevState => {
+      const newDocument = document;
+      const newDocumentsActive = prevState.documentsActive;
+      const newDocumentsDone = prevState.documentsDone;
+      newDocument.done = true;
+      newDocumentsActive.splice(i, 1);
+      newDocumentsDone.push(newDocument);
+      return {
+        documentsActive: newDocumentsActive,
+        documentsDone: newDocumentsDone,
+        openSnack: true,
+      };
+    });
     this.forceUpdate();
   }
 
@@ -270,8 +280,8 @@ export default class Onboarding extends React.PureComponent {
               <Tab label={`Done (${this.state.documentsDone.length})`} />
             </Tabs>
           </AppBar>
-          {this.state.tabValue === 0 && <DocumentContainer documents={this.state.documentsActive} onFileLoad={ (e,docs,i) => this.fileLoad(e,docs,i)} onUpload={ (doc,i) => this.documentUpload(doc,i)}></DocumentContainer>}
-          {this.state.tabValue === 1 && <DocumentContainer documents={this.state.documentsDone} onFileLoad={this.fileLoad}></DocumentContainer>}
+          {this.state.tabValue === 0 && <DocumentsContainer documents={this.state.documentsActive} onFileLoad={ (e,docs,i) => this.fileLoad(e,docs,i)} onUpload={ (doc,i) => this.documentUpload(doc,i)}></DocumentsContainer>}
+          {this.state.tabValue === 1 && <DocumentsContainer documents={this.state.documentsDone} onFileLoad={this.fileLoad}></DocumentsContainer>}
         </div>
         <Snackbar
           open={this.state.openSnack}

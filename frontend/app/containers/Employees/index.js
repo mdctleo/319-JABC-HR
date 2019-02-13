@@ -29,6 +29,12 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Chip from '@material-ui/core/Chip';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 
 let counter = 0;
 function createData(firstName, lastName, employeeID, position) {
@@ -66,6 +72,48 @@ const rows = [
   { id: 'employeeID', numeric: true, disablePadding: false, label: 'Employee ID' },
   { id: 'position', numeric: false, disablePadding: false, label: 'Position' },
 ];
+
+const DocumentsContainer = (props => {
+  const docs = props.documents.map((document, index) => (
+    <Grid key={document.id} item xs={12} sm={6}>
+      <Card className="document-card">
+        <CardContent>
+          <Typography className="title" color="textSecondary" gutterBottom>
+            {document.name}
+          </Typography>
+          <Typography component="p">{document.description}</Typography>
+          <Typography component="p"><b>Due: </b> {document.dueDate}</Typography>
+          <Typography component="p">
+            {!document.done && (
+              <Chip label="Pending" color="secondary" style={{marginTop:10}}/>
+            )}
+            {document.done && (
+              <Chip label="Done" color="primary" style={{marginTop:10}}/>
+            )}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          {document.done && (
+            <Button size="small" color="primary">Download</Button>
+          )}
+          {!document.done && (
+            <Button size="small" color="primary" disabled>Download</Button>
+          )}
+          <Button size="small" color="secondary" >Edit</Button>
+        </CardActions>
+      </Card>
+    </Grid>
+  ));
+  return (
+    <Grid container spacing={16} style={{ paddingTop: 25 }}>
+      {docs}
+    </Grid>
+  );
+});
+
+DocumentsContainer.propTypes = {
+  documents: PropTypes.array.isRequired,
+};
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
@@ -370,6 +418,33 @@ class EnhancedTable extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  documents = [
+    {
+      id: 1,
+      name: 'Criminal record',
+      description: 'Please upload your criminal record.',
+      dueDate: '20/02/2019',
+      done: false,
+      fileName: 'None',
+    },
+    {
+      id: 2,
+      name: 'Visa',
+      description: 'Please upload your visa.',
+      dueDate: '20/02/2019',
+      done: false,
+      fileName: 'None',
+    },
+    {
+      id: 3,
+      name: 'Insurance form',
+      description: 'Please upload your insurance form.',
+      dueDate: '20/02/2019',
+      done: true,
+      fileName: 'None',
+    },
+  ];
+
   render() {
     const { classes } = this.props;
     const { data, order, orderBy, selected, selectedProfile, value, rowsPerPage, page } = this.state;
@@ -556,7 +631,20 @@ class EnhancedTable extends React.Component {
            </form>
          </div>}
         {value === 2 && <h1>Performance Reports</h1>}
-        {value === 3 && <h1>Onboarding</h1>}
+        {value === 3 && 
+          <div style={{position:'relative'}}>
+            <Typography className={classes.employeeName} variant="h5">Onboarding documents</Typography>
+            <Fab
+              color="primary"
+              component="label"
+              size="medium"
+              style={{position:'absolute',top:0,right:0}}
+            >
+              <AddIcon/>
+            </Fab>
+            <DocumentsContainer documents={this.documents} ></DocumentsContainer>
+          </div>
+        }
       </div>
       </Paper>)}
       </div>
