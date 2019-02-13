@@ -19,8 +19,6 @@ export function logout() {
   };
 }
 
-const actions = {
+export default {
   logout,
 };
-
-export default actions;

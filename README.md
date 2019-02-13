@@ -17,5 +17,5 @@ Features are to be developed in branches off of master, and merged into master w
 
 ## Frontend
 1. Run `yarn build` from the root of `frontend/` to compile React source files.
-2. Run `yarn build` from directory to start client.
+2. Run `yarn start` from directory to start client.
 3. The client will exist on port 3000.

@@ -29,7 +29,7 @@ import Header from '../../components/Header';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router';
 
 import { makeSelectGlobal } from './selectors';
 import actions from './actions';
@@ -42,7 +42,10 @@ export class App extends React.PureComponent {
   render() {
     const mainApp = (
       <div>
-        <Header userRole={this.props.data.user && this.props.data.user.role} />
+        <Header
+          userRole={this.props.data.user && this.props.data.user.role}
+          logout={this.props.logout}
+        />
         <Contents>
           <Switch>
             <Route exact path="/" component={HomePage} />
@@ -70,6 +73,7 @@ export class App extends React.PureComponent {
 
 App.propTypes = {
   data: PropTypes.object,
+  logout: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
