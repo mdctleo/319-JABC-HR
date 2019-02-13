@@ -112,13 +112,13 @@ const GlobalStyle = createGlobalStyle`
 
   .primary-button {
     color: white;
-    background-color: #ff6726;
+    background-color: #77BC43;
     border-radius: 15px;
     transition: 0.3s;
   }
 
   .primary-button:hover {
-    background-color: #e0591f;
+    background-color: #6ca93d;
   }
 
   #generate-report-button {
