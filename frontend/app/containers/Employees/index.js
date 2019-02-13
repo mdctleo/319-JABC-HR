@@ -25,6 +25,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Button from '@material-ui/core/Button';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import AppBar from '@material-ui/core/AppBar';
+
 let counter = 0;
 function createData(firstName, lastName, employeeID, position) {
   counter += 1;
@@ -215,11 +219,14 @@ const styles = theme => ({
   },
 });
 
+
 class EnhancedTable extends React.Component {
   state = {
     order: 'asc',
     orderBy: 'lastName',
     selected: [],
+    selectedProfile: 0,
+    value: 0,
     data: [
       createData('Mikayla', 'Preete', 918984, 'Developer'),
       createData('James', 'Yoo', 902873, 'Developer'),
@@ -236,7 +243,7 @@ class EnhancedTable extends React.Component {
       createData('Brad', 'Pitt', 387082, 'Actor'),
     ],
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 10,
   };
 
   handleRequestSort = (event, property) => {
@@ -279,6 +286,28 @@ class EnhancedTable extends React.Component {
     this.setState({ selected: newSelected });
   };
 
+  handleClickProfile = (event, id) => {
+   const { selected } = this.state;
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    this.setState({ selected: newSelected });
+    this.setState({ selectedProfile: 1 });
+  };
+
   handleChangePage = (event, page) => {
     this.setState({ page });
   };
@@ -287,17 +316,22 @@ class EnhancedTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
+    const { data, order, orderBy, selected, selectedProfile, value, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <div>
       <h1>Manage Employees</h1>
-      <Paper className={classes.root}>
+       { selectedProfile == 0 ? 
+       (<Paper className={classes.root}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -317,7 +351,6 @@ class EnhancedTable extends React.Component {
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, n.id)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
@@ -325,17 +358,27 @@ class EnhancedTable extends React.Component {
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} labelStyle={{ color: 'grey' }}
+                        <Checkbox 
+                          onClick={event => this.handleClick(event, n.id)}
+                          checked={isSelected} 
+                          labelStyle={{ color: 'grey' }}
                           iconStyle={{ fill: 'grey' }}
                           inputStyle={{ color: 'grey' }}
                           style={{ color: 'grey' }} />
                       </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
+                      <TableCell 
+                        component="th" 
+                        scope="row" 
+                        padding="none"
+                        onClick={event => this.handleClickProfile(event, n.id)}>
                         {n.firstName}
                       </TableCell>
-                      <TableCell align="left">{n.lastName}</TableCell>
-                      <TableCell align="right">{n.employeeID}</TableCell>
-                      <TableCell align="left">{n.position}</TableCell>
+                      <TableCell align="left" onClick={event => this.handleClickProfile(event, n.id)}>
+                        {n.lastName}</TableCell>
+                      <TableCell align="right" onClick={event => this.handleClickProfile(event, n.id)}>
+                        {n.employeeID}</TableCell>
+                      <TableCell align="left" onClick={event => this.handleClickProfile(event, n.id)}>
+                        {n.position}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -361,8 +404,21 @@ class EnhancedTable extends React.Component {
           }}
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
-      </Paper>
+        /></Paper>) : 
+        (<Paper className={classes.root}>
+        <div className={classes.root}>
+        <AppBar position="static">
+          <Tabs value={value} onChange={this.handleChange}>
+            <Tab label="Profile" />
+            <Tab label="Performance" />
+            <Tab label="Onboarding" />
+          </Tabs>
+        </AppBar>
+        {value === 0 && <h1>John Doe</h1>}
+        {value === 1 && <h1>Performance Reports</h1>}
+        {value === 2 && <h1>Onboarding</h1>}
+      </div>
+      </Paper>)}
       </div>
     );
   }
