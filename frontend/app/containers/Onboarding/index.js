@@ -192,26 +192,14 @@ export default class Onboarding extends React.PureComponent {
 
   render() {
     return (
-      <div id="onboarding-content">
-        <Card className="onboarding-card">
-          <CardMedia
-            className="onboarding-img"
-            image={onboardingImg}
-            title="Contemplative Reptile"
-          />
-          <h2 className="onboarding-header">Welcome, Jane!</h2>
-          <Grid container spacing={0}>
-            <Grid item xs={6} className="onboarding-option">
-              <Button variant="contained" color="primary">{this.state.documentsActive.length} Documents left</Button>
-            </Grid>
-            <Grid item xs={3} className="onboarding-option faq">
-              <Button variant="contained" className="tertiary" onClick={this.handleOpenFAQ}>FAQ</Button>
+	<div>
+	  <h1>Welcome, Jane!</h1>
+          <div className="onboarding-content">
               <Modal
                 aria-labelledby="onboarding-modal-title"
                 aria-describedby="onboarding-modal-description"
                 open={this.state.openFAQ}
-                onClose={this.handleCloseFAQ}
-              >
+                onClose={this.handleCloseFAQ}>
                 <div className="onboarding-modal">
                   <Typography variant="h5">Frequently Asked Questions</Typography>
                   <div className="faq-section">
@@ -238,9 +226,6 @@ export default class Onboarding extends React.PureComponent {
                   </div>
                 </div>
               </Modal>
-            </Grid>
-            <Grid item xs={3} className="onboarding-option help">
-              <Button variant="contained" color="secondary" onClick={this.handleOpenHelp}>Get help</Button>
               <Modal
                 aria-labelledby="onboarding-modal-title"
                 aria-describedby="onboarding-modal-description"
@@ -270,14 +255,13 @@ export default class Onboarding extends React.PureComponent {
                   </Typography>
                 </div>
               </Modal>
-            </Grid>
-          </Grid>
-        </Card>
         <div className="documents">
           <AppBar position="static">
             <Tabs value={this.state.tabValue} onChange={this.handleChangeTab}>
               <Tab label={`Active (${this.state.documentsActive.length})`} />
               <Tab label={`Done (${this.state.documentsDone.length})`} />
+              <Tab label="FAQ" onClick={this.handleOpenFAQ} />
+              <Tab label="Get Help" onClick={this.handleOpenHelp}/>
             </Tabs>
           </AppBar>
           {this.state.tabValue === 0 && <DocumentsContainer documents={this.state.documentsActive} onFileLoad={ (e,docs,i) => this.fileLoad(e,docs,i)} onUpload={ (doc,i) => this.documentUpload(doc,i)}></DocumentsContainer>}
@@ -294,6 +278,7 @@ export default class Onboarding extends React.PureComponent {
           message={<span id="snackbar-fab-message-id">Document completed</span>}
         />
       </div>
+     </div>
     );
   }
 }

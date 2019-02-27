@@ -127,44 +127,16 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* Onboarding Page Styles */
-  #onboarding-content{
-    padding-top:25px;
+  .onboarding-content{
+    width: 95%;
+    margin-left: 2.5%;
   }
   #onboarding-content .onboarding-card, #onboarding-content .documents{
     max-width:900px;
     margin:auto;
     position: relative;
   }
-  #onboarding-content .onboarding-img{
-    background-position: top;
-    height: 250px;
-  }
-  #onboarding-content .onboarding-option{
-    height: 100px;
-    padding: 0px;
-  }
-  #onboarding-content .onboarding-option button{
-    width: 100%;
-    height: 100%;
-    border-radius: 0px;
-    outline: none;
-    font-size: 20px;
-  }
-  #onboarding-content h2{
-    position: absolute;
-    top: 10px;
-    left: 30px;
-    font-weight: normal;
-    max-width: 100px;
-    text-align: center
-  }
-  #onboarding-content button.tertiary{
-    background: #CAD72F;
-    color: white;
-  }
-  #onboarding-content button.tertiary:hover{
-    background-color: #8d9620;
-  }
+  
   #onboarding-content .documents{
     margin-top:25px;
   }
