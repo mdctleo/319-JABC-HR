@@ -12,4 +12,7 @@ const makeSelectLocation = () =>
 const makeSelectGlobal = () =>
   createSelector(selectGlobal, substate => substate.toJS());
 
-export { makeSelectLocation, makeSelectGlobal };
+const selectUser = () =>
+  createSelector(makeSelectGlobal(), substate => substate.user);
+
+export { makeSelectLocation, makeSelectGlobal, selectUser };

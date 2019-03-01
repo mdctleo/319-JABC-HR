@@ -14,10 +14,20 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import injectSaga from 'utils/injectSaga';
+import injectReducer from 'utils/injectReducer';
+import selectProfile from './selectors';
+import reducer from './reducer';
+import saga from './saga';
+import actions, {getData} from './actions';
+import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 
 const styles = theme => ({
   title: {
     marginLeft: '2.5%',
+    color: 'white',
   },
   card: {
     marginLeft: '30px',
@@ -27,20 +37,19 @@ const styles = theme => ({
     width: '75%',
     backgroundColor: '#00954D',
   },
-  title: {
-    color: 'white',
-    marginLeft: '2.5%',
-  },
 });
 
-
-/* eslint-disable react/prefer-stateless-function */
 class Profile extends React.PureComponent {
+  componentDidMount() {
+    this.props.getData();
+  }
+
   render() {
-    const { classes } = this.props;
+    const { classes, profile } = this.props;
+    if (!profile) return null;
     return (
       <div>
-        <h1>Jane Smith</h1>
+        <h1>{profile.name}</h1>
         <Card className={classes.card}>
           <Typography className={classes.title} variant="subheading">Employee Information</Typography>
         </Card>
@@ -50,23 +59,23 @@ class Profile extends React.PureComponent {
               <TableBody>
                 <TableRow>
                   <TableCell align="left">Employee ID:</TableCell>
-                  <TableCell align="left">123 456</TableCell>
+                  <TableCell align="left">{profile.id}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell align="left">SIN:</TableCell>
-                  <TableCell align="left">123 456 789</TableCell>
+                  <TableCell align="left">{profile.sin}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell align="left">Position:</TableCell>
-                  <TableCell align="left">Developer</TableCell>
+                  <TableCell align="left">{profile.role.name}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell align="left">Vacation Days:</TableCell>
-                  <TableCell align="left">XXX</TableCell>
+                  <TableCell align="left">{profile.remainingVacationDays}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell align="left">FTE:</TableCell>
-                  <TableCell align="left">XXX</TableCell>
+                  <TableCell align="left">{profile.fte}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -99,8 +108,31 @@ class Profile extends React.PureComponent {
   }
 }
 
-Performance.propTypes = {
+Profile.propTypes = {
   classes: PropTypes.object.isRequired,
+  profile: PropTypes.object,
+  getData: PropTypes.func,
 };
 
-export default withStyles(styles)(Profile);
+const mapStateToProps = createStructuredSelector({
+  profile: selectProfile(),
+});
+
+const mapDispatchToProps = {
+  ...actions,
+};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withReducer = injectReducer({ key: 'profile', reducer });
+const withSaga = injectSaga({ key: 'profile', saga });
+
+export default compose(
+  withReducer,
+  withSaga,
+  withConnect,
+  withStyles(styles),
+)(Profile);
