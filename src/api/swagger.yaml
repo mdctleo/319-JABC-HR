@@ -1,0 +1,2243 @@
+---
+swagger: "2.0"
+info:
+  description: "This API provides all the functions needed to manage \nthe JABC HR\
+    \ system.\n"
+  version: "1.0.0"
+  title: "JABC"
+  contact:
+    email: "jabraham9719@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/jatj/JABC/1.0.0"
+tags:
+- name: "Employee"
+  description: "Provides access to all employee data and history, manage Performances\
+    \ of employees,\nVacations and Documents for the onboarding process\n"
+- name: "Reports"
+  description: "Provides functions to generate and export reports\n"
+- name: "Roles"
+  description: "Allows the customization of the employee roles\n"
+- name: "Performance"
+  description: "Manage the performance records\n"
+- name: "Document"
+  description: "Manage the onboarding process of new employees\n"
+- name: "Vacation"
+  description: "Manage the vacation requests from employees\n"
+schemes:
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /employee:
+    get:
+      tags:
+      - "Employee"
+      summary: "get all the Employees"
+      description: "This returns all the Employees of the system. \nIf [term] is provided\
+        \ this returns the Employees of the system that match with the [term].\n"
+      operationId: "getEmployees"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "term"
+        in: "query"
+        description: "Search term for filter the data"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IEmployee"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+    post:
+      tags:
+      - "Employee"
+      summary: "creates a new Employee"
+      description: "Will create a new Employee with the provided data in body"
+      operationId: "createEmployee"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - in: "body"
+        name: "employee"
+        description: "Employee data"
+        required: true
+        schema:
+          $ref: "#/definitions/IEmployee"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/{id}:
+    get:
+      tags:
+      - "Employee"
+      summary: "gets an specific Employee"
+      description: "Will return the Employee that matches with the provided [id]"
+      operationId: "getEmployee"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Employee"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IEmployee"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+    put:
+      tags:
+      - "Employee"
+      summary: "updates the Employee"
+      description: "Will update an Employee with the provided data in body if the\
+        \ Employee matches the [id]"
+      operationId: "updateEmployee"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Employee to be updated"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "employee"
+        description: "Employee data"
+        required: true
+        schema:
+          $ref: "#/definitions/IEmployee"
+      - name: "idAdmin"
+        in: "query"
+        description: "Who is updating the employee"
+        required: false
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+    delete:
+      tags:
+      - "Employee"
+      summary: "deletes Employee"
+      description: "Will delete (deactivate) an Employee if the Employee matches the\
+        \ [id]"
+      operationId: "deleteEmployee"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Employee to be deleted"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - name: "idAdmin"
+        in: "query"
+        description: "Who is deleting the employee"
+        required: false
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/{id}/manager/{idManager}:
+    post:
+      tags:
+      - "Employee"
+      summary: "Links employee to his manager"
+      description: "Sets the employee with [id] to be managed by the employee with\
+        \ [idManager]"
+      operationId: "linkEmployeeManager"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "Employee to be managed by another"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - name: "idManager"
+        in: "path"
+        description: "Employee that will manage the employee with [id]"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+    delete:
+      tags:
+      - "Employee"
+      summary: "Unlinks employee from his manager"
+      description: "Deletes the relation between employee with [id] and the employee\
+        \ with [idManager]"
+      operationId: "unlinkEmployeeManager"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "Employee to be unmanaged by another"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - name: "idManager"
+        in: "path"
+        description: "Employee that will stop managing the employee with [id]"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/manager/{idManager}:
+    get:
+      tags:
+      - "Employee"
+      summary: "get all the Employees that are managed by employee with [idManager]"
+      description: "This returns all the Employees that are managed by employee with\
+        \ [idManager]. If [pageSize] and [pageIndex] are provided, \nthe API will\
+        \ divide in chunks of size [pageSize] the list of Employees and return the\
+        \ [pageIndex] chunk of Employees\n"
+      operationId: "getEmployeesByManager"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "idManager"
+        in: "path"
+        description: "Employee that will manage the employee with [id]"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IEmployee"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/{id}/history:
+    get:
+      tags:
+      - "Employee"
+      summary: "get all the history of the employee with [id]"
+      description: "This returns all the history data of the employee with [id]. If\
+        \ [pageSize] and [pageIndex] are provided, \nthe API will divide in chunks\
+        \ of size [pageSize] the list of EmployeeHistory and return the [pageIndex]\
+        \ chunk of EmployeeHistory\n"
+      operationId: "getEmployeeHistory"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Employee"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IEmployeeHistory"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/{id}/document:
+    get:
+      tags:
+      - "Employee"
+      summary: "get all the Documents of the employee with [id]"
+      description: "This returns all the Documents of the system. \nIf [term] is provided\
+        \ this returns the Documents of the Employee that match with the [term]. \n\
+        If [pageSize] and [pageIndex] are provided, \nthe API will divide in chunks\
+        \ of size [pageSize] the list of Documents and return the [pageIndex] chunk\
+        \ of Documents\n"
+      operationId: "getDocuments"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "term"
+        in: "query"
+        description: "Search term for filter the data"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Employee"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IDocument"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+    post:
+      tags:
+      - "Employee"
+      summary: "creates a new Document for the employee with [id]"
+      description: "Will create a new Document with the provided data in body"
+      operationId: "createDocument"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Employee"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "document"
+        description: "Document data"
+        required: true
+        schema:
+          $ref: "#/definitions/IDocument"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/{id}/performance:
+    get:
+      tags:
+      - "Employee"
+      summary: "get all the Performances of the employee with [id]"
+      description: "This returns all the Performances of the system.\nIf [term] is\
+        \ provided this returns the Performances of the Employee that match with the\
+        \ [term]. \nIf [pageSize] and [pageIndex] are provided, \nthe API will divide\
+        \ in chunks of size [pageSize] the list of Performances and return the [pageIndex]\
+        \ chunk of Performances\n"
+      operationId: "getPerformances"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "term"
+        in: "query"
+        description: "Search term for filter the data"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Employee"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IPerformance"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+    post:
+      tags:
+      - "Employee"
+      summary: "creates a new Performance for the employee with [id]"
+      description: "Will create a new Performance with the provided data in body"
+      operationId: "createPerformance"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Employee"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "performance"
+        description: "Performance data"
+        required: true
+        schema:
+          $ref: "#/definitions/IPerformance"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/{id}/vacation:
+    get:
+      tags:
+      - "Employee"
+      summary: "get all the Vacations of the employee with [id]"
+      description: "This returns all the Vacations of the system. \nIf [term] is provided\
+        \ this returns the Vacations of the Employee that match with the [term]. \n\
+        If [pageSize] and [pageIndex] are provided, \nthe API will divide in chunks\
+        \ of size [pageSize] the list of Vacations and return the [pageIndex] chunk\
+        \ of Vacations\n"
+      operationId: "getVacations"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "term"
+        in: "query"
+        description: "Search term for filter the data"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Employee"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IVacation"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+    post:
+      tags:
+      - "Employee"
+      summary: "creates a new Vacation for the employee with [id]"
+      description: "Will create a new Vacation with the provided data in body"
+      operationId: "createVacation"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Employee"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "vacation"
+        description: "Vacation data"
+        required: true
+        schema:
+          $ref: "#/definitions/IVacation"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /vacation/{id}:
+    get:
+      tags:
+      - "Vacation"
+      summary: "gets an specific Vacation"
+      description: "Will return the Vacation that matches with the provided [id] from\
+        \ \nthe Employee with [id]\n"
+      operationId: "getVacation"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Vacation"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IVacation"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Vacation"
+    put:
+      tags:
+      - "Vacation"
+      summary: "updates the Vacation"
+      description: "Will update an Vacation with the provided data in body \nif the\
+        \ Vacation matches the [id]\n"
+      operationId: "updateVacation"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Vacation"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "vacation"
+        description: "Vacation data"
+        required: true
+        schema:
+          $ref: "#/definitions/IVacation"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Vacation"
+    delete:
+      tags:
+      - "Vacation"
+      summary: "deletes Vacation"
+      description: "Will delete the Vacation that matches with the provided [id] from\
+        \ \nthe Employee with [id]\n"
+      operationId: "deleteVacation"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Vacation"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Vacation"
+  /document/{id}:
+    get:
+      tags:
+      - "Document"
+      summary: "gets an specific Document"
+      description: "Will return the Document that matches with the provided [id] from\
+        \ \nthe Employee with [id]\n"
+      operationId: "getDocument"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Document"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IDocument"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Document"
+    put:
+      tags:
+      - "Document"
+      summary: "updates the Document"
+      description: "Will update an Document with the provided data in body \nif the\
+        \ Document matches the [id]\n"
+      operationId: "updateDocument"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Document"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "document"
+        description: "Document data"
+        required: true
+        schema:
+          $ref: "#/definitions/IDocument"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Document"
+    delete:
+      tags:
+      - "Document"
+      summary: "deletes Document"
+      description: "Will delete the Document that matches with the provided [id] from\
+        \ \nthe Employee with [id]\n"
+      operationId: "deleteDocument"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Document"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Document"
+  /document/type:
+    get:
+      tags:
+      - "Document"
+      summary: "get all the DocumentTypes"
+      description: "This returns all the DocumentTypes of the system. If [pageSize]\
+        \ and [pageIndex] are provided, \nthe API will divide in chunks of size [pageSize]\
+        \ the list of DocumentTypes and return the [pageIndex] chunk of DocumentTypes\n"
+      operationId: "getDocumentTypes"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IDocumentType"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Document"
+    post:
+      tags:
+      - "Document"
+      summary: "creates a new DocumentType"
+      description: "Will create a new DocumentType with the provided data in body"
+      operationId: "createDocumentType"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - in: "body"
+        name: "documentType"
+        description: "DocumentType data"
+        required: true
+        schema:
+          $ref: "#/definitions/IDocumentType"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Document"
+  /document/type/{id}:
+    get:
+      tags:
+      - "Document"
+      summary: "gets an specific DocumentType"
+      description: "Will return the DocumentType that matches with the provided [id]"
+      operationId: "getDocumentType"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched DocumentType"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IDocumentType"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Document"
+    put:
+      tags:
+      - "Document"
+      summary: "updates the DocumentType"
+      description: "Will update an DocumentType with the provided data in body if\
+        \ the DocumentType matches the [id]"
+      operationId: "updateDocumentType"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the DocumentType to be updated"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "documentType"
+        description: "DocumentType data"
+        required: true
+        schema:
+          $ref: "#/definitions/IDocumentType"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Document"
+    delete:
+      tags:
+      - "Document"
+      summary: "deletes DocumentType"
+      description: "Will delete an DocumentType if the DocumentType matches the [id]"
+      operationId: "deleteDocumentType"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the DocumentType to be deleted"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Document"
+  /performance/{id}:
+    get:
+      tags:
+      - "Performance"
+      summary: "gets an specific Performance"
+      description: "Will return the Performance that matches with the provided [id]\
+        \ from \nthe Employee with [id]\n"
+      operationId: "getPerformance"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Performance"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IPerformance"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Performance"
+    put:
+      tags:
+      - "Performance"
+      summary: "updates the Performance"
+      description: "Will update an Performance with the provided data in body \nif\
+        \ the Performance matches the [id]\n"
+      operationId: "updatePerformance"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Performance"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "performance"
+        description: "Performance data"
+        required: true
+        schema:
+          $ref: "#/definitions/IPerformance"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Performance"
+    delete:
+      tags:
+      - "Performance"
+      summary: "deletes Performance"
+      description: "Will delete the Performance that matches with the provided [id]\
+        \ from \nthe Employee with [id]\n"
+      operationId: "deletePerformance"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Performance"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Performance"
+  /performance/{id}/comment:
+    get:
+      tags:
+      - "Performance"
+      summary: "get all the Comments from a Performance with [id]"
+      description: "This returns all the Comments of the Performance with [id]. If\
+        \ [pageSize] and [pageIndex] are provided, \nthe API will divide in chunks\
+        \ of size [pageSize] the list of Comments and return the [pageIndex] chunk\
+        \ of Comments\n"
+      operationId: "getComments"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Performance with comments"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IComment"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Performance"
+    post:
+      tags:
+      - "Performance"
+      summary: "creates a new Comment for the Performance with [id]"
+      description: "Will create a new Comment with the provided data in body, to the\
+        \ Performance with [id]"
+      operationId: "createComment"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Performance to be commented"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "comment"
+        description: "Comment data"
+        required: true
+        schema:
+          $ref: "#/definitions/IComment"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Performance"
+  /performance/{id}/comment/{idComment}:
+    get:
+      tags:
+      - "Performance"
+      summary: "gets an specific Comment"
+      description: "Will return the Comment that matches with the provided [idComment]"
+      operationId: "getComment"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Performance with comments"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - name: "idComment"
+        in: "path"
+        description: "idComment of the searched Comment"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IComment"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Performance"
+    put:
+      tags:
+      - "Performance"
+      summary: "updates the Comment"
+      description: "Will update an Comment with the provided data in body if the Comment\
+        \ matches the [idComment]"
+      operationId: "updateComment"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Performance with comments"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - name: "idComment"
+        in: "path"
+        description: "idComment of the Comment to be updated"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "comment"
+        description: "Comment data"
+        required: true
+        schema:
+          $ref: "#/definitions/IComment"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Performance"
+    delete:
+      tags:
+      - "Performance"
+      summary: "deletes Comment"
+      description: "Will delete an Comment if the Comment matches the [idComment]"
+      operationId: "deleteComment"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Performance with comments"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - name: "idComment"
+        in: "path"
+        description: "idComment of the Comment to be deleted"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Performance"
+  /role:
+    get:
+      tags:
+      - "Roles"
+      summary: "get all the Roles"
+      description: "This returns all the Roles of the system. If [pageSize] and [pageIndex]\
+        \ are provided, \nthe API will divide in chunks of size [pageSize] the list\
+        \ of Roles and return the [pageIndex] chunk of Roles\n"
+      operationId: "getRoles"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IRole"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Roles"
+    post:
+      tags:
+      - "Roles"
+      summary: "creates a new Role"
+      description: "Will create a new Role with the provided data in body"
+      operationId: "createRole"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - in: "body"
+        name: "role"
+        description: "Role data"
+        required: true
+        schema:
+          $ref: "#/definitions/IRole"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Roles"
+  /role/{id}:
+    get:
+      tags:
+      - "Roles"
+      summary: "gets an specific Role"
+      description: "Will return the Role that matches with the provided [id]"
+      operationId: "getRole"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched Role"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IRole"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Roles"
+    put:
+      tags:
+      - "Roles"
+      summary: "updates the Role"
+      description: "Will update an Role with the provided data in body if the Role\
+        \ matches the [id]"
+      operationId: "updateRole"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Role to be updated"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "role"
+        description: "Role data"
+        required: true
+        schema:
+          $ref: "#/definitions/IRole"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Roles"
+    delete:
+      tags:
+      - "Roles"
+      summary: "deletes Role"
+      description: "Will delete an Role if the Role matches the [id]"
+      operationId: "deleteRole"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Role to be deleted"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Roles"
+securityDefinitions:
+  AuthToken:
+    type: "apiKey"
+    name: "X-Auth-Token"
+    in: "header"
+definitions:
+  IApiResponse:
+    type: "object"
+    required:
+    - "message"
+    - "responseCode"
+    - "type"
+    properties:
+      responseCode:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+        enum:
+        - "ERROR"
+        - "SUCCESS"
+      message:
+        type: "string"
+        example: "Unauthorized access to the API"
+      debugMessage:
+        type: "string"
+        example: "This is a debug message"
+    example:
+      debugMessage: "This is a debug message"
+      type: "ERROR"
+      message: "Unauthorized access to the API"
+      responseCode: 0
+  IEmployee:
+    type: "object"
+    required:
+    - "adminLevel"
+    - "email"
+    - "firstname"
+    - "fte"
+    - "id"
+    - "lastname"
+    - "password"
+    - "sin"
+    - "status"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Employee"
+      sin:
+        type: "string"
+      email:
+        type: "string"
+        format: "email"
+      password:
+        type: "string"
+        format: "password"
+      firstname:
+        type: "string"
+      lastname:
+        type: "string"
+      fte:
+        type: "integer"
+      status:
+        type: "integer"
+      adminLevel:
+        type: "integer"
+      salary:
+        type: "number"
+      address:
+        type: "string"
+      birthdate:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the birthdate of the employee"
+      dateJoined:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the date joined of the employee"
+      vacationDays:
+        type: "integer"
+        format: "uint64"
+        description: "The number of vacation days allowed to the employee per year"
+      remainingVacationDays:
+        type: "integer"
+        format: "uint64"
+        description: "The number of vacation days allowed to the employee on the current\
+          \ year"
+      fkRole:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of the role"
+      role:
+        $ref: "#/definitions/IRole"
+    description: "An Employee contains all the current information of a current or\
+      \ onboarding employee\n"
+    example:
+      firstname: "firstname"
+      fkRole: 1
+      address: "address"
+      birthdate: 5
+      role:
+        name: "name"
+        description: "description"
+        id: 1
+      adminLevel: 1
+      dateJoined: 2
+      salary: 5.962133916683182377482808078639209270477294921875
+      lastname: "lastname"
+      password: "password"
+      remainingVacationDays: 9
+      fte: 0
+      sin: "sin"
+      vacationDays: 7
+      id: 1
+      email: "email"
+      status: 6
+  IEmployeeHistory:
+    type: "object"
+    required:
+    - "adminLevel"
+    - "createdDate"
+    - "email"
+    - "firstname"
+    - "fkCreator"
+    - "fte"
+    - "id"
+    - "lastname"
+    - "password"
+    - "sin"
+    - "status"
+    - "version"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Employee"
+      sin:
+        type: "string"
+      email:
+        type: "string"
+        format: "email"
+      password:
+        type: "string"
+        format: "password"
+      firstname:
+        type: "string"
+      lastname:
+        type: "string"
+      fte:
+        type: "integer"
+      status:
+        type: "integer"
+      adminLevel:
+        type: "integer"
+      version:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The number of the version of the Employee data"
+      fkCreator:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Employee that updated the data\
+          \ of the Employee"
+      createdDate:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the date the creation of this version\
+          \ of the employee data"
+      salary:
+        type: "number"
+      address:
+        type: "string"
+      birthdate:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the birthdate of the employee"
+      dateJoined:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the date joined of the employee"
+      vacationDays:
+        type: "integer"
+        format: "uint64"
+        description: "The number of vacation days allowed to the employee per year"
+      remainingVacationDays:
+        type: "integer"
+        format: "uint64"
+        description: "The number of vacation days allowed to the employee on the current\
+          \ year"
+      fkRole:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of the role"
+      role:
+        $ref: "#/definitions/IRole"
+    description: "An Employee contains all the current information of a current or\
+      \ onboarding employee\n"
+    example:
+      firstname: "firstname"
+      fkRole: 1
+      address: "address"
+      birthdate: 2
+      role:
+        name: "name"
+        description: "description"
+        id: 1
+      adminLevel: 1
+      dateJoined: 7
+      salary: 5.63737665663332876420099637471139430999755859375
+      version: 1
+      fkCreator: 1
+      lastname: "lastname"
+      password: "password"
+      createdDate: 5
+      remainingVacationDays: 3
+      fte: 0
+      sin: "sin"
+      vacationDays: 9
+      id: 1
+      email: "email"
+      status: 6
+  IRole:
+    type: "object"
+    required:
+    - "id"
+    - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Role"
+      name:
+        type: "string"
+      description:
+        type: "string"
+    description: "An Role is contains all the current information of a current or\
+      \ onboarding employee\n"
+    example:
+      name: "name"
+      description: "description"
+      id: 1
+  IVacation:
+    type: "object"
+    required:
+    - "date"
+    - "fkEmployee"
+    - "id"
+    - "requestedDays"
+    - "requestedStatus"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Vacation"
+      fkEmployee:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Employee that requests the vacation"
+      fkApprover:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Employee that approves the vacation\
+          \ request"
+      requestedDays:
+        type: "integer"
+        format: "uint64"
+        description: "The number of vacation days the employee requested"
+      requestedStatus:
+        type: "integer"
+      date:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the date when the employee requested the\
+          \ vacation"
+    description: "A Vacation contains info of the employee asking for a vaction period\n"
+    example:
+      date: 1
+      requestedDays: 0
+      fkApprover: 1
+      fkEmployee: 1
+      id: 1
+      requestedStatus: 6
+  IDocument:
+    type: "object"
+    required:
+    - "createdDate"
+    - "dueDate"
+    - "fkDocumentType"
+    - "fkEmployee"
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Role"
+      fkDocumentType:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The foreign key  of the DocumentType of this Document"
+      fkEmployee:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The foreign key  of the Employee that needs to upload this Document"
+      createdDate:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the created date of this Document"
+      dueDate:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the due date of this Document"
+      expiryDate:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the expiry date of this Document"
+      path:
+        type: "string"
+      type:
+        $ref: "#/definitions/IDocumentType"
+    description: "A Document required for the onbarding proccess of a new Employee\n"
+    example:
+      expiryDate: 1
+      path: "path"
+      createdDate: 0
+      fkDocumentType: 1
+      dueDate: 6
+      fkEmployee: 1
+      id: 1
+      type:
+        path: "path"
+        name: "name"
+        description: "description"
+        id: 1
+  IDocumentType:
+    type: "object"
+    required:
+    - "id"
+    - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the DocumentType"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      path:
+        type: "string"
+    description: "A DocumentType contains info of the template support document for\
+      \ the onboarding process\n"
+    example:
+      path: "path"
+      name: "name"
+      description: "description"
+      id: 1
+  IPerformance:
+    type: "object"
+    required:
+    - "date"
+    - "fkEmployee"
+    - "id"
+    - "status"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Performance"
+      fkEmployee:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of the employee with this performance review"
+      date:
+        type: "number"
+        format: "uint64"
+        description: "The unix timestamp of the date the performance review was created"
+      status:
+        type: "integer"
+      jabcGoals:
+        type: "array"
+        description: "Contains all the JABC Goals (Section 1) of this performance\
+          \ review"
+        items:
+          $ref: "#/definitions/IJABCGoal"
+      personalTargets:
+        type: "array"
+        description: "Contains all the Personal Targets (Section 2) of this performance\
+          \ review"
+        items:
+          $ref: "#/definitions/IPersonalTarget"
+      objectives:
+        type: "array"
+        description: "Contains all the Objectives (Section 3) of this performance\
+          \ review"
+        items:
+          $ref: "#/definitions/IObjective"
+      developmentGoals:
+        type: "array"
+        description: "Contains all the Development Goals (Section 4) of this performance\
+          \ review"
+        items:
+          $ref: "#/definitions/IDevelopmentGoal"
+      comments:
+        type: "array"
+        description: "Contains all the comments (Section 5) of this performance review"
+        items:
+          $ref: "#/definitions/IComment"
+    description: "A Performance contains info of a performance record of an employee\n"
+    example:
+      date: 0.80082819046101150206595775671303272247314453125
+      personalTargets:
+      - rating: "rating"
+        description: "description"
+        fkPerformance: 1
+        id: 1
+      - rating: "rating"
+        description: "description"
+        fkPerformance: 1
+        id: 1
+      comments:
+      - fkCommenter: 1
+        date: 1
+        fkPerformance: 1
+        comment: "comment"
+        id: 1
+      - fkCommenter: 1
+        date: 1
+        fkPerformance: 1
+        comment: "comment"
+        id: 1
+      fkEmployee: 1
+      objectives:
+      - q1: "q1"
+        innovative: "innovative"
+        q2: "q2"
+        q3: "q3"
+        q4: "q4"
+        impact: "impact"
+        fkPerformance: 1
+        id: 1
+        foundation: "foundation"
+        volAlum: "volAlum"
+        relevance: "relevance"
+      - q1: "q1"
+        innovative: "innovative"
+        q2: "q2"
+        q3: "q3"
+        q4: "q4"
+        impact: "impact"
+        fkPerformance: 1
+        id: 1
+        foundation: "foundation"
+        volAlum: "volAlum"
+        relevance: "relevance"
+      id: 1
+      jabcGoals:
+      - goal: "goal"
+        name: "name"
+        fkPerformance: 1
+        id: 1
+        previousYear: "previousYear"
+      - goal: "goal"
+        name: "name"
+        fkPerformance: 1
+        id: 1
+        previousYear: "previousYear"
+      status: 6
+      developmentGoals:
+      - goal: "goal"
+        keyActivities: "keyActivities"
+        rating: "rating"
+        fkPerformance: 1
+        id: 1
+      - goal: "goal"
+        keyActivities: "keyActivities"
+        rating: "rating"
+        fkPerformance: 1
+        id: 1
+  IJABCGoal:
+    type: "object"
+    required:
+    - "fkPerformance"
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the JABCGoal"
+      fkPerformance:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of Performance that has this JABCGoal"
+      name:
+        type: "string"
+      goal:
+        type: "string"
+      previousYear:
+        type: "string"
+    description: "A JABCGoal contains what another employee thinks about the performance\
+      \ record of another employee\n"
+    example:
+      goal: "goal"
+      name: "name"
+      fkPerformance: 1
+      id: 1
+      previousYear: "previousYear"
+  IPersonalTarget:
+    type: "object"
+    required:
+    - "fkPerformance"
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the PersonalTarget"
+      fkPerformance:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of Performance that has this PersonalTarget"
+      description:
+        type: "string"
+      rating:
+        type: "string"
+    description: "A PersonalTarget contains what another employee thinks about the\
+      \ performance record of another employee\n"
+    example:
+      rating: "rating"
+      description: "description"
+      fkPerformance: 1
+      id: 1
+  IObjective:
+    type: "object"
+    required:
+    - "fkPerformance"
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Objective"
+      fkPerformance:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of Performance that has this Objective"
+      q1:
+        type: "string"
+      q2:
+        type: "string"
+      q3:
+        type: "string"
+      q4:
+        type: "string"
+      impact:
+        type: "string"
+      relevance:
+        type: "string"
+      volAlum:
+        type: "string"
+      innovative:
+        type: "string"
+      foundation:
+        type: "string"
+    description: "A Objective contains what another employee thinks about the performance\
+      \ record of another employee\n"
+    example:
+      q1: "q1"
+      innovative: "innovative"
+      q2: "q2"
+      q3: "q3"
+      q4: "q4"
+      impact: "impact"
+      fkPerformance: 1
+      id: 1
+      foundation: "foundation"
+      volAlum: "volAlum"
+      relevance: "relevance"
+  IDevelopmentGoal:
+    type: "object"
+    required:
+    - "fkPerformance"
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the DevelopmentGoal"
+      fkPerformance:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of Performance that has this DevelopmentGoal"
+      goal:
+        type: "string"
+      keyActivities:
+        type: "string"
+      rating:
+        type: "string"
+    description: "A DevelopmentGoal contains what another employee thinks about the\
+      \ performance record of another employee\n"
+    example:
+      goal: "goal"
+      keyActivities: "keyActivities"
+      rating: "rating"
+      fkPerformance: 1
+      id: 1
+  IComment:
+    type: "object"
+    required:
+    - "comment"
+    - "date"
+    - "fkCommenter"
+    - "fkPerformance"
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Comment"
+      fkPerformance:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of Performance that has this Comment"
+      fkCommenter:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "Foreign key of Employee that created the Comment"
+      comment:
+        type: "string"
+      date:
+        type: "integer"
+        format: "uint64"
+        description: "The unix timestamp of the date when the Comment was created"
+    description: "A Comment contains what another employee thinks about the performance\
+      \ record of another employee\n"
+    example:
+      fkCommenter: 1
+      date: 1
+      fkPerformance: 1
+      comment: "comment"
+      id: 1
+parameters:
+  securityAuthToken:
+    name: "X-Auth-Token"
+    in: "header"
+    description: "Auth Token that grants access to the system"
+    required: false
+    type: "string"
+  term:
+    name: "term"
+    in: "query"
+    description: "Search term for filter the data"
+    required: false
+    type: "string"
+responses:
+  SuccessfulResponse:
+    description: "successful operation"
+    schema:
+      $ref: "#/definitions/IApiResponse"
+  ErrorResponse:
+    description: "bad request"
+    schema:
+      $ref: "#/definitions/IApiResponse"
+  NoAccessResponse:
+    description: "unauthorized access"
+    schema:
+      $ref: "#/definitions/IApiResponse"
