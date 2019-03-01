@@ -10,8 +10,8 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "virtserver.swaggerhub.com"
-basePath: "/jatj/JABC/1.0.0"
+host: "localhost:8080"
+basePath: "/JABC/1.0.0"
 tags:
 - name: "Employee"
   description: "Provides access to all employee data and history, manage Performances\
@@ -27,7 +27,7 @@ tags:
 - name: "Vacation"
   description: "Manage the vacation requests from employees\n"
 schemes:
-- "https"
+- "http"
 consumes:
 - "application/json"
 produces:
@@ -316,9 +316,7 @@ paths:
       - "Employee"
       summary: "get all the Employees that are managed by employee with [idManager]"
       description: "This returns all the Employees that are managed by employee with\
-        \ [idManager]. If [pageSize] and [pageIndex] are provided, \nthe API will\
-        \ divide in chunks of size [pageSize] the list of Employees and return the\
-        \ [pageIndex] chunk of Employees\n"
+        \ [idManager].\n"
       operationId: "getEmployeesByManager"
       parameters:
       - name: "X-Auth-Token"
@@ -355,10 +353,7 @@ paths:
       tags:
       - "Employee"
       summary: "get all the history of the employee with [id]"
-      description: "This returns all the history data of the employee with [id]. If\
-        \ [pageSize] and [pageIndex] are provided, \nthe API will divide in chunks\
-        \ of size [pageSize] the list of EmployeeHistory and return the [pageIndex]\
-        \ chunk of EmployeeHistory\n"
+      description: "This returns all the history data of the employee with [id]. \n"
       operationId: "getEmployeeHistory"
       parameters:
       - name: "X-Auth-Token"
@@ -396,10 +391,7 @@ paths:
       - "Employee"
       summary: "get all the Documents of the employee with [id]"
       description: "This returns all the Documents of the system. \nIf [term] is provided\
-        \ this returns the Documents of the Employee that match with the [term]. \n\
-        If [pageSize] and [pageIndex] are provided, \nthe API will divide in chunks\
-        \ of size [pageSize] the list of Documents and return the [pageIndex] chunk\
-        \ of Documents\n"
+        \ this returns the Documents of the Employee that match with the [term]. \n"
       operationId: "getDocuments"
       parameters:
       - name: "X-Auth-Token"
@@ -483,9 +475,7 @@ paths:
       summary: "get all the Performances of the employee with [id]"
       description: "This returns all the Performances of the system.\nIf [term] is\
         \ provided this returns the Performances of the Employee that match with the\
-        \ [term]. \nIf [pageSize] and [pageIndex] are provided, \nthe API will divide\
-        \ in chunks of size [pageSize] the list of Performances and return the [pageIndex]\
-        \ chunk of Performances\n"
+        \ [term]. \n"
       operationId: "getPerformances"
       parameters:
       - name: "X-Auth-Token"
@@ -568,10 +558,7 @@ paths:
       - "Employee"
       summary: "get all the Vacations of the employee with [id]"
       description: "This returns all the Vacations of the system. \nIf [term] is provided\
-        \ this returns the Vacations of the Employee that match with the [term]. \n\
-        If [pageSize] and [pageIndex] are provided, \nthe API will divide in chunks\
-        \ of size [pageSize] the list of Vacations and return the [pageIndex] chunk\
-        \ of Vacations\n"
+        \ this returns the Vacations of the Employee that match with the [term]. \n"
       operationId: "getVacations"
       parameters:
       - name: "X-Auth-Token"
@@ -877,9 +864,7 @@ paths:
       tags:
       - "Document"
       summary: "get all the DocumentTypes"
-      description: "This returns all the DocumentTypes of the system. If [pageSize]\
-        \ and [pageIndex] are provided, \nthe API will divide in chunks of size [pageSize]\
-        \ the list of DocumentTypes and return the [pageIndex] chunk of DocumentTypes\n"
+      description: "This returns all the DocumentTypes of the system.\n"
       operationId: "getDocumentTypes"
       parameters:
       - name: "X-Auth-Token"
@@ -1166,10 +1151,7 @@ paths:
       tags:
       - "Performance"
       summary: "get all the Comments from a Performance with [id]"
-      description: "This returns all the Comments of the Performance with [id]. If\
-        \ [pageSize] and [pageIndex] are provided, \nthe API will divide in chunks\
-        \ of size [pageSize] the list of Comments and return the [pageIndex] chunk\
-        \ of Comments\n"
+      description: "This returns all the Comments of the Performance with [id].\n"
       operationId: "getComments"
       parameters:
       - name: "X-Auth-Token"
@@ -1375,9 +1357,7 @@ paths:
       tags:
       - "Roles"
       summary: "get all the Roles"
-      description: "This returns all the Roles of the system. If [pageSize] and [pageIndex]\
-        \ are provided, \nthe API will divide in chunks of size [pageSize] the list\
-        \ of Roles and return the [pageIndex] chunk of Roles\n"
+      description: "This returns all the Roles of the system.\n"
       operationId: "getRoles"
       parameters:
       - name: "X-Auth-Token"

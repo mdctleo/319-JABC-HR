@@ -14,10 +14,10 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 
 # ----------------------------- CONFIGURATION
-host: jabc.com
+host: localhost:8080
 basePath: /JABC/1.0.0
 schemes:
- - https
+ - http
 consumes:
   - application/json
 produces:
@@ -288,8 +288,7 @@ paths:
       - Employee
       summary: get all the Employees that are managed by employee with [idManager]
       description: | 
-        This returns all the Employees that are managed by employee with [idManager]. If [pageSize] and [pageIndex] are provided, 
-        the API will divide in chunks of size [pageSize] the list of Employees and return the [pageIndex] chunk of Employees
+        This returns all the Employees that are managed by employee with [idManager].
       operationId: getEmployeesByManager
       security:
       - AuthToken: []
@@ -319,8 +318,7 @@ paths:
       - Employee
       summary: get all the history of the employee with [id]
       description: | 
-        This returns all the history data of the employee with [id]. If [pageSize] and [pageIndex] are provided, 
-        the API will divide in chunks of size [pageSize] the list of EmployeeHistory and return the [pageIndex] chunk of EmployeeHistory
+        This returns all the history data of the employee with [id]. 
       operationId: getEmployeeHistory
       security:
       - AuthToken: []
@@ -353,8 +351,6 @@ paths:
       description: | 
         This returns all the Documents of the system. 
         If [term] is provided this returns the Documents of the Employee that match with the [term]. 
-        If [pageSize] and [pageIndex] are provided, 
-        the API will divide in chunks of size [pageSize] the list of Documents and return the [pageIndex] chunk of Documents
       operationId: getDocuments
       security:
       - AuthToken: []
@@ -417,8 +413,6 @@ paths:
       description: | 
         This returns all the Performances of the system.
         If [term] is provided this returns the Performances of the Employee that match with the [term]. 
-        If [pageSize] and [pageIndex] are provided, 
-        the API will divide in chunks of size [pageSize] the list of Performances and return the [pageIndex] chunk of Performances
       operationId: getPerformances
       security:
       - AuthToken: []
@@ -481,8 +475,6 @@ paths:
       description: | 
         This returns all the Vacations of the system. 
         If [term] is provided this returns the Vacations of the Employee that match with the [term]. 
-        If [pageSize] and [pageIndex] are provided, 
-        the API will divide in chunks of size [pageSize] the list of Vacations and return the [pageIndex] chunk of Vacations
       operationId: getVacations
       security:
       - AuthToken: []
@@ -715,8 +707,7 @@ paths:
       - Document
       summary: get all the DocumentTypes
       description: | 
-        This returns all the DocumentTypes of the system. If [pageSize] and [pageIndex] are provided, 
-        the API will divide in chunks of size [pageSize] the list of DocumentTypes and return the [pageIndex] chunk of DocumentTypes
+        This returns all the DocumentTypes of the system.
       operationId: getDocumentTypes
       security:
       - AuthToken: []
@@ -926,8 +917,7 @@ paths:
       - Performance
       summary: get all the Comments from a Performance with [id]
       description: | 
-        This returns all the Comments of the Performance with [id]. If [pageSize] and [pageIndex] are provided, 
-        the API will divide in chunks of size [pageSize] the list of Comments and return the [pageIndex] chunk of Comments
+        This returns all the Comments of the Performance with [id].
       operationId: getComments
       security:
       - AuthToken: []
@@ -1083,8 +1073,7 @@ paths:
   #     - Competency
   #     summary: get all the Competencys
   #     description: | 
-  #       This returns all the Competencys of the system. If [pageSize] and [pageIndex] are provided, 
-  #       the API will divide in chunks of size [pageSize] the list of Competencys and return the [pageIndex] chunk of Competencys
+  #       This returns all the Competencys of the system. 
   #     operationId: getCompetencys
   #     security:
   #     - AuthToken: []
@@ -1210,8 +1199,7 @@ paths:
       - Roles
       summary: get all the Roles
       description: | 
-        This returns all the Roles of the system. If [pageSize] and [pageIndex] are provided, 
-        the API will divide in chunks of size [pageSize] the list of Roles and return the [pageIndex] chunk of Roles
+        This returns all the Roles of the system.
       operationId: getRoles
       security:
       - AuthToken: []
