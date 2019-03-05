@@ -36,6 +36,12 @@ import Chip from '@material-ui/core/Chip';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
+import green from "@material-ui/core/colors/green";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import Radio from "@material-ui/core/Radio";
 
 let counter = 0;
 function createData(position) {
@@ -226,8 +232,7 @@ const styles = theme => ({
     flexWrap: 'wrap',
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    width: '75%',
   },
   fieldContainer: {
     width: '100%',
@@ -235,6 +240,24 @@ const styles = theme => ({
   },
   positionName: {
     marginTop: '30px',
+  },
+  formSubheading: {
+    marginTop: '30px',
+  },
+  radio: {
+    color: green[600],
+    "&$checked": {
+      color: green[500]
+    }
+  },
+  card: {
+    width: "75%",
+  },
+  fab: {
+    marginTop: '30px',
+    marginBottom: '30px',
+    marginLeft: '37.5%',
+    display: 'block',
   },
 });
 
@@ -435,19 +458,101 @@ class EnhancedTable extends React.Component {
            <form className={classes.container} noValidation autocomplete="off">
              <Typography className={classes.positionName} variant="h5">{this.state.selectedProfileName}</Typography>
              <div className={classes.fieldContainer}>      
-               <Typography variant="subtitle1" color="textSecondary">Description</Typography>
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
              </div>
               <div className={classes.fieldContainer}>
                  <TextField
-                   id="description-field"
+                   id="outlined-multiline-static"
                    multiline
-                   rowsMax="4"
+                   rows="4"
                    className={classes.textField}
                    margin="normal"
                    variant="outlined">
                  </TextField>
               </div>
+              <div className={classes.fieldContainer}>
+                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+              </div>
+     <Card className={classes.card}>
+      <CardContent>
+        <TextField
+          id="outlined-name"
+          label="Name"
+          margin="normal"
+          defaultValue=" "
+          fullWidth
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-name"
+          label="Description"
+          margin="normal"
+          defaultValue=" "
+          variant="outlined"
+          fullWidth
+          multiline
+          rows="4"
+        />
+        <FormControl component="fieldset">
+        <Typography>Rating</Typography>
+          <RadioGroup 
+            aria-label="position" 
+            name="position" 
+            row
+           >
+            <FormControlLabel
+              value="1"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="1"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="2"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="2"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="3"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="3"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="4"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="4"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="5"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="5"
+              labelPlacement="bottom"
+            />
+          </RadioGroup>
+        </FormControl>
+      </CardContent>
+    </Card>
            </form>
+      <Fab color="green" aria-label="Add" className={classes.fab}>
+        <AddIcon />
+      </Fab>
          </div>
       </div>
       </Paper>)}
