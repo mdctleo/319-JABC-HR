@@ -1,0 +1,1876 @@
+swagger: '2.0'
+# ----------------------------- INFO
+info:
+  version: 1.0.0
+  title: JABC
+  description: |
+    This API provides all the functions needed to manage 
+    the JABC HR system.
+  contact:
+    email: jabraham9719@gmail.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# ----------------------------- CONFIGURATION
+host: localhost:8080
+basePath: /JABC/1.0.0
+schemes:
+ - http
+consumes:
+  - application/json
+produces:
+  - application/json
+
+# ----------------------------- SECURITY
+securityDefinitions:
+  AuthToken:
+     type: apiKey
+     in: header
+     name: X-Auth-Token
+
+# ----------------------------- PARAMS
+parameters:
+  securityAuthToken:
+    name: X-Auth-Token
+    in: header
+    type: string
+    description: Auth Token that grants access to the system
+  term:
+    name: term
+    in: query
+    type: string
+    description: Search term for filter the data 
+
+# ----------------------------- RESPONSES
+responses:
+  SuccessfulResponse:
+    description: successful operation
+    schema:
+      $ref: '#/definitions/IApiResponse'
+  ErrorResponse:
+    description: bad request
+    schema:
+      $ref: '#/definitions/IApiResponse'
+  NoAccessResponse:
+    description: unauthorized access
+    schema:
+      $ref: '#/definitions/IApiResponse'
+# ----------------------------- TAGS
+tags:
+- name: Employee
+  description: |
+    Provides access to all employee data and history, manage Performances of employees,
+    Vacations and Documents for the onboarding process
+- name: Reports
+  description: |
+    Provides functions to generate and export reports
+- name: Roles
+  description: |
+    Allows the customization of the employee roles
+- name: Performance
+  description: |
+    Manage the performance records
+# - name: Competency
+#   description: |
+#     Allows the customization of the performance records
+- name: Document
+  description: |
+    Manage the onboarding process of new employees
+- name: Vacation
+  description: |
+    Manage the vacation requests from employees
+
+
+paths:
+# ----------------------------- Employee
+  /employee:
+    get:
+      tags:
+      - Employee
+      summary: get all the Employees
+      description: | 
+        This returns all the Employees of the system. 
+        If [term] is provided this returns the Employees of the system that match with the [term].
+      operationId: getEmployees
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - $ref: '#/parameters/term'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IEmployee'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Employee
+      summary: creates a new Employee
+      description: Will create a new Employee with the provided data in body
+      operationId: createEmployee
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: body
+        name: employee
+        description: Employee data
+        required: true
+        schema:
+          $ref: '#/definitions/IEmployee'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /employee/{id}:
+    get:
+      tags:
+      - Employee
+      summary: gets an specific Employee
+      description: Will return the Employee that matches with the provided [id]
+      operationId: getEmployee
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IEmployee'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Employee
+      summary: updates the Employee
+      description: Will update an Employee with the provided data in body if the Employee matches the [id]
+      operationId: updateEmployee
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Employee to be updated
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: employee
+        description: Employee data
+        required: true
+        schema:
+          $ref: '#/definitions/IEmployee'
+      - in: query
+        name: idAdmin
+        description: Who is updating the employee
+        required: false
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Employee
+      summary: deletes Employee
+      description: Will delete (deactivate) an Employee if the Employee matches the [id]
+      operationId: deleteEmployee
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Employee to be deleted
+        required: true
+        type: integer
+        format: uint64
+      - in: query
+        name: idAdmin
+        description: Who is deleting the employee
+        required: false
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /employee/{id}/manager/{idManager}:
+    post:
+      tags:
+      - Employee
+      summary: Links employee to his manager
+      description: Sets the employee with [id] to be managed by the employee with [idManager]
+      operationId: linkEmployeeManager
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: path
+        name: id
+        description: Employee to be managed by another
+        required: true
+        type: integer
+        format: uint64
+      - in: path
+        name: idManager
+        description: Employee that will manage the employee with [id]
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Employee
+      summary: Unlinks employee from his manager
+      description: Deletes the relation between employee with [id] and the employee with [idManager]
+      operationId: unlinkEmployeeManager
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: path
+        name: id
+        description: Employee to be unmanaged by another
+        required: true
+        type: integer
+        format: uint64
+      - in: path
+        name: idManager
+        description: Employee that will stop managing the employee with [id]
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /employee/manager/{idManager}:
+    get:
+      tags:
+      - Employee
+      summary: get all the Employees that are managed by employee with [idManager]
+      description: | 
+        This returns all the Employees that are managed by employee with [idManager].
+      operationId: getEmployeesByManager
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: path
+        name: idManager
+        description: Employee that will manage the employee with [id]
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IEmployee'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+# ----------------------------- Employee history
+  /employee/{id}/history:
+    get:
+      tags:
+      - Employee
+      summary: get all the history of the employee with [id]
+      description: | 
+        This returns all the history data of the employee with [id]. 
+      operationId: getEmployeeHistory
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IEmployeeHistory'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Employee Onboarding
+  /employee/{id}/document:
+    get:
+      tags:
+      - Employee
+      summary: get all the Documents of the employee with [id]
+      description: | 
+        This returns all the Documents of the system. 
+        If [term] is provided this returns the Documents of the Employee that match with the [term]. 
+      operationId: getDocuments
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - $ref: '#/parameters/term'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IDocument'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Employee
+      summary: creates a new Document for the employee with [id]
+      description: Will create a new Document with the provided data in body
+      operationId: createDocument
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: document
+        description: Document data
+        required: true
+        schema:
+          $ref: '#/definitions/IDocument'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Employee Performance
+  /employee/{id}/performance:
+    get:
+      tags:
+      - Employee
+      summary: get all the Performances of the employee with [id]
+      description: | 
+        This returns all the Performances of the system.
+        If [term] is provided this returns the Performances of the Employee that match with the [term]. 
+      operationId: getPerformances
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - $ref: '#/parameters/term'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IPerformance'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Employee
+      summary: creates a new Performance for the employee with [id]
+      description: Will create a new Performance with the provided data in body
+      operationId: createPerformance
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: performance
+        description: Performance data
+        required: true
+        schema:
+          $ref: '#/definitions/IPerformance'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Employee Vacation
+  /employee/{id}/vacation:
+    get:
+      tags:
+      - Employee
+      summary: get all the Vacations of the employee with [id]
+      description: | 
+        This returns all the Vacations of the system. 
+        If [term] is provided this returns the Vacations of the Employee that match with the [term]. 
+      operationId: getVacations
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - $ref: '#/parameters/term'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IVacation'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Employee
+      summary: creates a new Vacation for the employee with [id]
+      description: Will create a new Vacation with the provided data in body
+      operationId: createVacation
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: vacation
+        description: Vacation data
+        required: true
+        schema:
+          $ref: '#/definitions/IVacation'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Vacation
+  /vacation/{id}:
+    get:
+      tags:
+      - Vacation
+      summary: gets an specific Vacation
+      description: |
+        Will return the Vacation that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: getVacation
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Vacation
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IVacation'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Vacation
+      summary: updates the Vacation
+      description:  | 
+        Will update an Vacation with the provided data in body 
+        if the Vacation matches the [id]
+      operationId: updateVacation
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Vacation
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: vacation
+        description: Vacation data
+        required: true
+        schema:
+          $ref: '#/definitions/IVacation'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Vacation
+      summary: deletes Vacation
+      description: | 
+        Will delete the Vacation that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: deleteVacation
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Vacation
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Document
+  /document/{id}:
+    get:
+      tags:
+      - Document
+      summary: gets an specific Document
+      description: |
+        Will return the Document that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: getDocument
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Document
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IDocument'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Document
+      summary: updates the Document
+      description:  | 
+        Will update an Document with the provided data in body 
+        if the Document matches the [id]
+      operationId: updateDocument
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Document
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: document
+        description: Document data
+        required: true
+        schema:
+          $ref: '#/definitions/IDocument'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Document
+      summary: deletes Document
+      description: | 
+        Will delete the Document that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: deleteDocument
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Document
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Documents
+  /document/type:
+    get:
+      tags:
+      - Document
+      summary: get all the DocumentTypes
+      description: | 
+        This returns all the DocumentTypes of the system.
+      operationId: getDocumentTypes
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IDocumentType'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Document
+      summary: creates a new DocumentType
+      description: Will create a new DocumentType with the provided data in body
+      operationId: createDocumentType
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: body
+        name: documentType
+        description: DocumentType data
+        required: true
+        schema:
+          $ref: '#/definitions/IDocumentType'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /document/type/{id}:
+    get:
+      tags:
+      - Document
+      summary: gets an specific DocumentType
+      description: Will return the DocumentType that matches with the provided [id]
+      operationId: getDocumentType
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched DocumentType
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IDocumentType'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Document
+      summary: updates the DocumentType
+      description: Will update an DocumentType with the provided data in body if the DocumentType matches the [id]
+      operationId: updateDocumentType
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the DocumentType to be updated
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: documentType
+        description: DocumentType data
+        required: true
+        schema:
+          $ref: '#/definitions/IDocumentType'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Document
+      summary: deletes DocumentType
+      description: Will delete an DocumentType if the DocumentType matches the [id]
+      operationId: deleteDocumentType
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the DocumentType to be deleted
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Performance
+  /performance/{id}:
+    get:
+      tags:
+      - Performance
+      summary: gets an specific Performance
+      description: |
+        Will return the Performance that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: getPerformance
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Performance
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IPerformance'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Performance
+      summary: updates the Performance
+      description:  | 
+        Will update an Performance with the provided data in body 
+        if the Performance matches the [id]
+      operationId: updatePerformance
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Performance
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: performance
+        description: Performance data
+        required: true
+        schema:
+          $ref: '#/definitions/IPerformance'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Performance
+      summary: deletes Performance
+      description: | 
+        Will delete the Performance that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: deletePerformance
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Performance
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /performance/{id}/comment:
+    get:
+      tags:
+      - Performance
+      summary: get all the Comments from a Performance with [id]
+      description: | 
+        This returns all the Comments of the Performance with [id].
+      operationId: getComments
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Performance with comments
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IComment'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Performance
+      summary: creates a new Comment for the Performance with [id]
+      description: Will create a new Comment with the provided data in body, to the Performance with [id]
+      operationId: createComment
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Performance to be commented
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: comment
+        description: Comment data
+        required: true
+        schema:
+          $ref: '#/definitions/IComment'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /performance/{id}/comment/{idComment}:
+    get:
+      tags:
+      - Performance
+      summary: gets an specific Comment
+      description: Will return the Comment that matches with the provided [idComment]
+      operationId: getComment
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Performance with comments
+        required: true
+        type: integer
+        format: uint64
+      - name: idComment
+        in: path
+        description: idComment of the searched Comment
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IComment'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Performance
+      summary: updates the Comment
+      description: Will update an Comment with the provided data in body if the Comment matches the [idComment]
+      operationId: updateComment
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Performance with comments
+        required: true
+        type: integer
+        format: uint64
+      - name: idComment
+        in: path
+        description: idComment of the Comment to be updated
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: comment
+        description: Comment data
+        required: true
+        schema:
+          $ref: '#/definitions/IComment'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Performance
+      summary: deletes Comment
+      description: Will delete an Comment if the Comment matches the [idComment]
+      operationId: deleteComment
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Performance with comments
+        required: true
+        type: integer
+        format: uint64
+      - name: idComment
+        in: path
+        description: idComment of the Comment to be deleted
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Competency
+  # /competency:
+  #   get:
+  #     tags:
+  #     - Competency
+  #     summary: get all the Competencys
+  #     description: | 
+  #       This returns all the Competencys of the system. 
+  #     operationId: getCompetencys
+  #     security:
+  #     - AuthToken: []
+  #     parameters:
+  #     - $ref: '#/parameters/securityAuthToken'
+  #     responses:
+  #       200:
+  #         description: successful operation
+  #         schema:
+  #           type: array
+  #           items: 
+  #             $ref: '#/definitions/ICompetency'
+  #       401:
+  #         $ref: '#/responses/NoAccessResponse'
+  #       default:
+  #         $ref: '#/responses/ErrorResponse'
+  #   post:
+  #     tags:
+  #     - Competency
+  #     summary: creates a new Competency
+  #     description: Will create a new Competency with the provided data in body
+  #     operationId: createCompetency
+  #     security:
+  #     - AuthToken: []
+  #     parameters:
+  #     - $ref: '#/parameters/securityAuthToken'
+  #     - in: body
+  #       name: competency
+  #       description: Competency data
+  #       required: true
+  #       schema:
+  #         $ref: '#/definitions/ICompetency'
+  #     responses:
+  #       200:
+  #         $ref: '#/responses/SuccessfulResponse'
+  #       401:
+  #         $ref: '#/responses/NoAccessResponse'
+  #       default:
+  #         $ref: '#/responses/ErrorResponse'
+  # /competency/{id}:
+  #   get:
+  #     tags:
+  #     - Competency
+  #     summary: gets an specific Competency
+  #     description: Will return the Competency that matches with the provided [id]
+  #     operationId: getCompetency
+  #     security:
+  #     - AuthToken: []
+  #     parameters:
+  #     - $ref: '#/parameters/securityAuthToken'
+  #     - name: id
+  #       in: path
+  #       description: id of the searched Competency
+  #       required: true
+  #       type: integer
+  #       format: uint64
+  #     responses:
+  #       200:
+  #         description: successful operation
+  #         schema:
+  #           $ref: '#/definitions/ICompetency'
+  #       401:
+  #         $ref: '#/responses/NoAccessResponse'
+  #       default:
+  #         $ref: '#/responses/ErrorResponse'
+  #   put:
+  #     tags:
+  #     - Competency
+  #     summary: updates the Competency
+  #     description: Will update an Competency with the provided data in body if the Competency matches the [id]
+  #     operationId: updateCompetency
+  #     security:
+  #     - AuthToken: []
+  #     parameters:
+  #     - $ref: '#/parameters/securityAuthToken'
+  #     - name: id
+  #       in: path
+  #       description: id of the Competency to be updated
+  #       required: true
+  #       type: integer
+  #       format: uint64
+  #     - in: body
+  #       name: competency
+  #       description: Competency data
+  #       required: true
+  #       schema:
+  #         $ref: '#/definitions/ICompetency'
+  #     responses:
+  #       200:
+  #         $ref: '#/responses/SuccessfulResponse'
+  #       401:
+  #         $ref: '#/responses/NoAccessResponse'
+  #       default:
+  #         $ref: '#/responses/ErrorResponse'
+  #   delete:
+  #     tags:
+  #     - Competency
+  #     summary: deletes Competency
+  #     description: Will delete an Competency if the Competency matches the [id]
+  #     operationId: deleteCompetency
+  #     security:
+  #     - AuthToken: []
+  #     parameters:
+  #     - $ref: '#/parameters/securityAuthToken'
+  #     - name: id
+  #       in: path
+  #       description: id of the Competency to be deleted
+  #       required: true
+  #       type: integer
+  #       format: uint64
+  #     responses:
+  #       200:
+  #         $ref: '#/responses/SuccessfulResponse'
+  #       401:
+  #         $ref: '#/responses/NoAccessResponse'
+  #       default:
+  #         $ref: '#/responses/ErrorResponse'
+  
+# ----------------------------- Roles
+  /role:
+    get:
+      tags:
+      - Roles
+      summary: get all the Roles
+      description: | 
+        This returns all the Roles of the system.
+      operationId: getRoles
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IRole'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Roles
+      summary: creates a new Role
+      description: Will create a new Role with the provided data in body
+      operationId: createRole
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: body
+        name: role
+        description: Role data
+        required: true
+        schema:
+          $ref: '#/definitions/IRole'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /role/{id}:
+    get:
+      tags:
+      - Roles
+      summary: gets an specific Role
+      description: Will return the Role that matches with the provided [id]
+      operationId: getRole
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Role
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IRole'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Roles
+      summary: updates the Role
+      description: Will update an Role with the provided data in body if the Role matches the [id]
+      operationId: updateRole
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Role to be updated
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: role
+        description: Role data
+        required: true
+        schema:
+          $ref: '#/definitions/IRole'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Roles
+      summary: deletes Role
+      description: Will delete an Role if the Role matches the [id]
+      operationId: deleteRole
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Role to be deleted
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+
+definitions:
+
+  IApiResponse:
+    type: object
+    required:
+    - responseCode
+    - type
+    - message
+    properties:
+      responseCode:
+        type: integer
+        format: int32
+      type:
+        type: string
+        enum:
+        - ERROR
+        - SUCCESS
+      message:
+        type: string
+        example: Unauthorized access to the API
+      debugMessage:
+        type: string
+        example: This is a debug message
+
+  IEmployee:
+    type: object
+    description: |
+      An Employee contains all the current information of a current or onboarding employee
+    required:
+    - id
+    - sin
+    - email
+    - password
+    - firstname
+    - lastname
+    - fte
+    - status
+    - adminLevel
+
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Employee
+        example: 1
+      sin:
+        type: string
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+        format: password
+      firstname:
+        type: string
+      lastname:
+        type: string
+      fte:
+        type: integer
+        enum:
+        - PART_TIME
+        - FULL_TIME
+      status:
+        type: integer
+        enum:
+        - INACTIVE
+        - ACTIVE
+        - ONBOARDING
+        - PROBATION
+      adminLevel:
+        type: integer
+        enum:
+        - STAFF
+        - MANAGER
+        - HR_ADMIN
+      salary:
+        type: number
+      address:
+        type: string
+      birthdate:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the birthdate of the employee
+      dateJoined:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the date joined of the employee
+      vacationDays:
+        type: integer
+        format: uint64
+        description: The number of vacation days allowed to the employee per year
+      remainingVacationDays:
+        type: integer
+        format: uint64
+        description: The number of vacation days allowed to the employee on the current year
+      fkRole:
+        type: integer
+        format: uint64
+        example: 1
+        description: Foreign key of the role 
+      role:
+        $ref: '#/definitions/IRole'
+  
+  IEmployeeHistory:
+    type: object
+    description: |
+      An Employee contains all the current information of a current or onboarding employee
+    required:
+    - id
+    - sin
+    - email
+    - password
+    - firstname
+    - lastname
+    - fte
+    - status
+    - adminLevel
+    - version
+    - fkCreator
+    - createdDate
+
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Employee
+        example: 1
+      sin:
+        type: string
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+        format: password
+      firstname:
+        type: string
+      lastname:
+        type: string
+      fte:
+        type: integer
+        enum:
+        - PART_TIME
+        - FULL_TIME
+      status:
+        type: integer
+        enum:
+        - INACTIVE
+        - ACTIVE
+        - ONBOARDING
+        - PROBATION
+      adminLevel:
+        type: integer
+        enum:
+        - STAFF
+        - MANAGER
+        - HR_ADMIN
+      version:
+        type: integer
+        format: uint64
+        description: The number of the version of the Employee data
+        example: 1
+      fkCreator:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Employee that updated the data of the Employee
+        example: 1
+      createdDate:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the date the creation of this version of the employee data
+      salary:
+        type: number
+      address:
+        type: string
+      birthdate:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the birthdate of the employee
+      dateJoined:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the date joined of the employee
+      vacationDays:
+        type: integer
+        format: uint64
+        description: The number of vacation days allowed to the employee per year
+      remainingVacationDays:
+        type: integer
+        format: uint64
+        description: The number of vacation days allowed to the employee on the current year
+      fkRole:
+        type: integer
+        format: uint64
+        example: 1
+        description: Foreign key of the role 
+      role:
+        $ref: '#/definitions/IRole'
+
+  IRole:
+    type: object
+    description: |
+      An Role is contains all the current information of a current or onboarding employee
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Role
+        example: 1
+      name:
+        type: string
+      description:
+        type: string
+
+  IVacation:
+    type: object
+    description: |
+      A Vacation contains info of the employee asking for a vaction period
+    required:
+    - id
+    - fkEmployee
+    - requestedDays
+    - requestedStatus
+    - date
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Vacation
+        example: 1
+      fkEmployee:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Employee that requests the vacation
+        example: 1
+      fkApprover:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Employee that approves the vacation request
+        example: 1
+      requestedDays:
+        type: integer
+        format: uint64
+        description: The number of vacation days the employee requested
+      requestedStatus:
+        type: integer
+        enum:
+        - REQUESTED
+        - APPROVED
+        - DENIED
+      date:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the date when the employee requested the vacation
+
+  IDocument:
+    type: object
+    description: |
+      A Document required for the onbarding proccess of a new Employee
+    required:
+    - id
+    - fkDocumentType
+    - fkEmployee
+    - createdDate
+    - dueDate
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Role
+        example: 1
+      fkDocumentType:
+        type: integer
+        format: uint64
+        description: The foreign key  of the DocumentType of this Document
+        example: 1
+      fkEmployee:
+        type: integer
+        format: uint64
+        description: The foreign key  of the Employee that needs to upload this Document
+        example: 1
+      createdDate:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the created date of this Document
+      dueDate:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the due date of this Document
+      expiryDate:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the expiry date of this Document
+      path:
+        type: string
+      type:
+        $ref: "#/definitions/IDocumentType"
+  
+  IDocumentType:
+    type: object
+    description: |
+      A DocumentType contains info of the template support document for the onboarding process
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the DocumentType
+        example: 1
+      name:
+        type: string
+      description:
+        type: string
+      path:
+        type: string
+
+  IPerformance:
+    type: object
+    description: |
+      A Performance contains info of a performance record of an employee
+    required:
+    - id
+    - fkEmployee
+    - date
+    - status
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Performance
+        example: 1
+      fkEmployee:
+        type: integer
+        format: uint64
+        description: Foreign key of the employee with this performance review
+        example: 1
+      date:
+        type: number
+        format: uint64
+        description: The unix timestamp of the date the performance review was created
+      status:
+        type: integer
+        enum:
+        - UNPUBLISHED
+        - PUBLISHED
+      jabcGoals:
+        description: Contains all the JABC Goals (Section 1) of this performance review
+        type: array
+        items: 
+          $ref: '#/definitions/IJABCGoal'
+      personalTargets:
+        description: Contains all the Personal Targets (Section 2) of this performance review
+        type: array
+        items: 
+          $ref: '#/definitions/IPersonalTarget'
+      objectives:
+        description: Contains all the Objectives (Section 3) of this performance review
+        type: array
+        items: 
+          $ref: '#/definitions/IObjective'
+      developmentGoals:
+        description: Contains all the Development Goals (Section 4) of this performance review
+        type: array
+        items: 
+          $ref: '#/definitions/IDevelopmentGoal'
+      comments:
+        description: Contains all the comments (Section 5) of this performance review
+        type: array
+        items: 
+          $ref: '#/definitions/IComment'
+
+  IJABCGoal:
+    type: object
+    description: |
+      A JABCGoal contains what another employee thinks about the performance record of another employee
+    required:
+    - id
+    - fkPerformance
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the JABCGoal
+        example: 1
+      fkPerformance:
+        type: integer
+        format: uint64
+        description: Foreign key of Performance that has this JABCGoal
+        example: 1
+      name:
+        type: string
+      goal:
+        type: string
+      previousYear:
+        type: string
+
+  IPersonalTarget:
+    type: object
+    description: |
+      A PersonalTarget contains what another employee thinks about the performance record of another employee
+    required:
+    - id
+    - fkPerformance
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the PersonalTarget
+        example: 1
+      fkPerformance:
+        type: integer
+        format: uint64
+        description: Foreign key of Performance that has this PersonalTarget
+        example: 1
+      description:
+        type: string
+      rating:
+        type: string
+
+  IObjective:
+    type: object
+    description: |
+      A Objective contains what another employee thinks about the performance record of another employee
+    required:
+    - id
+    - fkPerformance
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Objective
+        example: 1
+      fkPerformance:
+        type: integer
+        format: uint64
+        description: Foreign key of Performance that has this Objective
+        example: 1
+      q1:
+        type: string
+      q2:
+        type: string
+      q3:
+        type: string
+      q4:
+        type: string
+      impact:
+        type: string
+      relevance:
+        type: string
+      volAlum:
+        type: string
+      innovative:
+        type: string
+      foundation:
+        type: string
+
+  IDevelopmentGoal:
+    type: object
+    description: |
+      A DevelopmentGoal contains what another employee thinks about the performance record of another employee
+    required:
+    - id
+    - fkPerformance
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the DevelopmentGoal
+        example: 1
+      fkPerformance:
+        type: integer
+        format: uint64
+        description: Foreign key of Performance that has this DevelopmentGoal
+        example: 1
+      goal:
+        type: string
+      keyActivities:
+        type: string
+      rating:
+        type: string
+  
+  IComment:
+    type: object
+    description: |
+      A Comment contains what another employee thinks about the performance record of another employee
+    required:
+    - id
+    - fkPerformance
+    - fkCommenter
+    - comment
+    - date
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Comment
+        example: 1
+      fkPerformance:
+        type: integer
+        format: uint64
+        description: Foreign key of Performance that has this Comment
+        example: 1
+      fkCommenter:
+        type: integer
+        format: uint64
+        description: Foreign key of Employee that created the Comment
+        example: 1
+      comment:
+        type: string
+      date:
+        type: integer
+        format: uint64
+        description: The unix timestamp of the date when the Comment was created
+
+# ----------------------------- Competency
+  # ICompetency:
+  #   type: object
+  #   description: |
+  #     A Competency contains info of competencies and objectives that each role need to fulfill
+  #   required:
+  #   - id
+  #   - fkRole
+  #   - name
+  #   - minRating
+  #   - maxRating
+  #   - status
+  #   properties:
+  #     id:
+  #       type: integer
+  #       format: uint64
+  #       description: The unique identifier of the Competency
+  #       example: 1
+  #     fkRole:
+  #       type: integer
+  #       format: uint64
+  #       description: Foreign key of the role 
+  #       example: 1
+  #     name:
+  #       type: string
+  #     minRating:
+  #       type: number
+  #     maxRating:
+  #       type: number
+  #     status:
+  #       type: string
+  #       enum:
+  #       - OBJECTIVE
+  #       - COMPETENCY
+  #     description:
+  #       type: string
