@@ -17,3 +17,4 @@ resources/JABC HR System Schema Diagram.mwb.bak
 # Allow swagger js generated files
 !src/controllers/*.js
 !src/utils/*.js
+.idea/
