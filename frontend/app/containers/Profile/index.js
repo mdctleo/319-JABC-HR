@@ -49,7 +49,7 @@ class Profile extends React.PureComponent {
     if (!profile) return null;
     return (
       <div>
-        <h1>{profile.name}</h1>
+        <h1>{profile.firstname} {profile.lastname}</h1>
         <Card className={classes.card}>
           <Typography className={classes.title} variant="subheading">Employee Information</Typography>
         </Card>
@@ -92,12 +92,12 @@ class Profile extends React.PureComponent {
                 <TableRow>
                   <TableCell align="left">Address:</TableCell>
                   <TableCell align="left">
-                    1234 Something Lane, Somecity, BC, V5T 3D4
+                    {profile.address}
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell align="left">Phone Number:</TableCell>
-                  <TableCell align="left">(604) 555-5555</TableCell>
+                  <TableCell align="left">{}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

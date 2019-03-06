@@ -7,8 +7,9 @@ export function* login(action) {
   // TODO: call actual api
 
   const user = {
-    id: 12345,
-    name: 'Janet Johnson',
+    id: 1,
+    firstname: 'Janet',
+    lastname: 'Johnson',
     sin: '32454344',
     email: 'jant@example.com',
   };

@@ -21,7 +21,7 @@ export class HomePage extends React.PureComponent {
   render() {
     return (
       <div>
-        <h1>Welcome, {this.props.user && this.props.user.name}!</h1>
+        <h1>Welcome, {this.props.user && this.props.user.firstname}!</h1>
       </div>
     );
   }

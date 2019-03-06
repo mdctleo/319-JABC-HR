@@ -10,7 +10,12 @@ const selectProfile = () =>
   createSelector(
     [selectUser(), selectResource('employee')],
     (user, employees) => {
-      return employees && employees.get(`${user.id}`).toJS();
+      if (employees) {
+        console.log(user.id);
+        const resource = employees.get(`${user.id}`);
+        return resource && resource.toJS();
+      }
+      return null;
     },
   );
 
