@@ -1,0 +1,6 @@
+{
+  "host": "192.168.99.100",
+  "database": "jabc_db",
+  "user": "root",
+  "password": "root"
+}

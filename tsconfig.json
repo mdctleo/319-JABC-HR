@@ -4,6 +4,7 @@
     "target": "ES6",
     "noImplicitAny": true,
     "removeComments": true,
+    "resolveJsonModule": true,
     "preserveConstEnums": true,
     "sourceMap": true,
     "lib": [

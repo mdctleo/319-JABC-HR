@@ -6,8 +6,5 @@ WORKDIR /home/
 
 RUN npm install -g -s --no-progress yarn && \
     yarn && \
+    yarn build:clean && \
     yarn build
-
-EXPOSE 3000
-
-CMD ["yarn", "start"]

@@ -1,11 +1,11 @@
 version: '3'
-services:
 
-  database:
+services:
+  jabc:
     container_name: jabc_db
-    build: db
+    build: .
     environment:
-    - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
     ports:
     - "3306:3306"
 
@@ -18,14 +18,6 @@ services:
       MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "80:80"
+    - "80:80"
     links:
-      - "database:database"
-
-  frontend:
-    build: frontend
-
-  backend:
-    build: .
-    ports:
-    - "8080:8080"
+    - "jabc:jabc"
