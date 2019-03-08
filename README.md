@@ -32,11 +32,17 @@ Features are to be developed in branches off of master, and merged into master w
 
 ## Database
 To run database as a standalone
-Developing requires `mysql`, `docker`, `docker-compose` to create a local database container.
+Developing requires  `docker`, `docker-compose` to create a local database container.
 
 ```sh
 brew cask install docker
 # Note: You'll need to open up the Docker app Homebrew installed to set it up
+```
+You may have to do some initial setup, run:
+```sh
+docker-machine start 
+docker-machine env
+eval $(docker-machine env)
 ```
 
 After installing the tools, at the db directory of this repository, run:
@@ -44,6 +50,9 @@ After installing the tools, at the db directory of this repository, run:
 # Initialize and start mysql on :3306 and phpmyadmin on :80
 docker-compose up -d
 ```
+
+Access database through phpmyadmin at http://192.168.99.100:80, using jabc_db, root, root 
+
 
 Here are some useful commands:
 ```sh
@@ -54,5 +63,3 @@ docker-compose logs --follow # tail the container logs
 docker-compose ps -a         # see the status of your containers
 docker-compose up --build -d # rebuild image
 ```
-
-Access database through phpmyadmin at http://192.168.99.100:80, using jabc_db, root, root 
