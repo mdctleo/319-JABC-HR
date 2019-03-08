@@ -29,3 +29,30 @@ Features are to be developed in branches off of master, and merged into master w
 ## Docker compose 
 1. Run `docker-compose up` from the root directory to start the system. 
 2. You should be able to access the JABC system on `localhost:3000`
+
+## Database
+To run database as a standalone
+Developing requires `mysql`, `docker`, `docker-compose` to create a local database container.
+
+```sh
+brew cask install docker
+# Note: You'll need to open up the Docker app Homebrew installed to set it up
+```
+
+After installing the tools, at the db directory of this repository, run:
+```sh
+# Initialize and start mysql on :3306 and phpmyadmin on :80
+docker-compose up -d
+```
+
+Here are some useful commands:
+```sh
+docker-compose start         # start the containers
+docker-compose stop          # stop the containers
+docker-compose down          # to destroy the containers
+docker-compose logs --follow # tail the container logs
+docker-compose ps -a         # see the status of your containers
+docker-compose up --build -d # rebuild image
+```
+
+Access database through phpmyadmin at http://192.168.99.100:80, using jabc_db, root, root 
