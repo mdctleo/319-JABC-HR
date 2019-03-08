@@ -7,7 +7,6 @@ DROP PROCEDURE IF EXISTS delete_vacation_request;
 DELIMITER //
 
 CREATE PROCEDURE `delete_vacation_request` (IN id INT)
-)
 BEGIN
     DELETE FROM VACATION_REQUEST
     WHERE VACATION_REQUEST_ID = id;
@@ -22,7 +21,6 @@ DROP PROCEDURE IF EXISTS get_vacation_request;
 DELIMITER //
 
 CREATE PROCEDURE `get_vacation_request` (IN id INT)
-)
 BEGIN
     SELECT *
     FROM VACATION_REQUEST

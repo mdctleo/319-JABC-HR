@@ -43,9 +43,9 @@ CREATE PROCEDURE `create_employee`(IN created_by_id INT
 , IN status TINYINT
 , IN password VARCHAR(64)
 , IN salary DECIMAL(10, 2)
-, IN date_joined TIMESTAMP,
-, IN admin_level TINYINT,
-, IN created_date BIGINT,
+, IN date_joined TIMESTAMP
+, IN admin_level TINYINT
+, IN created_date BIGINT
 , IN phone_number VARCHAR(45)
 )
 BEGIN
@@ -121,9 +121,9 @@ CREATE PROCEDURE `update_employee`(IN employee_id INT
 , IN status TINYINT
 , IN password VARCHAR(64)
 , IN salary DECIMAL(10, 2)
-, IN date_joined TIMESTAMP,
-, IN admin_level TINYINT,
-, IN created_date BIGINT,
+, IN date_joined TIMESTAMP
+, IN admin_level TINYINT
+, IN created_date BIGINT
 , IN phone_number VARCHAR(45)
 )
 BEGIN
@@ -226,7 +226,7 @@ BEGIN
     WHERE hr1.EMPLOYEE_ID in (
       SELECT m.EMPLOYEE_ID
       FROM MANAGER_EMPLOYEE m
-      WHERE m.MANAGER_ID = id;
+      WHERE m.MANAGER_ID = id
     );
 END //
 
@@ -244,7 +244,6 @@ BEGIN
     FROM PERFORMANCE p
     LEFT JOIN JABC_GOAL jg ON p.PERFORMANCE_ID = jg.PERFORMANCE_ID
     LEFT JOIN PERSONAL_TARGET pt ON p.PERFORMANCE_ID = pt.PERFORMANCE_ID
-    LEFT JOIN JABC_GOAL jg ON p.PERFORMANCE_ID = jg.PERFORMANCE_ID
     LEFT JOIN OBJECTIVE o ON p.PERFORMANCE_ID = o.PERFORMANCE_ID
     LEFT JOIN DEVELOPMENT_GOAL dg ON p.PERFORMANCE_ID = dg.PERFORMANCE_ID
     LEFT JOIN COMMENT c ON p.PERFORMANCE_ID = c.PERFORMANCE_ID

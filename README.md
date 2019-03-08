@@ -47,7 +47,21 @@ eval $(docker-machine env)
 
 After installing the tools, at the db directory of this repository, run:
 ```sh
-# Initialize and start mysql on :3306 and phpmyadmin on :80
+# Initialize images
+docker-compose build
+```
+To start a stopped database or create new database instance, run:
+```sh
+# Initialize images
+docker-compose up -d
+```
+
+
+To get a fresh copy of database, run:
+```sh
+# destroys current copy of database
+docker-compose down
+# starts new containers using images
 docker-compose up -d
 ```
 
@@ -56,10 +70,7 @@ Access database through phpmyadmin at http://192.168.99.100:80, using jabc_db, r
 
 Here are some useful commands:
 ```sh
-docker-compose start         # start the containers
-docker-compose stop          # stop the containers
-docker-compose down          # to destroy the containers
-docker-compose logs --follow # tail the container logs
-docker-compose ps -a         # see the status of your containers
-docker-compose up --build -d # rebuild image
+docker images # to see your images
+docker rmi    # to remove a image
+docker ps -a  # to see all your containers
 ```
