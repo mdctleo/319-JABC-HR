@@ -23,7 +23,7 @@ DROP PROCEDURE IF EXISTS delete_role;
 DELIMITER //
 
 CREATE PROCEDURE `delete_role` (IN role_id INT)
-)
+
 BEGIN
     DELETE FROM ROLE
     WHERE ROLE.role_id = role_id;

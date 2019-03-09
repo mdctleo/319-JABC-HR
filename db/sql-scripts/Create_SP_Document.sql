@@ -1,6 +1,5 @@
 -- STORED PROCEDURES FOR DocumentService
 
-
 -- Create new support doc type
 DROP PROCEDURE IF EXISTS create_doc_type;
 
@@ -23,7 +22,7 @@ DROP PROCEDURE IF EXISTS delete_support_doc;
 DELIMITER //
 
 CREATE PROCEDURE `delete_support_doc` (IN support_doc_id INT)
-)
+
 BEGIN
     DELETE FROM `SUPPORT_DOC`
     WHERE `SUPPORT_DOC`.SUPPORT_DOC_ID = support_doc_id;
