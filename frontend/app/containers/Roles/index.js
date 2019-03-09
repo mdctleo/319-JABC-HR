@@ -212,6 +212,20 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
   },
+  addButton: {
+    float: 'right',
+    display: 'inline',
+    marginTop: '50px',
+    marginRight: '2.5%',
+    color: 'white',
+    width: '125px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
   table: {
     minWidth: 800,
   },
@@ -268,6 +282,7 @@ class EnhancedTable extends React.Component {
     orderBy: 'position',
     selected: [],
     selectedProfile: 0,
+    addButtonClicked: 0,
     selectedProfileName: '',
     value: 1,
     data: [
@@ -363,6 +378,11 @@ class EnhancedTable extends React.Component {
   handleBackButton = (event, value) => {
     this.setState({ value: 1 });
     this.setState({ selectedProfile: 0 });
+    this.setState({ addButtonClicked: 0 });
+  }
+  
+  handleAddButton = (event, value) => {
+    this.setState({ addButtonClicked: 1 });
   }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
@@ -375,6 +395,19 @@ class EnhancedTable extends React.Component {
     return (
       <div>
       <h1>Roles</h1>
+      <Button className={classes.addButton}>Add Role</Button>
+      { addButtonClicked == 1 ?
+        <Paper className={classes.root}>
+        <div>
+          <AppBar position="static" width="100%">
+          <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
+                onChange={this.handleChange}>
+            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                 onClick={this.handleBackButton} label="<  Back" />
+          </Tabs>
+         </AppBar>
+         </div>
+       </Paper> :
        { selectedProfile == 0 ? 
        (<Paper className={classes.root}>
         <EnhancedTableToolbar numSelected={selected.length} />

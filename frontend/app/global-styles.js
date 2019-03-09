@@ -69,9 +69,10 @@ const GlobalStyle = createGlobalStyle`
 
   h1 {
     color: #404040;
+    display: inline-block;
     margin-left: 2.5%;
-    margin-top: 120px;
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 20px;
   }
   
   #jabc-nav-logo {
