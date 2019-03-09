@@ -29,9 +29,9 @@ BEGIN
     IF typeCheckcer = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Document type does not exist.';
     ELSEIF emplChecker = 0 THEN
-      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.'
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
     ELSE
-      INSERT INTO `SUPPORT_DOC` (EMPLOYEE_ID, TYPE_ID, CREATED_DATE, DUE_DATE, EXPIRY_DATE, PATH, DESCRIPTION)
+      INSERT INTO SUPPORT_DOC (EMPLOYEE_ID, TYPE_ID, CREATED_DATE, DUE_DATE, EXPIRY_DATE, PATH, DESCRIPTION)
       VALUES (employee_id, type_id, created_date, due_date, expiry_date, path, description);
     END IF;
 END //
