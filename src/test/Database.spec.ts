@@ -22,7 +22,7 @@ describe("Database Tests", () => {
         const malformedQuery: string = "******";
         let result: any;
         try {
-            result = await db.query(malformedQuery);
+            result = await db.query(malformedQuery, ["s1", "s2"]);
         } catch (err) {
             result = err;
         } finally {
@@ -42,7 +42,7 @@ describe("Database Tests", () => {
         }
     });
 
-    it ("connection test", async () => {
+    it ("Should be able to connect to the database", async () => {
         const config: any = {
             host: "192.168.99.100",
             database: "jabc_db",
@@ -53,7 +53,7 @@ describe("Database Tests", () => {
         try {
             await db.initConnection(config);
         } catch (err) {
-            console.log(err);
+            Log.trace(err);
             result = err;
         } finally {
             // expect(result).to.be.instanceOf(DatabaseConnectionError);
@@ -63,7 +63,7 @@ describe("Database Tests", () => {
     it ("Should throw a DatabaseQueryError when a query is unable to be performed" , async () => {
         let queryResult: any;
         try {
-            queryResult = await db.query("some invalid query");
+            queryResult = await db.query("some invalid query", null);
         } catch (err) {
             queryResult = err;
         } finally {
