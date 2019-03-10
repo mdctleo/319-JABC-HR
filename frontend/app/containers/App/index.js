@@ -43,7 +43,7 @@ export class App extends React.PureComponent {
     const mainApp = (
       <div>
         <Header
-          userRole={this.props.data.user && this.props.data.user.role}
+          userRole={this.props.data.user && this.props.data.user.adminLevelNum}
           logout={this.props.logout}
         />
         <Contents>

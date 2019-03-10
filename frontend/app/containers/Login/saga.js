@@ -5,15 +5,24 @@ import { loginError } from './actions';
 
 export function* login(action) {
   // TODO: call actual api
+
+  const user = {
+    id: 1,
+    firstname: 'Janet',
+    lastname: 'Johnson',
+    sin: '32454344',
+    email: 'jant@example.com',
+  };
   if (action.payload.email === 'admin') {
-    yield put(setUser({ email: action.payload.email, role: 3 }));
+    user.adminLevelNum = 3;
   } else if (action.payload.email === 'manager') {
-    yield put(setUser({ email: action.payload.email, role: 2 }));
+    user.adminLevelNum = 2;
   } else if (action.payload.email === 'employee') {
-    yield put(setUser({ email: action.payload.email, role: 1 }));
+    user.adminLevelNum = 1;
   } else {
-    yield put(loginError('Email or password is incorrect'));
+    return yield put(loginError('Email or password is incorrect'));
   }
+  yield put(setUser(user));
 }
 
 // Individual exports for testing

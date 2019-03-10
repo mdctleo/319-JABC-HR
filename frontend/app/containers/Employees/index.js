@@ -35,6 +35,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import AppBar from '@material-ui/core/AppBar';
 
 let counter = 0;
 function createData(firstName, lastName, employeeID, position) {
@@ -267,32 +268,13 @@ const styles = theme => ({
   tabsIndicator: {
     backgroundColor: '#ff5000',
   },
-  tabsRoot: {
-    borderBottom: '1px solid #e8e8e8',
-  },
-  tabRoot: {
-    textTranform: 'initial',
-    minWidth: 72,
-    fontWeight: theme.typography.fontWeightRegular,
-    marginRight: theme.spacing.unit * 4,
-    '&.hover': {
-      color: '#40a9ff',
-      opacity: 1,
-    },
-    '&$tabSelected': {
-      color: '#ff5000',
-      fontWeight: theme.typography.fontWeightMedium,
-    },
-    '&:focus': {
-      color: '#ff5000',
-    },
-  },
   tabSelected: {},
   typography: {
     padding: theme.spacing.unit * 3,
   },
   container: {
-    marginLeft: '30px',
+    width: '95%',
+    marginLeft: '2.5%',
     display: 'flex',
     flexWrap: 'wrap',
   },
@@ -529,8 +511,8 @@ class EnhancedTable extends React.Component {
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         /></Paper>) : 
         (<Paper className={classes.root}>
-        <div className={classes.root}>
         <div>
+          <AppBar position="static" width="100%">
           <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }} 
                 onChange={this.handleChange}>
             <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
@@ -542,11 +524,11 @@ class EnhancedTable extends React.Component {
             <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }} 
                  label="Onboarding" />
           </Tabs>
-       </div> 
+         </AppBar>
         {value === 1 && 
          <div>
-           <Typography className={classes.employeeName} variant="h5">John Doe</Typography>
            <form className={classes.container} noValidation autocomplete="off">
+             <Typography className={classes.employeeName} variant="h5">John Doe</Typography>
              <div className={classes.fieldContainer}>      
                <Typography variant="subtitle1" color="textSecondary">Name</Typography>
              </div>
@@ -630,19 +612,19 @@ class EnhancedTable extends React.Component {
               </div>
            </form>
          </div>}
-        {value === 2 && <h1>Performance Reports</h1>}
+        {value === 2 && <Typography className={classes.employeeName} variant="h5">Performance Documents</Typography>}
         {value === 3 && 
-          <div style={{position:'relative'}}>
+          <div className={classes.container} style={{position:'relative'}}>
             <Typography className={classes.employeeName} variant="h5">Onboarding documents</Typography>
+            <DocumentsContainer documents={this.documents} ></DocumentsContainer>
             <Fab
               color="primary"
               component="label"
               size="medium"
               style={{position:'absolute',top:0,right:0}}
             >
-              <AddIcon/>
+            <AddIcon/>
             </Fab>
-            <DocumentsContainer documents={this.documents} ></DocumentsContainer>
           </div>
         }
       </div>
