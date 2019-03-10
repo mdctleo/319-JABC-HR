@@ -26,7 +26,7 @@ export default interface IDatabaseClient {
      *
      * If a failure occurs, throw DatabaseWriteError
      */
-    write(query: any): Promise<void>;
+    write(query: any, params: any[]): Promise<void>;
 
     /**
      * Performs a query on the database
@@ -40,7 +40,7 @@ export default interface IDatabaseClient {
      * If a failure occurs, throw DatabaseQueryError
      *
      */
-    query(query: any): Promise<any>;
+    query(query: any, params: any[]): Promise<any>;
 
     /**
      * Opens a connection to a database service
