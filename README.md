@@ -38,12 +38,6 @@ Developing requires  `docker`, `docker-compose` to create a local database conta
 brew cask install docker
 # Note: You'll need to open up the Docker app Homebrew installed to set it up
 ```
-You may have to do some initial setup, run:
-```sh
-docker-machine start 
-docker-machine env
-eval $(docker-machine env)
-```
 
 After installing the tools, at the db directory of this repository, run:
 ```sh
