@@ -10,15 +10,36 @@
  */
 
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+import connect from 'react-redux/es/connect/connect';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { selectUser } from '../App/selectors';
 
 /* eslint-disable react/prefer-stateless-function */
-export default class HomePage extends React.PureComponent {
+export class HomePage extends React.PureComponent {
   render() {
     return (
       <div>
-        <h1>Welcome, Jane!</h1>
+        <h1>Welcome, {this.props.user && this.props.user.firstname}!</h1>
       </div>
     );
   }
 }
+
+HomePage.propTypes = {
+  user: PropTypes.object,
+};
+
+const mapStateToProps = createStructuredSelector({
+  user: selectUser(),
+});
+
+const mapDispatchToProps = {};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(HomePage);
