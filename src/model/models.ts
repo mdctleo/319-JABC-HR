@@ -6,6 +6,8 @@ export * from './iDocumentType';
 export * from './iEmployee';
 export * from './iEmployeeHistory';
 export * from './iJABCGoal';
+export * from './iLogin';
+export * from './iLoginResponse';
 export * from './iObjective';
 export * from './iPerformance';
 export * from './iPersonalTarget';

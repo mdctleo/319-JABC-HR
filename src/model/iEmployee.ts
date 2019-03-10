@@ -50,5 +50,6 @@ export interface IEmployee {
      * Foreign key of the role
      */
     fkRole?: number;
+    phoneNumber?: string;
     role?: IRole;
 }

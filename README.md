@@ -21,6 +21,13 @@ Features are to be developed in branches off of master, and merged into master w
 2. Run `yarn start` from the root directory to start the server.
 3. The server will be listening on port 8080.
 
+#### Grunt
+If you want to use grunt while developing the backend, run:
+`grunt serve` this will:
+1. Watch the ts files, recompile when changes
+2. Watch the js files, restart the server when changes
+Note: you will probably need to install grunt cli globally, `npm install -g grunt-cli`
+
 ## Frontend
 1. Run `yarn build` from the root of `frontend/` to compile React source files.
 2. Run `yarn start` from directory to start client.
