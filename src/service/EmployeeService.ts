@@ -1,10 +1,13 @@
 'use strict';
-import { IDocument, IEmployee, IPerformance, IVacation } from '../model/models'
+import { Employee, IDocument, IEmployee, IPerformance, IVacation } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import * as jwt from 'jsonwebtoken';
 import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
+
+// TODO: SAVE KEY ON .ENV FILE
+const KEY = 'JABC IS SUPER SECURE';
 
 /**
  * creates a new Document for the employee with [id]
@@ -319,10 +322,7 @@ export function getEmployees (xAuthToken: String, term: String) {
 			"email": "email",
 			"status": 6
 		}];
-		// resolve(examples);
-		let error = new JABCError(JABCResponse.EMPLOYEE, 'Cant find employees')
-		reject(error)
-		// resolve(new JABCSuccess(JABCResponse.EMPLOYEE, 'Found employees'))
+		resolve(examples);
 	});
 }
 
@@ -619,50 +619,32 @@ export function linkEmployeeManager (id: Number, idManager: Number, xAuthToken: 
 /**
  * sign in the employee into the system
  *
- * body ILogin Employee login data
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns ILoginResponse
+ * @param {ILogin} body ILogin Employee login data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<ILoginResponse>}
  **/
-export function login (body: ILogin, xAuthToken: string) {
-	return new Promise(function (resolve, reject) {
-		var examples: any = {};
-		examples['application/json'] = {
-			"errorCode": 0,
-			"debugMessage": "debugMessage",
-			"type": "ERROR",
-			"message": "message",
-			"employee": {
-				"firstname": "firstname",
-				"fkRole": 1,
-				"address": "address",
-				"birthdate": 5,
-				"role": {
-					"name": "name",
-					"description": "description",
-					"id": 1
-				},
-				"adminLevel": 1,
-				"dateJoined": 2,
-				"salary": 5.962133916683182377482808078639209270477294921875,
-				"lastname": "lastname",
-				"password": "password",
-				"phoneNumber": "phoneNumber",
-				"remainingVacationDays": 9,
-				"fte": 0,
-				"sin": "sin",
-				"vacationDays": 7,
-				"id": 1,
-				"email": "email",
-				"status": 6
-			},
-			"token": "token"
-		};
-		if (Object.keys(examples).length > 0) {
-			resolve(examples[Object.keys(examples)[0]]);
-		} else {
-			resolve();
+export async function login (body: ILogin, xAuthToken: string) {
+	try{
+		let res = await Database.getInstance().query('CALL login(?,?)', [body.email, body.password], JABCResponse.EMPLOYEE)
+		console.log(res[0][0]);
+		var employee = new Employee(res[0][0][0]);
+		console.log(employee)
+		var token = jwt.sign({
+			exp: Math.floor(Date.now() / 1000) + (60 * 60 * 8),
+			employee: employee
+		}, KEY);
+		let response = new JABCSuccess(JABCResponse.EMPLOYEE, `Welcome ${employee.firstname} ${employee.lastname}`)
+		var loginResponse: ILoginResponse = {
+			message: response.message,
+			type: response.type,
+			responseCode: response.responseCode,
+			token: token,
+			employee: employee
 		}
-	});
+		return loginResponse;
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -710,18 +692,12 @@ export function updateEmployee (id: Number, employee: IEmployee, xAuthToken: Str
 	});
 }
 
-const _login = async (login: any) : Promise<ILoginResponse>=> {
-	let res = await Database.getInstance().query('CALL login(?)')
-}
-
 export async function Auth(token: string): Promise<any> {
 	try {
 		if (token === undefined) {
 			throw new JABCError(JABCResponse.UNAUTHORIZED)
 		}
-		// TODO: SAVE KEY ON .ENV FILE
-		let key = 'JABC IS SUPER SECURE';
-		return await this.JWTVerify(token, key)
+		return await this.JWTVerify(token, KEY)
 	} catch (error) {
 		throw error
 	}
@@ -743,10 +719,10 @@ export async function JWTVerify(token: string, key: string): Promise<ILoginRespo
 				return;
 			}
 			// Verify if user is in system
-			_login({
-				username: decoded.user.username,
-				password: decoded.user.password,
-			}).then((loginResponse: ILoginResponse) => {
+			login({
+				email: decoded.employee.email,
+				password: decoded.employee.password,
+			}, token).then((loginResponse: ILoginResponse) => {
 				resolve(loginResponse)
 			}).catch((error: any) => {
 				reject(new JABCError(JABCResponse.UNAUTHORIZED))

@@ -8,6 +8,7 @@ var app = require('connect')();
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 var serveStatic = require('serve-static')
+var Auth = require('./src/utils/Auth').default
 var serverPort = 8080;
 
 // swaggerRouter configuration
@@ -29,6 +30,9 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
 
   // Validate Swagger requests
   app.use(middleware.swaggerValidator());
+
+  // Authenticates
+  app.use(Auth);
 
   // Route validated requests to appropriate controller
   app.use(middleware.swaggerRouter(options));

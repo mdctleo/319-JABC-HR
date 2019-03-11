@@ -28,10 +28,14 @@ export class JABCResponse {
         error: 414,
         success: 214
     }
-    static UNHANDLED = {
-        error: 400,
-        success: 200,
+    static UNHANDLED_SUCCESS = {
+        error: 200,
         message: ''
+    }
+
+    static UNHANDLED_ERROR = {
+        error: 500,
+        message: 'There was a problem, try again later.'
     }
     static NOT_FOUND = {
         error: 404,
@@ -56,6 +60,7 @@ export class JABCError extends Error implements IApiResponse {
     type: IApiResponse.TypeEnum;
 
     constructor(response: JABCResponseType, ...args: any) {
+        response = (response == undefined) ? JABCResponse.UNHANDLED_ERROR : response;
         super(...args)
         console.log(this as Error)
         this.name = JABCError.NAME;
@@ -64,7 +69,8 @@ export class JABCError extends Error implements IApiResponse {
         this.debugMessage = this.stack;
         this.type = IApiResponse.TypeEnum.ERROR;
         Error.captureStackTrace(this, JABCError)
-        if(this.responseCode < JABCResponse.NOT_FOUND.error){
+        if(this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error){
+            this.debugMessage = `Error: ${this.message}, \n\n Stack: ${this.stack}`;
             this.message = response.message;
         }
     }
@@ -89,6 +95,7 @@ export class JABCSuccess implements IApiResponse {
     type: IApiResponse.TypeEnum;
 
     constructor(response: JABCResponseType, message: string) {
+        response = (response == undefined) ? JABCResponse.UNHANDLED_SUCCESS : response;
         this.message = message;
         this.responseCode = response.success;
         this.type = IApiResponse.TypeEnum.SUCCESS;

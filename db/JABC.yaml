@@ -1884,11 +1884,11 @@ definitions:
     description: The data returned by the login path contains the employee info as well as the auth token
     type: object
     required:
-    - errorCode
+    - responseCode
     - type
     - message
     properties:
-      errorCode:
+      responseCode:
         type: integer
         format: int32
       type:

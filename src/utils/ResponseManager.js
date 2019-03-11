@@ -23,10 +23,13 @@ JABCResponse.VACATION = {
     error: 414,
     success: 214
 };
-JABCResponse.UNHANDLED = {
-    error: 400,
-    success: 200,
+JABCResponse.UNHANDLED_SUCCESS = {
+    error: 200,
     message: ''
+};
+JABCResponse.UNHANDLED_ERROR = {
+    error: 500,
+    message: 'There was a problem, try again later.'
 };
 JABCResponse.NOT_FOUND = {
     error: 404,
@@ -43,6 +46,7 @@ JABCResponse.UNAUTHORIZED = {
 exports.JABCResponse = JABCResponse;
 class JABCError extends Error {
     constructor(response, ...args) {
+        response = (response == undefined) ? JABCResponse.UNHANDLED_ERROR : response;
         super(...args);
         console.log(this);
         this.name = JABCError.NAME;
@@ -51,7 +55,8 @@ class JABCError extends Error {
         this.debugMessage = this.stack;
         this.type = models_1.IApiResponse.TypeEnum.ERROR;
         Error.captureStackTrace(this, JABCError);
-        if (this.responseCode < JABCResponse.NOT_FOUND.error) {
+        if (this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error) {
+            this.debugMessage = `Error: ${this.message}, \n\n Stack: ${this.stack}`;
             this.message = response.message;
         }
     }
@@ -73,6 +78,7 @@ JABCError.NAME = 'JABCError';
 exports.JABCError = JABCError;
 class JABCSuccess {
     constructor(response, message) {
+        response = (response == undefined) ? JABCResponse.UNHANDLED_SUCCESS : response;
         this.message = message;
         this.responseCode = response.success;
         this.type = models_1.IApiResponse.TypeEnum.SUCCESS;

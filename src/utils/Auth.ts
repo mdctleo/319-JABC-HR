@@ -6,7 +6,8 @@ const utils = require('./writer.js');
 export default async function(req: any, res: any, next: any){
     if(req.swagger === undefined) { next(); return; }
     if(req.swagger.operation === undefined) { next(); return; }
-    if(req.swagger.operation.security === undefined) { next(); return; }
+    if(req.swagger.operation.security === undefined && req.swagger.operation.operationId !== 'login') { next(); return; }
+
     let securityOptions = req.swagger.operation.security;
     try{
         await Validate_AuthToken(req, res, securityOptions)
@@ -18,6 +19,7 @@ export default async function(req: any, res: any, next: any){
 }
 
 function IsRequired(securityOptions: any, checker: any){
+    if(securityOptions == undefined) return false;
     // Check if security is required for the endpoint
     var required = false;
     for(let securityOption of securityOptions){

@@ -20,7 +20,7 @@ function default_1(req, res, next) {
             next();
             return;
         }
-        if (req.swagger.operation.security === undefined) {
+        if (req.swagger.operation.security === undefined && req.swagger.operation.operationId !== 'login') {
             next();
             return;
         }
@@ -37,6 +37,8 @@ function default_1(req, res, next) {
 }
 exports.default = default_1;
 function IsRequired(securityOptions, checker) {
+    if (securityOptions == undefined)
+        return false;
     var required = false;
     for (let securityOption of securityOptions) {
         if (checker(securityOption)) {

@@ -16,7 +16,7 @@ import { IEmployee } from './iEmployee';
  * The data returned by the login path contains the employee info as well as the auth token
  */
 export interface ILoginResponse { 
-    errorCode: number;
+    responseCode: number;
     type: ILoginResponse.TypeEnum;
     message: string;
     debugMessage?: string;

@@ -2248,11 +2248,11 @@ definitions:
   ILoginResponse:
     type: "object"
     required:
-    - "errorCode"
+    - "responseCode"
     - "message"
     - "type"
     properties:
-      errorCode:
+      responseCode:
         type: "integer"
         format: "int32"
       type:
@@ -2271,7 +2271,7 @@ definitions:
     description: "The data returned by the login path contains the employee info as\
       \ well as the auth token"
     example:
-      errorCode: 0
+      responseCode: 0
       debugMessage: "debugMessage"
       type: "ERROR"
       message: "message"
