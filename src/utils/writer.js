@@ -1,3 +1,5 @@
+'use strict';
+
 var ResponsePayload = function(code, payload) {
   this.code = code;
   this.payload = payload;
@@ -40,4 +42,23 @@ var writeJson = exports.writeJson = function(response, arg1, arg2) {
   }
   response.writeHead(code, {'Content-Type': 'application/json'});
   response.end(payload);
+}
+
+var writeImg = exports.writeImg = function(response, imgData) {
+  response.writeHead(200, {'Content-Type': imgData.type });
+  response.end(imgData.img, 'binary');
+}
+
+exports.deleteNulls  = function(data){
+  Object.keys(data).forEach((key) => (data[key] == null) && delete data[key]);
+  return data
+}
+
+exports.deleteNullsArray  = function(arr){
+  let newArr = []
+  for(let obj of arr){
+    obj = exports.deleteNulls(obj)
+    newArr.push(obj)
+  }
+  return newArr
 }

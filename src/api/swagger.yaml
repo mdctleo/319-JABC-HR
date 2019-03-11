@@ -235,6 +235,8 @@ paths:
       description: "Sets the employee with [id] to be managed by the employee with\
         \ [idManager]"
       operationId: "linkEmployeeManager"
+      consumes:
+      - "application/octet-stream"
       parameters:
       - name: "X-Auth-Token"
         in: "header"
@@ -634,6 +636,34 @@ paths:
             $ref: "#/definitions/IApiResponse"
       security:
       - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/token:
+    post:
+      tags:
+      - "Employee"
+      summary: "sign in the employee into the system"
+      operationId: "login"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Employee login data"
+        required: true
+        schema:
+          $ref: "#/definitions/ILogin"
+      responses:
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ILoginResponse"
       x-swagger-router-controller: "Employee"
   /vacation/{id}:
     get:
@@ -1621,6 +1651,8 @@ definitions:
         format: "uint64"
         example: 1
         description: "Foreign key of the role"
+      phoneNumber:
+        type: "string"
       role:
         $ref: "#/definitions/IRole"
     description: "An Employee contains all the current information of a current or\
@@ -1639,6 +1671,7 @@ definitions:
       salary: 5.962133916683182377482808078639209270477294921875
       lastname: "lastname"
       password: "password"
+      phoneNumber: "phoneNumber"
       remainingVacationDays: 9
       fte: 0
       sin: "sin"
@@ -1727,6 +1760,8 @@ definitions:
         format: "uint64"
         example: 1
         description: "Foreign key of the role"
+      phoneNumber:
+        type: "string"
       role:
         $ref: "#/definitions/IRole"
     description: "An Employee contains all the current information of a current or\
@@ -1748,6 +1783,7 @@ definitions:
       lastname: "lastname"
       password: "password"
       createdDate: 5
+      phoneNumber: "phoneNumber"
       remainingVacationDays: 3
       fte: 0
       sin: "sin"
@@ -1858,6 +1894,8 @@ definitions:
         description: "The unix timestamp of the expiry date of this Document"
       path:
         type: "string"
+      description:
+        type: "string"
       type:
         $ref: "#/definitions/IDocumentType"
     description: "A Document required for the onbarding proccess of a new Employee\n"
@@ -1868,6 +1906,7 @@ definitions:
       fkDocumentType: 1
       dueDate: 6
       fkEmployee: 1
+      description: "description"
       id: 1
       type:
         path: "path"
@@ -2195,6 +2234,73 @@ definitions:
       fkPerformance: 1
       comment: "comment"
       id: 1
+  ILogin:
+    type: "object"
+    required:
+    - "email"
+    - "password"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+    description: "Represents the basic info to logged into the system"
+    example:
+      password: "password"
+      email: "email"
+  ILoginResponse:
+    type: "object"
+    required:
+    - "message"
+    - "responseCode"
+    - "type"
+    properties:
+      responseCode:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+        enum:
+        - "ERROR"
+        - "SUCCESS"
+      message:
+        type: "string"
+      debugMessage:
+        type: "string"
+      token:
+        type: "string"
+      employee:
+        $ref: "#/definitions/IEmployee"
+    description: "The data returned by the login path contains the employee info as\
+      \ well as the auth token"
+    example:
+      debugMessage: "debugMessage"
+      type: "ERROR"
+      message: "message"
+      employee:
+        firstname: "firstname"
+        fkRole: 1
+        address: "address"
+        birthdate: 5
+        role:
+          name: "name"
+          description: "description"
+          id: 1
+        adminLevel: 1
+        dateJoined: 2
+        salary: 5.962133916683182377482808078639209270477294921875
+        lastname: "lastname"
+        password: "password"
+        phoneNumber: "phoneNumber"
+        remainingVacationDays: 9
+        fte: 0
+        sin: "sin"
+        vacationDays: 7
+        id: 1
+        email: "email"
+        status: 6
+      responseCode: 0
+      token: "token"
 parameters:
   securityAuthToken:
     name: "X-Auth-Token"

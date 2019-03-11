@@ -1,5 +1,13 @@
 'use strict';
-import {IDocument, IEmployee, IPerformance, IVacation } from '../model/models'
+import { Employee, Performance, Document, Vacation, IDocument, IEmployee, IPerformance, IVacation, EmployeeHistory } from '../model/models'
+import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
+import * as jwt from 'jsonwebtoken';
+import { ILogin } from '../model/iLogin';
+import { ILoginResponse } from '../model/iLoginResponse';
+import Database from '../database/Database';
+
+// TODO: SAVE KEY ON .ENV FILE
+const KEY = 'JABC IS SUPER SECURE';
 
 /**
  * creates a new Document for the employee with [id]
@@ -10,16 +18,21 @@ import {IDocument, IEmployee, IPerformance, IVacation } from '../model/models'
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.createDocument = function(id : Number, document : IDocument, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function createDocument (id: Number, document: IDocument, xAuthToken: String) {
+	try{
+		let res = await Database.getInstance().query('CALL create_support_doc(?,?,?,?,?,?,?,?)', [
+			id,
+			document.fkDocumentType,
+			document.createdDate,
+			document.dueDate,
+			document.expiryDate,
+			document.path,
+			document.description,
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The document was saved successfully`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -31,16 +44,32 @@ exports.createDocument = function(id : Number, document : IDocument, xAuthToken 
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.createEmployee = function(employee : IEmployee, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function createEmployee (employee: IEmployee, xAuthToken: String) {
+	try{
+		employee = Employee.Prepare(employee)
+		let res = await Database.getInstance().query('CALL create_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
+			null,
+			employee.role,
+			employee.sin,
+			employee.email,
+			employee.firstname,
+			employee.lastname,
+			employee.address,
+			employee.birthdate,
+			employee.vacationDays,
+			employee.remainingVacationDays,
+			employee.fte,
+			employee.status,
+			employee.password,
+			employee.salary,
+			employee.dateJoined,
+			employee.adminLevel,
+			employee.phoneNumber,
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, ${employee.firstname} ${employee.lastname}, was registered successfully`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -53,16 +82,17 @@ exports.createEmployee = function(employee : IEmployee, xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.createPerformance = function(id : Number, performance : IPerformance, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function createPerformance (id: Number, performance: IPerformance, xAuthToken: String) {
+	try{
+		let res = await Database.getInstance().query('CALL create_employee_performance(?,?,?)', [
+			id,
+			performance.date,
+			performance.status,
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was successfully created`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -75,16 +105,19 @@ exports.createPerformance = function(id : Number, performance : IPerformance, xA
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.createVacation = function(id : Number, vacation : IVacation, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function createVacation (id: Number, vacation: IVacation, xAuthToken: String) {
+	try{
+		let res = await Database.getInstance().query('CALL create_employee_vacation(?,?,?,?,?)', [
+			id,
+			vacation.fkApprover,
+			vacation.requestedDays,
+			vacation.requestedStatus,
+			vacation.date
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The vacation request was successfully created, wait for a manager to approve it`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -97,16 +130,12 @@ exports.createVacation = function(id : Number, vacation : IVacation, xAuthToken 
  * @param {Number} idAdmin Who is deleting the employee (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.deleteEmployee = function(id : Number,  xAuthToken : String, idAdmin : Number) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function deleteEmployee (id: Number, xAuthToken: String, idAdmin: Number) {
+	try{
+		throw new JABCError(JABCResponse.EMPLOYEE, 'MISSING STORED PROCEDURE FOR ENTRY POINT deleteEmployee')
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -119,39 +148,13 @@ exports.deleteEmployee = function(id : Number,  xAuthToken : String, idAdmin : N
  * @param {String} term Search term for filter the data (optional)
  * @returns {Promise<[]>}
  **/
-exports.getDocuments = function(id : Number,  xAuthToken : String, term : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = [ {
-  "expiryDate" : 1,
-  "path" : "path",
-  "createdDate" : 0,
-  "fkDocumentType" : 1,
-  "dueDate" : 6,
-  "fkEmployee" : 1,
-  "id" : 1,
-  "type" : {
-    "path" : "path",
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  }
-}, {
-  "expiryDate" : 1,
-  "path" : "path",
-  "createdDate" : 0,
-  "fkDocumentType" : 1,
-  "dueDate" : 6,
-  "fkEmployee" : 1,
-  "id" : 1,
-  "type" : {
-    "path" : "path",
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  }
-} ];
-    resolve(examples);
-  });
+export async function getDocuments (id: Number, xAuthToken: String, term: String) {
+	try{
+		let res = await Database.getInstance().query('CALL get_employee_docs(?)', [id], JABCResponse.EMPLOYEE)
+		return Document.Documents(res[0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -163,33 +166,13 @@ exports.getDocuments = function(id : Number,  xAuthToken : String, term : String
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IEmployee>}
  **/
-exports.getEmployee = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "firstname" : "firstname",
-  "fkRole" : 1,
-  "address" : "address",
-  "birthdate" : 5,
-  "role" : {
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  },
-  "adminLevel" : 1,
-  "dateJoined" : 2,
-  "salary" : 5.962133916683182377482808078639209270477294921875,
-  "lastname" : "lastname",
-  "password" : "password",
-  "remainingVacationDays" : 9,
-  "fte" : 0,
-  "sin" : "sin",
-  "vacationDays" : 7,
-  "id" : 1,
-  "email" : "email",
-  "status" : 6
-};
-    resolve(examples);
-  });
+export async function getEmployee (id: Number, xAuthToken: String) {
+	try{
+		let res = await Database.getInstance().query('CALL get_employee(?)', [id], JABCResponse.EMPLOYEE)
+		return new Employee(res[0][0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -201,61 +184,13 @@ exports.getEmployee = function(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<[]>}
  **/
-exports.getEmployeeHistory = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = [ {
-  "firstname" : "firstname",
-  "fkRole" : 1,
-  "address" : "address",
-  "birthdate" : 2,
-  "role" : {
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  },
-  "adminLevel" : 1,
-  "dateJoined" : 7,
-  "salary" : 5.63737665663332876420099637471139430999755859375,
-  "version" : 1,
-  "fkCreator" : 1,
-  "lastname" : "lastname",
-  "password" : "password",
-  "createdDate" : 5,
-  "remainingVacationDays" : 3,
-  "fte" : 0,
-  "sin" : "sin",
-  "vacationDays" : 9,
-  "id" : 1,
-  "email" : "email",
-  "status" : 6
-}, {
-  "firstname" : "firstname",
-  "fkRole" : 1,
-  "address" : "address",
-  "birthdate" : 2,
-  "role" : {
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  },
-  "adminLevel" : 1,
-  "dateJoined" : 7,
-  "salary" : 5.63737665663332876420099637471139430999755859375,
-  "version" : 1,
-  "fkCreator" : 1,
-  "lastname" : "lastname",
-  "password" : "password",
-  "createdDate" : 5,
-  "remainingVacationDays" : 3,
-  "fte" : 0,
-  "sin" : "sin",
-  "vacationDays" : 9,
-  "id" : 1,
-  "email" : "email",
-  "status" : 6
-} ];
-    resolve(examples);
-  });
+export async function getEmployeeHistory (id: Number, xAuthToken: String) {
+	try{
+		let res = await Database.getInstance().query('CALL get_employee_history(?)', [id], JABCResponse.EMPLOYEE)
+		return EmployeeHistory.Employees(res[0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -267,55 +202,13 @@ exports.getEmployeeHistory = function(id : Number,  xAuthToken : String) {
  * @param {String} term Search term for filter the data (optional)
  * @returns {Promise<[]>}
  **/
-exports.getEmployees = function(xAuthToken : String, term : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = [ {
-  "firstname" : "firstname",
-  "fkRole" : 1,
-  "address" : "address",
-  "birthdate" : 5,
-  "role" : {
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  },
-  "adminLevel" : 1,
-  "dateJoined" : 2,
-  "salary" : 5.962133916683182377482808078639209270477294921875,
-  "lastname" : "lastname",
-  "password" : "password",
-  "remainingVacationDays" : 9,
-  "fte" : 0,
-  "sin" : "sin",
-  "vacationDays" : 7,
-  "id" : 1,
-  "email" : "email",
-  "status" : 6
-}, {
-  "firstname" : "firstname",
-  "fkRole" : 1,
-  "address" : "address",
-  "birthdate" : 5,
-  "role" : {
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  },
-  "adminLevel" : 1,
-  "dateJoined" : 2,
-  "salary" : 5.962133916683182377482808078639209270477294921875,
-  "lastname" : "lastname",
-  "password" : "password",
-  "remainingVacationDays" : 9,
-  "fte" : 0,
-  "sin" : "sin",
-  "vacationDays" : 7,
-  "id" : 1,
-  "email" : "email",
-  "status" : 6
-} ];
-    resolve(examples);
-  });
+export async function getEmployees (xAuthToken: String, term: String) {
+	try{
+		let res = await Database.getInstance().query('CALL get_all_employees()', [], JABCResponse.EMPLOYEE)
+		return Employee.Employees(res[0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -327,55 +220,13 @@ exports.getEmployees = function(xAuthToken : String, term : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<[]>}
  **/
-exports.getEmployeesByManager = function(idManager : Number, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = [ {
-  "firstname" : "firstname",
-  "fkRole" : 1,
-  "address" : "address",
-  "birthdate" : 5,
-  "role" : {
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  },
-  "adminLevel" : 1,
-  "dateJoined" : 2,
-  "salary" : 5.962133916683182377482808078639209270477294921875,
-  "lastname" : "lastname",
-  "password" : "password",
-  "remainingVacationDays" : 9,
-  "fte" : 0,
-  "sin" : "sin",
-  "vacationDays" : 7,
-  "id" : 1,
-  "email" : "email",
-  "status" : 6
-}, {
-  "firstname" : "firstname",
-  "fkRole" : 1,
-  "address" : "address",
-  "birthdate" : 5,
-  "role" : {
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  },
-  "adminLevel" : 1,
-  "dateJoined" : 2,
-  "salary" : 5.962133916683182377482808078639209270477294921875,
-  "lastname" : "lastname",
-  "password" : "password",
-  "remainingVacationDays" : 9,
-  "fte" : 0,
-  "sin" : "sin",
-  "vacationDays" : 7,
-  "id" : 1,
-  "email" : "email",
-  "status" : 6
-} ];
-    resolve(examples);
-  });
+export async function getEmployeesByManager (idManager: Number, xAuthToken: String) {
+	try{
+		let res = await Database.getInstance().query('CALL get_manager_employees(?)', [idManager], JABCResponse.EMPLOYEE)
+		return Employee.Employees(res[0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -388,171 +239,13 @@ exports.getEmployeesByManager = function(idManager : Number, xAuthToken : String
  * @param {String} term Search term for filter the data (optional)
  * @returns {Promise<[]>}
  **/
-exports.getPerformances = function(id : Number,  xAuthToken : String, term : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = [ {
-  "date" : 0.80082819046101150206595775671303272247314453125,
-  "personalTargets" : [ {
-    "rating" : "rating",
-    "description" : "description",
-    "fkPerformance" : 1,
-    "id" : 1
-  }, {
-    "rating" : "rating",
-    "description" : "description",
-    "fkPerformance" : 1,
-    "id" : 1
-  } ],
-  "comments" : [ {
-    "fkCommenter" : 1,
-    "date" : 1,
-    "fkPerformance" : 1,
-    "comment" : "comment",
-    "id" : 1
-  }, {
-    "fkCommenter" : 1,
-    "date" : 1,
-    "fkPerformance" : 1,
-    "comment" : "comment",
-    "id" : 1
-  } ],
-  "fkEmployee" : 1,
-  "objectives" : [ {
-    "q1" : "q1",
-    "innovative" : "innovative",
-    "q2" : "q2",
-    "q3" : "q3",
-    "q4" : "q4",
-    "impact" : "impact",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "foundation" : "foundation",
-    "volAlum" : "volAlum",
-    "relevance" : "relevance"
-  }, {
-    "q1" : "q1",
-    "innovative" : "innovative",
-    "q2" : "q2",
-    "q3" : "q3",
-    "q4" : "q4",
-    "impact" : "impact",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "foundation" : "foundation",
-    "volAlum" : "volAlum",
-    "relevance" : "relevance"
-  } ],
-  "id" : 1,
-  "jabcGoals" : [ {
-    "goal" : "goal",
-    "name" : "name",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "previousYear" : "previousYear"
-  }, {
-    "goal" : "goal",
-    "name" : "name",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "previousYear" : "previousYear"
-  } ],
-  "status" : 6,
-  "developmentGoals" : [ {
-    "goal" : "goal",
-    "keyActivities" : "keyActivities",
-    "rating" : "rating",
-    "fkPerformance" : 1,
-    "id" : 1
-  }, {
-    "goal" : "goal",
-    "keyActivities" : "keyActivities",
-    "rating" : "rating",
-    "fkPerformance" : 1,
-    "id" : 1
-  } ]
-}, {
-  "date" : 0.80082819046101150206595775671303272247314453125,
-  "personalTargets" : [ {
-    "rating" : "rating",
-    "description" : "description",
-    "fkPerformance" : 1,
-    "id" : 1
-  }, {
-    "rating" : "rating",
-    "description" : "description",
-    "fkPerformance" : 1,
-    "id" : 1
-  } ],
-  "comments" : [ {
-    "fkCommenter" : 1,
-    "date" : 1,
-    "fkPerformance" : 1,
-    "comment" : "comment",
-    "id" : 1
-  }, {
-    "fkCommenter" : 1,
-    "date" : 1,
-    "fkPerformance" : 1,
-    "comment" : "comment",
-    "id" : 1
-  } ],
-  "fkEmployee" : 1,
-  "objectives" : [ {
-    "q1" : "q1",
-    "innovative" : "innovative",
-    "q2" : "q2",
-    "q3" : "q3",
-    "q4" : "q4",
-    "impact" : "impact",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "foundation" : "foundation",
-    "volAlum" : "volAlum",
-    "relevance" : "relevance"
-  }, {
-    "q1" : "q1",
-    "innovative" : "innovative",
-    "q2" : "q2",
-    "q3" : "q3",
-    "q4" : "q4",
-    "impact" : "impact",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "foundation" : "foundation",
-    "volAlum" : "volAlum",
-    "relevance" : "relevance"
-  } ],
-  "id" : 1,
-  "jabcGoals" : [ {
-    "goal" : "goal",
-    "name" : "name",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "previousYear" : "previousYear"
-  }, {
-    "goal" : "goal",
-    "name" : "name",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "previousYear" : "previousYear"
-  } ],
-  "status" : 6,
-  "developmentGoals" : [ {
-    "goal" : "goal",
-    "keyActivities" : "keyActivities",
-    "rating" : "rating",
-    "fkPerformance" : 1,
-    "id" : 1
-  }, {
-    "goal" : "goal",
-    "keyActivities" : "keyActivities",
-    "rating" : "rating",
-    "fkPerformance" : 1,
-    "id" : 1
-  } ]
-} ];
-    resolve(examples);
-  });
+export async function getPerformances (id: Number, xAuthToken: String, term: String) {
+	try{
+		let res = await Database.getInstance().query('CALL get_performance_reviews(?)', [id], JABCResponse.EMPLOYEE)
+		return Performance.Performances(res[0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -565,25 +258,13 @@ exports.getPerformances = function(id : Number,  xAuthToken : String, term : Str
  * @param {String} term Search term for filter the data (optional)
  * @returns {Promise<[]>}
  **/
-exports.getVacations = function(id : Number,  xAuthToken : String, term : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = [ {
-  "date" : 1,
-  "requestedDays" : 0,
-  "fkApprover" : 1,
-  "fkEmployee" : 1,
-  "id" : 1,
-  "requestedStatus" : 6
-}, {
-  "date" : 1,
-  "requestedDays" : 0,
-  "fkApprover" : 1,
-  "fkEmployee" : 1,
-  "id" : 1,
-  "requestedStatus" : 6
-} ];
-    resolve(examples);
-  });
+export async function getVacations (id: Number, xAuthToken: String, term: String) {
+	try{
+		let res = await Database.getInstance().query('CALL get_employee_vacation(?)', [id], JABCResponse.EMPLOYEE)
+		return Vacation.Vacations(res[0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -596,16 +277,42 @@ exports.getVacations = function(id : Number,  xAuthToken : String, term : String
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.linkEmployeeManager = function(id : Number, idManager : Number, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function linkEmployeeManager (id: Number, idManager: Number, xAuthToken: String) {
+	try{
+		let res = await Database.getInstance().query('CALL link_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, was assigned to the manager`)
+	}catch(error){
+		throw error;
+	}
+}
+
+/**
+ * sign in the employee into the system
+ *
+ * @param {ILogin} body ILogin Employee login data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<ILoginResponse>}
+ **/
+export async function login (body: ILogin, xAuthToken: string) {
+	try{
+		let res = await Database.getInstance().query('CALL login(?,?)', [body.email, body.password], JABCResponse.EMPLOYEE)
+		var employee = new Employee(res[0][0][0]);
+		var token = jwt.sign({
+			exp: Math.floor(Date.now() / 1000) + (60 * 60 * 8),
+			employee: employee
+		}, KEY);
+		let response = new JABCSuccess(JABCResponse.EMPLOYEE, `Welcome ${employee.firstname} ${employee.lastname}`)
+		var loginResponse: ILoginResponse = {
+			message: response.message,
+			type: response.type,
+			responseCode: response.responseCode,
+			token: token,
+			employee: employee
+		}
+		return loginResponse;
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -618,16 +325,13 @@ exports.linkEmployeeManager = function(id : Number, idManager : Number, xAuthTok
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.unlinkEmployeeManager = function(id : Number, idManager : Number, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function unlinkEmployeeManager (id: Number, idManager: Number, xAuthToken: String) {
+	try{
+		let res = await Database.getInstance().query('CALL unlink_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, was unassigned from the manager`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -641,15 +345,86 @@ exports.unlinkEmployeeManager = function(id : Number, idManager : Number, xAuthT
  * @param {Number} idAdmin Who is updating the employee (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.updateEmployee = function(id : Number, employee : IEmployee, xAuthToken : String, idAdmin : Number) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function updateEmployee (id: Number, employee: IEmployee, xAuthToken: String, idAdmin: Number) {
+	try{
+		employee = Employee.Prepare(employee)
+		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
+			id,
+			(idAdmin) ? idAdmin : null,
+			employee.fkRole,
+			employee.sin,
+			employee.email,
+			employee.firstname,
+			employee.lastname,
+			employee.address,
+			employee.birthdate,
+			employee.vacationDays,
+			employee.remainingVacationDays,
+			employee.fte,
+			employee.status,
+			employee.password,
+			employee.salary,
+			employee.dateJoined,
+			employee.adminLevel,
+			employee.phoneNumber,
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, ${employee.firstname} ${employee.lastname}, was updated successfully`)
+	}catch(error){
+		throw error;
+	}
 }
 
+/**
+ * Authorizes the employee with a jwt [token] string
+ *
+ * @export
+ * @param {string} token JWT token to authorize
+ * @returns {Promise<ILoginResponse>}
+ */
+export async function Auth(token: string): Promise<ILoginResponse> {
+	try {
+		if (token === undefined) {
+			throw new JABCError(JABCResponse.UNAUTHORIZED)
+		}
+		return await this.JWTVerify(token, KEY)
+	} catch (error) {
+		throw error
+	}
+}
+
+/**
+ * Helper function to the JWT Auth function
+ * It verifies the token and logs the user into the system
+ *
+ * @export
+ * @param {string} token JWT token to authorize
+ * @param {string} key Key to unlock the token
+ * @returns {Promise<ILoginResponse>}
+ */
+export async function JWTVerify(token: string, key: string): Promise<ILoginResponse> {
+	return new Promise((resolve, reject) => {
+		// JWT authentication
+		jwt.verify(token, key, (err: any, decoded: any) => {
+			// Check error in JWT
+			if (err) {
+				reject(new JABCError(JABCResponse.UNAUTHORIZED))
+				return;
+			}
+			// Check session expired
+			let time = Math.round((new Date()).getTime() / 1000)
+			if (decoded.exp < time) {
+				reject(new JABCError(JABCResponse.UNAUTHORIZED))
+				return;
+			}
+			// Verify if user is in system
+			login({
+				email: decoded.employee.email,
+				password: decoded.employee.password,
+			}, token).then((loginResponse: ILoginResponse) => {
+				resolve(loginResponse)
+			}).catch((error: any) => {
+				reject(new JABCError(JABCResponse.UNAUTHORIZED))
+			})
+		})
+	})
+}

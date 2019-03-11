@@ -18,3 +18,6 @@ resources/JABC HR System Schema Diagram.mwb.bak
 !src/controllers/*.js
 !src/utils/*.js
 .idea/
+.vscode
+**.tmp.txt
+db/JABC_Schema_Diagram.mwb.bak

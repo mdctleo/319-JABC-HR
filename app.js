@@ -8,6 +8,8 @@ var app = require('connect')();
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 var serveStatic = require('serve-static')
+var Auth = require('./src/utils/Auth').default
+var ResponseManager = require('./src/utils//ResponseManager')
 var serverPort = 8080;
 
 // swaggerRouter configuration
@@ -28,10 +30,20 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   app.use(middleware.swaggerMetadata());
 
   // Validate Swagger requests
-  app.use(middleware.swaggerValidator());
+  app.use(middleware.swaggerValidator({
+    schema: swaggerDoc,
+    validateRequest: true,
+    validateResponse: false,
+    allowNullable: true
+  }));
+
+  // Authenticates
+  app.use(Auth);
 
   // Route validated requests to appropriate controller
   app.use(middleware.swaggerRouter(options));
+
+  app.use(ResponseManager.ErrorHandler)
 
   // Serve static files of frontend
   app.use(serveStatic('frontend/build/', {'index': ['index.html']}))
