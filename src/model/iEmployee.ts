@@ -94,7 +94,7 @@ export class Employee implements IEmployee{
 
     constructor(rawEmployee: any){
         this.id = rawEmployee.EMPLOYEE_ID;
-        this.sin = rawEmployee.SIN;
+        this.sin = String(rawEmployee.SIN);
         this.email = rawEmployee.EMAIL;
         this.password = rawEmployee.PASSWORD;
         this.firstname = rawEmployee.FIRST_NAME;
@@ -102,7 +102,7 @@ export class Employee implements IEmployee{
         this.fte = rawEmployee.FTE;
         this.status = rawEmployee.STATUS;
         this.adminLevel = rawEmployee.ADMIN_LEVEL;
-        this.salary = rawEmployee.SALARY;
+        this.salary = parseFloat(rawEmployee.SALARY);
         this.address = rawEmployee.ADDRESS;
         this.birthdate = rawEmployee.BIRTHDATE;
         this.dateJoined = rawEmployee.DATE_JOINED;
@@ -110,5 +110,26 @@ export class Employee implements IEmployee{
         this.remainingVacationDays = rawEmployee.REMAINING_VACATION_DAYS;
         this.fkRole = rawEmployee.ROLE;
         this.phoneNumber = rawEmployee.PHONE_NUMBER;
+    }
+
+    static Employees(rawEmployees: any[]){
+        let employees: IEmployee[] = [];
+        for(let rawEmployee of rawEmployees){
+            employees.push(new Employee(rawEmployee))
+        }
+        return employees
+    }
+
+    static Prepare(rawEmployee: IEmployee){
+        rawEmployee.salary = (rawEmployee.salary) ? rawEmployee.salary : null;
+        rawEmployee.address = (rawEmployee.address) ? rawEmployee.address : null;
+        rawEmployee.birthdate = (rawEmployee.birthdate) ? rawEmployee.birthdate : null;
+        rawEmployee.dateJoined = (rawEmployee.dateJoined) ? rawEmployee.dateJoined : null;
+        rawEmployee.vacationDays = (rawEmployee.vacationDays) ? rawEmployee.vacationDays : null;
+        rawEmployee.remainingVacationDays = (rawEmployee.remainingVacationDays) ? rawEmployee.remainingVacationDays : null;
+        rawEmployee.fkRole = (rawEmployee.fkRole) ? rawEmployee.fkRole : null;
+        rawEmployee.phoneNumber = (rawEmployee.phoneNumber) ? rawEmployee.phoneNumber : null;
+        rawEmployee.role = (rawEmployee.role) ? rawEmployee.role : null;
+        return rawEmployee
     }
 }

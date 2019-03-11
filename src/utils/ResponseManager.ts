@@ -1,4 +1,8 @@
 import {IApiResponse} from '../model/models'
+var utils = require('./writer')
+
+const DEBUG = true; // JATJ: unhardcode this
+
 
 
 export interface JABCResponseType{
@@ -49,6 +53,10 @@ export class JABCResponse {
         error: 401,
         message: 'You are not authorized to access the system'
     }
+    static BAD_REQUEST = {
+        error: 400,
+        message: 'We can\'t process the sent data, please check the format.'
+    }
 }
 
 export class JABCError extends Error implements IApiResponse {
@@ -56,13 +64,12 @@ export class JABCError extends Error implements IApiResponse {
     static NAME = 'JABCError';
     message: string;
     responseCode: number;
-    debugMessage: string;
+    debugMessage: any;
     type: IApiResponse.TypeEnum;
 
     constructor(response: JABCResponseType, ...args: any) {
         response = (response == undefined) ? JABCResponse.UNHANDLED_ERROR : response;
         super(...args)
-        console.log(this as Error)
         this.name = JABCError.NAME;
         this.message = args[0]
         this.responseCode = response.error;
@@ -108,5 +115,23 @@ export class JABCSuccess implements IApiResponse {
             return (success.responseCode > 200 && success.responseCode < 300)
         }
         return false
+    }
+}
+
+export async function ErrorHandler(err: any, req: any, res: any, next: any){
+    if(err){
+      var debugMessage = null;
+      if(err.failedValidation){
+        debugMessage = {
+          code: err.code,
+          errors: err.results.errors
+        };
+      }
+      let error = new JABCError(JABCResponse.BAD_REQUEST)
+      if(DEBUG)
+        error.debugMessage = debugMessage;
+      utils.writeJson(res, error, error.responseCode)
+    }else{
+      next()
     }
 }

@@ -37,3 +37,44 @@ export interface IVacation {
      */
     date: number;
 }
+
+export class Vacation implements IVacation{
+    /**
+     * The unique identifier of the Vacation
+     */
+    id: number;
+    /**
+     * The unique identifier of the Employee that requests the vacation
+     */
+    fkEmployee: number;
+    /**
+     * The unique identifier of the Employee that approves the vacation request
+     */
+    fkApprover?: number;
+    /**
+     * The number of vacation days the employee requested
+     */
+    requestedDays: number;
+    requestedStatus: number;
+    /**
+     * The unix timestamp of the date when the employee requested the vacation
+     */
+    date: number;
+
+    constructor(rawVacation: any){
+        this.id = rawVacation.VACATION_ID;
+        this.fkEmployee = rawVacation.EMPLOYEE_ID;
+        this.fkApprover = rawVacation.APPROVER_ID;
+        this.requestedDays = rawVacation.REQUESTED_DAYS;
+        this.requestedStatus = rawVacation.REQUEST_STATUS;
+        this.date = rawVacation.DATE;
+    }
+
+    static Vacations(rawVacations: any[]){
+        let vacations: IVacation[] = [];
+        for(let rawVacation of rawVacations){
+            vacations.push(new Vacation(rawVacation))
+        }
+        return vacations
+    }
+}

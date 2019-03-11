@@ -1647,6 +1647,8 @@ definitions:
         description: The unix timestamp of the expiry date of this Document
       path:
         type: string
+      description:
+        type: string
       type:
         $ref: "#/definitions/IDocumentType"
   

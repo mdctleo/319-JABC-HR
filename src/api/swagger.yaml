@@ -1894,6 +1894,8 @@ definitions:
         description: "The unix timestamp of the expiry date of this Document"
       path:
         type: "string"
+      description:
+        type: "string"
       type:
         $ref: "#/definitions/IDocumentType"
     description: "A Document required for the onbarding proccess of a new Employee\n"
@@ -1904,6 +1906,7 @@ definitions:
       fkDocumentType: 1
       dueDate: 6
       fkEmployee: 1
+      description: "description"
       id: 1
       type:
         path: "path"
@@ -2248,8 +2251,8 @@ definitions:
   ILoginResponse:
     type: "object"
     required:
-    - "responseCode"
     - "message"
+    - "responseCode"
     - "type"
     properties:
       responseCode:
@@ -2271,7 +2274,6 @@ definitions:
     description: "The data returned by the login path contains the employee info as\
       \ well as the auth token"
     example:
-      responseCode: 0
       debugMessage: "debugMessage"
       type: "ERROR"
       message: "message"
@@ -2297,6 +2299,7 @@ definitions:
         id: 1
         email: "email"
         status: 6
+      responseCode: 0
       token: "token"
 parameters:
   securityAuthToken:
