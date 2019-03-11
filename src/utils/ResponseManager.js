@@ -1,6 +1,16 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../model/models");
+var utils = require('./writer');
+const DEBUG = true;
 class JABCResponse {
 }
 JABCResponse.EMPLOYEE = {
@@ -43,12 +53,15 @@ JABCResponse.UNAUTHORIZED = {
     error: 401,
     message: 'You are not authorized to access the system'
 };
+JABCResponse.BAD_REQUEST = {
+    error: 400,
+    message: 'We can\'t process the sent data, please check the format.'
+};
 exports.JABCResponse = JABCResponse;
 class JABCError extends Error {
     constructor(response, ...args) {
         response = (response == undefined) ? JABCResponse.UNHANDLED_ERROR : response;
         super(...args);
-        console.log(this);
         this.name = JABCError.NAME;
         this.message = args[0];
         this.responseCode = response.error;
@@ -94,4 +107,25 @@ class JABCSuccess {
     }
 }
 exports.JABCSuccess = JABCSuccess;
+function ErrorHandler(err, req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (err) {
+            var debugMessage = null;
+            if (err.failedValidation) {
+                debugMessage = {
+                    code: err.code,
+                    errors: err.results.errors
+                };
+            }
+            let error = new JABCError(JABCResponse.BAD_REQUEST);
+            if (DEBUG)
+                error.debugMessage = debugMessage;
+            utils.writeJson(res, error, error.responseCode);
+        }
+        else {
+            next();
+        }
+    });
+}
+exports.ErrorHandler = ErrorHandler;
 //# sourceMappingURL=ResponseManager.js.map

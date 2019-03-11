@@ -65,3 +65,85 @@ export interface IEmployeeHistory {
     phoneNumber?: string;
     role?: IRole;
 }
+
+export class EmployeeHistory implements IEmployeeHistory{
+    /**
+     * The unique identifier of the Employee
+     */
+    id: number;
+    sin: string;
+    email: string;
+    password: string;
+    firstname: string;
+    lastname: string;
+    fte: number;
+    status: number;
+    adminLevel: number;
+    /**
+     * The number of the version of the Employee data
+     */
+    version: number;
+    /**
+     * The unique identifier of the Employee that updated the data of the Employee
+     */
+    fkCreator: number;
+    /**
+     * The unix timestamp of the date the creation of this version of the employee data
+     */
+    createdDate: number;
+    salary?: number;
+    address?: string;
+    /**
+     * The unix timestamp of the birthdate of the employee
+     */
+    birthdate?: number;
+    /**
+     * The unix timestamp of the date joined of the employee
+     */
+    dateJoined?: number;
+    /**
+     * The number of vacation days allowed to the employee per year
+     */
+    vacationDays?: number;
+    /**
+     * The number of vacation days allowed to the employee on the current year
+     */
+    remainingVacationDays?: number;
+    /**
+     * Foreign key of the role
+     */
+    fkRole?: number;
+    phoneNumber?: string;
+    role?: IRole;
+
+    constructor(rawEmployee: any){
+        this.id = rawEmployee.EMPLOYEE_ID;
+        this.sin = String(rawEmployee.SIN);
+        this.email = rawEmployee.EMAIL;
+        this.password = rawEmployee.PASSWORD;
+        this.firstname = rawEmployee.FIRST_NAME;
+        this.lastname = rawEmployee.LAST_NAME;
+        this.fte = rawEmployee.FTE;
+        this.status = rawEmployee.STATUS;
+        this.adminLevel = rawEmployee.ADMIN_LEVEL;
+        this.version = rawEmployee.VERSION;
+        this.fkCreator = rawEmployee.CREATED_BY;
+        this.createdDate = rawEmployee.CREATED_DATE;
+        this.salary = parseFloat(rawEmployee.SALARY);
+        this.address = rawEmployee.ADDRESS;
+        this.birthdate = rawEmployee.BIRTHDATE;
+        this.dateJoined = rawEmployee.DATE_JOINED;
+        this.vacationDays = rawEmployee.VACATION_DAYS;
+        this.remainingVacationDays = rawEmployee.REMAINING_VACATION_DAYS;
+        this.fkRole = rawEmployee.ROLE;
+        this.phoneNumber = rawEmployee.PHONE_NUMBER;
+    }
+
+    static Employees(rawEmployees: any[]){
+        let employees: IEmployeeHistory[] = [];
+        for(let rawEmployee of rawEmployees){
+            employees.push(new EmployeeHistory(rawEmployee))
+        }
+        return employees
+    }
+}

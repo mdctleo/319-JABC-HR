@@ -54,3 +54,54 @@ export interface IPerformance {
      */
     comments?: Array<IComment>;
 }
+
+export class Performance implements IPerformance{
+    /**
+     * The unique identifier of the Performance
+     */
+    id: number;
+    /**
+     * Foreign key of the employee with this performance review
+     */
+    fkEmployee: number;
+    /**
+     * The unix timestamp of the date the performance review was created
+     */
+    date: number;
+    status: number;
+    /**
+     * Contains all the JABC Goals (Section 1) of this performance review
+     */
+    jabcGoals?: Array<IJABCGoal>;
+    /**
+     * Contains all the Personal Targets (Section 2) of this performance review
+     */
+    personalTargets?: Array<IPersonalTarget>;
+    /**
+     * Contains all the Objectives (Section 3) of this performance review
+     */
+    objectives?: Array<IObjective>;
+    /**
+     * Contains all the Development Goals (Section 4) of this performance review
+     */
+    developmentGoals?: Array<IDevelopmentGoal>;
+    /**
+     * Contains all the comments (Section 5) of this performance review
+     */
+    comments?: Array<IComment>;
+
+    constructor(rawPerformance: any){
+        this.id = rawPerformance.PERFORMANCE_ID;
+        this.fkEmployee = rawPerformance.EMPLOYEE_ID;
+        this.date = rawPerformance.DATE;
+        this.status = rawPerformance.STATUS;
+    }
+
+    static Performances(rawPerformances: any[]){
+        let performances: IPerformance[] = [];
+        for(let rawPerformance of rawPerformances){
+            performances.push(new Performance(rawPerformance))
+        }
+        return performances
+    }
+}
