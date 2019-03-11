@@ -22,5 +22,33 @@
   ],
   "exclude": [
     "node_modules"
+  ],
+  "files": [
+    "src/database/Database.ts",
+    "src/database/IDatabaseClient.ts",
+    "src/model/iApiResponse.ts",
+    "src/model/iComment.ts",
+    "src/model/iDevelopmentGoal.ts",
+    "src/model/iDocument.ts",
+    "src/model/iDocumentType.ts",
+    "src/model/iEmployee.ts",
+    "src/model/iEmployeeHistory.ts",
+    "src/model/iJABCGoal.ts",
+    "src/model/iLogin.ts",
+    "src/model/iLoginResponse.ts",
+    "src/model/iObjective.ts",
+    "src/model/iPerformance.ts",
+    "src/model/iPersonalTarget.ts",
+    "src/model/iRole.ts",
+    "src/model/iVacation.ts",
+    "src/model/models.ts",
+    "src/service/DocumentService.ts",
+    "src/service/EmployeeService.ts",
+    "src/service/PerformanceService.ts",
+    "src/service/RolesService.ts",
+    "src/service/VacationService.ts",
+    "src/test/Database.spec.ts",
+    "src/utils/Auth.ts",
+    "src/utils/ResponseManager.ts"
   ]
 }

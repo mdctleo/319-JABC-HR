@@ -8,10 +8,10 @@ module.exports.createRole = function createRole (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Roles.createRole(role,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     });
 };
 
@@ -20,10 +20,10 @@ module.exports.deleteRole = function deleteRole (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Roles.deleteRole(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     });
 };
 
@@ -32,10 +32,10 @@ module.exports.getRole = function getRole (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Roles.getRole(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     });
 };
 
@@ -43,10 +43,10 @@ module.exports.getRoles = function getRoles (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Roles.getRoles(xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     });
 };
 
@@ -56,9 +56,9 @@ module.exports.updateRole = function updateRole (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Roles.updateRole(id,role,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, response.responseCode);
     });
 };

@@ -552,3 +552,34 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure login
+--    - Login the the provided credentials,
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS login;
+DELIMITER $$
+CREATE PROCEDURE `login`(IN `EMAIL` VARCHAR(100), IN `PASSWORD` VARCHAR(500))
+BEGIN
+    DECLARE checker INT;
+    DECLARE checker2 INT;
+
+    SET checker = 0;
+    SET checker2 = 0;
+
+    SELECT EMPLOYEE_ID INTO checker FROM HR_RECORD where HR_RECORD.EMAIL = EMAIL AND HR_RECORD.STATUS != 0;
+    IF checker = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'The email is not registered.';
+    END IF;
+
+    SELECT EMPLOYEE_ID INTO checker2 FROM HR_RECORD WHERE HR_RECORD.EMAIL = EMAIL AND HR_RECORD.PASSWORD = PASSWORD AND HR_RECORD.STATUS != 0 ORDER BY HR_RECORD.VERSION DESC LIMIT 1;
+    IF checker2 = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'The password is incorrect';
+    END IF;
+
+    SELECT * FROM HR_RECORD WHERE EMPLOYEE_ID = checker2 LIMIT 1;
+END$$
+DELIMITER ;

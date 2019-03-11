@@ -62,5 +62,6 @@ export interface IEmployeeHistory {
      * Foreign key of the role
      */
     fkRole?: number;
+    phoneNumber?: string;
     role?: IRole;
 }
