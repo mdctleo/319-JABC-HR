@@ -12,6 +12,11 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "chai-json-equal": "^0.0.1",
+    "chai-json-schema": "^1.5.0",
+    "json-schema-faker": "^0.5.0-rc16",
+    "chai-exclude": "^1.0.12",
     "mocha": "^5.2.0"
   },
   "dependencies": {
