@@ -131,7 +131,9 @@ const GlobalStyle = createGlobalStyle`
   .onboarding-content{
     width: 95%;
     margin-left: 2.5%;
+    margin-top: 20px;
   }
+
   #onboarding-content .onboarding-card, #onboarding-content .documents{
     max-width:900px;
     margin:auto;

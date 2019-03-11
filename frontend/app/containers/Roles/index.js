@@ -211,6 +211,7 @@ const styles = theme => ({
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
+    paddingBottom: '20px',
   },
   addButton: {
     float: 'right',
@@ -219,6 +220,32 @@ const styles = theme => ({
     marginRight: '2.5%',
     color: 'white',
     width: '125px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
+  editButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
+  formButtons: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    marginRight: '2.5%',
+    marginTop: '50px',
     backgroundColor: '#ff6600',
     borderRadius: '15px',
     transition: '0.3s',
@@ -253,16 +280,16 @@ const styles = theme => ({
     marginBottom: '15px',
   },
   positionName: {
+    display: 'inline',
     marginTop: '30px',
   },
   formSubheading: {
-    marginTop: '30px',
+    display: 'inline',
   },
-  radio: {
-    color: green[600],
-    "&$checked": {
-      color: green[500]
-    }
+  topFieldContainer: {
+    width: '100%',
+    marginBottom: '15px',
+    marginTop: '50px',
   },
   card: {
     width: "75%",
@@ -271,7 +298,9 @@ const styles = theme => ({
     marginTop: '30px',
     marginBottom: '30px',
     marginLeft: '37.5%',
-    display: 'block',
+    display: 'inline',
+    backgroundColor: ' #00954D',
+    color: 'white',
   },
 });
 
@@ -407,7 +436,7 @@ class EnhancedTable extends React.Component {
          </AppBar>
 <div>
            <form className={classes.container} noValidation autocomplete="off">
-             <div className={classes.fieldContainer}>
+             <div className={classes.topFieldContainer}>
                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
              </div>
               <div className={classes.fieldContainer}>
@@ -516,6 +545,8 @@ class EnhancedTable extends React.Component {
       <Fab color="green" aria-label="Add" className={classes.fab}>
         <AddIcon />
       </Fab>
+      <Button className={classes.formButtons}>Submit</Button>
+      <Button className={classes.formButtons}>Save</Button>
          </div>
          </div>
           </Paper>) :
@@ -600,7 +631,10 @@ class EnhancedTable extends React.Component {
          </AppBar>
          <div>
            <form className={classes.container} noValidation autocomplete="off">
-             <Typography className={classes.positionName} variant="h5">{this.state.selectedProfileName}</Typography>
+             <div className={classes.topFieldContainer}>
+               <Typography className={classes.positionName} variant="h5">{this.state.selectedProfileName}</Typography>
+               <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button>
+             </div>
              <div className={classes.fieldContainer}>      
                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
              </div>
@@ -694,7 +728,7 @@ class EnhancedTable extends React.Component {
       </CardContent>
     </Card>
            </form>
-      <Fab color="green" aria-label="Add" className={classes.fab}>
+      <Fab  aria-label="Add" className={classes.fab}>
         <AddIcon />
       </Fab>
          </div>

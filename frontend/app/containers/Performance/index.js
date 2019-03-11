@@ -258,6 +258,7 @@ const styles = theme => ({
   },
   fieldContainer: {
     width: '100%',
+    marginTop: '20px',
     marginBottom: '15px',
   },
   positionName: {
@@ -292,6 +293,21 @@ const styles = theme => ({
   appBar: {
     width: '100%',
   },
+  leftField: {
+    width: '30%',
+  },
+  rightField: {
+    marginLeft: '5%',
+    width: '55%',
+  },
+  addGoalButton: {
+    margin: theme.spacing.unit,
+    marginTop: '20px',
+    marginLeft: '2.5%',
+  },
+  competencyField: {
+    width: '90%',
+  },
 });
 
 
@@ -303,7 +319,9 @@ class EnhancedTable extends React.Component {
     displayedPage: "table",
     addButtonClicked: 0,
     selectedProfileName: '',
-    value: 1,
+    years: [],
+    selectedYear: 0,
+    value: 0,
     data: [
       createData('Developer'),
       createData('Database Admin'),
@@ -407,7 +425,7 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, displayedPage, value, rowsPerPage, page } = this.state;
+    const { data, order, orderBy, selected, displayedPage, value, years, selectedYear, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
@@ -444,114 +462,81 @@ class EnhancedTable extends React.Component {
                  label="Performance Review" />
         </Tabs>
          </AppBar>
-<div>
+      <div>
+      { value == 0 &&
            <form className={classes.container} noValidation autocomplete="off">
-             <div className={classes.fieldContainer}>
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
-             </div>
-              <div className={classes.fieldContainer}>
+              <Typography className={classes.formSubheading} variant="h5">{selectedYear} Work Plan</Typography>
+               <div className={classes.fieldContainer}>
                  <TextField
-                   id="outlined-multiline-static"
-                   defaultValue=""
-                   rows="4"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-             <div className={classes.fieldContainer}>      
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
-             </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="outlined-multiline-static"
+                   label="Date"
                    multiline
-                   rows="4"
                    className={classes.textField}
                    margin="normal"
                    variant="outlined">
                  </TextField>
               </div>
-              <div className={classes.fieldContainer}>
-                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">JABC Goals</Typography>
+                <div className={classes.fieldContainer}>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       label="Department"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.leftField}
+                      />
+                     <TextField
+                       label="Goal"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.rightField}
+                      />
+                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
+                      <AddIcon />
+                    </Fab>
+                    </CardContent>
+                  </Card>
               </div>
-     <Card className={classes.card}>
-      <CardContent>
-        <TextField
-          id="outlined-name"
-          label="Name"
-          margin="normal"
-          defaultValue=" "
-          fullWidth
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-name"
-          label="Description"
-          margin="normal"
-          defaultValue=" "
-          variant="outlined"
-          fullWidth
-          multiline
-          rows="4"
-        />
-        <FormControl component="fieldset">
-        <Typography>Rating</Typography>
-          <RadioGroup 
-            aria-label="position" 
-            name="position" 
-            row
-           >
-            <FormControlLabel
-              value="1"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="1"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="2"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="2"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="3"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="3"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="4"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="4"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="5"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="5"
-              labelPlacement="bottom"
-            />
-          </RadioGroup>
-        </FormControl>
-      </CardContent>
-    </Card>
-           </form>
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Personal Targets</Typography>
+              <div className={classes.fieldContainer}>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       label="Program"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.leftField}
+                      />
+                     <TextField
+                       label="Goal"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.rightField}
+                      />
+                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
+                      <AddIcon />
+                    </Fab>
+                    </CardContent>
+                  </Card>
+              </div>
+                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+    <div className={classes.fieldContainer}>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       label="Competency"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.competencyField}
+                      />
+                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
+                      <AddIcon />
+                    </Fab>
+                    </CardContent>
+                  </Card>
+              </div>
+           </form>}
+{value == 1 && <Typography> TEST </Typography>}
          </div>
          </div>
           </Paper>
