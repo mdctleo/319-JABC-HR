@@ -26,7 +26,7 @@ BEGIN
     SELECT COUNT(TYPE_ID) INTO typeChecker FROM `TYPE` WHERE `TYPE`.TYPE_ID = type_id;
     SELECT COUNT(EMPLOYEE_ID) INTO emplChecker FROM `HR_RECORD` WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
 
-    IF typeCheckcer = 0 THEN
+    IF typeChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Document type does not exist.';
     ELSEIF emplChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -279,7 +279,7 @@ BEGIN
   ELSE
     SELECT *
     FROM SUPPORT_DOC
-    WHERE EMPLOYEE_ID = employee_id;
+    WHERE SUPPORT_DOC.EMPLOYEE_ID = employee_id;
   END IF;
 END //
 
@@ -417,15 +417,15 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
--- procedure get_performance_reviews
+-- procedure get_employee_performance_reviews
 --    - get the performance reviews for a given employee,
 --    - provided the employee exists
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS get_performance_reviews;
+DROP PROCEDURE IF EXISTS get_employee_performance_reviews;
 
 DELIMITER //
 
-CREATE PROCEDURE `get_performance_reviews` (IN employee_id INT)
+CREATE PROCEDURE `get_employee_performance_reviews` (IN employee_id INT)
 BEGIN
   DECLARE checker INT;
 
@@ -438,7 +438,7 @@ BEGIN
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
   ELSE
-    SELECT *
+    SELECT *, p.PERFORMANCE_ID as PERFORMANCE_ID, p.DATE as DATE
     FROM PERFORMANCE p
     LEFT JOIN JABC_GOAL jg ON p.PERFORMANCE_ID = jg.PERFORMANCE_ID
     LEFT JOIN PERSONAL_TARGET pt ON p.PERFORMANCE_ID = pt.PERFORMANCE_ID
