@@ -1,5 +1,7 @@
 'use strict';
-import {IDocument, IDocumentType} from '../model/models'
+import {Document, IDocument, DocumentType, IDocumentType} from '../model/models'
+import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
+import Database from '../database/Database';
 
 /**
  * creates a new DocumentType
@@ -9,16 +11,17 @@ import {IDocument, IDocumentType} from '../model/models'
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.createDocumentType = function(documentType : IDocumentType, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function createDocumentType(documentType : IDocumentType, xAuthToken : String) {
+  try{
+		let res = await Database.getInstance().query('CALL create_doc_type(?,?,?)', [
+			documentType.name,
+			documentType.path,
+			documentType.description,
+		], JABCResponse.DOCUMENT)
+		return new JABCSuccess(JABCResponse.DOCUMENT, `The document template was saved successfully`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -30,16 +33,13 @@ exports.createDocumentType = function(documentType : IDocumentType, xAuthToken :
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.deleteDocument = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function deleteDocument(id : Number,  xAuthToken : String) {
+    try{
+		let res = await Database.getInstance().query('CALL delete_support_doc(?)', [id], JABCResponse.DOCUMENT)
+		return new JABCSuccess(JABCResponse.DOCUMENT, `The document was deleted successfuly`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -51,16 +51,13 @@ exports.deleteDocument = function(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.deleteDocumentType = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function deleteDocumentType(id : Number,  xAuthToken : String) {
+    try{
+		let res = await Database.getInstance().query('CALL delete_doc_type(?)', [id], JABCResponse.DOCUMENT)
+		return new JABCSuccess(JABCResponse.DOCUMENT, `The document template was deleted successfuly`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -72,25 +69,13 @@ exports.deleteDocumentType = function(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IDocument>}
  **/
-exports.getDocument = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "expiryDate" : 1,
-  "path" : "path",
-  "createdDate" : 0,
-  "fkDocumentType" : 1,
-  "dueDate" : 6,
-  "fkEmployee" : 1,
-  "id" : 1,
-  "type" : {
-    "path" : "path",
-    "name" : "name",
-    "description" : "description",
-    "id" : 1
-  }
-};
-    resolve(examples);
-  });
+export async function getDocument(id : Number,  xAuthToken : String) {
+    try{
+		let res = await Database.getInstance().query('CALL get_support_doc(?)', [id], JABCResponse.DOCUMENT)
+		return new Document(res[0][0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -102,16 +87,13 @@ exports.getDocument = function(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IDocumentType>}
  **/
-exports.getDocumentType = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "path" : "path",
-  "name" : "name",
-  "description" : "description",
-  "id" : 1
-};
-    resolve(examples);
-  });
+export async function getDocumentType(id : Number,  xAuthToken : String) {
+    try{
+		let res = await Database.getInstance().query('CALL get_doc_type(?)', [id], JABCResponse.DOCUMENT)
+		return new DocumentType(res[0][0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -122,21 +104,13 @@ exports.getDocumentType = function(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<[]>}
  **/
-exports.getDocumentTypes = function(xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = [ {
-  "path" : "path",
-  "name" : "name",
-  "description" : "description",
-  "id" : 1
-}, {
-  "path" : "path",
-  "name" : "name",
-  "description" : "description",
-  "id" : 1
-} ];
-    resolve(examples);
-  });
+export async function getDocumentTypes(xAuthToken : String) {
+    try{
+		let res = await Database.getInstance().query('CALL get_all_doc_types()', [], JABCResponse.DOCUMENT)
+		return DocumentType.DocumentTypes(res[0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -149,16 +123,23 @@ exports.getDocumentTypes = function(xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.updateDocument = function(id : Number, document : IDocument, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function updateDocument(id : Number, document : IDocument, xAuthToken : String) {
+    try{
+        let res = await Database.getInstance().query('CALL update_support_doc(?,?,?,?,?,?,?,?)', 
+        [
+            id,
+            document.fkEmployee,
+            document.fkDocumentType,
+            document.createdDate,
+            document.dueDate,
+            document.expiryDate,
+            document.path,
+            document.description,
+        ], JABCResponse.DOCUMENT)
+		return new JABCSuccess(JABCResponse.DOCUMENT, `The support document was updated successfuly`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -171,15 +152,18 @@ exports.updateDocument = function(id : Number, document : IDocument, xAuthToken 
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.updateDocumentType = function(id : Number, documentType : IDocumentType, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function updateDocumentType(id : Number, documentType : IDocumentType, xAuthToken : String) {
+    try{
+        let res = await Database.getInstance().query('CALL update_doc_type(?,?,?,?)', 
+        [
+            id,
+            documentType.name,
+            documentType.description,
+            documentType.path,
+        ], JABCResponse.DOCUMENT)
+		return new JABCSuccess(JABCResponse.DOCUMENT, `The document template was updated successfuly`)
+	}catch(error){
+		throw error;
+	}
 }
 

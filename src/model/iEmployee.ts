@@ -25,9 +25,9 @@ export interface IEmployee {
     password: string;
     firstname: string;
     lastname: string;
-    fte: number;
-    status: number;
-    adminLevel: number;
+    fte: IEmployee.fteEnum;
+    status: IEmployee.statusEnum;
+    adminLevel: IEmployee.adminLevelEnum;
     salary?: number;
     address?: string;
     /**
@@ -54,6 +54,30 @@ export interface IEmployee {
     role?: IRole;
 }
 
+export namespace IEmployee {
+    export type fteEnum = 0 | 1 ;
+    export const fteEnum = {
+        PART_TIME: 0 as fteEnum,
+        FULL_TIME: 1 as fteEnum,
+    };
+
+    export type statusEnum = 0 | 1 | 2 | 3;
+    export const statusEnum = {
+        INACTIVE: 0 as statusEnum,
+        ACTIVE: 1 as statusEnum,
+        ONBOARDING: 2 as statusEnum,
+        PROBATION: 3 as statusEnum
+    };
+
+    export type adminLevelEnum = -1 | 0 | 1 | 2;
+    export const adminLevelEnum = {
+        PUBLIC: -1 as adminLevelEnum,
+        STAFF: 0 as adminLevelEnum,
+        MANAGER: 1 as adminLevelEnum,
+        HR_ADMIN: 2 as adminLevelEnum
+    };
+}
+
 export class Employee implements IEmployee{
     /**
      * The unique identifier of the Employee
@@ -64,9 +88,9 @@ export class Employee implements IEmployee{
     password: string;
     firstname: string;
     lastname: string;
-    fte: number;
-    status: number;
-    adminLevel: number;
+    fte: IEmployee.fteEnum;
+    status: IEmployee.statusEnum;
+    adminLevel: IEmployee.adminLevelEnum;
     salary?: number;
     address?: string;
     /**

@@ -6,7 +6,7 @@ import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
 
-// TODO: SAVE KEY ON .ENV FILE
+// JATJ: save key on .env file
 const KEY = 'JABC IS SUPER SECURE';
 
 /**
@@ -20,7 +20,7 @@ const KEY = 'JABC IS SUPER SECURE';
  **/
 export async function createDocument (id: Number, document: IDocument, xAuthToken: String) {
 	try{
-		let res = await Database.getInstance().query('CALL create_support_doc(?,?,?,?,?,?,?,?)', [
+		let res = await Database.getInstance().query('CALL create_support_doc(?,?,?,?,?,?,?)', [
 			id,
 			document.fkDocumentType,
 			document.createdDate,
@@ -132,7 +132,12 @@ export async function createVacation (id: Number, vacation: IVacation, xAuthToke
  **/
 export async function deleteEmployee (id: Number, xAuthToken: String, idAdmin: Number) {
 	try{
-		throw new JABCError(JABCResponse.EMPLOYEE, 'MISSING STORED PROCEDURE FOR ENTRY POINT deleteEmployee')
+		let employee = await getEmployee(id, xAuthToken)
+		employee.status = IEmployee.statusEnum.INACTIVE
+		if(employee.status === IEmployee.statusEnum.INACTIVE)
+			throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is already inactive')
+		await updateEmployee(id, employee, xAuthToken, idAdmin)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The employee was successfully set up to inactive')
 	}catch(error){
 		throw error;
 	}
@@ -241,7 +246,7 @@ export async function getEmployeesByManager (idManager: Number, xAuthToken: Stri
  **/
 export async function getPerformances (id: Number, xAuthToken: String, term: String) {
 	try{
-		let res = await Database.getInstance().query('CALL get_performance_reviews(?)', [id], JABCResponse.EMPLOYEE)
+		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE)
 		return Performance.Performances(res[0][0])
 	}catch(error){
 		throw error;
@@ -401,7 +406,7 @@ export async function Auth(token: string): Promise<ILoginResponse> {
  * @param {string} key Key to unlock the token
  * @returns {Promise<ILoginResponse>}
  */
-export async function JWTVerify(token: string, key: string): Promise<ILoginResponse> {
+export function JWTVerify(token: string, key: string): Promise<ILoginResponse> {
 	return new Promise((resolve, reject) => {
 		// JWT authentication
 		jwt.verify(token, key, (err: any, decoded: any) => {
@@ -423,7 +428,7 @@ export async function JWTVerify(token: string, key: string): Promise<ILoginRespo
 			}, token).then((loginResponse: ILoginResponse) => {
 				resolve(loginResponse)
 			}).catch((error: any) => {
-				reject(new JABCError(JABCResponse.UNAUTHORIZED))
+				reject(error)
 			})
 		})
 	})

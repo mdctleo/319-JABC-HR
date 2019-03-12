@@ -62,7 +62,7 @@ export class Vacation implements IVacation{
     date: number;
 
     constructor(rawVacation: any){
-        this.id = rawVacation.VACATION_ID;
+        this.id = rawVacation.VACATION_REQUEST_ID;
         this.fkEmployee = rawVacation.EMPLOYEE_ID;
         this.fkApprover = rawVacation.APPROVER_ID;
         this.requestedDays = rawVacation.REQUESTED_DAYS;
