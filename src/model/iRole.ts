@@ -11,6 +11,9 @@
  */
 
 
+import {Document, IDocument} from "./iDocument";
+import {IEmployee} from "./iEmployee";
+
 /**
  * An Role is contains all the current information of a current or onboarding employee 
  */
@@ -21,4 +24,33 @@ export interface IRole {
     id: number;
     name: string;
     description?: string;
+}
+
+export class Role implements IRole {
+    /**
+     * The unique identifier of the Role
+     */
+    id: number;
+    name: string;
+    description: string;
+
+    constructor(rawRole: any) {
+        this.id = rawRole.ROLE_ID;
+        this.name = rawRole.ROLE_NAME;
+        this.description = rawRole.DESCRIPTION;
+    }
+
+    static Roles(rawRoles: any[]) {
+        let roles: IRole[] = [];
+        for(let rawRole of rawRoles){
+            roles.push(new Role(rawRole));
+        }
+        return roles;
+    }
+
+    static Prepare(rawRole: IRole) {
+        rawRole.name = (rawRole.name) ? rawRole.name : null;
+        rawRole.description = (rawRole.description) ? rawRole.description : null;
+        return rawRole;
+    }
 }
