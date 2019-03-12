@@ -49,6 +49,7 @@
     "src/service/VacationService.ts",
     "src/test/Database.spec.ts",
     "src/utils/Auth.ts",
+    "src/utils/Priviledges.ts",
     "src/utils/ResponseManager.ts"
   ]
 }
