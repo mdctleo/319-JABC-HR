@@ -1992,12 +1992,21 @@
       "properties" : {
         "id" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker" : {
+            "random.number": {
+              "min": 0
+            }
+          },
           "example" : 1,
           "description" : "The unique identifier of the Employee"
         },
         "sin" : {
-          "type" : "string"
+          "type" : "string",
+          "faker" : {
+            "random.number": {
+              "min": 0
+            }
+          }
         },
         "email" : {
           "type" : "string",
@@ -2005,57 +2014,95 @@
         },
         "password" : {
           "type" : "string",
-          "format" : "password"
+          "faker" : "internet.password"
         },
         "firstname" : {
-          "type" : "string"
+          "type" : "string",
+          "faker": "name.firstName"
         },
         "lastname" : {
-          "type" : "string"
+          "type" : "string",
+          "faker": "name.lastName"
         },
         "fte" : {
-          "type" : "integer"
+          "type" : "integer",
+          "faker": {
+            "random.number": {
+              "min": 0,
+              "max": 1
+            }
+          }
         },
         "status" : {
-          "type" : "integer"
+          "type" : "integer",
+          "faker": {
+            "random.number": {
+              "min": 0,
+              "max": 3
+            }
+          }
         },
         "adminLevel" : {
-          "type" : "integer"
+          "type" : "integer",
+          "faker": {
+            "random.number": {
+              "min": 0,
+              "max": 2
+            }
+          }
         },
         "salary" : {
-          "type" : "number"
+          "type" : "number",
+          "faker": "finance.amount"
         },
         "address" : {
-          "type" : "string"
+          "type" : "string",
+          "faker": "address.streetAddress"
         },
         "birthdate" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker": "date.past",
           "description" : "The unix timestamp of the birthdate of the employee"
         },
         "dateJoined" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker": "date.recent",
           "description" : "The unix timestamp of the date joined of the employee"
         },
         "vacationDays" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker": {
+            "random.number":{
+              "min": 50,
+              "max": 365
+            }
+          },
           "description" : "The number of vacation days allowed to the employee per year"
         },
         "remainingVacationDays" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker": {
+            "random.number": {
+              "min": 0,
+              "max": 49
+            }
+          },
           "description" : "The number of vacation days allowed to the employee on the current year"
         },
         "fkRole" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker" : {
+            "random.number": {
+              "min": 0,
+              "max": 3
+            }
+          },
           "example" : 1,
           "description" : "Foreign key of the role"
         },
         "phoneNumber" : {
-          "type" : "string"
+          "type" : "string",
+          "faker": "phone.phoneNumber"
         },
         "role" : {
           "$ref" : "#/definitions/IRole"
@@ -2163,7 +2210,12 @@
       "properties" : {
         "id" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker" : {
+            "random.number": {
+              "min": 0,
+              "max": 3
+            }
+          },
           "example" : 1,
           "description" : "The unique identifier of the Role"
         },

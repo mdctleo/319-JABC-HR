@@ -322,6 +322,33 @@ CREATE TABLE IF NOT EXISTS `jabc_db`.`MANAGER_EMPLOYEE` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Insert a test HR, Manager, Employee roles
+-- -----------------------------------------------------
+
+INSERT INTO jabc_db.ROLE (ROLE_ID, NAME, DESCRIPTION)
+VALUES
+(NULL, "Overall HR", "A Test HR"),
+(NULL, "Overall Manager", "A Test Manager"),
+(NULL, "Overall Employee", "A Test Employee");
+
+COMMIT;
+-- -----------------------------------------------------
+-- Insert a test HR
+-- -----------------------------------------------------
+
+SET GLOBAL FOREIGN_KEY_CHECKS=0;
+
+COMMIT;
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(1, 0, 1, 0, 11111111, 'hr@jabc.com', 'HR', 'test', 'hr_test_road', 11301969, 20, 10, 1, 1, 'hrtest', '200.00', 1031989, 2, 1011989, '6041111111');
+
+COMMIT;
+
+SET GLOBAL  FOREIGN_KEY_CHECKS=1;
+COMMIT;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
