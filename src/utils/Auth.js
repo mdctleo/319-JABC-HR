@@ -8,7 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const ResponseManager_1 = require("./ResponseManager");
+const Priviledges_1 = require("./Priviledges");
 const EmployeeService = require("../service/EmployeeService");
+const models_1 = require("../model/models");
 const utils = require('./writer.js');
 function default_1(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -27,10 +30,14 @@ function default_1(req, res, next) {
         let securityOptions = req.swagger.operation.security;
         try {
             yield Validate_AuthToken(req, res, securityOptions);
+            yield Validate_Priviledges(req, res, req.swagger.operation.operationId);
             next();
         }
         catch (err) {
-            utils.writeJson(res, err, err.responseCode);
+            let error = err;
+            if (!ResponseManager_1.JABCError.isError(error))
+                error = new ResponseManager_1.JABCError(ResponseManager_1.JABCResponse.UNAUTHORIZED);
+            utils.writeJson(res, error, error.responseCode);
             res.end();
         }
     });
@@ -61,6 +68,11 @@ function Validate_AuthToken(req, res, securityOptions) {
         let token = req.swagger.params['X-Auth-Token'].value;
         EmployeeService.Auth(token)
             .then((loginResponse) => {
+            req.employee = loginResponse.employee;
+            if (req.employee == undefined) {
+                reject(new ResponseManager_1.JABCError(ResponseManager_1.JABCResponse.UNAUTHORIZED));
+                return;
+            }
             if (isLogin) {
                 utils.writeJson(res, loginResponse);
                 res.end();
@@ -77,6 +89,20 @@ function Validate_AuthToken(req, res, securityOptions) {
                 reject(error);
             }
         });
+    });
+}
+function Validate_Priviledges(req, res, operationId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let requiredLevel = Priviledges_1.Priviledges.operations[operationId];
+            if (requiredLevel === undefined || requiredLevel === models_1.IEmployee.adminLevelEnum.PUBLIC)
+                return;
+            if (requiredLevel > req.employee.adminLevel)
+                throw new ResponseManager_1.JABCError(ResponseManager_1.JABCResponse.FORBIDDEN);
+        }
+        catch (error) {
+            throw error;
+        }
     });
 }
 //# sourceMappingURL=Auth.js.map

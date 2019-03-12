@@ -1,5 +1,7 @@
 'use strict';
-import { IVacation } from "../model/models";
+import { Vacation, IVacation } from "../model/models";
+import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
+import Database from '../database/Database';
 
 
 /**
@@ -10,16 +12,13 @@ import { IVacation } from "../model/models";
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.deleteVacation = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+export async function deleteVacation(id: Number, xAuthToken: String) {
+    try{
+		let res = await Database.getInstance().query('CALL delete_vacation_request(?)', [id], JABCResponse.VACATION)
+		return new JABCSuccess(JABCResponse.VACATION, `The vacation request was deleted successfuly`)
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -31,18 +30,13 @@ exports.deleteVacation = function(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IVacation>}
  **/
-exports.getVacation = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "date" : 1,
-  "requestedDays" : 0,
-  "fkApprover" : 1,
-  "fkEmployee" : 1,
-  "id" : 1,
-  "requestedStatus" : 6
-};
-    resolve(examples);
-  });
+export async function getVacation(id: Number, xAuthToken: String) {
+    try{
+		let res = await Database.getInstance().query('CALL get_vacation_request(?)', [id], JABCResponse.VACATION)
+		return new Vacation(res[0][0][0])
+	}catch(error){
+		throw error;
+	}
 }
 
 
@@ -55,15 +49,20 @@ exports.getVacation = function(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-exports.updateVacation = function(id : Number, vacation : IVacation, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+// JATJ: Implement updateVacation
+export async function updateVacation(id: Number, vacation: IVacation, xAuthToken: String) {
+    try{
+        let res = await Database.getInstance().query('CALL update_vacation_request(?,?,?,?,?)', 
+        [
+            id,
+            vacation.fkApprover,
+            vacation.requestedDays,
+            vacation.requestedStatus,
+            vacation.date,
+        ], JABCResponse.VACATION)
+		return new JABCSuccess(JABCResponse.VACATION, `The vacation request was updated successfuly`)
+	}catch(error){
+		throw error;
+	}
 }
 

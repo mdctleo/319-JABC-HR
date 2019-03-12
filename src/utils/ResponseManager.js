@@ -69,6 +69,7 @@ class JABCError extends Error {
         this.type = models_1.IApiResponse.TypeEnum.ERROR;
         Error.captureStackTrace(this, JABCError);
         if (this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error) {
+            this.message = (this.message === undefined) ? response.message : this.message;
             this.debugMessage = `Error: ${this.message}, \n\n Stack: ${this.stack}`;
             this.message = response.message;
         }
@@ -112,9 +113,25 @@ function ErrorHandler(err, req, res, next) {
         if (err) {
             var debugMessage = null;
             if (err.failedValidation) {
+                if (err.results !== undefined) {
+                    debugMessage = {
+                        code: err.code,
+                        errors: err.results.errors,
+                        path: err.path,
+                        paramName: err.paramName
+                    };
+                }
+                else {
+                    debugMessage = {
+                        code: err.code,
+                        path: err.path,
+                        paramName: err.paramName
+                    };
+                }
+            }
+            else {
                 debugMessage = {
-                    code: err.code,
-                    errors: err.results.errors
+                    code: err.code
                 };
             }
             let error = new JABCError(JABCResponse.BAD_REQUEST);

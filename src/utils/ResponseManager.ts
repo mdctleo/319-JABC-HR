@@ -1,11 +1,11 @@
-import {IApiResponse} from '../model/models'
+import { IApiResponse } from '../model/models'
 var utils = require('./writer')
 
-const DEBUG = true; // JATJ: unhardcode this
+const DEBUG = true; // JATJ: load config from .env
 
 
 
-export interface JABCResponseType{
+export interface JABCResponseType {
     error?: number,
     success?: number,
     message?: string
@@ -76,24 +76,25 @@ export class JABCError extends Error implements IApiResponse {
         this.debugMessage = this.stack;
         this.type = IApiResponse.TypeEnum.ERROR;
         Error.captureStackTrace(this, JABCError)
-        if(this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error){
+        if (this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error) {
+            this.message = (this.message === undefined) ? response.message : this.message
             this.debugMessage = `Error: ${this.message}, \n\n Stack: ${this.stack}`;
             this.message = response.message;
         }
     }
-    static isError(error: Error){
-        if(error == undefined) return false
+    static isError(error: Error) {
+        if (error == undefined) return false
         return (error.name == JABCError.NAME)
     }
 
     public toJSON() {
-		return {
+        return {
             message: this.message,
             responseCode: this.responseCode,
             debugMessage: this.debugMessage,
             type: this.type
-		};
-	}
+        };
+    }
 }
 
 export class JABCSuccess implements IApiResponse {
@@ -109,29 +110,43 @@ export class JABCSuccess implements IApiResponse {
         Error.captureStackTrace(this, JABCError)
     }
 
-    static isSuccess(success: any){
-        if(success == undefined) return false
-        if(success.hasOwnProperty('responseCode')){
+    static isSuccess(success: any) {
+        if (success == undefined) return false
+        if (success.hasOwnProperty('responseCode')) {
             return (success.responseCode > 200 && success.responseCode < 300)
         }
         return false
     }
 }
 
-export async function ErrorHandler(err: any, req: any, res: any, next: any){
-    if(err){
-      var debugMessage = null;
-      if(err.failedValidation){
-        debugMessage = {
-          code: err.code,
-          errors: err.results.errors
-        };
-      }
-      let error = new JABCError(JABCResponse.BAD_REQUEST)
-      if(DEBUG)
-        error.debugMessage = debugMessage;
-      utils.writeJson(res, error, error.responseCode)
-    }else{
-      next()
+export async function ErrorHandler(err: any, req: any, res: any, next: any) {
+    if (err) {
+        var debugMessage = null;
+        if (err.failedValidation) {
+            if(err.results !== undefined){
+                debugMessage = {
+                    code: err.code,
+                    errors: err.results.errors,
+                    path: err.path,
+                    paramName: err.paramName
+                };
+            }else{
+                debugMessage = {
+                    code: err.code,
+                    path: err.path,
+                    paramName: err.paramName
+                };
+            }
+        }else{
+            debugMessage = {
+                code: err.code
+            };
+        }
+        let error = new JABCError(JABCResponse.BAD_REQUEST)
+        if (DEBUG)
+            error.debugMessage = debugMessage;
+        utils.writeJson(res, error, error.responseCode)
+    } else {
+        next()
     }
 }
