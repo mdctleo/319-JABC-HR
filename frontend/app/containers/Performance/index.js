@@ -519,7 +519,7 @@ class EnhancedTable extends React.Component {
                     </CardContent>
                   </Card>
               </div>
-                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Core Competencies</Typography>
     <div className={classes.fieldContainer}>
                  <Card className={classes.card}>
                    <CardContent>

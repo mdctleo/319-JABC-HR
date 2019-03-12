@@ -6,6 +6,7 @@
 
 import React from 'react';
 import classNames from 'classnames';
+import CompetencyCard from '../../components/CompetencyCard';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -39,9 +40,9 @@ import AppBar from '@material-ui/core/AppBar';
 import green from "@material-ui/core/colors/green";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
+import FormControl from "@material-ui/core/FormControl";
 
 let counter = 0;
 function createData(position) {
@@ -134,6 +135,7 @@ EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
+  selected: PropTypes.array.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
@@ -165,7 +167,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props;
+  const { numSelected, selected, classes } = props;
 
   return (
     <Toolbar
@@ -312,6 +314,7 @@ class EnhancedTable extends React.Component {
     selected: [],
     displayedPage: "table",
     addButtonClicked: 0,
+    editButtonClicked: 0,
     selectedProfileName: '',
     value: 1,
     data: [
@@ -407,202 +410,156 @@ class EnhancedTable extends React.Component {
   handleBackButton = (event, value) => {
     this.setState({ value: 1 });
     this.setState({ displayedPage: "table" });
+    this.setState({ editButtonClicked: 0 });
   }
   
   handleAddButton = (event, value) => {
     this.setState({ displayedPage: "add" });
+    this.setState({ editButtonClicked: 1 });
+  }
+  
+  handleEditButton = (event, value) => {
+    var textFields = document.getElementsByName("textField");
+    this.setState({ editButtonClicked: 1 });
+    for (var i = 0; i < textFields.length; i++) {
+      console.log(textFields[i]);
+      textFields[i].readOnly = false;
+      textFields[i].children[0].children[0].style = { borderColor: 'green' };
+    }
+  }
+
+  handleSaveButton = (event, value) => {
+    this.setState({ editButtonClicked: 0 });
+  }
+
+  handleSubmitButton = (event, value) => {
+    this.setState({ editButtonClicked: 0 });
+  }
+
+  handleAddSubmitButton = (event, value) => {
+    this.setState({ value: 1 });
+    this.setState({ displayedPage: "table" });
+    this.setState({ editButtonClicked: 0 });
+    this.setState({ data: this.state.data.concat(createData("New")) });
   }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, displayedPage, value, rowsPerPage, page } = this.state;
+    const { data, order, orderBy, selected, displayedPage, addButtonClicked, editButtonClicked, value, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <div>
-      <h1>Roles</h1>
-      <Button className={classes.addButton} onClick={this.handleAddButton}>Add Role</Button>
+        <h1>Roles</h1>
+        <Button className={classes.addButton} onClick={this.handleAddButton}>Add Role</Button>
         { displayedPage == "add" ?   
-        (<Paper className={classes.root}>
-          <div> 
-          <AppBar position="static" width="100%">
-          <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
-                onChange={this.handleChange}>
-            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                 onClick={this.handleBackButton} label="<  Back" />
-          </Tabs>
-         </AppBar>
-<div>
-           <form className={classes.container} noValidation autocomplete="off">
-             <div className={classes.topFieldContainer}>
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
-             </div>
-              <div className={classes.fieldContainer}>
+          (<Paper className={classes.root}>
+            <div> 
+              <AppBar position="static" width="100%">
+                <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
+                  onChange={this.handleChange}>
+                  <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                   onClick={this.handleBackButton} label="<  Back" />
+                </Tabs>
+              </AppBar>
+            <div>
+            <form className={classes.container} noValidation autocomplete="off">
+              <div className={classes.topFieldContainer}>
+                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
+               </div>
+               <div className={classes.fieldContainer}>
                  <TextField
-                   id="outlined-multiline-static"
+                   name="textField"
                    defaultValue=""
                    rows="4"
                    className={classes.textField}
                    margin="normal"
                    variant="outlined">
                  </TextField>
-              </div>
-             <div className={classes.fieldContainer}>      
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
-             </div>
-              <div className={classes.fieldContainer}>
+               </div>
+               <div className={classes.fieldContainer}>      
+                 <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
+               </div>
+               <div className={classes.fieldContainer}>
                  <TextField
-                   id="outlined-multiline-static"
+                   name="textField"
                    multiline
                    rows="4"
                    className={classes.textField}
                    margin="normal"
                    variant="outlined">
                  </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
-              </div>
-     <Card className={classes.card}>
-      <CardContent>
-        <TextField
-          id="outlined-name"
-          label="Name"
-          margin="normal"
-          defaultValue=" "
-          fullWidth
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-name"
-          label="Description"
-          margin="normal"
-          defaultValue=" "
-          variant="outlined"
-          fullWidth
-          multiline
-          rows="4"
-        />
-        <FormControl component="fieldset">
-        <Typography>Rating</Typography>
-          <RadioGroup 
-            aria-label="position" 
-            name="position" 
-            row
-           >
-            <FormControlLabel
-              value="1"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="1"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="2"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="2"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="3"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="3"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="4"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="4"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="5"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="5"
-              labelPlacement="bottom"
-            />
-          </RadioGroup>
-        </FormControl>
-      </CardContent>
-    </Card>
-           </form>
-      <Fab color="green" aria-label="Add" className={classes.fab}>
-        <AddIcon />
-      </Fab>
-      <Button className={classes.formButtons}>Submit</Button>
-      <Button className={classes.formButtons}>Save</Button>
-         </div>
-         </div>
-          </Paper>) :
-       ( displayedPage == "table" ? 
-       (<Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
-            />
-            <TableBody>
-              {stableSort(data, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
+               </div>
+               <div className={classes.fieldContainer}>
+                 <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+               </div>
+               <CompetencyCard />
+            </form>
+          { editButtonClicked == 1 &&
+              (<Fab color="green" aria-label="Add" className={classes.fab}>
+                 <AddIcon />
+               </Fab>)}
+          { editButtonClicked == 1 &&
+              (<Button className={classes.formButtons} onClick={this.handleAddSubmitButton}>Submit</Button>)
+          }
+       </div>
+     </div>
+    </Paper>) :
+    ( displayedPage == "table" ? 
+      (<Paper className={classes.root}>
+         <EnhancedTableToolbar numSelected={selected.length} />
+           <div className={classes.tableWrapper}>
+           <Table className={classes.table} aria-labelledby="tableTitle">
+             <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={this.handleSelectAllClick}
+                onRequestSort={this.handleRequestSort}
+                rowCount={data.length}
+             />
+             <TableBody>
+               {stableSort(data, getSorting(order, orderBy))
+                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                 .map(n => {
                   const isSelected = this.isSelected(n.id);
                   return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox 
-                          onClick={event => this.handleClick(event, n.id)}
-                          checked={isSelected} 
-                          labelStyle={{ color: 'grey' }}
-                          iconStyle={{ fill: 'grey' }}
-                          inputStyle={{ color: 'grey' }}
-                          style={{ color: 'grey' }} />
-                      </TableCell>
-                      <TableCell 
-                        align="left"
-                        component="th" 
-                        scope="row" 
-                        padding="none"
-                        onClick={event => this.handleClickProfile(event, n.id, n.position)}>
-                        {n.position}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    aria-checked={isSelected}
+                    tabIndex={-1}
+                    key={n.id}
+                    selected={isSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox 
+                        onClick={event => this.handleClick(event, n.id)}
+                        checked={isSelected} 
+                        labelStyle={{ color: 'grey' }}
+                        iconStyle={{ fill: 'grey' }}
+                        inputStyle={{ color: 'grey' }}
+                        style={{ color: 'grey' }} />
+                    </TableCell>
+                    <TableCell 
+                      align="left"
+                      component="th" 
+                      scope="row" 
+                      padding="none"
+                      onClick={event => this.handleClickProfile(event, n.id, n.position)}>
+                      {n.position}
+                    </TableCell>
+                  </TableRow>
+               );
+             })}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 49 * emptyRows }}>
+                <TableCell colSpan={6} />
+               </TableRow>
+             )}
+           </TableBody>
           </Table>
         </div>
         <TablePagination
@@ -640,98 +597,31 @@ class EnhancedTable extends React.Component {
              </div>
               <div className={classes.fieldContainer}>
                  <TextField
-                   id="outlined-multiline-static"
+                   name="textField"
                    multiline
                    rows="4"
                    className={classes.textField}
                    margin="normal"
-                   variant="outlined">
-                 </TextField>
+                   variant="outlined"
+                   defaultValue="TEST"
+                   InputProps={{ readOnly: true, }}/>
               </div>
               <div className={classes.fieldContainer}>
                 <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
               </div>
-     <Card className={classes.card}>
-      <CardContent>
-        <TextField
-          id="outlined-name"
-          label="Name"
-          margin="normal"
-          defaultValue=" "
-          fullWidth
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-name"
-          label="Description"
-          margin="normal"
-          defaultValue=" "
-          variant="outlined"
-          fullWidth
-          multiline
-          rows="4"
-        />
-        <FormControl component="fieldset">
-        <Typography>Rating</Typography>
-          <RadioGroup 
-            aria-label="position" 
-            name="position" 
-            row
-           >
-            <FormControlLabel
-              value="1"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="1"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="2"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="2"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="3"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="3"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="4"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="4"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="5"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="5"
-              labelPlacement="bottom"
-            />
-          </RadioGroup>
-        </FormControl>
-      </CardContent>
-    </Card>
-           </form>
-      <Fab  aria-label="Add" className={classes.fab}>
-        <AddIcon />
-      </Fab>
-         </div>
+                <CompetencyCard />
+            </form>
+          </div>
+          { editButtonClicked == 1 &&
+          (<Fab color="green" aria-label="Add" className={classes.fab}>
+               <AddIcon />
+           </Fab>)}
+          { editButtonClicked == 1 &&
+              (<Button className={classes.formButtons} onClick={this.handleSubmitButton}>Submit</Button>)
+          }
+          { editButtonClicked == 1 &&
+              (<Button className={classes.formButtons} onClick={this.handleSaveButton}>Save</Button>)
+          }
       </div>
       </Paper>))}
       </div>
