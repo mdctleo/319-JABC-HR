@@ -62,16 +62,16 @@ CREATE TABLE IF NOT EXISTS `jabc_db`.`HR_RECORD` (
   `FIRST_NAME` VARCHAR(100) NOT NULL,
   `LAST_NAME` VARCHAR(100) NOT NULL,
   `ADDRESS` VARCHAR(255) NULL,
-  `BIRTHDATE` BIGINT NULL,
+  `BIRTHDATE` DATE NULL,
   `VACATION_DAYS` INT NULL,
   `REMAINING_VACATION_DAYS` INT NULL,
   `FTE` TINYINT NOT NULL DEFAULT 1 COMMENT '0=PART_TIME, 1=FULL_TIME',
   `STATUS` TINYINT NOT NULL DEFAULT 2 COMMENT 'One of: 3 = PROBATION, 2 = ONBOARDING, 1 = ACTIVE, 0 = INACTIVE',
   `PASSWORD` VARCHAR(64) NOT NULL,
   `SALARY` DECIMAL(10,2) NULL DEFAULT 0,
-  `DATE_JOINED` BIGINT NULL,
+  `DATE_JOINED` DATE NULL,
   `ADMIN_LEVEL` TINYINT NOT NULL COMMENT 'One of: 0 = STAFF, 1 = MANAGER, 2 = HR ADMIN',
-  `CREATED_DATE` BIGINT NULL,
+  `CREATED_DATE` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `PHONE_NUMBER` VARCHAR(45) NULL,
   INDEX `ROLE_idx` (`ROLE` ASC),
   CONSTRAINT `FK_ROLE`
@@ -348,18 +348,18 @@ CREATE TABLE IF NOT EXISTS `jabc_db`.`MANAGER_EMPLOYEE` (
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Insert a test HR, Manager, Employee roles
+-- Insert a test some test roles
 -- -----------------------------------------------------
 
-INSERT INTO jabc_db.ROLE (ROLE_ID, NAME, DESCRIPTION)
+INSERT INTO jabc_db.ROLE (ROLE_ID, ROLE_NAME, DESCRIPTION)
 VALUES
-(NULL, "Overall HR", "A Test HR"),
-(NULL, "Overall Manager", "A Test Manager"),
-(NULL, "Overall Employee", "A Test Employee");
+(NULL, "Developer", "A Test Developer Role"),
+(NULL, "Sales", "A Test Sales Role"),
+(NULL, "Marketing", "A Test Marketing Role");
 
 COMMIT;
 -- -----------------------------------------------------
--- Insert a test HR
+-- Insert a some test hr records
 -- -----------------------------------------------------
 
 SET GLOBAL FOREIGN_KEY_CHECKS=0;
@@ -367,7 +367,19 @@ SET GLOBAL FOREIGN_KEY_CHECKS=0;
 COMMIT;
 
 INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
-(1, 0, 1, 0, 11111111, 'hr@jabc.com', 'HR', 'test', 'hr_test_road', 11301969, 20, 10, 1, 1, 'hrtest', '200.00', 1031989, 2, 1011989, '6041111111');
+(1, 1, 1, 0, 11111111, 'tflenderson@jabc.com', 'Toby', 'Flenderson', 'hr_test_road', '1969-11-30', 20, 10, 1, 1, 'hrtest', '200.00', '1989-12-01', 2, NULL, '6041111111');
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(2, 1, 1, 0, 22222222, 'mscott@jabc.com', 'Michael', 'Scott', '3333 Maple road', '1964-12-08', 20, 0, 1, 1, 'managertest', '5000.00', '1989-12-01', 2, NULL, '6042222222');
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(3, 1, 1, 0, 33333333, 'jhalpert@jabc.com', 'Jim', 'Halpert', '8888 Halpert road', '1979-09-03', 10, 10, 1, 1, 'employeetest', '3000.00', '2002-04-01', 2, NULL, '6043333333');
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(4, 1, 1, 0, 44444444, 'dschrute@jabc.com', 'Dwight', 'Schrute', 'Schrute Farm', '1978-10-30', 10, 8, 1, 1, 'employeetest', '3000.0', '2000-03-01', 2, NULL, '6044444444');
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(5, 1, 1, 0, 55555555, 'kfilippelli@jabc.com', 'Karen', 'Filippelli', 'Exotic Land', '1980-01-30', 10, 8, 1, 1, 'employeetest', '3000.0', '2004-02-01', 2, NULL, '6045555555');
 
 COMMIT;
 

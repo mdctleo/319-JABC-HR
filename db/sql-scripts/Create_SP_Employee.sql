@@ -56,14 +56,14 @@ CREATE PROCEDURE `create_employee`(IN created_by_id INT
 , IN first_name VARCHAR(100)
 , IN last_name VARCHAR(100)
 , IN address VARCHAR(255)
-, IN birthdate BIGINT
+, IN birthdate DATE
 , IN vacation_days INT
 , IN remaining_vacation_days INT
 , IN FTE TINYINT
 , IN status TINYINT
 , IN password VARCHAR(64)
 , IN salary DECIMAL(10, 2)
-, IN date_joined BIGINT
+, IN date_joined DATE
 , IN admin_level TINYINT
 , IN phone_number VARCHAR(45)
 )
@@ -76,7 +76,7 @@ BEGIN
     SET sinChecker = 0;
     SET emailChecker = 0;
 
-    SELECT UNIX_TIMESTAMP() INTO created_date;
+    SELECT CURRENT_TIMESTAMP() INTO created_date;
 
     SELECT COUNT(SIN) INTO sinChecker
     FROM `HR_RECORD`

@@ -2060,12 +2060,12 @@
           "faker": "address.streetAddress"
         },
         "birthdate" : {
-          "type" : "integer",
+          "type" : "string",
           "faker": "date.past",
           "description" : "The unix timestamp of the birthdate of the employee"
         },
         "dateJoined" : {
-          "type" : "integer",
+          "type" : "string",
           "faker": "date.recent",
           "description" : "The unix timestamp of the date joined of the employee"
         },

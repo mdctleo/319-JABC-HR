@@ -124,23 +124,23 @@ export async function ErrorHandler(err: any, req: any, res: any, next: any) {
         var debugMessage = null;
         if (err.failedValidation) {
             if(err.results !== undefined){
-                debugMessage = {
+                debugMessage = JSON.stringify({
                     code: err.code,
                     errors: err.results.errors,
                     path: err.path,
                     paramName: err.paramName
-                };
+                });
             }else{
-                debugMessage = {
+                debugMessage = debugMessage = JSON.stringify({
                     code: err.code,
                     path: err.path,
                     paramName: err.paramName
-                };
+                });
             }
         }else{
-            debugMessage = {
+            debugMessage = debugMessage = JSON.stringify({
                 code: err.code
-            };
+            });
         }
         let error = new JABCError(JABCResponse.BAD_REQUEST)
         if (DEBUG)
