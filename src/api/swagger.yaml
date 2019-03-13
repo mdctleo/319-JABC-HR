@@ -1630,12 +1630,12 @@ definitions:
       address:
         type: "string"
       birthdate:
-        type: "integer"
-        format: "uint64"
+        type: "string"
+        format: "date"
         description: "The unix timestamp of the birthdate of the employee"
       dateJoined:
-        type: "integer"
-        format: "uint64"
+        type: "string"
+        format: "date"
         description: "The unix timestamp of the date joined of the employee"
       vacationDays:
         type: "integer"

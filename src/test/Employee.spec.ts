@@ -22,8 +22,15 @@ chai.use(require('chai-json-schema'));
 chai.tv4.addSchema(URI, schemaDefinition);
 let expect = chai.expect;
 const schema = chai.tv4.getSchema(`${URI}`);
+let shell = require('shelljs');
+
 
 jsf.extend('faker', () => require('faker'));
+
+function resetDb() {
+    shell.cd('db');
+    shell.exec('./resetDb.sh');
+}
 
 
 describe("EmployeeService tests", () => {
@@ -35,6 +42,7 @@ describe("EmployeeService tests", () => {
 
     before(async () => {
         try {
+            resetDb();
             let loginBody = {
                 email: "hr@jabc.com",
                 password: "hrtest"
@@ -153,7 +161,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should return six employees", async () => {
+        it("Should return seven employees", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -163,7 +171,7 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
-                expect(response.body.length).to.be.equal(6);
+                expect(response.body.length).to.be.equal(7);
                 response.body.forEach((employee: IEmployee) => {
                     expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
                 });
@@ -214,14 +222,14 @@ describe("EmployeeService tests", () => {
         it("Should not update an employee, wrong format", async () => {
             let response: any;
             let employeeRecord = await chai.request(SERVER)
-                .get(`${BASE_PATH}/2`)
+                .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
             employeeRecord.fkRole = "3";
             employeeRecord.salary = 3000.00;
             employeeRecord.firstname = "Big Tuna";
             try {
                 response = await chai.request(SERVER)
-                    .put(`${BASE_PATH}/2`)
+                    .put(`${BASE_PATH}/3`)
                     .set(HEADERS)
                     .send(employeeRecord);
             } catch (e) {
@@ -235,12 +243,12 @@ describe("EmployeeService tests", () => {
         it("Should not update an employee, setting required fields to null", async () => {
             let response: any;
             let employeeRecord = await chai.request(SERVER)
-                .get(`${BASE_PATH}/2`)
+                .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
             employeeRecord.id = null;
             try {
                 response = await chai.request(SERVER)
-                    .put(`${BASE_PATH}/2`)
+                    .put(`${BASE_PATH}/3`)
                     .set(HEADERS)
                     .send(employeeRecord);
             } catch (e) {
@@ -254,7 +262,7 @@ describe("EmployeeService tests", () => {
         it("Should not update a non-existing employee", async () => {
             let response: any;
             let employeeRecord = await chai.request(SERVER)
-                .get(`${BASE_PATH}/2`)
+                .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
             employeeRecord.fkRole = 3;
             employeeRecord.salary = 3000.00;
@@ -276,14 +284,14 @@ describe("EmployeeService tests", () => {
         it("Should update an employee", async () => {
             let response: any;
             let employeeRecord = await chai.request(SERVER)
-                .get(`${BASE_PATH}/2`)
+                .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
             employeeRecord.fkRole = 3;
             employeeRecord.salary = 3000.00;
             employeeRecord.firstname = "Big Tuna";
             try {
                 response = await chai.request(SERVER)
-                    .put(`${BASE_PATH}/2`)
+                    .put(`${BASE_PATH}/3`)
                     .set(HEADERS)
                     .send(employeeRecord);
             } catch (e) {
@@ -295,11 +303,11 @@ describe("EmployeeService tests", () => {
         });
 
 
-        it("Should see the update", async() => {
-           let response: any;
+        it("Should see the update", async () => {
+            let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/2`)
+                    .get(`${BASE_PATH}/3`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
@@ -312,7 +320,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should not delete non-existent employee", async() => {
+        it("Should not delete non-existent employee", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -326,11 +334,11 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should delete employee", async() => {
+        it("Should delete employee", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/4`)
+                    .delete(`${BASE_PATH}/4`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
@@ -340,12 +348,27 @@ describe("EmployeeService tests", () => {
             }
         });
 
+        it("Should see 3 employees", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+                expect(response.body.length).to.be.equal(3);
+            }
+        });
+
 
     });
 
 
-    describe("/employee/{id}/manager/{idManager} tests", () => {
-        it("Should not be able to link a non-existent employee with a manager", async() => {
+    describe("/employee/{id}/manager/{idManager} and /employee/manager/{idManager} tests", () => {
+        it("Should not be able to link a non-existent employee with a manager", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -359,7 +382,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should not be able to link an employee with a non-existent manager", async() => {
+        it("Should not be able to link an employee with a non-existent manager", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -373,7 +396,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should not be able to link an employee to an employee", async() => {
+        it("Should not be able to link an employee to an employee", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -387,7 +410,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should not be able to link a manager to an employee", async() => {
+        it("Should not be able to link a manager to an employee", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -401,7 +424,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should be able to link a manager to itself", async() => {
+        it("Should be able to link a manager to itself", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -415,7 +438,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should be able to link a manager to manager", async() => {
+        it("Should be able to link a manager to manager", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -429,7 +452,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should be able to link an employee with a manager", async() => {
+        it("Should be able to link an employee with a manager", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -443,11 +466,11 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should be able to link an employee to an HR", async() => {
+        it("Should be able to link an employee with a manager", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .post(`${BASE_PATH}/3/manager/1`)
+                    .post(`${BASE_PATH}/4/manager/2`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
@@ -457,120 +480,45 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should be able to link a hr to a hr", async() => {
+        it("Should be able to display three employees under manager michael scott", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/1/manager/1`)
+                    .get(`${BASE_PATH}/manager/2`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+                response.body.forEach((employee: any) => {
+                    expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
+                });
+                expect(response.body.length).to.be.equal(3);
+                expect(response.body[0].firstname).to.be.equal("Michael");
+                expect(response.body[1].firstname).to.be.equal("Jim");
+                expect(response.body[2].firstname).to.be.equal("Dwight");
             }
         });
 
-        it("Should be able to link a manager to an hr", async() => {
+        it("Should be able to display one employee under manager karen", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .post(`${BASE_PATH}/2/manager/1`)
+                    .get(`${BASE_PATH}/manager/2`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+                response.body.forEach((employee: any) => {
+                    expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
+                });
+                expect(response.body.length).to.be.equal(1);
+                expect(response.body[0].firstname).to.be.equal("Michael");
             }
         });
 
-        it("Should not be able to unlink an employee with someone that they have no relation", async() => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/4/manager/2`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        it("Should not be able unlink an employee with a manage, order switched", async() => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/2/manager/3`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-
-        it("Should be able unlink an employee with a manager", async() => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/3/manager/2`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        it("Should be able unlink an employee with a hr", async() => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/3/manager/1`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        it("Should be able unlink a manager with itself", async() => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/2/manager/2`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        it("Should be able unlink a hr with itself", async() => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/1/manager/1`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        it("Should be able unlink a manager with manager", async() => {
+        it("should be able to unlink a manager under manager karen", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -584,7 +532,78 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should be able unlink a manager with hr", async() => {
+
+        it("Should be able to link an employee to an HR", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/3/manager/1`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to unlink an employee to an HR", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/3/manager/1`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to link a hr to a hr", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/1/manager/1`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to unlink a hr to a hr", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/1/manager/1`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to link a manager to an hr", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/2/manager/1`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to unlink a manager to an hr", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -598,11 +617,67 @@ describe("EmployeeService tests", () => {
             }
         });
 
+        it("Should be able to unlink an employee to a manager", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/3/manager/2`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
 
-    });
 
-    describe("employee/manager/{idManager}", async() => {
-        it("Should return error for non existent id", async() => {
+        it("Should not be able to unlink an employee to a manager that they have no relation with", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/4/manager/2`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(410);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to display no employee under manager michael", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/manager/2`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+                expect(response.body.length).to.be.equal(0);
+            }
+        });
+
+        it("Should not be able to display employees under employee", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/manager/3`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(410);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+
+        });
+
+
+        it("Should not be able to display employees under non-existent employee", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -615,12 +690,15 @@ describe("EmployeeService tests", () => {
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
+    });
 
-        it("Should return error for id admin level employee", async() => {
+    describe("/employee/{id}/history tests", () => {
+
+        it("Should not display antying, non-existent employee", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/manager/3`)
+                    .get(`${BASE_PATH}/88/history`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
@@ -630,53 +708,96 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should be able return 2 records for manager", async() => {
+        it("Should display no history, since no change", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/2/manager/1`)
+                    .get(`${BASE_PATH}/3/history`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+                response.body.forEach((employee: any) => {
+                    expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
+                });
+                expect(response.body.length).to.be.equal(0);
             }
         });
 
-        it("Should be able return 1 record for manager", async() => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/2/manager/1`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
+        it("Should display one history record after one change", async () => {
+            let employeeRecord = await chai.request(SERVER)
+                .get(`${BASE_PATH}/3`)
+                .set(HEADERS);
+            employeeRecord.firstname = "Big Tuna";
+            let updateResponse = await chai.request(SERVER)
+                .put(`${BASE_PATH}/3`)
+                .set(HEADERS)
+                .send(employeeRecord);
+            updateResponse.then(async () => {
+                let response: any;
+                try {
+                    response = await chai.request(SERVER)
+                        .get(`${BASE_PATH}/3/history`)
+                        .set(HEADERS);
+
+                } catch (e) {
+                    console.log(e);
+                } finally {
+                    expect(response.statusCode).to.be.equal(200);
+                    response.body.forEach((employee: any) => {
+                        expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
+                    });
+                    expect(response.body[0].firstname).to.be.equal("Jim");
+                    expect(response.body[1].firstname).to.be.equal("Big Tuna");
+                }
+            }).catch((err: any) => {
+                console.log(err);
+            })
+        });
+
+        it("Should display two history records after two change", async () => {
+            let employeeRecord = await chai.request(SERVER)
+                .get(`${BASE_PATH}/3`)
+                .set(HEADERS);
+            employeeRecord.firstname = "Jim";
+            let updateResponse = await chai.request(SERVER)
+                .put(`${BASE_PATH}/3`)
+                .set(HEADERS)
+                .send(employeeRecord);
+            updateResponse.then(async () => {
+                let response: any;
+                try {
+                    response = await chai.request(SERVER)
+                        .get(`${BASE_PATH}/3/history`)
+                        .set(HEADERS);
+
+                } catch (e) {
+                    console.log(e);
+                } finally {
+                    expect(response.statusCode).to.be.equal(200);
+                    response.body.forEach((employee: any) => {
+                        expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
+                    });
+                    expect(response.body[0].firstname).to.be.equal("Jim");
+                    expect(response.body[1].firstname).to.be.equal("Big Tuna");
+                    expect(response.body[2].firstname).to.be.equal("Jim");
+                }
+            }).catch((err: any) => {
+                console.log(err);
+            })
         });
 
 
     });
+
+    describe("/employee/{id}/document")
 });
-
-
-
-/**
- * /employee/manager/{idManager}
- **/
-
-
-/**
- *  /employee/{id}/history
- **/
-
 
 /**
  *  /employee/{id}/document
  **/
+
 
 
 /**
