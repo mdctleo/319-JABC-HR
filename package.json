@@ -8,7 +8,8 @@
   "license": "BSD-3-Clause-Clear",
   "scripts": {
     "build": "tsc",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "yarn build && mocha src/test/**/*.js --timeout 10000"
   },
   "devDependencies": {
     "chai": "^4.2.0",

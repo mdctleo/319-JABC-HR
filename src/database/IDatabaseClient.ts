@@ -53,6 +53,20 @@ export default interface IDatabaseClient {
     query(query: any, params: any[], responseType?: JABCResponseType): Promise<any>;
 
     /**
+     * Performs a query from a sql file to the database, for automating testing
+     *
+     * @param query
+     *
+     * @return any
+     *
+     * Retrieves data which matches the given query
+     *
+     * If a failure occurs, throw DatabaseQueryError
+     *
+     */
+    querySqlFile(query: any): Promise<any>;
+
+    /**
      * Opens a connection to a database service
      *
      * @return void

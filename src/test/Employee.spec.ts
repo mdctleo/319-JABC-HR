@@ -1,7 +1,7 @@
 import {IEmployee} from "../model/iEmployee";
+import TestSetup from "../utils/TestSetup";
 
 const schemaDefinition = require('./jabcSchema.json');
-import Log from "../../util/Log";
 
 const chai = require('chai');
 const chaiJsonEqual = require('chai-json-equal');
@@ -22,43 +22,20 @@ chai.use(require('chai-json-schema'));
 chai.tv4.addSchema(URI, schemaDefinition);
 let expect = chai.expect;
 const schema = chai.tv4.getSchema(`${URI}`);
-let shell = require('shelljs');
 
 
 jsf.extend('faker', () => require('faker'));
 
-function resetDb() {
-    shell.cd('db');
-    shell.exec('./resetDb.sh');
-}
-
-
 describe("EmployeeService tests", () => {
-    let HEADERS = {
-        'X-APP-ID': 'test-id',
-        'X-API-Key': 'API-KEY',
-        'X-Auth-Token': '',
-    };
-
-    before(async () => {
-        try {
-            resetDb();
-            let loginBody = {
-                email: "hr@jabc.com",
-                password: "hrtest"
-            };
-            let loginResponse = await chai.request(SERVER)
-                .post(`${BASE_PATH}/token`)
-                .send(loginBody);
-            HEADERS['X-Auth-Token'] = loginResponse.body.token;
-        } catch (err) {
-            Log.error(`PerformanceService Tests: ${err}`);
-        } finally {
-        }
-    });
 
     describe("/employee tests", () => {
-        it("Should get all employees, currently only our stock HR employee", async () => {
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite();
+            return HEADERS;
+        });
+
+        it("Should get all employees, currently only our stock employees", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -68,10 +45,10 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
-                expect(response.body.length).to.be.equal(1);
+                expect(response.body.length).to.be.equal(5);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IEmployee);
-                expect(response.body[0].firstname).to.be.equal("HR");
-                expect(response.body[0].lastname).to.be.equal("test");
+                expect(response.body[0].firstname).to.be.equal("Toby");
+                expect(response.body[0].lastname).to.be.equal("Flenderson");
             }
 
 
@@ -93,7 +70,6 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                console.log(response.body);
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
@@ -114,7 +90,6 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                console.log(response.body);
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
@@ -185,6 +160,12 @@ describe("EmployeeService tests", () => {
 
 
     describe("/employee/{id} tests", () => {
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite();
+            return HEADERS;
+        });
+
         it("Should get a specific employee", async () => {
             let response: any;
             try {
@@ -368,6 +349,13 @@ describe("EmployeeService tests", () => {
 
 
     describe("/employee/{id}/manager/{idManager} and /employee/manager/{idManager} tests", () => {
+
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite();
+            return HEADERS;
+        });
+
         it("Should not be able to link a non-existent employee with a manager", async () => {
             let response: any;
             try {
@@ -694,6 +682,12 @@ describe("EmployeeService tests", () => {
 
     describe("/employee/{id}/history tests", () => {
 
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite();
+            return HEADERS;
+        });
+
         it("Should not display antying, non-existent employee", async () => {
             let response: any;
             try {
@@ -790,14 +784,11 @@ describe("EmployeeService tests", () => {
 
 
     });
-
-    describe("/employee/{id}/document")
 });
 
 /**
  *  /employee/{id}/document
  **/
-
 
 
 /**

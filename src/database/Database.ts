@@ -34,6 +34,19 @@ export default class Database implements IDatabaseClient {
         }
     }
 
+    public async querySqlFile(query: any): Promise<any> {
+        let response: any;
+        try {
+            await this.initConnection(config);
+            response = await this.connection.query(query);
+            await this.closeConnection();
+            return response;
+        } catch (err) {
+            const errMsg: string = `Database::Failed to perform query: ${query}, with err: ${err}`;
+            Log.error(errMsg);
+        }
+    }
+
     public async closeConnection(): Promise<void> {
         try {
             await this.connection.close();
