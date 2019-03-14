@@ -91,15 +91,19 @@ const GlobalStyle = createGlobalStyle`
   .profile-card {
     width: 75%;
     margin-left: 30px;
+    margin-top: 30px;
+  }
+
+  .profile-card-table {
+    margin: 30px 30px;
   }
 
   .profile-card-table td{
-    border: none;
     padding: 0px;
   }
   
   .profile-card-table td:nth-child(odd){
-    width: 150px;
+    width: 250px;
   }
 
   .profile-card-spacer {
@@ -131,7 +135,9 @@ const GlobalStyle = createGlobalStyle`
   .onboarding-content{
     width: 95%;
     margin-left: 2.5%;
+    margin-top: 20px;
   }
+
   #onboarding-content .onboarding-card, #onboarding-content .documents{
     max-width:900px;
     margin:auto;

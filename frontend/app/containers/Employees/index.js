@@ -36,6 +36,12 @@ import Chip from '@material-ui/core/Chip';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
+import green from "@material-ui/core/colors/green";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import Radio from "@material-ui/core/Radio";
 
 let counter = 0;
 function createData(firstName, lastName, employeeID, position) {
@@ -258,6 +264,35 @@ const styles = theme => ({
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
+    paddingBottom: '20px',
+  },
+  addButton: {
+    float: 'right',
+    display: 'inline',
+    marginTop: '50px',
+    marginRight: '2.5%',
+    color: 'white',
+    width: '150px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
+   formButtons: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    marginRight: '2.5%',
+    marginTop: '50px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
   },
   table: {
     minWidth: 800,
@@ -278,18 +313,34 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
+  employeeName: {
+    marginTop: '30px',
+    marginBottom: '30px',
+  },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    width: '75%',
   },
   fieldContainer: {
     width: '100%',
     marginBottom: '15px',
   },
-  employeeName: {
+  positionName: {
+    marginTop: '30px',
+  },
+  formSubheading: {
+    marginTop: '30px',
+  },
+  card: {
+    width: "75%",
+  },
+  fab: {
     marginTop: '30px',
     marginBottom: '30px',
-  }
+    marginLeft: '37.5%',
+    display: 'inline',
+    backgroundColor: ' #00954D',
+    color: 'white',
+  },
 });
 
 
@@ -298,7 +349,7 @@ class EnhancedTable extends React.Component {
     order: 'asc',
     orderBy: 'lastName',
     selected: [],
-    selectedProfile: 0,
+    displayedPage: "table",
     value: 1,
     data: [
       createData('Mikayla', 'Preete', 918984, 'Developer'),
@@ -378,7 +429,7 @@ class EnhancedTable extends React.Component {
     }
 
     this.setState({ selected: newSelected });
-    this.setState({ selectedProfile: 1 });
+    this.setState({ displayedPage: "profile" });
   };
 
   handleChangePage = (event, page) => {
@@ -395,7 +446,11 @@ class EnhancedTable extends React.Component {
 
   handleBackButton = (event, value) => {
     this.setState({ value: 1 });
-    this.setState({ selectedProfile: 0 });
+    this.setState({ displayedPage: "table" });
+  }
+
+  handleAddButton = (event, value) => {
+    this.setState({ displayedPage: "add" });
   }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
@@ -429,13 +484,140 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, selectedProfile, value, rowsPerPage, page } = this.state;
+    const { data, order, orderBy, selected, displayedPage, value, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <div>
       <h1>Manage Employees</h1>
-       { selectedProfile == 0 ? 
+      <Button className={classes.addButton} onClick={this.handleAddButton}>Add Employee</Button>
+       { displayedPage == "add" ?
+         (<Paper className={classes.root}>
+          <div> 
+          <AppBar position="static" width="100%">
+          <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
+                onChange={this.handleChange}>
+            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                 onClick={this.handleBackButton} label="<  Back" />
+          </Tabs>
+         </AppBar>
+<div>
+           <form className={classes.container} noValidation autocomplete="off">
+             <div className={classes.fieldContainer}>
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
+             </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="outlined-multiline-static"
+                   defaultValue=""
+                   rows="4"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+             <div className={classes.fieldContainer}>      
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
+             </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="outlined-multiline-static"
+                   multiline
+                   rows="4"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+              <div className={classes.fieldContainer}>
+                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+              </div>
+     <Card className={classes.card}>
+      <CardContent>
+        <TextField
+          id="outlined-name"
+          label="Name"
+          margin="normal"
+          defaultValue=" "
+          fullWidth
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-name"
+          label="Description"
+          margin="normal"
+          defaultValue=" "
+          variant="outlined"
+          fullWidth
+          multiline
+          rows="4"
+        />
+        <FormControl component="fieldset">
+        <Typography>Rating</Typography>
+          <RadioGroup 
+            aria-label="position" 
+            name="position" 
+            row
+           >
+            <FormControlLabel
+              value="1"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="1"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="2"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="2"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="3"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="3"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="4"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="4"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="5"
+              control={
+                <Radio
+                className={classes.radio}/>
+              }
+              label="5"
+              labelPlacement="bottom"
+            />
+          </RadioGroup>
+        </FormControl>
+      </CardContent>
+    </Card>
+           </form>
+      <Fab color="green" aria-label="Add" className={classes.fab}>
+        <AddIcon />
+      </Fab>
+      <Button className={classes.formButtons}>Submit</Button>
+      <Button className={classes.formButtons}>Save</Button>
+         </div>
+         </div>
+          </Paper>) :
+       ( displayedPage == "table" ? 
        (<Paper className={classes.root}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
@@ -628,7 +810,7 @@ class EnhancedTable extends React.Component {
           </div>
         }
       </div>
-      </Paper>)}
+      </Paper>))}
       </div>
     );
   }

@@ -219,13 +219,29 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
   },
-  addButton: {
+  yearContainer: {
     float: 'right',
-    display: 'inline',
-    marginTop: '50px',
+    marginTop: '30px',
     marginRight: '2.5%',
+    width: 'auto',
+  },
+  addYearButton: {
+    verticalAlign: 'middle',
+    display: 'inline-block',
     color: 'white',
     width: '125px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
+  editButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
     backgroundColor: '#ff6600',
     borderRadius: '15px',
     transition: '0.3s',
@@ -258,13 +274,20 @@ const styles = theme => ({
   },
   fieldContainer: {
     width: '100%',
+    marginTop: '20px',
     marginBottom: '15px',
+  },
+   topFieldContainer: {
+    width: '100%',
+    marginBottom: '15px',
+    marginTop: '50px',
   },
   positionName: {
     marginTop: '30px',
   },
   formSubheading: {
     marginTop: '30px',
+    display: 'inline',
   },
   radio: {
     color: green[600],
@@ -282,15 +305,29 @@ const styles = theme => ({
     display: 'block',
   },
   formControl: {
-    margin: theme.spacing.unit,
-    backgroundColor: 'white',
-    width: '200px',
     float: 'right',
     marginTop: '50px',
     marginRight: '2.5%',
+    backgroundColor: 'white',
+    width: '200px',
   },
   appBar: {
     width: '100%',
+  },
+  leftField: {
+    width: '30%',
+  },
+  rightField: {
+    marginLeft: '5%',
+    width: '55%',
+  },
+  addGoalButton: {
+    margin: theme.spacing.unit,
+    marginTop: '20px',
+    marginLeft: '2.5%',
+  },
+  competencyField: {
+    width: '90%',
   },
 });
 
@@ -302,8 +339,11 @@ class EnhancedTable extends React.Component {
     selected: [],
     displayedPage: "table",
     addButtonClicked: 0,
+    editButtonClicked: 0,
     selectedProfileName: '',
-    value: 1,
+    years: [],
+    selectedYear: 2019,
+    value: 0,
     data: [
       createData('Developer'),
       createData('Database Admin'),
@@ -402,12 +442,22 @@ class EnhancedTable extends React.Component {
   handleAddButton = (event, value) => {
     this.setState({ displayedPage: "add" });
   }
+ 
+   handleEditButton = (event, value) => {
+    var textFields = document.getElementsByName("textField");
+    this.setState({ editButtonClicked: 1 });
+    for (var i = 0; i < textFields.length; i++) {
+      console.log(textFields[i]);
+      textFields[i].readOnly = false;
+      textFields[i].children[0].children[0].style = { borderColor: 'green' };
+    }
+  }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, displayedPage, value, rowsPerPage, page } = this.state;
+    const { data, order, orderBy, selected, displayedPage, editButtonClicked, value, years, selectedYear, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
@@ -431,6 +481,7 @@ class EnhancedTable extends React.Component {
             <MenuItem value={2018}>2018</MenuItem>
             <MenuItem value={2017}>2017</MenuItem>
             <MenuItem value={2016}>2016</MenuItem>
+            <MenuItem value={0}>Add Year</MenuItem>
           </Select>
         </FormControl>
         <Paper className={classes.root}>
@@ -444,114 +495,172 @@ class EnhancedTable extends React.Component {
                  label="Performance Review" />
         </Tabs>
          </AppBar>
-<div>
+      <div>
+      { value == 0 &&
            <form className={classes.container} noValidation autocomplete="off">
-             <div className={classes.fieldContainer}>
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
+             <div className={classes.topFieldContainer}>
+              <Typography className={classes.formSubheading} variant="h5">{selectedYear} Work Plan</Typography>
+              <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button> 
              </div>
-              <div className={classes.fieldContainer}>
+               <div className={classes.fieldContainer}>
                  <TextField
-                   id="outlined-multiline-static"
-                   defaultValue=""
-                   rows="4"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-             <div className={classes.fieldContainer}>      
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
-             </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="outlined-multiline-static"
+                   name="textField"
+                   label="Date"
                    multiline
-                   rows="4"
                    className={classes.textField}
                    margin="normal"
-                   variant="outlined">
-                 </TextField>
+                   variant="outlined"
+                   InputProps={{readOnly: true}}/>
               </div>
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">JABC Goals</Typography>
+                <div className={classes.fieldContainer}>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       name="textField"
+                       label="Department"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.leftField}
+                       InputProps={{readOnly: true}}
+                      />
+                     <TextField
+                       name="textField"
+                       label="Goal"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.rightField}
+                       InputProps={{readOnly: true}}
+                      />
+                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
+                      <AddIcon />
+                    </Fab>
+                    </CardContent>
+                  </Card>
+              </div>
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Personal Targets</Typography>
               <div className={classes.fieldContainer}>
-                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       name="textField"
+                       label="Program"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.leftField}
+                       InputProps={{readOnly: true}}
+                      />
+                     <TextField
+                       name="textField"
+                       label="Goal"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.rightField}
+                       InputProps={{readOnly: true}}
+                      />
+                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
+                      <AddIcon />
+                    </Fab>
+                    </CardContent>
+                  </Card>
               </div>
-     <Card className={classes.card}>
-      <CardContent>
-        <TextField
-          id="outlined-name"
-          label="Name"
-          margin="normal"
-          defaultValue=" "
-          fullWidth
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-name"
-          label="Description"
-          margin="normal"
-          defaultValue=" "
-          variant="outlined"
-          fullWidth
-          multiline
-          rows="4"
-        />
-        <FormControl component="fieldset">
-        <Typography>Rating</Typography>
-          <RadioGroup 
-            aria-label="position" 
-            name="position" 
-            row
-           >
-            <FormControlLabel
-              value="1"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="1"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="2"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="2"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="3"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="3"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="4"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="4"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="5"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="5"
-              labelPlacement="bottom"
-            />
-          </RadioGroup>
-        </FormControl>
-      </CardContent>
-    </Card>
-           </form>
+              <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Core Competencies</Typography>
+              <div className={classes.fieldContainer}>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       name="textField"
+                       label="Competency"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.competencyField}
+                       InputProps={{readOnly: true}}
+                      />
+                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
+                      <AddIcon />
+                    </Fab>
+                    </CardContent>
+                  </Card>
+              </div>
+           </form>}
+{value == 1 && 
+<form className={classes.container} noValidation autocomplete="off">
+             <div className={classes.topFieldContainer}>
+              <Typography className={classes.formSubheading} variant="h5">{selectedYear} Performance Review</Typography>
+              <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button> 
+             </div>
+               <div className={classes.fieldContainer}>
+                 <TextField
+                   name="textField"
+                   label="Date"
+                   multiline
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined"
+                   InputProps={{readOnly: true}}/>
+              </div>
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">JABC Goals</Typography>
+                <div className={classes.fieldContainer}>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       name="textField"
+                       label="Department"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.leftField}
+                       InputProps={{readOnly: true}}
+                      />
+                     <TextField
+                       name="textField"
+                       label="Goal"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.rightField}
+                       InputProps={{readOnly: true}}
+                      />
+                    </CardContent>
+                  </Card>
+              </div>
+               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Personal Targets</Typography>
+              <div className={classes.fieldContainer}>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       name="textField"
+                       label="Program"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.leftField}
+                       InputProps={{readOnly: true}}
+                      />
+                     <TextField
+                       name="textField"
+                       label="Goal"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.rightField}
+                       InputProps={{readOnly: true}}
+                      />
+                    </CardContent>
+                  </Card>
+              </div>
+              <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Core Competencies</Typography>
+              <div className={classes.fieldContainer}>
+                 <Card className={classes.card}>
+                   <CardContent>
+                     <TextField
+                       name="textField"
+                       label="Competency"
+                       margin="normal"
+                       variant="outlined"
+                       className={classes.competencyField}
+                       InputProps={{readOnly: true}}
+                      />
+                    </CardContent>
+                  </Card>
+              </div>
+           </form>}
          </div>
          </div>
           </Paper>
