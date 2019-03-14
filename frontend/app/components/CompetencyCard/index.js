@@ -54,7 +54,7 @@ const styles = theme => ({
     display: 'inline',
   },
   card: {
-    width: '75%',
+    width: '100%',
   },
 });
 
@@ -70,24 +70,24 @@ class CompetencyCard extends React.PureComponent {
           <Card className={classes.card} name="competency-card">
             <CardContent>
               <TextField
-                name="textField"
+                id="cc-name"
                 label="Name"
                 margin="normal"
-                defaultValue=" "
+                defaultValue={this.props.dataObject.name}
                 fullWidth
                 variant="outlined"
-                InputProps={{ readOnly: true, }}
+                InputProps={{ readOnly: this.props.disabled, }}
              />
              <TextField
-               name="textField"
+               id="cc-description"
                label="Description"
                margin="normal"
-               defaultValue=" "
+               defaultValue={this.props.dataObject.description}
                variant="outlined"
                fullWidth
                multiline
                rows="4"
-               InputProps={{ readOnly: true, }}
+               InputProps={{ readOnly: this.props.disabled, }}
              />
          <FormControl component="fieldset">
            <Typography>Rating</Typography>
@@ -135,6 +135,8 @@ class CompetencyCard extends React.PureComponent {
 
 CompetencyCard.propTypes = {
   classes: PropTypes.object.isRequired,
+  dataObject: PropTypes.object,
+  disabled: PropTypes.bool,
 };
 
 export default withStyles(styles)(CompetencyCard);

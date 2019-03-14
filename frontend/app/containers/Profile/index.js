@@ -5,9 +5,8 @@
  */
 
 import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -27,6 +26,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import CompetencyCard from '../../components/CompetencyCard';
 
 const styles = theme => ({
   root: {
@@ -50,6 +51,31 @@ const styles = theme => ({
     paddingBottom: '5px',
     width: '75%',
     backgroundColor: '#00954D',
+  },
+  fieldContainer: {
+    width: '100%',
+    marginBottom: '15px',
+  },
+  positionName: {
+    display: 'inline',
+    marginTop: '30px',
+  },
+  formSubheading: {
+    display: 'inline',
+  },
+  container: {
+    width: '95%',
+    marginLeft: '2.5%',
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  topFieldContainer: {
+    width: '100%',
+    marginBottom: '15px',
+    marginTop: '50px',
+  },
+  textField: {
+    width: '100%',
   },
 });
 
@@ -79,6 +105,7 @@ class Profile extends React.PureComponent {
                   onChange={this.handleChange}>
               <Tab disableRipple label="Employee Information" />
               <Tab disableRipple label="Contact Information" />
+              <Tab disableRipple label="Role Information" />
             </Tabs>
            </AppBar>
            { value == 0 ?
@@ -112,6 +139,7 @@ class Profile extends React.PureComponent {
               </TableBody>
             </Table>
             </div>) :
+            ( value == 1 ? 
             (<div className="profile-card">
             <Table className="profile-card-table">
               <TableBody>
@@ -127,7 +155,34 @@ class Profile extends React.PureComponent {
                 </TableRow>
               </TableBody>
             </Table>
-            </div>)
+            </div>) :
+              <div className="profile-card">
+              <form className={classes.container} noValidation autocomplete="off">
+                <div className={classes.topFieldContainer}>
+                  <Typography className={classes.positionName} variant="h5">{profile.role.name}</Typography>
+                </div>
+                <div className={classes.fieldContainer}>      
+                  <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
+                </div>
+                 <div className={classes.fieldContainer}>
+                    <TextField
+                      id="role-description"
+                      multiline
+                      rows="4"
+                      className={classes.textField}
+                      margin="normal"
+                      variant="outlined"
+                      defaultValue={profile.role.description}
+                      InputProps={{ readOnly: true }}
+                      />
+                 </div>
+                 <div className={classes.fieldContainer}>
+                   <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+                 </div>
+                   <CompetencyCard dataObject={[{name:"", description:"", rating:0}]} disabled={true}/>
+               </form>
+             </div>
+            )
           }
      </Paper>
     </div>

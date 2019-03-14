@@ -45,9 +45,9 @@ import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
 
 let counter = 0;
-function createData(position) {
+function createData(position, description, competencies) {
   counter += 1;
-  return { id: counter, position };
+  return { id: counter, position, description, competencies };
 }
 
 function desc(a, b, orderBy) {
@@ -204,6 +204,7 @@ let EnhancedTableToolbar = props => {
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
+  selected: PropTypes.array,
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
@@ -315,18 +316,18 @@ class EnhancedTable extends React.Component {
     displayedPage: "table",
     addButtonClicked: 0,
     editButtonClicked: 0,
-    selectedProfileName: '',
+    selectedProfile: {position: "", description: "", competencies: [{name: "", description: "", rating: 0}]},
     value: 1,
     data: [
-      createData('Developer'),
-      createData('Database Admin'),
-      createData('DevOps Master'),
-      createData('Manager'),
-      createData('HR Admin'),
-      createData('President'),
-      createData('Executive Assistant'),
-      createData('Secretary'),
-      createData('Volunteer Coordinator'),
+      createData('Developer', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Database Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('DevOps Master', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Manager', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('HR Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('President', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Executive Assistant', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Secretary', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Volunteer Coordinator', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
     ],
     page: 0,
     rowsPerPage: 10,
@@ -368,17 +369,17 @@ class EnhancedTable extends React.Component {
         selected.slice(selectedIndex + 1),
       );
     }
-
+    console.log(selected);
     this.setState({ selected: newSelected });
   };
 
-  handleClickProfile = (event, id, position) => {
+  handleClickProfile = (event, profile) => {
     const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
+    const selectedIndex = selected.indexOf(profile.id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(selected, profile.id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -392,7 +393,7 @@ class EnhancedTable extends React.Component {
 
     this.setState({ selected: newSelected });
     this.setState({ displayedPage: "profile" });
-    this.setState({ selectedProfileName: position });
+    this.setState({ selectedProfile: profile });
   };
 
   handleChangePage = (event, page) => {
@@ -419,36 +420,67 @@ class EnhancedTable extends React.Component {
   }
   
   handleEditButton = (event, value) => {
-    var textFields = document.getElementsByName("textField");
     this.setState({ editButtonClicked: 1 });
-    for (var i = 0; i < textFields.length; i++) {
-      console.log(textFields[i]);
-      textFields[i].readOnly = false;
-      textFields[i].children[0].children[0].style = { borderColor: 'green' };
-    }
+  }
+
+  handleDeleteButton = (event, value) => {
+    var profiles = this.state.selected;
+    this.state.data.filter(n => !profiles.includes(n.id));
+  }
+
+  handleClickTextField = (event, value) => {
+    if (this.state.editButtonClicked)
+    event.readOnly = false;
   }
 
   handleSaveButton = (event, value) => {
+    var position = document.getElementById("addRole-position").value;
+    var description = document.getElementById("addRole-description").value;
+    var ccName = document.getElementById("cc-name").value;
+    var ccDescription = document.getElementById("cc-description").value;
+    var competencies=[{name:ccName, description:ccDescription, rating:0}];
+    this.setState({ data: this.state.data.concat(createData(position, description, competencies)) });
+    this.setState({ value: 1 });
+    this.setState({ displayedPage: "table" });
     this.setState({ editButtonClicked: 0 });
   }
 
   handleSubmitButton = (event, value) => {
+    var id = this.state.selectedProfile.id;
+    for (var i = 0; i < this.state.data.length; i++) {
+      if (this.state.data[i].id == id) {
+        this.state.data[i].description = document.getElementById("role-description").value;
+        this.state.data[i].position = document.getElementById("role-name").value;
+        console.log(this.state.data[i].competencies[0].name);
+        this.state.data[i].competencies[0].name = document.getElementById("cc-name").value;
+        console.log(this.state.data[i].competencies[0].name);
+        this.state.data[i].competencies[0].description = document.getElementById("cc-description").value;
+      }
+    }
+    this.setState({ value: 1 });
+    this.setState({ displayedPage: "table" });
     this.setState({ editButtonClicked: 0 });
   }
 
   handleAddSubmitButton = (event, value) => {
+    var position = document.getElementById("addRole-position").value;
+    var description = document.getElementById("addRole-description").value;
+    var ccName = document.getElementById("cc-name").value;
+    var ccDescription = document.getElementById("cc-description").value;
+    var competencies=[{name:ccName, description:ccDescription, rating:0}];
+    this.setState({ data: this.state.data.concat(createData(position, description, competencies)) });
     this.setState({ value: 1 });
     this.setState({ displayedPage: "table" });
     this.setState({ editButtonClicked: 0 });
-    this.setState({ data: this.state.data.concat(createData("New")) });
   }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, displayedPage, addButtonClicked, editButtonClicked, value, rowsPerPage, page } = this.state;
+    const { data, order, orderBy, selected, displayedPage, editButtonClicked, value, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const blankCompetency = [{name: "", description: "", rating: 0}];
 
     return (
       <div>
@@ -465,17 +497,18 @@ class EnhancedTable extends React.Component {
                 </Tabs>
               </AppBar>
             <div>
-            <form className={classes.container} noValidation autocomplete="off">
+            <form id="add-role-form" className={classes.container} noValidation autocomplete="off">
               <div className={classes.topFieldContainer}>
                 <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
                </div>
                <div className={classes.fieldContainer}>
                  <TextField
-                   name="textField"
+                   id="addRole-position"
                    defaultValue=""
                    rows="4"
                    className={classes.textField}
                    margin="normal"
+                   onClick={this.handleClickTextField}
                    variant="outlined">
                  </TextField>
                </div>
@@ -484,18 +517,21 @@ class EnhancedTable extends React.Component {
                </div>
                <div className={classes.fieldContainer}>
                  <TextField
-                   name="textField"
+                   id="addRole-description"
                    multiline
                    rows="4"
                    className={classes.textField}
                    margin="normal"
+                   onClick={this.handleClickTextField}
                    variant="outlined">
                  </TextField>
                </div>
                <div className={classes.fieldContainer}>
                  <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
                </div>
-               <CompetencyCard />
+               <div id="add-profile-cc-container">
+               <CompetencyCard dataObject={blankCompetency} disabled={true}/>
+               </div>
             </form>
           { editButtonClicked == 1 &&
               (<Fab color="green" aria-label="Add" className={classes.fab}>
@@ -509,7 +545,7 @@ class EnhancedTable extends React.Component {
     </Paper>) :
     ( displayedPage == "table" ? 
       (<Paper className={classes.root}>
-         <EnhancedTableToolbar numSelected={selected.length} />
+         <EnhancedTableToolbar numSelected={selected.length} selected={selected}/>
            <div className={classes.tableWrapper}>
            <Table className={classes.table} aria-labelledby="tableTitle">
              <EnhancedTableHead
@@ -548,7 +584,7 @@ class EnhancedTable extends React.Component {
                       component="th" 
                       scope="row" 
                       padding="none"
-                      onClick={event => this.handleClickProfile(event, n.id, n.position)}>
+                      onClick={event => this.handleClickProfile(event, n)}>
                       {n.position}
                     </TableCell>
                   </TableRow>
@@ -589,7 +625,18 @@ class EnhancedTable extends React.Component {
          <div>
            <form className={classes.container} noValidation autocomplete="off">
              <div className={classes.topFieldContainer}>
-               <Typography className={classes.positionName} variant="h5">{this.state.selectedProfileName}</Typography>
+             {!editButtonClicked &&
+               <Typography className={classes.positionName} variant="h5">{this.state.selectedProfile.position}</Typography>}
+             {editButtonClicked &&
+               <TextField
+                id="role-name"
+                className={classes.textField}
+                margin="normal"
+                onClick={this.handleClickTextField}
+                variant="outlined"
+                defaultValue={this.state.selectedProfile.position}
+                InputProps={{ readOnly: !editButtonClicked }}
+                 />}
                <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button>
              </div>
              <div className={classes.fieldContainer}>      
@@ -597,19 +644,23 @@ class EnhancedTable extends React.Component {
              </div>
               <div className={classes.fieldContainer}>
                  <TextField
-                   name="textField"
+                   id="role-description"
                    multiline
                    rows="4"
                    className={classes.textField}
                    margin="normal"
+                   onClick={this.handleClickTextField}
                    variant="outlined"
-                   defaultValue="TEST"
-                   InputProps={{ readOnly: true, }}/>
+                   defaultValue={this.state.selectedProfile.description}
+                   InputProps={{ readOnly: !editButtonClicked }}
+                   />
               </div>
               <div className={classes.fieldContainer}>
                 <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
               </div>
-                <CompetencyCard />
+              <div id="profile-cc-container">
+                <CompetencyCard dataObject={this.state.selectedProfile.competencies[0]} disabled={!editButtonClicked}/>
+              </div>
             </form>
           </div>
           { editButtonClicked == 1 &&
