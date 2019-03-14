@@ -4,7 +4,7 @@ var fs = require('fs'),
     path = require('path'),
     http = require('http');
 
-var app = require('connect')();
+var app = require('express')();
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 var serveStatic = require('serve-static')
@@ -46,7 +46,10 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   app.use(ResponseManager.ErrorHandler)
 
   // Serve static files of frontend
-  app.use(serveStatic('frontend/build/', {'index': ['index.html']}))
+  app.use(serveStatic('frontend/build/'));
+  app.get('*', (req, res) =>
+      res.sendFile(path.join(__dirname,'./frontend/build/index.html'))
+  );
 
   // Start the server
   http.createServer(app).listen(serverPort, function () {
