@@ -20,7 +20,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
-import { EmployeeTab, ContactTab, RoleTab } from 'components/ProfileTabs';
+import { EmployeeTab, RoleTab } from 'components/ProfileTabs';
 
 const styles = theme => ({
   root: {
@@ -65,13 +65,11 @@ class Profile extends React.PureComponent {
               onChange={this.handleChange}
             >
               <Tab disableRipple label="Employee Information" />
-              <Tab disableRipple label="Contact Information" />
-              {role && <Tab disableRipple label="Role Information" />}
+              {role && <Tab disableRipple label="Your role" />}
             </Tabs>
           </AppBar>
           {currentTab === 0 && <EmployeeTab profile={profile} role={role} />}
-          {currentTab === 1 && <ContactTab profile={profile} />}
-          {currentTab === 2 && <RoleTab role={role} />}
+          {currentTab === 1 && <RoleTab role={role} />}
         </Paper>
       </div>
     );

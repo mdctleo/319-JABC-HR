@@ -13,6 +13,14 @@ import Typography from '@material-ui/core/Typography/Typography';
 import PropTypes from 'prop-types';
 
 class EmployeeTab extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.salaryFormatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  }
+
   getStatus() {
     switch (this.props.profile.status) {
       case 0:
@@ -75,6 +83,30 @@ class EmployeeTab extends React.PureComponent {
                 <Typography variant="caption">STATUS</Typography>
               </TableCell>
               <TableCell align="left">{this.getStatus()}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="left">
+                <Typography variant="caption">SALARY</Typography>
+              </TableCell>
+              <TableCell align="left">{this.salaryFormatter.format(profile.salary)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="left">
+                <Typography variant="caption">DIRECT REPORT</Typography>
+              </TableCell>
+              <TableCell align="left">Sarah James</TableCell> {/* TODO */}
+            </TableRow>
+            <TableRow>
+              <TableCell align="left">
+                <Typography variant="caption">ADDRESS</Typography>
+              </TableCell>
+              <TableCell align="left">{profile.address}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="left">
+                <Typography variant="caption">PHONE NUMBER</Typography>
+              </TableCell>
+              <TableCell align="left">{profile.phoneNumber}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

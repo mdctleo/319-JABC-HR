@@ -12,7 +12,7 @@ const Jane = {
   fte: 1,
   status: 2,
   adminLevel: 2,
-  salary: 420,
+  salary: 42000,
   address: '1234 Ave',
   birthdate: null,
   dateJoined: null,
