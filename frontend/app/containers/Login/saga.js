@@ -1,38 +1,34 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
+import { takeLatest, put } from 'redux-saga/effects';
 import { LOGIN } from './constants';
 import { setUser } from 'containers/App/actions';
 import { loginError } from './actions';
-import request from 'utils/request';
 import { setResource } from 'api/actions';
+import { ApiClient, EmployeeApi, ILogin } from 'api/swagger-api';
+const defaultClient = ApiClient.instance;
+const { AuthToken } = defaultClient.authentications;
+const employeeApi = new EmployeeApi();
 
 export function* login(action) {
-  const body = {
-    email: action.payload.email,
-    password: action.payload.password,
-  };
+  try {
+    const response = yield employeeApi.login(
+      new ILogin(action.payload.email, action.payload.password),
+    );
 
-  const response = yield call(request, 'JABC/1.0.0/employee/token', {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+    const { employee } = response;
+    AuthToken.apiKey = response.token;
 
-  if (response.type === 'ERROR') {
-    return yield put(loginError(response.message));
+    yield put(setResource('employee', employee.id, employee));
+    yield put(
+      setUser({
+        id: employee.id,
+        firstname: employee.firstname,
+        lastname: employee.lastname,
+        adminLevel: employee.adminLevel,
+      }),
+    );
+  } catch (e) {
+    yield put(loginError(e.response.body.message));
   }
-  const { employee } = response;
-  yield put(
-    setUser({
-      token: response.token,
-      id: employee.id,
-      firstname: employee.firstname,
-      lastname: employee.lastname,
-      adminLevel: employee.adminLevel,
-    }),
-  );
-  return yield put(setResource('employee', employee.id, employee));
 }
 
 export default function* loginSaga() {
