@@ -104,8 +104,7 @@ class Profile extends React.PureComponent {
             <Tabs value={value} classes={{ indicator: classes.tabsIndicator }}
                   onChange={this.handleChange}>
               <Tab disableRipple label="Employee Information" />
-              <Tab disableRipple label="Contact Information" />
-              <Tab disableRipple label="Role Information" />
+              <Tab disableRipple label="Your Role" />
             </Tabs>
            </AppBar>
            { value == 0 ?
@@ -136,13 +135,14 @@ class Profile extends React.PureComponent {
                   <TableCell align="left"><Typography variant="caption">STATUS</Typography></TableCell>
                   <TableCell align="left">Active</TableCell>
                 </TableRow>
-              </TableBody>
-            </Table>
-            </div>) :
-            ( value == 1 ? 
-            (<div className="profile-card">
-            <Table className="profile-card-table">
-              <TableBody>
+                <TableRow>
+                  <TableCell align="left"><Typography variant="caption">SALARY</Typography></TableCell>
+                  <TableCell align="left">$60,000</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align="left"><Typography variant="caption">DIRECT REPORT</Typography></TableCell>
+                  <TableCell align="left">Sarah James</TableCell>
+                </TableRow>
                 <TableRow>
                   <TableCell align="left"><Typography variant="caption">ADDRESS</Typography></TableCell>
                   <TableCell align="left">
@@ -156,7 +156,7 @@ class Profile extends React.PureComponent {
               </TableBody>
             </Table>
             </div>) :
-              <div className="profile-card">
+              (<div className="profile-card">
               <form className={classes.container} noValidation autocomplete="off">
                 <div className={classes.topFieldContainer}>
                   <Typography className={classes.positionName} variant="h5">{profile.role.name}</Typography>

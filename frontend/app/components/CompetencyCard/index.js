@@ -63,6 +63,15 @@ class CompetencyCard extends React.PureComponent {
     super(props);
   }
 
+  handleRadioButtons = (event, value) => {
+    console.log("dataObject: " + this.props.dataObject);
+    if (this.props.dataObject[0].rating !== 0) {
+      console.log(this.props.dataObject[0].rating);
+      var checkedRadio = document.getElementById("cc-radio-" + this.props.dataObject[0].rating);
+      checkedRadio.checked = true;
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -92,34 +101,47 @@ class CompetencyCard extends React.PureComponent {
          <FormControl component="fieldset">
            <Typography>Rating</Typography>
            <RadioGroup 
+             id="cc-radio-group"
              aria-label="position" 
              name="position" 
-             row>
+             row
+             value={this.props.dataObject.rating}
+             onChange={this.handleRadioButtons}>
            <FormControlLabel
+             id="cc-radio-1"
+             className="cc-radio"
              value="1"
              control={<Radio className={classes.radio}/>}
              label="1"
              labelPlacement="bottom"
             />
             <FormControlLabel
+              id="cc-radio-2"
+              className="cc-radio"
               value="2"
               control={<Radio className={classes.radio}/>}
               label="2"
               labelPlacement="bottom"
             />
             <FormControlLabel
+              id="cc-radio-3"
+              className="cc-radio"
               value="3"
               control={<Radio className={classes.radio}/>}
               label="3"
               labelPlacement="bottom"
             />
             <FormControlLabel
+              id="cc-radio-4"
+              className="cc-radio"
               value="4"
               control={<Radio className={classes.radio}/>}
               label="4"
               labelPlacement="bottom"
             />
             <FormControlLabel
+              id="cc-radio-5"
+              className="cc-radio"
               value="5"
               control={<Radio className={classes.radio}/>}
               label="5"
