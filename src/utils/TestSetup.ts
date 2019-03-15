@@ -4,8 +4,8 @@ const SERVER = "http://localhost:8080";
 const BASE_PATH = "/JABC/1.0.0/employee";
 const URI = `${SERVER}${BASE_PATH}`;
 const chai = require('chai');
-import chaiHttp = require("chai-http");
-
+import {promisify} from 'util';
+const fs = require('fs');
 
 export default class TestSetup {
     constructor() {
@@ -25,7 +25,8 @@ export default class TestSetup {
    private static async resetDb() {
         try {
             shell.cd('db');
-            return await shell.exec('./resetdb.sh');
+            shell.exec('./resetdb.sh');
+            shell.cd('..');
         } catch (e) {
             console.log(e);
         }
@@ -52,4 +53,24 @@ export default class TestSetup {
             Log.error(`PerformanceService Tests: ${err}`);
         }
     };
+
+    public static async readDocuments(): Promise<any> {
+        let documentPromises: Array<Promise<Buffer>> =[];
+        let documents64: Array<String> = [];
+        let readFile = promisify(fs.readFile);
+        documentPromises.push(readFile('src/utils/resources/youngObiWan.jpg'));
+        documentPromises.push(readFile('src/utils/resources/adult_obi_wan.jpg'));
+        documentPromises.push(readFile('src/utils/resources/old_obi_wan.jpg'));
+
+      return Promise.all(documentPromises)
+            .then((documents) => {
+                documents.forEach((document: Buffer) => {
+                   documents64.push(Buffer.from(document).toString('base64'));
+                });
+                return documents64;
+            }).catch((err) => {
+                console.log(err);
+        })
+
+    }
 }
