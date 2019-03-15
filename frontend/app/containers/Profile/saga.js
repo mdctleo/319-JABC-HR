@@ -8,7 +8,9 @@ export function* getProfileData() {
   const user = yield select(selectUser());
   yield call(getEmployee, user.id);
   const profile = yield select(selectProfile);
-  yield call(getRole, profile.fkRole);
+  if (profile.fkRole) {
+    yield call(getRole, profile.fkRole);
+  }
 }
 
 // Individual exports for testing

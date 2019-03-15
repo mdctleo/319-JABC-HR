@@ -109,7 +109,7 @@ class Profile extends React.PureComponent {
             >
               <Tab disableRipple label="Employee Information" />
               <Tab disableRipple label="Contact Information" />
-              <Tab disableRipple label="Role Information" />
+              {role && <Tab disableRipple label="Role Information" />}
             </Tabs>
           </AppBar>
           {value === 0 && (
