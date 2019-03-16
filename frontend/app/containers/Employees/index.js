@@ -23,7 +23,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Button from '@material-ui/core/Button';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -36,12 +35,11 @@ import Chip from '@material-ui/core/Chip';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
-import green from "@material-ui/core/colors/green";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import Radio from "@material-ui/core/Radio";
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 
 let counter = 0;
 function createData(firstName, lastName, employeeID, position) {
@@ -264,7 +262,7 @@ const styles = theme => ({
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
-    paddingBottom: '20px',
+    paddingBottom: '50px',
   },
   addButton: {
     float: 'right',
@@ -286,7 +284,6 @@ const styles = theme => ({
     color: 'white',
     width: '100px',
     marginRight: '2.5%',
-    marginTop: '50px',
     backgroundColor: '#ff6600',
     borderRadius: '15px',
     transition: '0.3s',
@@ -308,8 +305,9 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
   },
   container: {
-    width: '95%',
-    marginLeft: '2.5%',
+    width: '75%',
+    marginTop: '50px',
+    marginLeft: '5%',
     display: 'flex',
     flexWrap: 'wrap',
   },
@@ -317,8 +315,11 @@ const styles = theme => ({
     marginTop: '30px',
     marginBottom: '30px',
   },
+  topFieldContainer: {
+    marginTop: '30px',
+  },
   textField: {
-    width: '75%',
+    width: '90%',
   },
   fieldContainer: {
     width: '100%',
@@ -350,6 +351,7 @@ class EnhancedTable extends React.Component {
     orderBy: 'lastName',
     selected: [],
     displayedPage: "table",
+    pageTitle: "Manage Employees",
     value: 1,
     data: [
       createData('Mikayla', 'Preete', 918984, 'Developer'),
@@ -367,7 +369,7 @@ class EnhancedTable extends React.Component {
       createData('Brad', 'Pitt', 387082, 'Actor'),
     ],
     page: 0,
-    rowsPerPage: 10,
+    rowsPerPage: 25,
   };
 
   handleRequestSort = (event, property) => {
@@ -445,11 +447,13 @@ class EnhancedTable extends React.Component {
   };
 
   handleBackButton = (event, value) => {
+    this.setState({ pageTitle: "Manage Employees"});
     this.setState({ value: 1 });
     this.setState({ displayedPage: "table" });
   }
 
   handleAddButton = (event, value) => {
+    this.setState({ pageTitle: "Add Employee"});
     this.setState({ displayedPage: "add" });
   }
 
@@ -484,12 +488,12 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, displayedPage, value, rowsPerPage, page } = this.state;
+    const { data, order, orderBy, selected, displayedPage, pageTitle, value, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <div>
-      <h1>Manage Employees</h1>
+      <h1>{pageTitle}</h1>
       <Button className={classes.addButton} onClick={this.handleAddButton}>Add Employee</Button>
        { displayedPage == "add" ?
          (<Paper className={classes.root}>
@@ -501,117 +505,137 @@ class EnhancedTable extends React.Component {
                  onClick={this.handleBackButton} label="<  Back" />
           </Tabs>
          </AppBar>
-<div>
+         <div>
            <form className={classes.container} noValidation autocomplete="off">
+           <Grid container spacing={24}>
+             <Grid item xs={12} sm={6}>
              <div className={classes.fieldContainer}>
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
-             </div>
-              <div className={classes.fieldContainer}>
                  <TextField
-                   id="outlined-multiline-static"
-                   defaultValue=""
-                   rows="4"
+                   id="add-emp-fname"
+                   label="First Name"
                    className={classes.textField}
                    margin="normal"
                    variant="outlined">
                  </TextField>
               </div>
-             <div className={classes.fieldContainer}>      
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
-             </div>
+             <div className={classes.fieldContainer}>
+                 <TextField
+                   id="add-emp-id"
+                   label="Employee ID"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
               <div className={classes.fieldContainer}>
                  <TextField
-                   id="outlined-multiline-static"
+                   id="add-emp-sin"
+                   label="SIN"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="add-emp-position"
+                   label="Position"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="add-emp-vacation"
+                   label="Vacation Days Remaining"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="add-emp-address"
                    multiline
                    rows="4"
+                   label="Address"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+             </Grid>
+             <Grid item xs={12} sm={6}>
+             <div className={classes.fieldContainer}>
+                 <TextField
+                   id="add-emp-lname"
+                   label="Last Name"
                    className={classes.textField}
                    margin="normal"
                    variant="outlined">
                  </TextField>
               </div>
               <div className={classes.fieldContainer}>
-                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
+              <FormControl variant="outlined" className={classes.textField}>
+                <InputLabel>
+                  Status
+                </InputLabel>
+                <Select
+                  input={
+                    <OutlinedInput
+                    id="add-emp-status"/>
+                  }>
+                  <MenuItem value="Onboarding">Onboarding</MenuItem>
+                  <MenuItem value="Active">Active</MenuItem>
+                </Select>
+              </FormControl>
               </div>
-     <Card className={classes.card}>
-      <CardContent>
-        <TextField
-          id="outlined-name"
-          label="Name"
-          margin="normal"
-          defaultValue=" "
-          fullWidth
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-name"
-          label="Description"
-          margin="normal"
-          defaultValue=" "
-          variant="outlined"
-          fullWidth
-          multiline
-          rows="4"
-        />
-        <FormControl component="fieldset">
-        <Typography>Rating</Typography>
-          <RadioGroup 
-            aria-label="position" 
-            name="position" 
-            row
-           >
-            <FormControlLabel
-              value="1"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="1"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="2"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="2"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="3"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="3"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="4"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="4"
-              labelPlacement="bottom"
-            />
-            <FormControlLabel
-              value="5"
-              control={
-                <Radio
-                className={classes.radio}/>
-              }
-              label="5"
-              labelPlacement="bottom"
-            />
-          </RadioGroup>
-        </FormControl>
-      </CardContent>
-    </Card>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="add-emp-salary"
+                   label="Salary"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="add-emp-manager"
+                   label="Direct Report"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+              <div className={classes.fieldContainer}>
+              <FormControl variant="outlined" className={classes.textField}>
+                <InputLabel>
+                  Employee Type
+                </InputLabel>
+                <Select
+                  input={
+                    <OutlinedInput
+                    id="add-emp-type"/>
+                  }>
+                  <MenuItem value="FT">FT</MenuItem>
+                  <MenuItem value="PT">PT</MenuItem>
+                </Select>
+              </FormControl>
+              </div>
+              <div className={classes.fieldContainer}>
+                 <TextField
+                   id="add-emp-phone"
+                   label="Phone Number"
+                   className={classes.textField}
+                   margin="normal"
+                   variant="outlined">
+                 </TextField>
+              </div>
+             </Grid>
+            </Grid>
            </form>
-      <Fab color="green" aria-label="Add" className={classes.fab}>
-        <AddIcon />
-      </Fab>
       <Button className={classes.formButtons}>Submit</Button>
       <Button className={classes.formButtons}>Save</Button>
          </div>

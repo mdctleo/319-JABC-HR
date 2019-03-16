@@ -43,6 +43,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
+import grey from '@material-ui/core/colors/grey';
 
 let counter = 0;
 function createData(position, description, competencies) {
@@ -76,6 +77,7 @@ function getSorting(order, orderBy) {
 
 const rows = [
   { id: 'position', numeric: false, disablePadding: true, label: 'Position' },
+  { id: 'delete', numeric: false, disablePadding: true, label: '' },
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -305,6 +307,9 @@ const styles = theme => ({
     backgroundColor: ' #00954D',
     color: 'white',
   },
+  deleteIcon: {
+    color: grey[300],
+  },
 });
 
 
@@ -330,7 +335,7 @@ class EnhancedTable extends React.Component {
       createData('Volunteer Coordinator', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
     ],
     page: 0,
-    rowsPerPage: 10,
+    rowsPerPage: 25,
   };
 
   handleRequestSort = (event, property) => {
@@ -428,6 +433,13 @@ class EnhancedTable extends React.Component {
     this.state.data.filter(n => !profiles.includes(n.id));
   }
 
+  handleDeleteSingleButton = (event, profile) => {
+    console.log(profile.id);
+    console.log(this.state.data);
+    var data = this.state.data;
+    this.setState({ data: data.filter(n => (n.id != profile.id)) });
+  }
+
   handleClickTextField = (event, value) => {
     if (this.state.editButtonClicked)
     event.readOnly = false;
@@ -467,7 +479,17 @@ class EnhancedTable extends React.Component {
     var description = document.getElementById("addRole-description").value;
     var ccName = document.getElementById("cc-name").value;
     var ccDescription = document.getElementById("cc-description").value;
-    var competencies=[{name:ccName, description:ccDescription, rating:0}];
+    var radioButtons = document.getElementsByClassName("cc-radio");
+    var buttonRating;
+    for (var i = 0; i < radioButtons.length; i++) {
+      console.log(radioButtons);
+      if (radioButtons[i].checked) {
+        console.log("found checked one");
+        console.log(radioButtons[i].value);
+        buttonRating = parseInt(radioButtons[i].value, 10);
+      }
+    }
+    var competencies=[{name: ccName, description: ccDescription, rating: buttonRating}];
     this.setState({ data: this.state.data.concat(createData(position, description, competencies)) });
     this.setState({ value: 1 });
     this.setState({ displayedPage: "table" });
@@ -530,7 +552,7 @@ class EnhancedTable extends React.Component {
                  <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
                </div>
                <div id="add-profile-cc-container">
-               <CompetencyCard dataObject={blankCompetency} disabled={true}/>
+               <CompetencyCard dataObject={blankCompetency} disabled={false}/>
                </div>
             </form>
           { editButtonClicked == 1 &&
@@ -586,6 +608,13 @@ class EnhancedTable extends React.Component {
                       padding="none"
                       onClick={event => this.handleClickProfile(event, n)}>
                       {n.position}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Tooltip title="Delete">
+                      <IconButton aria-label="Delete" onClick={event => this.handleDeleteSingleButton(event, n)}>
+                        <DeleteIcon className={classes.deleteIcon}/>
+                      </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                );
