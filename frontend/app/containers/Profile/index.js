@@ -5,12 +5,6 @@
  */
 
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import injectSaga from 'utils/injectSaga';
@@ -26,15 +20,17 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
+import EmployeeDisplay from '../../components/EmployeeDisplay';
+import RoleDisplay from '../../components/RoleDisplay';
+import EmployeeEditForm from '../../components/EmployeeEditForm';
 import Button from '@material-ui/core/Button';
-import CompetencyCard from '../../components/CompetencyCard';
 
 const styles = theme => ({
   root: {
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
-    paddingBottom: '30px',
+    paddingBottom: '100px',
   },
   tabsIndicator: {
     display: 'inline-block',
@@ -77,6 +73,33 @@ const styles = theme => ({
   textField: {
     width: '100%',
   },
+  editButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
+  formButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    height: '40px',
+    width: '100px',
+    marginTop: '30px',
+    marginLeft: '20px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
 });
 
 class Profile extends React.PureComponent {
@@ -86,104 +109,87 @@ class Profile extends React.PureComponent {
 
   state = {
     value: 0,
+    loginCred: 1,
+    edit: 0,
+    profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
   };
 
   handleChange = (event, value) => {
     this.setState({ value });
+    this.setState({ edit: 0 });
   };
 
+  handleClickEdit = (event, value) => {
+    this.setState({
+      edit: 1,
+    });
+  };
+
+  handleClose = value => {
+    this.setState({
+      edit: 0,
+    });
+    this.state.profile = value;
+  };
+
+  updateProfile = (event, value) => {
+    var firstname = document.getElementById("edit-prof-fname").value;
+    var id = document.getElementById("edit-prof-id").value;
+    var sin = document.getElementById("edit-prof-sin").value;
+    var name = document.getElementById("edit-prof-position").value;
+    var remainingVacationDays = document.getElementById("edit-prof-vacation").value;
+    var address = document.getElementById("edit-prof-address").value;
+    var lastname = document.getElementById("edit-prof-lname").value;
+    var status = document.getElementById("edit-prof-status").value;
+    var salary = document.getElementById("edit-prof-salary").value;
+    var manager = document.getElementById("edit-prof-manager").value;
+    var type = document.getElementById("edit-prof-type").value;
+    var phone = document.getElementById("edit-prof-phone").value;
+    this.setState({ profile: { firstname: firstname, lastname: lastname, id: id, sin: sin, role: {name: name}, status: status, salary: salary, manager: manager, type: type, vacation: remainingVacationDays, address: address, phone: phone }});
+    console.log("made it into fn");
+    this.setState({ edit: 0 });
+}
+
   render() {
-    const { value }  = this.state;
-    const { classes, profile } = this.props;
-    if (!profile) return null;
+    const state = this.state;
+    const { classes } = this.props;
+
+    if (!state.profile) return null;
     return (
       <div>
-        <h1>{profile.firstname} {profile.lastname}</h1>
+        <h1>My Profile</h1>
         <Paper className={classes.root}>
+        { state.edit == 0 &&
           <AppBar position="static" className={classes.appBar}>
-            <Tabs value={value} classes={{ indicator: classes.tabsIndicator }}
+            <Tabs value={state.value} classes={{ indicator: classes.tabsIndicator }}
                   onChange={this.handleChange}>
-              <Tab disableRipple label="Employee Information" />
-              <Tab disableRipple label="Your Role" />
+              <Tab disableRipple label="Profile" />
+              <Tab disableRipple label="Role" />
             </Tabs>
-           </AppBar>
-           { value == 0 ?
-            (<div className="profile-card">
-            <Table className="profile-card-table">
-              <TableBody>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">EMPLOYEE ID</Typography></TableCell>
-                  <TableCell align="left">{profile.id}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">SIN</Typography></TableCell>
-                  <TableCell align="left">{profile.sin}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">POSITION</Typography></TableCell>
-                  <TableCell align="left">{profile.role.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">VACATION DAYS REMAINING</Typography></TableCell>
-                  <TableCell align="left">{profile.remainingVacationDays}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">EMPLOYEE TYPE</Typography></TableCell>
-                  <TableCell align="left">FT</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">STATUS</Typography></TableCell>
-                  <TableCell align="left">Active</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">SALARY</Typography></TableCell>
-                  <TableCell align="left">$60,000</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">DIRECT REPORT</Typography></TableCell>
-                  <TableCell align="left">Sarah James</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">ADDRESS</Typography></TableCell>
-                  <TableCell align="left">
-                    {profile.address}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">PHONE NUMBER</Typography></TableCell>
-                  <TableCell align="left">{}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-            </div>) :
-              (<div className="profile-card">
-              <form className={classes.container} noValidation autocomplete="off">
-                <div className={classes.topFieldContainer}>
-                  <Typography className={classes.positionName} variant="h5">{profile.role.name}</Typography>
-                </div>
-                <div className={classes.fieldContainer}>      
-                  <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
-                </div>
-                 <div className={classes.fieldContainer}>
-                    <TextField
-                      id="role-description"
-                      multiline
-                      rows="4"
-                      className={classes.textField}
-                      margin="normal"
-                      variant="outlined"
-                      defaultValue={profile.role.description}
-                      InputProps={{ readOnly: true }}
-                      />
-                 </div>
-                 <div className={classes.fieldContainer}>
-                   <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
-                 </div>
-                   <CompetencyCard dataObject={[{name:"", description:"", rating:0}]} disabled={true}/>
-               </form>
-             </div>
-            )
-          }
+        </AppBar> }
+        { state.edit == 1 &&
+          <AppBar position="static" className={classes.appBar}>
+            <Tabs value={state.value} classes={{ indicator: classes.tabsIndicator }}
+                  onChange={this.handleChange}>
+              <Tab disableRipple label="Back" />
+            </Tabs>
+          </AppBar> }
+           <div  className="profile-card">
+           { state.value == 0 && state.loginCred == 0 && 
+           <EmployeeDisplay state={state} /> }
+           { state.value == 0 && state.loginCred == 1 && state.edit == 0 &&
+            <div>
+              <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button> 
+              <EmployeeDisplay state={state} />
+           </div> } 
+           { state.value == 0 && state.loginCred == 1 && state.edit == 1 && 
+           <div>
+            <EmployeeEditForm state={state} />
+            <Button className={classes.formButton} onClick={this.updateProfile}>Submit</Button>
+            <Button className={classes.formButton} onClick={this.updateProfile}>Save</Button> 
+           </div>}
+           { state.value == 1 && <RoleDisplay />}
+           </div>
      </Paper>
     </div>
     );
