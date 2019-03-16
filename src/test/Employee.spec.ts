@@ -195,7 +195,6 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.within(400, 500);
-                console.log(response.body);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
@@ -646,7 +645,9 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+                response.body.forEach((employee: any) => {
+                    expect(employee).to.be.jsonSchema(schema.definitions.IApiResponse);
+                });
                 expect(response.body.length).to.be.equal(0);
             }
         });
@@ -714,6 +715,9 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
+                response.body.forEach((employee: any) => {
+                    expect(employee).to.be.jsonSchema(schema.definitions.IEmployeeHistory);
+                });
                 expect(response.body.length).to.be.equal(0);
             }
         });
@@ -739,7 +743,7 @@ describe("EmployeeService tests", () => {
                 } finally {
                     expect(response.statusCode).to.be.equal(200);
                     response.body.forEach((employee: any) => {
-                        expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
+                        expect(employee).to.be.jsonSchema(schema.definitions.IEmployeeHistory);
                     });
                     expect(response.body[0].firstname).to.be.equal("Jim");
                     expect(response.body[1].firstname).to.be.equal("Big Tuna");
@@ -770,7 +774,7 @@ describe("EmployeeService tests", () => {
                 } finally {
                     expect(response.statusCode).to.be.equal(200);
                     response.body.forEach((employee: any) => {
-                        expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
+                        expect(employee).to.be.jsonSchema(schema.definitions.IEmployeeHistory);
                     });
                     expect(response.body[0].firstname).to.be.equal("Jim");
                     expect(response.body[1].firstname).to.be.equal("Big Tuna");
@@ -916,6 +920,12 @@ describe("EmployeeService tests", () => {
     });
 
     describe("/employee/token tests", () => {
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite();
+            return HEADERS;
+        });
+
         it("Should be return error for incorrect credential ", async () => {
             let response: any;
             let loginBody = {
@@ -954,6 +964,8 @@ describe("EmployeeService tests", () => {
             }
         });
     });
+
+    TestSetup.initTestsuite();
 });
 
 
