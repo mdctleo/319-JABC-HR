@@ -72,7 +72,7 @@ CREATE PROCEDURE `update_vacation_request` (IN id INT
 , IN approver_id INT
 , IN requested_days INT
 , IN request_status TINYINT
-, IN request_date BIGINT
+, IN request_date DATE
 )
 BEGIN
   DECLARE checker INT;

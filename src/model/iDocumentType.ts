@@ -40,9 +40,9 @@ export class DocumentType implements IDocumentType{
     file?: string;
 
     constructor(rawDocumentType: any){
-        this.id = rawDocumentType.TYPE_ID;
-        this.name = rawDocumentType.TYPE_NAME;
-        this.file = rawDocumentType.PATH;
+        this.id = rawDocumentType.DOC_TYPE_ID;
+        this.name = rawDocumentType.DOC_NAME;
+        this.file = this.getLink();
         this.description = rawDocumentType.DESCRIPTION;
     }
 
@@ -52,5 +52,9 @@ export class DocumentType implements IDocumentType{
             documentTypes.push(new DocumentType(rawDocumentType))
         }
         return documentTypes
+    }
+
+    getLink(){
+        return `http://${process.env.HOST}:${process.env.PORT}/JABC/1.0.0/onboarding/documentType/${this.id}/file`
     }
 }

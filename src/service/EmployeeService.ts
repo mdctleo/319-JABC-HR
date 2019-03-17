@@ -6,7 +6,7 @@ import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
 
-// JATJ: save key on .env file
+// TODO: save key on .env file
 const KEY = 'JABC IS SUPER SECURE';
 
 
@@ -14,16 +14,26 @@ const KEY = 'JABC IS SUPER SECURE';
  * completes the OnboardingTask with [idOnboardingTask] for the employee with [id]
  * If the OnboardingTask requires a document to be completed, then the parameter [document] must be provided to successfully complete the OnboardingTask. 
  *
- * id Integer id of the searched Employee
- * idOnboardingTask Integer id of the OnboardingTask to be completed
- * xAuthToken String Auth Token that grants access to the system (optional)
- * document File The document file filled by the employee. (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the searched Employee
+ * @param {Number} idOnboardingTask Integer id of the OnboardingTask to be completed
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @param {any} document File The document file filled by the employee. (optional)
+ * @returns {Promise<IApiResponse>}
  **/
 export async function completeOnboardingTask(id: Number, idOnboardingTask: Number, xAuthToken: string, document: any) {
 	try{
-		// JATJ: Implement
-		throw 'NOT IMPLEMENTED'
+		if(document){
+			if(document.buffer.length > process.env.MAX_FILE)
+				throw new JABCError(JABCResponse.ONBOARDING, 'The file exceeded the size limit of 16 mb')
+		}else{
+			document = {buffer: null, mimetype: null};
+		}
+		let res = await Database.getInstance().query('CALL complete_onboarding_task(?,?,?)', [
+			idOnboardingTask,
+			document.buffer,
+			document.mimetype
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The onboarding task was saved successfully`)
 	}catch(error){
 		throw error;
 	}
@@ -34,23 +44,22 @@ export async function completeOnboardingTask(id: Number, idOnboardingTask: Numbe
  * creates a new OnboardingTask for the employee with [id]
  * Will create a new OnboardingTask with the provided data in body
  *
- * id Integer id of the searched Employee
- * onboardingTask IOnboardingTask OnboardingTask data
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the searched Employee
+ * @param {IOnboardingTask} onboardingTask IOnboardingTask OnboardingTask data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
 export async function createOnboardingTask(id: Number, onboardingTask: IOnboardingTask, xAuthToken: string) {
 	try{
-		// JATJ: Implement
-		throw 'NOT IMPLEMENTED'
-		let res = await Database.getInstance().query('CALL create_support_doc(?,?,?,?,?,?,?)', [
+		onboardingTask = OnboardingTask.Prepare(onboardingTask)
+		let res = await Database.getInstance().query('CALL create_onboarding_task(?,?,?,?,?,?,?)', [
 			id,
 			onboardingTask.fkDocumentType,
 			onboardingTask.createdDate,
 			onboardingTask.dueDate,
 			onboardingTask.expiryDate,
-			onboardingTask.file,
 			onboardingTask.description,
+			onboardingTask.requireDoc
 		], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The onboarding task was saved successfully`)
 	}catch(error){
@@ -100,14 +109,14 @@ export async function createEmployee (employee: IEmployee, xAuthToken: String) {
  * creates a new PerformancePlan for the employee with [id]
  * Will create a new PerformancePlan with the provided data in body
  *
- * id Integer id of the searched Employee
- * performance IPerformancePlan PerformancePlan data
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the searched Employee
+ * @param {IPerformancePlan} performance IPerformancePlan PerformancePlan data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
 	try{
-		// JATJ: Implement
+		// TODO: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
@@ -119,14 +128,14 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
    * creates a new PerformanceReview for the employee with [id]
    * Will create a new PerformanceReview with the provided data in body
    *
-   * id Integer id of the searched Employee
+   * @param {Number} id Integer id of the searched Employee
    * performance IPerformanceReview PerformanceReview data
-   * xAuthToken String Auth Token that grants access to the system (optional)
-   * returns IApiResponse
+   * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+   * @returns {Promise<IApiResponse>}
    **/
   export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
 	try{
-		// JATJ: Implement
+		// TODO: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
@@ -258,14 +267,14 @@ export async function getEmployeesByManager (idManager: Number, xAuthToken: Stri
  * get all the OnboardingTasks of the employee with [id]
  * This returns all the OnboardingTasks of the system.  If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term].  
  *
- * id Integer id of the searched Employee
- * xAuthToken String Auth Token that grants access to the system (optional)
+ * @param {Number} id Integer id of the searched Employee
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * term String Search term for filter the data (optional)
  * returns List
  **/
 export async function getOnboardingTasks(id: Number, xAuthToken: string, term: string) {
 	try{
-		let res = await Database.getInstance().query('CALL get_employee_docs(?)', [id], JABCResponse.EMPLOYEE)
+		let res = await Database.getInstance().query('CALL get_employee_tasks(?)', [id], JABCResponse.EMPLOYEE)
 		return OnboardingTask.OnboardingTasks(res[0][0])
 	}catch(error){
 		throw error;
@@ -277,14 +286,14 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
  * get all the PerformancePlans of the employee with [id]
  * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].  
  *
- * id Integer id of the searched Employee
- * xAuthToken String Auth Token that grants access to the system (optional)
+ * @param {Number} id Integer id of the searched Employee
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * term String Search term for filter the data (optional)
  * returns List
  **/
 export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
 	try{
-		// JATJ: Implement
+		// TODO: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
@@ -296,14 +305,14 @@ export async function getPerformancePlans(id: Number, xAuthToken: string, term: 
    * get all the PerformanceReviews of the employee with [id]
    * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].  
    *
-   * id Integer id of the searched Employee
-   * xAuthToken String Auth Token that grants access to the system (optional)
+   * @param {Number} id Integer id of the searched Employee
+   * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
    * term String Search term for filter the data (optional)
    * returns List
    **/
 export async function getPerformanceReviews(id: Number, xAuthToken: string, term: string) {
 	try{
-		// JATJ: Implement
+		// TODO: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;

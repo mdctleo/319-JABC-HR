@@ -1059,8 +1059,6 @@ paths:
           description: "bad request"
           schema:
             $ref: "#/definitions/IApiResponse"
-      security:
-      - AuthToken: []
       x-swagger-router-controller: "Onboarding"
   /onboarding/documentType:
     get:
@@ -1312,8 +1310,6 @@ paths:
           description: "bad request"
           schema:
             $ref: "#/definitions/IApiResponse"
-      security:
-      - AuthToken: []
       x-swagger-router-controller: "Onboarding"
   /onboarding/faq:
     get:
@@ -2374,6 +2370,7 @@ definitions:
         type: "string"
       birthdate:
         type: "string"
+        format: "date"
         description: "The birthdate of the employee"
       dateJoined:
         type: "string"
@@ -2402,7 +2399,7 @@ definitions:
       firstname: "firstname"
       fkRole: 1
       address: "address"
-      birthdate: "birthdate"
+      birthdate: "2000-01-23"
       role:
         name: "name"
         description: "description"
@@ -2472,6 +2469,7 @@ definitions:
           \ of the Employee"
       createdDate:
         type: "string"
+        format: "date"
         description: "The date the creation of this version of the employee data"
       salary:
         type: "number"
@@ -2479,6 +2477,7 @@ definitions:
         type: "string"
       birthdate:
         type: "string"
+        format: "date"
         description: "The birthdate of the employee"
       dateJoined:
         type: "string"
@@ -2507,7 +2506,7 @@ definitions:
       firstname: "firstname"
       fkRole: 1
       address: "address"
-      birthdate: "birthdate"
+      birthdate: "2000-01-23"
       role:
         name: "name"
         description: "description"
@@ -2519,7 +2518,7 @@ definitions:
       fkCreator: 1
       lastname: "lastname"
       password: "password"
-      createdDate: "createdDate"
+      createdDate: "2000-01-23"
       phoneNumber: "phoneNumber"
       remainingVacationDays: 2
       fte: 0
@@ -2609,10 +2608,11 @@ definitions:
         type: "integer"
       date:
         type: "string"
+        format: "date"
         description: "The date when the employee requested the vacation"
     description: "A Vacation contains info of the employee asking for a vaction period\n"
     example:
-      date: "date"
+      date: "2000-01-23"
       requestedDays: 0
       fkApprover: 1
       fkEmployee: 1
@@ -2626,6 +2626,7 @@ definitions:
     - "fkEmployee"
     - "id"
     - "requireDoc"
+    - "status"
     properties:
       id:
         type: "integer"
@@ -2644,15 +2645,21 @@ definitions:
         description: "The foreign key  of the Employee that needs to upload this Document"
       createdDate:
         type: "string"
+        format: "date"
         description: "The created date of this Document"
       dueDate:
         type: "string"
+        format: "date"
         description: "The due date of this Document"
       requireDoc:
         type: "integer"
         description: "Wether the Onboarding task requires document upload or not."
+      status:
+        type: "integer"
+        description: "Wether the Onboarding task is done or not"
       expiryDate:
         type: "string"
+        format: "date"
         description: "The expiry date of this Document"
       file:
         type: "string"
@@ -2668,11 +2675,11 @@ definitions:
       \ to be filled by the employee. \nOtherwise the [fkDocumentType] property will\
       \ be null.\n"
     example:
-      expiryDate: "expiryDate"
-      createdDate: "createdDate"
+      expiryDate: "2000-01-23"
+      createdDate: "2000-01-23"
       file: "file"
       fkDocumentType: 1
-      dueDate: "dueDate"
+      dueDate: "2000-01-23"
       requireDoc: 0
       fkEmployee: 1
       description: "description"
@@ -2682,6 +2689,7 @@ definitions:
         name: "name"
         description: "description"
         id: 1
+      status: 6
   IDocumentType:
     type: "object"
     required:
@@ -2728,6 +2736,7 @@ definitions:
         description: "Foreign key of the employee with this performance review"
       date:
         type: "string"
+        format: "date"
         description: "The date the performance review was created"
       status:
         type: "integer"
@@ -2744,16 +2753,16 @@ definitions:
     description: "PerformancePlan contains info of the sections of a performance plan\
       \ of an employee\n"
     example:
-      date: "date"
+      date: "2000-01-23"
       comments:
       - fkCommenter: 1
-        date: "date"
+        date: "2000-01-23"
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         comment: "comment"
         id: 1
       - fkCommenter: 1
-        date: "date"
+        date: "2000-01-23"
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         comment: "comment"
@@ -2790,6 +2799,7 @@ definitions:
         description: "Foreign key of the performance plan"
       date:
         type: "string"
+        format: "date"
         description: "The date the performance review was created"
       status:
         type: "integer"
@@ -2806,16 +2816,16 @@ definitions:
     description: "PerformanceReview contains info of the sections of a performance\
       \ plan of an employee\n"
     example:
-      date: "date"
+      date: "2000-01-23"
       comments:
       - fkCommenter: 1
-        date: "date"
+        date: "2000-01-23"
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         comment: "comment"
         id: 1
       - fkCommenter: 1
-        date: "date"
+        date: "2000-01-23"
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         comment: "comment"
@@ -2863,12 +2873,13 @@ definitions:
         type: "string"
       date:
         type: "string"
+        format: "date"
         description: "The date when the Comment was created"
     description: "A Comment contains what another employee thinks about the performance\
       \ record of another employee\n"
     example:
       fkCommenter: 1
-      date: "date"
+      date: "2000-01-23"
       fkPerformanceReview: 1
       fkPerformancePlan: 1
       comment: "comment"
@@ -2942,7 +2953,7 @@ definitions:
         firstname: "firstname"
         fkRole: 1
         address: "address"
-        birthdate: "birthdate"
+        birthdate: "2000-01-23"
         role:
           name: "name"
           description: "description"

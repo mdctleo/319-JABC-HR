@@ -64,7 +64,7 @@ export class PerformancePlan implements IPerformancePlan{
     comments?: Array<IComment>;
 
     constructor(rawPerformancePlan: any){
-        this.id = rawPerformancePlan.SUPPORT_DOC_ID;
+        this.id = rawPerformancePlan.PERFORMANCE_PLAN_ID;
         this.fkEmployee = rawPerformancePlan.EMPLOYEE_ID;
         this.date = rawPerformancePlan.CREATED_DATE;
         this.status = rawPerformancePlan.STATUS;

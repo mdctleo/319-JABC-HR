@@ -1,7 +1,7 @@
 import { IApiResponse } from '../model/models'
 var utils = require('./writer')
 
-const DEBUG = true; // JATJ: load config from .env
+const DEBUG = process.env.DEBUG;
 
 
 
@@ -16,7 +16,7 @@ export class JABCResponse {
         error: 410,
         success: 200
     }
-    static DOCUMENT = {
+    static ONBOARDING = {
         error: 411,
         success: 200
     }

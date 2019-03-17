@@ -10,14 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../model/models");
 var utils = require('./writer');
-const DEBUG = true;
+const DEBUG = process.env.DEBUG;
 class JABCResponse {
 }
 JABCResponse.EMPLOYEE = {
     error: 410,
     success: 200
 };
-JABCResponse.DOCUMENT = {
+JABCResponse.ONBOARDING = {
     error: 411,
     success: 200
 };

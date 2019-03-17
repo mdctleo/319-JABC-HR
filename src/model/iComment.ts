@@ -37,3 +37,44 @@ export interface IComment {
      */
     date: string;
 }
+
+export class Comment implements IComment{
+    /**
+     * The unique identifier of the Comment
+     */
+    id: number;
+    /**
+     * Foreign key of PerformancePlan that has this Comment
+     */
+    fkPerformancePlan?: number;
+    /**
+     * Foreign key of PerformanceReview that has this Comment
+     */
+    fkPerformanceReview?: number;
+    /**
+     * Foreign key of Employee that created the Comment
+     */
+    fkCommenter: number;
+    comment: string;
+    /**
+     * The date when the Comment was created
+     */
+    date: string;
+
+    constructor(rawComment: any){
+        this.id = rawComment.COMMENT_ID;
+        this.fkPerformancePlan = rawComment.PERFORMANCE_PLAN_ID;
+        this.fkPerformanceReview = rawComment.PERFORMANCE_REVIEW_ID;
+        this.fkCommenter = rawComment.COMMENTER_ID;
+        this.comment = rawComment.COMMENT;
+        this.date = rawComment.DATE;
+    }
+
+    static Comments(rawComments: any[]){
+        let Comments: IComment[] = [];
+        for(let rawComment of rawComments){
+            Comments.push(new Comment(rawComment))
+        }
+        return Comments
+    }
+}

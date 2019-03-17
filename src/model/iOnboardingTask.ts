@@ -41,6 +41,10 @@ export interface IOnboardingTask {
      */
     requireDoc: number;
     /**
+     * Wether the Onboarding task is done or not
+     */
+    status: number;
+    /**
      * The expiry date of this Document
      */
     expiryDate?: string;
@@ -48,6 +52,7 @@ export interface IOnboardingTask {
      * The link to the file if it is required
      */
     file?: string;
+    actualfile?: string;
     description?: string;
     type?: IDocumentType;
 }
@@ -78,6 +83,10 @@ export class OnboardingTask implements IOnboardingTask{
      */
     requireDoc: number;
     /**
+     * Wether the Onboarding task is done or not
+     */
+    status: number;
+    /**
      * The expiry date of this Document
      */
     expiryDate?: string;
@@ -89,13 +98,15 @@ export class OnboardingTask implements IOnboardingTask{
     type?: IDocumentType;
 
     constructor(rawOnboardingTask: any){
-        this.id = rawOnboardingTask.SUPPORT_DOC_ID;
-        this.fkDocumentType = rawOnboardingTask.TYPE_ID;
+        this.id = rawOnboardingTask.ONBOARDING_TASK_ID;
+        this.fkDocumentType = rawOnboardingTask.DOC_TYPE_ID;
         this.fkEmployee = rawOnboardingTask.EMPLOYEE_ID;
         this.createdDate = rawOnboardingTask.CREATED_DATE;
         this.dueDate = rawOnboardingTask.DUE_DATE;
+        this.requireDoc = rawOnboardingTask.REQUIRE_DOC;
+        this.status = rawOnboardingTask.STATUS;
         this.expiryDate = rawOnboardingTask.EXPIRY_DATE;
-        this.file = rawOnboardingTask.ACTUAL_FILE;
+        this.file = this.getLink();
         this.description = rawOnboardingTask.DESCRIPTION;
     }
 
@@ -105,5 +116,18 @@ export class OnboardingTask implements IOnboardingTask{
             documents.push(new OnboardingTask(rawOnboardingTask))
         }
         return documents
+    }
+
+    static Prepare(rawOnboardingTask: IOnboardingTask){
+        rawOnboardingTask.fkDocumentType = (rawOnboardingTask.fkDocumentType) ? rawOnboardingTask.fkDocumentType : null;
+        rawOnboardingTask.expiryDate = (rawOnboardingTask.expiryDate) ? rawOnboardingTask.expiryDate : null;
+        rawOnboardingTask.file = (rawOnboardingTask.file) ? rawOnboardingTask.file : null;
+        rawOnboardingTask.description = (rawOnboardingTask.description) ? rawOnboardingTask.description : null;
+        rawOnboardingTask.type = (rawOnboardingTask.type) ? rawOnboardingTask.type : null;
+        return rawOnboardingTask
+    }
+
+    getLink(){
+        return `http://${process.env.HOST}:${process.env.PORT}/JABC/1.0.0/onboarding/task/${this.id}/file`
     }
 }

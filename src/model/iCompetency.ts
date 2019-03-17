@@ -26,3 +26,31 @@ export interface ICompetency {
     name?: string;
     description?: string;
 }
+
+export class Competency implements ICompetency{
+    /**
+     * The unique identifier of the Competency
+     */
+    id: number;
+    /**
+     * Foreign key of the role
+     */
+    fkRole: number;
+    name?: string;
+    description?: string;
+
+    constructor(rawCompetency: any){
+        this.id = rawCompetency.COMMENT_ID;
+        this.fkRole = rawCompetency.ROLE_ID;
+        this.name = rawCompetency.COMPETENCY_NAME;
+        this.description = rawCompetency.DESCRIPTION;
+    }
+
+    static Competencys(rawCompetencys: any[]){
+        let Competencys: ICompetency[] = [];
+        for(let rawCompetency of rawCompetencys){
+            Competencys.push(new Competency(rawCompetency))
+        }
+        return Competencys
+    }
+}

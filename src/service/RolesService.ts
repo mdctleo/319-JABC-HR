@@ -15,7 +15,7 @@ import Database from "../database/Database";
  **/
 exports.createCompetency = function (competency: ICompetency, idRole: number, xAuthToken: string) {
     try {
-        // JATJ: Implement
+        // TODO: Implement
 		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
@@ -56,7 +56,7 @@ export async function createRole(role: IRole, xAuthToken: String) {
  **/
 export async function deleteCompetency(id: Number, idRole: Number, xAuthToken: String) {
     try {
-        // JATJ: Implement
+        // TODO: Implement
 		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
@@ -93,7 +93,7 @@ export async function deleteRole(id: Number, xAuthToken: String) {
  **/
 export async function getCompetency(id: Number, idRole: Number, xAuthToken: String) {    
     try {
-        // JATJ: Implement
+        // TODO: Implement
 		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
@@ -111,7 +111,7 @@ export async function getCompetency(id: Number, idRole: Number, xAuthToken: Stri
  **/
 export async function getCompetencys(idRole: Number, xAuthToken: String) {    
     try {
-        // JATJ: Implement
+        // TODO: Implement
 		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
@@ -164,9 +164,9 @@ export async function getRoles(xAuthToken: String) {
  * xAuthToken String Auth Token that grants access to the system (optional)
  * returns IApiResponse
  **/
-export async function updaupdateCompetencyteRole(id: Number, competency: ICompetency, idRole: Number, xAuthToken: String) {
+export async function updateCompetency(id: Number, competency: ICompetency, idRole: Number, xAuthToken: String) {
     try {
-        // JATJ: Implement
+        // TODO: Implement
 		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;

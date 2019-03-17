@@ -31,9 +31,9 @@ module.exports.createEmployee = function createEmployee (req, res, next) {
 
 module.exports.createOnboardingTask = function createOnboardingTask (req, res, next) {
   var id = req.swagger.params['id'].value;
-  var document = req.swagger.params['document'].value;
+  var onboardingTask = req.swagger.params['onboardingTask'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Employee.createOnboardingTask(id,document,xAuthToken)
+  Employee.createOnboardingTask(id,onboardingTask,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })

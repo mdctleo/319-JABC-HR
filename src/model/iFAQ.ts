@@ -22,3 +22,26 @@ export interface IFAQ {
     question: string;
     answer: string;
 }
+
+export class FAQ implements IFAQ{
+    /**
+     * The unique identifier of the FAQ
+     */
+    id: number;
+    question: string;
+    answer: string;
+
+    constructor(rawFAQ: any){
+        this.id = rawFAQ.FAQ_ID;
+        this.question = rawFAQ.QUESTION;
+        this.answer = rawFAQ.ANSWER;
+    }
+
+    static FAQs(rawFAQs: any[]){
+        let FAQs: IFAQ[] = [];
+        for(let rawFAQ of rawFAQs){
+            FAQs.push(new FAQ(rawFAQ))
+        }
+        return FAQs
+    }
+}

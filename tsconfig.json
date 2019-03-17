@@ -29,7 +29,6 @@
     "src/model/iApiResponse.ts",
     "src/model/iComment.ts",
     "src/model/iCompetency.ts",
-    "src/model/iDevelopmentGoal.ts",
     "src/model/iDocumentType.ts",
     "src/model/iEmployee.ts",
     "src/model/iEmployeeHistory.ts",

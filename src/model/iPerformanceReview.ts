@@ -72,7 +72,7 @@ export class PerformanceReview implements IPerformanceReview{
     comments?: Array<IComment>;
 
     constructor(rawPerformanceReview: any){
-        this.id = rawPerformanceReview.SUPPORT_DOC_ID;
+        this.id = rawPerformanceReview.PERFORMANCE_REVIEW_ID;
         this.fkEmployee = rawPerformanceReview.EMPLOYEE_ID;
         this.fkPerformancePlan = rawPerformanceReview.WORK_PLAN_ID;
         this.date = rawPerformanceReview.CREATED_DATE;

@@ -80,7 +80,7 @@ module.exports.getDocumentTypeFile = function getDocumentTypeFile (req, res, nex
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getDocumentTypeFile(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      utils.writeFile(res, response, response.responseCode);
     })
     .catch(function (response) {
       utils.writeJson(res, response, response.responseCode);
@@ -138,7 +138,7 @@ module.exports.getOnboardingTaskFile = function getOnboardingTaskFile (req, res,
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getOnboardingTaskFile(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      utils.writeFile(res, response, response.responseCode);
     })
     .catch(function (response) {
       utils.writeJson(res, response, response.responseCode);
@@ -173,9 +173,9 @@ module.exports.updateFAQ = function updateFAQ (req, res, next) {
 
 module.exports.updateOnboardingTask = function updateOnboardingTask (req, res, next) {
   var id = req.swagger.params['id'].value;
-  var document = req.swagger.params['document'].value;
+  var onboardingTask = req.swagger.params['onboardingTask'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Onboarding.updateOnboardingTask(id,document,xAuthToken)
+  Onboarding.updateOnboardingTask(id,onboardingTask,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
