@@ -23,3 +23,28 @@ export interface IDocumentType {
     description?: string;
     path?: string;
 }
+
+export class DocumentType implements IDocumentType{
+    /**
+     * The unique identifier of the DocumentType
+     */
+    id: number;
+    name: string;
+    description?: string;
+    path?: string;
+
+    constructor(rawDocumentType: any){
+        this.id = rawDocumentType.TYPE_ID;
+        this.name = rawDocumentType.TYPE_NAME;
+        this.path = rawDocumentType.PATH;
+        this.description = rawDocumentType.DESCRIPTION;
+    }
+
+    static DocumentTypes(rawDocumentTypes: any[]){
+        let documentTypes: IDocumentType[] = [];
+        for(let rawDocumentType of rawDocumentTypes){
+            documentTypes.push(new DocumentType(rawDocumentType))
+        }
+        return documentTypes
+    }
+}

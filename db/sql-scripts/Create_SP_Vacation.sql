@@ -81,7 +81,7 @@ BEGIN
 
   SELECT COUNT(`VACATION_REQUEST_ID`) INTO checker
   FROM VACATION_REQUEST
-  WHERE `VACATION_REQUEST_ID` = vacation_req_id;
+  WHERE `VACATION_REQUEST_ID` = id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Vacation request does not exist.';

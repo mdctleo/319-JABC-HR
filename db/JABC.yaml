@@ -230,6 +230,8 @@ paths:
       summary: Links employee to his manager
       description: Sets the employee with [id] to be managed by the employee with [idManager]
       operationId: linkEmployeeManager
+      consumes:
+      - application/octet-stream
       security:
       - AuthToken: []
       parameters:
@@ -527,6 +529,30 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
+# ----------------------------- Employee Login
+  /employee/token:
+    post:
+      tags:
+      - Employee
+      summary: sign in the employee into the system
+      operationId: login
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: body
+        in: body
+        description: Employee login data
+        required: true
+        schema:
+          $ref: '#/definitions/ILogin'
+      responses:
+        401:
+          description: unauthorized access
+          schema:
+            $ref: '#/definitions/IApiResponse'
+        default:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ILoginResponse'
 
 # ----------------------------- Vacation
   /vacation/{id}:
@@ -1419,6 +1445,8 @@ definitions:
         format: uint64
         example: 1
         description: Foreign key of the role 
+      phoneNumber:
+        type: string
       role:
         $ref: '#/definitions/IRole'
   
@@ -1515,6 +1543,8 @@ definitions:
         format: uint64
         example: 1
         description: Foreign key of the role 
+      phoneNumber:
+        type: string
       role:
         $ref: '#/definitions/IRole'
 
@@ -1616,6 +1646,8 @@ definitions:
         format: uint64
         description: The unix timestamp of the expiry date of this Document
       path:
+        type: string
+      description:
         type: string
       type:
         $ref: "#/definitions/IDocumentType"
@@ -1837,6 +1869,43 @@ definitions:
         type: integer
         format: uint64
         description: The unix timestamp of the date when the Comment was created
+
+  ILogin:
+    description: Represents the basic info to logged into the system
+    type: object
+    required:
+    - email
+    - password
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+
+  ILoginResponse:
+    description: The data returned by the login path contains the employee info as well as the auth token
+    type: object
+    required:
+    - responseCode
+    - type
+    - message
+    properties:
+      responseCode:
+        type: integer
+        format: int32
+      type:
+        type: string
+        enum:
+        - ERROR
+        - SUCCESS
+      message:
+        type: string
+      debugMessage:
+        type: string
+      token:
+        type: string
+      employee:
+        $ref: '#/definitions/IEmployee'
 
 # ----------------------------- Competency
   # ICompetency:

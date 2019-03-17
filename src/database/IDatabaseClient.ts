@@ -1,18 +1,28 @@
-export class DatabaseConnectionError extends Error {
+import {JABCResponse, JABCError, JABCResponseType} from '../utils/ResponseManager'
+
+export class DatabaseConnectionError extends JABCError {
     constructor(...args: any[]) {
-        super(...args);
+        super(JABCResponse.UNHANDLED_ERROR, args);
     }
 }
 
-export class DatabaseWriteError extends Error {
-    constructor(...args: any[]) {
-        super(...args);
+export class DatabaseWriteError extends JABCError {
+    constructor(service: JABCResponseType, error: any, log: string) {
+        if(error.sqlState == '45000'){
+            super(service, error.message);
+        }else{
+            super(JABCResponse.UNHANDLED_ERROR, log);
+        }
     }
 }
 
-export class DatabaseQueryError extends Error {
-    constructor(...args: any[]) {
-        super(...args);
+export class DatabaseQueryError extends JABCError {
+    constructor(service: JABCResponseType, error: any, log: string) {
+        if(error.sqlState == '45000'){
+            super(service, error.message);
+        }else{
+            super(JABCResponse.UNHANDLED_ERROR, log);
+        }
     }
 }
 
@@ -26,7 +36,7 @@ export default interface IDatabaseClient {
      *
      * If a failure occurs, throw DatabaseWriteError
      */
-    write(query: any): Promise<void>;
+    write(query: any, params: any[], responseType?: JABCResponseType): Promise<void>;
 
     /**
      * Performs a query on the database
@@ -40,7 +50,7 @@ export default interface IDatabaseClient {
      * If a failure occurs, throw DatabaseQueryError
      *
      */
-    query(query: any): Promise<any>;
+    query(query: any, params: any[], responseType?: JABCResponseType): Promise<any>;
 
     /**
      * Opens a connection to a database service
