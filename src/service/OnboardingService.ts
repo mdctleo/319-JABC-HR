@@ -34,7 +34,8 @@ export async function createDocumentType(documentType : IDocumentType, xAuthToke
  **/
 export async function createFAQ(faq : IFAQ, xAuthToken : String) {
  	try{
-	   throw 'NOT IMPLEMENTED'
+	   // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
    	}catch(error){
 	   throw error;
    	}
@@ -69,7 +70,8 @@ export async function deleteDocumentType(id : Number,  xAuthToken : String) {
  **/
 export async function deleteFAQ(id : Number,  xAuthToken : String) {
 	try{
-	   throw 'NOT IMPLEMENTED'
+	   // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
    	}catch(error){
 	   throw error;
    	}
@@ -113,6 +115,24 @@ export async function getDocumentType(id : Number,  xAuthToken : String) {
 
 
 /**
+ * gets an specific DocumentType file
+ * Will return the DocumentType File that matches with the provided [id] 
+ *
+ * id Integer id of the searched DocumentType
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns File
+ **/
+export async function getDocumentTypeFile(id: Number, xAuthToken: string) {
+	try{
+	   // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
+   	}catch(error){
+	   throw error;
+   	}
+¡}
+
+
+/**
  * get all the DocumentTypes
  * This returns all the DocumentTypes of the system. 
  *
@@ -139,7 +159,8 @@ export async function getDocumentTypes(xAuthToken : String) {
  **/
 export async function getFAQ(id : Number,  xAuthToken : String) {
 	try{
-	   throw 'NOT IMPLEMENTED'
+	   // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
    	}catch(error){
 	   throw error;
    	}
@@ -155,7 +176,8 @@ export async function getFAQ(id : Number,  xAuthToken : String) {
  **/
 export async function getFAQs(xAuthToken : String) {
 	try{
-	   throw 'NOT IMPLEMENTED'
+	   // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
    	}catch(error){
 	   throw error;
    	}
@@ -177,6 +199,24 @@ export async function getOnboardingTask(id : Number,  xAuthToken : String) {
 	}catch(error){
 		throw error;
 	}
+}
+
+
+/**
+ * gets an specific OnboardingTask file
+ * Will return the OnboardingTask File that matches with the provided [id] 
+ *
+ * id Integer id of the searched OnboardingTask
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns File
+ **/
+export async function getOnboardingTaskFile(id: Number, xAuthToken: string) {
+	try{
+	   // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
+   	}catch(error){
+	   throw error;
+   	}
 }
 
 
@@ -204,6 +244,7 @@ export async function updateDocumentType(id : Number, documentType : IDocumentTy
 	}
 }
 
+
 /**
  * updates the FAQ
  * Will update an FAQ with the provided data in body if the FAQ matches the [id]
@@ -215,7 +256,8 @@ export async function updateDocumentType(id : Number, documentType : IDocumentTy
  **/
 export async function updateFAQ(id : Number, faq : IFAQ, xAuthToken : String) {
 	try{
-	   throw 'NOT IMPLEMENTED'
+	   // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
    	}catch(error){
 	   throw error;
    	}	
@@ -262,7 +304,8 @@ export async function updateOnboardingTask(id : Number, onboardingTask : IOnboar
  **/
 export async function uploadTemplateDocumentType(id : Number, xAuthToken : String,  document : any) {
 	try{
-	   throw 'NOT IMPLEMENTED'
+	   // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
    	}catch(error){
 	   throw error;
    	}

@@ -824,6 +824,34 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
+  
+  /onboarding/task/{id}/file:
+    get:
+      tags:
+      - Onboarding
+      summary: gets an specific OnboardingTask file
+      description: |
+        Will return the OnboardingTask File that matches with the provided [id]
+      operationId: getOnboardingTaskFile
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched OnboardingTask
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: The API responds with a file
+          schema:
+            type: file
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
 
 # ----------------------------- Document Type
   /onboarding/documentType:
@@ -976,6 +1004,34 @@ paths:
       responses:
         200:
           $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+  /onboarding/documentType/{id}/file:
+    get:
+      tags:
+      - Onboarding
+      summary: gets an specific DocumentType file
+      description: |
+        Will return the DocumentType File that matches with the provided [id]
+      operationId: getDocumentTypeFile
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched DocumentType
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: The API responds with a file
+          schema:
+            type: file
         401:
           $ref: '#/responses/NoAccessResponse'
         default:

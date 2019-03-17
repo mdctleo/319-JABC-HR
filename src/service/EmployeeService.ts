@@ -22,6 +22,7 @@ const KEY = 'JABC IS SUPER SECURE';
  **/
 export async function completeOnboardingTask(id: Number, idOnboardingTask: Number, xAuthToken: string, document: any) {
 	try{
+		// JATJ: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
@@ -40,6 +41,7 @@ export async function completeOnboardingTask(id: Number, idOnboardingTask: Numbe
  **/
 export async function createOnboardingTask(id: Number, onboardingTask: IOnboardingTask, xAuthToken: string) {
 	try{
+		// JATJ: Implement
 		throw 'NOT IMPLEMENTED'
 		let res = await Database.getInstance().query('CALL create_support_doc(?,?,?,?,?,?,?)', [
 			id,
@@ -105,6 +107,7 @@ export async function createEmployee (employee: IEmployee, xAuthToken: String) {
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
 	try{
+		// JATJ: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
@@ -123,6 +126,7 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
    **/
   export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
 	try{
+		// JATJ: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
@@ -280,6 +284,7 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
  **/
 export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
 	try{
+		// JATJ: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
@@ -298,6 +303,7 @@ export async function getPerformancePlans(id: Number, xAuthToken: string, term: 
    **/
 export async function getPerformanceReviews(id: Number, xAuthToken: string, term: string) {
 	try{
+		// JATJ: Implement
 		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;

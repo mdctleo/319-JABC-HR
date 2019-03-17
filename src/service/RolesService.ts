@@ -15,7 +15,8 @@ import Database from "../database/Database";
  **/
 exports.createCompetency = function (competency: ICompetency, idRole: number, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -55,7 +56,8 @@ export async function createRole(role: IRole, xAuthToken: String) {
  **/
 export async function deleteCompetency(id: Number, idRole: Number, xAuthToken: String) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -91,7 +93,8 @@ export async function deleteRole(id: Number, xAuthToken: String) {
  **/
 export async function getCompetency(id: Number, idRole: Number, xAuthToken: String) {    
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -108,7 +111,8 @@ export async function getCompetency(id: Number, idRole: Number, xAuthToken: Stri
  **/
 export async function getCompetencys(idRole: Number, xAuthToken: String) {    
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -162,7 +166,8 @@ export async function getRoles(xAuthToken: String) {
  **/
 export async function updaupdateCompetencyteRole(id: Number, competency: ICompetency, idRole: Number, xAuthToken: String) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }

@@ -12,7 +12,8 @@ import { IComment, IPerformancePlan, IPerformanceReview, IPerformanceSection } f
  **/
 exports.createComment = function (id: Number, comment: IComment, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -30,7 +31,8 @@ exports.createComment = function (id: Number, comment: IComment, xAuthToken: str
  **/
 exports.deleteComment = function (id: Number, idComment: Number, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -47,7 +49,8 @@ exports.deleteComment = function (id: Number, idComment: Number, xAuthToken: str
  **/
 exports.deletePerformancePlan = function (id: Number, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -64,7 +67,8 @@ exports.deletePerformancePlan = function (id: Number, xAuthToken: string) {
  **/
 exports.deletePerformanceReview = function (id: Number, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -82,7 +86,8 @@ exports.deletePerformanceReview = function (id: Number, xAuthToken: string) {
  **/
 exports.getComment = function (id: Number, idComment: Number, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -99,7 +104,8 @@ exports.getComment = function (id: Number, idComment: Number, xAuthToken: string
  **/
 exports.getComments = function (id: Number, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -116,7 +122,8 @@ exports.getComments = function (id: Number, xAuthToken: string) {
  **/
 exports.getPerformancePlan = function (id: Number, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -133,7 +140,8 @@ exports.getPerformancePlan = function (id: Number, xAuthToken: string) {
  **/
 exports.getPerformanceReview = function (id: Number, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -152,7 +160,8 @@ exports.getPerformanceReview = function (id: Number, xAuthToken: string) {
  **/
 exports.updateComment = function (id: Number, idComment: Number, comment: IComment, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -170,7 +179,8 @@ exports.updateComment = function (id: Number, idComment: Number, comment: IComme
  **/
 exports.updatePerformancePlan = function (id: Number, performancePlan: IPerformancePlan, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }
@@ -188,7 +198,8 @@ exports.updatePerformancePlan = function (id: Number, performancePlan: IPerforma
  **/
 exports.updatePerformanceReview = function (id: Number, performanceReview: IPerformanceReview, xAuthToken: string) {
     try {
-        throw 'NOT IMPLEMENTED'
+        // JATJ: Implement
+		throw 'NOT IMPLEMENTED'
     } catch (error) {
         throw error;
     }

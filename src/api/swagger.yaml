@@ -1026,6 +1026,42 @@ paths:
       security:
       - AuthToken: []
       x-swagger-router-controller: "Onboarding"
+  /onboarding/task/{id}/file:
+    get:
+      tags:
+      - "Onboarding"
+      summary: "gets an specific OnboardingTask file"
+      description: "Will return the OnboardingTask File that matches with the provided\
+        \ [id]\n"
+      operationId: "getOnboardingTaskFile"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched OnboardingTask"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "The API responds with a file"
+          schema:
+            type: "file"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Onboarding"
   /onboarding/documentType:
     get:
       tags:
@@ -1232,6 +1268,42 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Onboarding"
+  /onboarding/documentType/{id}/file:
+    get:
+      tags:
+      - "Onboarding"
+      summary: "gets an specific DocumentType file"
+      description: "Will return the DocumentType File that matches with the provided\
+        \ [id]\n"
+      operationId: "getDocumentTypeFile"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the searched DocumentType"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "The API responds with a file"
+          schema:
+            type: "file"
         401:
           description: "unauthorized access"
           schema:

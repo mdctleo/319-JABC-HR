@@ -75,6 +75,18 @@ module.exports.getDocumentType = function getDocumentType (req, res, next) {
     });
 };
 
+module.exports.getDocumentTypeFile = function getDocumentTypeFile (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Onboarding.getDocumentTypeFile(id,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
 module.exports.getDocumentTypes = function getDocumentTypes (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getDocumentTypes(xAuthToken)
@@ -113,6 +125,18 @@ module.exports.getOnboardingTask = function getOnboardingTask (req, res, next) {
   var id = req.swagger.params['id'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getOnboardingTask(id,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
+module.exports.getOnboardingTaskFile = function getOnboardingTaskFile (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Onboarding.getOnboardingTaskFile(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
