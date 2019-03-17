@@ -36,43 +36,6 @@ const styles = theme => ({
     display: 'inline-block',
     backgroundColor: '#ff5000',
   },
-  title: {
-    marginLeft: '2.5%',
-    color: 'white',
-  },
-  card: {
-    marginLeft: '30px',
-    marginBottom: '20px',
-    paddingTop: '5px',
-    paddingBottom: '5px',
-    width: '75%',
-    backgroundColor: '#00954D',
-  },
-  fieldContainer: {
-    width: '100%',
-    marginBottom: '15px',
-  },
-  positionName: {
-    display: 'inline',
-    marginTop: '30px',
-  },
-  formSubheading: {
-    display: 'inline',
-  },
-  container: {
-    width: '95%',
-    marginLeft: '2.5%',
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  topFieldContainer: {
-    width: '100%',
-    marginBottom: '15px',
-    marginTop: '50px',
-  },
-  textField: {
-    width: '100%',
-  },
   editButton: {
     float: 'right',
     display: 'inline',
@@ -83,7 +46,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   formButton: {
     float: 'right',
@@ -98,7 +61,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
 });
 
@@ -108,52 +71,76 @@ class Profile extends React.PureComponent {
   }
 
   state = {
-    value: 0,
-    loginCred: 1,
-    edit: 0,
-    profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer", description: "kasjdbaksbaksdjbcakjsdcakjsd", competencies: [{name: "C++", description: "Can code in C++", rating: 0 }]}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
+    activeTab: 0,
+    isAdmin: true,
+    edit: false,
   };
 
   handleChange = (event, value) => {
-    this.setState({ value });
-    this.setState({ edit: 0 });
+    this.setState({ activeTab: value });
+    this.setState({ edit: false });
   };
 
   handleClickEdit = (event, value) => {
     this.setState({
-      edit: 1,
+      edit: true,
     });
   };
 
   handleClose = value => {
     this.setState({
-      edit: 0,
+      edit: false,
     });
     this.state.profile = value;
   };
 
   updateProfile = (event, value) => {
-    var firstname = document.getElementById("edit-prof-fname").value;
-    var id = document.getElementById("edit-prof-id").value;
-    var sin = document.getElementById("edit-prof-sin").value;
-    var name = document.getElementById("edit-prof-position").value;
-    var remainingVacationDays = document.getElementById("edit-prof-vacation").value;
-    var address = document.getElementById("edit-prof-address").value;
-    var lastname = document.getElementById("edit-prof-lname").value;
-    var status = document.getElementById("edit-prof-status").value;
-    var salary = document.getElementById("edit-prof-salary").value;
-    var manager = document.getElementById("edit-prof-manager").value;
-    var type = document.getElementById("edit-prof-type").value;
-    var phone = document.getElementById("edit-prof-phone").value;
-    this.setState({ profile: { firstname: firstname, lastname: lastname, id: id, sin: sin, role: {name: name}, status: status, salary: salary, manager: manager, type: type, vacation: remainingVacationDays, address: address, phone: phone }});
-    console.log("made it into fn");
-    this.setState({ edit: 0 });
-}
+    const firstname = document.getElementById('edit-prof-fname').value;
+    const id = document.getElementById('edit-prof-id').value;
+    const sin = document.getElementById('edit-prof-sin').value;
+    const name = document.getElementById('edit-prof-position').value;
+    const remainingVacationDays = document.getElementById('edit-prof-vacation')
+      .value;
+    const address = document.getElementById('edit-prof-address').value;
+    const lastname = document.getElementById('edit-prof-lname').value;
+    const status = document.getElementById('edit-prof-status').value;
+    const salary = document.getElementById('edit-prof-salary').value;
+    const manager = document.getElementById('edit-prof-manager').value;
+    const type = document.getElementById('edit-prof-type').value;
+    const phone = document.getElementById('edit-prof-phone').value;
+    this.setState({
+      profile: {
+        firstname,
+        lastname,
+        id,
+        sin,
+        role: { name },
+        status,
+        salary,
+        manager,
+        type,
+        vacation: remainingVacationDays,
+        address,
+        phone,
+      },
+    });
+    console.log('made it into fn');
+    this.setState({ edit: false });
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.profile && !state.profile) {
+      return {
+        profile: props.profile,
+      };
+    }
+    return null;
+  }
 
   render() {
-    const {value, loginCred, edit, profile} = this.state;
+    const { activeTab, isAdmin, edit, profile } = this.state;
     const state = this.state;
-    const { classes } = this.props;
+    const { classes, role } = this.props;
 
     if (!profile) return null;
     return (
@@ -161,30 +148,64 @@ class Profile extends React.PureComponent {
         <h1>My Profile</h1>
         <Paper className={classes.root}>
           <AppBar position="static" className={classes.appBar}>
-            <Tabs value={value} classes={{ indicator: classes.tabsIndicator }}
-                  onChange={this.handleChange}>
+            <Tabs
+              value={activeTab}
+              classes={{ indicator: classes.tabsIndicator }}
+              onChange={this.handleChange}
+            >
               <Tab disableRipple label="Profile" />
-              <Tab disableRipple label="Role" />
+              {role && <Tab disableRipple label="Role" />}
             </Tabs>
-        </AppBar> 
-           <div  className="profile-card">
-           { value == 0 && loginCred == 0 && 
-           <EmployeeDisplay state={state} /> }
-           { value == 0 && loginCred == 1 && edit == 0 &&
-            <div>
-              <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button> 
-              <EmployeeDisplay state={state} />
-           </div> } 
-           { value == 0 && loginCred == 1 && edit == 1 && 
-           <div>
-            <EmployeeEditForm state={state} />
-            <Button className={classes.formButton} onClick={this.updateProfile}>Submit</Button>
-            <Button className={classes.formButton} onClick={this.updateProfile}>Save</Button> 
-           </div>}
-           { value == 1 && <RoleDisplay role={profile.role} />}
-           </div>
-     </Paper>
-    </div>
+          </AppBar>
+          <div className="profile-card">
+            {activeTab === 0 &&
+              !isAdmin && (
+                <EmployeeDisplay
+                  profile={profile}
+                  roleName={role && role.name}
+                  isAdmin={isAdmin}
+                />
+              )}
+            {activeTab === 0 &&
+              isAdmin &&
+              !edit && (
+                <div>
+                  <Button
+                    className={classes.editButton}
+                    onClick={this.handleClickEdit}
+                  >
+                    Edit
+                  </Button>
+                  <EmployeeDisplay
+                    profile={profile}
+                    roleName={role && role.name}
+                    isAdmin={isAdmin}
+                  />
+                </div>
+              )}
+            {activeTab === 0 &&
+              isAdmin &&
+              edit && (
+                <div>
+                  <EmployeeEditForm state={state} />
+                  <Button
+                    className={classes.formButton}
+                    onClick={this.updateProfile}
+                  >
+                    Submit
+                  </Button>
+                  <Button
+                    className={classes.formButton}
+                    onClick={this.updateProfile}
+                  >
+                    Save
+                  </Button>
+                </div>
+              )}
+            {activeTab === 1 && <RoleDisplay role={role} />}
+          </div>
+        </Paper>
+      </div>
     );
   }
 }

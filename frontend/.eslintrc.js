@@ -36,13 +36,7 @@ module.exports = {
     'import/no-webpack-loader-syntax': 0,
     'import/order': false,
     'import/prefer-default-export': 0,
-    indent: [
-      2,
-      2,
-      {
-        SwitchCase: 1,
-      },
-    ],
+    indent: 0,
     'max-len': 0,
     'newline-per-chained-call': 0,
     'no-confusing-arrow': 0,
