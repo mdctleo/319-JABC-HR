@@ -241,7 +241,7 @@ DROP PROCEDURE IF EXISTS update_performance;
 DELIMITER //
 
 CREATE PROCEDURE `update_performance` (IN p_id INT
-, IN performance_date BIGINT
+, IN performance_date DATE
 , IN status TINYINT
 )
 BEGIN

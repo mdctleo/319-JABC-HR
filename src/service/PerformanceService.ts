@@ -1,25 +1,22 @@
 'use strict';
-import { IComment, IPerformance } from '../model/models'
+import { IComment, IPerformancePlan, IPerformanceReview, IPerformanceSection } from '../model/models'
 
 /**
- * creates a new Comment for the Performance with [id]
- * Will create a new Comment with the provided data in body, to the Performance with [id]
+ * creates a new Comment for the PerformanceReview with [id]
+ * Will create a new Comment with the provided data in body, to the PerformanceReview with [id]
  *
- * @param {Number} id of the Performance to be commented
- * @param {IComment} comment Comment data
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @returns {Promise<IApiResponse>}
+ * id Integer id of the PerformanceReview to be commented
+ * comment IComment Comment data
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IApiResponse
  **/
-exports.createComment = function(id : Number, comment : IComment, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+exports.createComment = function (id: Number, comment: IComment, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
 }
 
 
@@ -27,42 +24,54 @@ exports.createComment = function(id : Number, comment : IComment, xAuthToken : S
  * deletes Comment
  * Will delete an Comment if the Comment matches the [idComment]
  *
- * @param {Number} id of the Performance with comments
- * @param {Number} idComment idComment of the Comment to be deleted
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @returns {Promise<IApiResponse>}
+ * id Integer id of the PerformanceReview with comments
+ * idComment Integer idComment of the Comment to be deleted
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IApiResponse
  **/
-exports.deleteComment = function(id : Number, idComment : Number, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+exports.deleteComment = function (id: Number, idComment: Number, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
 }
 
 
 /**
- * deletes Performance
- * Will delete the Performance that matches with the provided [id] from  the Employee with [id] 
+ * deletes PerformancePlan
+ * Will delete the PerformancePlan that matches with the provided [id] from  the Employee with [id] 
  *
- * @param {Number} id of the searched Performance
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @returns {Promise<IApiResponse>}
+ * id Integer id of the searched PerformancePlan
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IApiResponse
  **/
-exports.deletePerformance = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+exports.deletePerformancePlan = function (id: Number, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+/**
+ * deletes PerformanceReview
+ * Will delete the PerformanceReview that matches with the provided [id] from  the Employee with [id] 
+ *
+ * id Integer id of the searched PerformanceReview
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IApiResponse
+ **/
+exports.deletePerformanceReview = function (id: Number, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
 }
 
 
@@ -70,146 +79,72 @@ exports.deletePerformance = function(id : Number,  xAuthToken : String) {
  * gets an specific Comment
  * Will return the Comment that matches with the provided [idComment]
  *
- * @param {Number} id of the Performance with comments
- * @param {Number} idComment idComment of the searched Comment
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @returns {Promise<IComment>}
+ * id Integer id of the PerformanceReview with comments
+ * idComment Integer idComment of the searched Comment
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IComment
  **/
-exports.getComment = function(id : Number, idComment : Number, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "fkCommenter" : 1,
-  "date" : 1,
-  "fkPerformance" : 1,
-  "comment" : "comment",
-  "id" : 1
-};
-    resolve(examples);
-  });
+exports.getComment = function (id: Number, idComment: Number, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
 }
 
 
 /**
- * get all the Comments from a Performance with [id]
- * This returns all the Comments of the Performance with [id]. 
+ * get all the Comments from a PerformanceReview with [id]
+ * This returns all the Comments of the PerformanceReview with [id]. 
  *
- * @param {Number} id of the Performance with comments
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @returns {Promise<[]>}
+ * id Integer id of the PerformanceReview with comments
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns List
  **/
-exports.getComments = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = [ {
-  "fkCommenter" : 1,
-  "date" : 1,
-  "fkPerformance" : 1,
-  "comment" : "comment",
-  "id" : 1
-}, {
-  "fkCommenter" : 1,
-  "date" : 1,
-  "fkPerformance" : 1,
-  "comment" : "comment",
-  "id" : 1
-} ];
-    resolve(examples);
-  });
+exports.getComments = function (id: Number, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
 }
 
 
 /**
- * gets an specific Performance
- * Will return the Performance that matches with the provided [id] from  the Employee with [id] 
+ * gets an specific PerformancePlan
+ * Will return the PerformancePlan that matches with the provided [id] from  the Employee with [id] 
  *
- * @param {Number} id of the searched Performance
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @returns {Promise<IPerformance>}
+ * id Integer id of the searched PerformancePlan
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IPerformancePlan
  **/
-exports.getPerformance = function(id : Number,  xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "date" : 0.80082819046101150206595775671303272247314453125,
-  "personalTargets" : [ {
-    "rating" : "rating",
-    "description" : "description",
-    "fkPerformance" : 1,
-    "id" : 1
-  }, {
-    "rating" : "rating",
-    "description" : "description",
-    "fkPerformance" : 1,
-    "id" : 1
-  } ],
-  "comments" : [ {
-    "fkCommenter" : 1,
-    "date" : 1,
-    "fkPerformance" : 1,
-    "comment" : "comment",
-    "id" : 1
-  }, {
-    "fkCommenter" : 1,
-    "date" : 1,
-    "fkPerformance" : 1,
-    "comment" : "comment",
-    "id" : 1
-  } ],
-  "fkEmployee" : 1,
-  "objectives" : [ {
-    "q1" : "q1",
-    "innovative" : "innovative",
-    "q2" : "q2",
-    "q3" : "q3",
-    "q4" : "q4",
-    "impact" : "impact",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "foundation" : "foundation",
-    "volAlum" : "volAlum",
-    "relevance" : "relevance"
-  }, {
-    "q1" : "q1",
-    "innovative" : "innovative",
-    "q2" : "q2",
-    "q3" : "q3",
-    "q4" : "q4",
-    "impact" : "impact",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "foundation" : "foundation",
-    "volAlum" : "volAlum",
-    "relevance" : "relevance"
-  } ],
-  "id" : 1,
-  "jabcGoals" : [ {
-    "goal" : "goal",
-    "name" : "name",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "previousYear" : "previousYear"
-  }, {
-    "goal" : "goal",
-    "name" : "name",
-    "fkPerformance" : 1,
-    "id" : 1,
-    "previousYear" : "previousYear"
-  } ],
-  "status" : 6,
-  "developmentGoals" : [ {
-    "goal" : "goal",
-    "keyActivities" : "keyActivities",
-    "rating" : "rating",
-    "fkPerformance" : 1,
-    "id" : 1
-  }, {
-    "goal" : "goal",
-    "keyActivities" : "keyActivities",
-    "rating" : "rating",
-    "fkPerformance" : 1,
-    "id" : 1
-  } ]
-};
-    resolve(examples);
-  });
+exports.getPerformancePlan = function (id: Number, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+/**
+ * gets an specific PerformanceReview
+ * Will return the PerformanceReview that matches with the provided [id] from  the Employee with [id] 
+ *
+ * id Integer id of the searched PerformanceReview
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IPerformanceReview
+ **/
+exports.getPerformanceReview = function (id: Number, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
 }
 
 
@@ -217,43 +152,56 @@ exports.getPerformance = function(id : Number,  xAuthToken : String) {
  * updates the Comment
  * Will update an Comment with the provided data in body if the Comment matches the [idComment]
  *
- * @param {Number} id of the Performance with comments
- * @param {Number} idComment idComment of the Comment to be updated
- * @param {IComment} comment Comment data
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @returns {Promise<IApiResponse>}
+ * id Integer id of the PerformanceReview with comments
+ * idComment Integer idComment of the Comment to be updated
+ * comment IComment Comment data
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IApiResponse
  **/
-exports.updateComment = function(id : Number, idComment : Number, comment : IComment, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+exports.updateComment = function (id: Number, idComment: Number, comment: IComment, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
 }
 
 
 /**
- * updates the Performance
- * Will update an Performance with the provided data in body  if the Performance matches the [id] 
+ * updates the PerformancePlan
+ * Will update an PerformancePlan with the provided data in body  if the PerformancePlan matches the [id] 
  *
- * @param {Number} id of the searched Performance
- * performance IPerformance Performance data
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @returns {Promise<IApiResponse>}
+ * id Integer id of the searched PerformancePlan
+ * performancePlan IPerformancePlan PerformancePlan data
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IApiResponse
  **/
-exports.updatePerformance = function(id : Number, performance : IPerformance, xAuthToken : String) {
-  return new Promise(function(resolve, reject) {
-    var examples = {
-  "debugMessage" : "This is a debug message",
-  "type" : "ERROR",
-  "message" : "Unauthorized access to the API",
-  "responseCode" : 0
-};
-    resolve(examples);
-  });
+exports.updatePerformancePlan = function (id: Number, performancePlan: IPerformancePlan, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+/**
+ * updates the PerformanceReview
+ * Will update an PerformanceReview with the provided data in body  if the PerformanceReview matches the [id] 
+ *
+ * id Integer id of the searched PerformanceReview
+ * performanceReview IPerformanceReview PerformanceReview data
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * returns IApiResponse
+ **/
+exports.updatePerformanceReview = function (id: Number, performanceReview: IPerformanceReview, xAuthToken: string) {
+    try {
+        // TODO: Implement
+		throw 'NOT IMPLEMENTED'
+    } catch (error) {
+        throw error;
+    }
 }
 

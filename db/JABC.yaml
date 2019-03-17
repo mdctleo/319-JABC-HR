@@ -72,10 +72,7 @@ tags:
 - name: Performance
   description: |
     Manage the performance records
-# - name: Competency
-#   description: |
-#     Allows the customization of the performance records
-- name: Document
+- name: Onboarding
   description: |
     Manage the onboarding process of new employees
 - name: Vacation
@@ -345,15 +342,15 @@ paths:
           $ref: '#/responses/ErrorResponse'
 
 # ----------------------------- Employee Onboarding
-  /employee/{id}/document:
+  /employee/{id}/task:
     get:
       tags:
       - Employee
-      summary: get all the Documents of the employee with [id]
+      summary: get all the OnboardingTasks of the employee with [id]
       description: | 
-        This returns all the Documents of the system. 
-        If [term] is provided this returns the Documents of the Employee that match with the [term]. 
-      operationId: getDocuments
+        This returns all the OnboardingTasks of the system. 
+        If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term]. 
+      operationId: getOnboardingTasks
       security:
       - AuthToken: []
       parameters:
@@ -371,7 +368,7 @@ paths:
           schema:
             type: array
             items: 
-              $ref: '#/definitions/IDocument'
+              $ref: '#/definitions/IOnboardingTask'
         401:
           $ref: '#/responses/NoAccessResponse'
         default:
@@ -379,9 +376,9 @@ paths:
     post:
       tags:
       - Employee
-      summary: creates a new Document for the employee with [id]
-      description: Will create a new Document with the provided data in body
-      operationId: createDocument
+      summary: creates a new OnboardingTask for the employee with [id]
+      description: Will create a new OnboardingTask with the provided data in body
+      operationId: createOnboardingTask
       security:
       - AuthToken: []
       parameters:
@@ -393,11 +390,11 @@ paths:
         type: integer
         format: uint64
       - in: body
-        name: document
-        description: Document data
+        name: onboardingTask
+        description: OnboardingTask data
         required: true
         schema:
-          $ref: '#/definitions/IDocument'
+          $ref: '#/definitions/IOnboardingTask'
       responses:
         200:
           $ref: '#/responses/SuccessfulResponse'
@@ -406,16 +403,56 @@ paths:
         default:
           $ref: '#/responses/ErrorResponse'
 
-# ----------------------------- Employee Performance
-  /employee/{id}/performance:
+  /employee/{id}/task/{idOnboardingTask}:
+    put:
+      tags:
+      - Employee
+      summary: completes the OnboardingTask with [idOnboardingTask] for the employee with [id]
+      description: |
+        If the OnboardingTask requires a document to be completed, then the parameter [document] must be
+        provided to successfully complete the OnboardingTask.
+      operationId: completeOnboardingTask
+      consumes:
+        - multipart/form-data
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      - name: idOnboardingTask
+        in: path
+        description: id of the OnboardingTask to be completed
+        required: true
+        type: integer
+        format: uint64
+      - in: formData
+        name: document
+        required: false
+        type: file
+        description: The document file filled by the employee.
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Employee PerformancePlan
+  /employee/{id}/performance/plan:
     get:
       tags:
       - Employee
-      summary: get all the Performances of the employee with [id]
+      summary: get all the PerformancePlans of the employee with [id]
       description: | 
-        This returns all the Performances of the system.
-        If [term] is provided this returns the Performances of the Employee that match with the [term]. 
-      operationId: getPerformances
+        This returns all the PerformancePlans of the system.
+        If [term] is provided this returns the PerformancePlans of the Employee that match with the [term]. 
+      operationId: getPerformancePlans
       security:
       - AuthToken: []
       parameters:
@@ -433,7 +470,7 @@ paths:
           schema:
             type: array
             items: 
-              $ref: '#/definitions/IPerformance'
+              $ref: '#/definitions/IPerformancePlan'
         401:
           $ref: '#/responses/NoAccessResponse'
         default:
@@ -441,9 +478,9 @@ paths:
     post:
       tags:
       - Employee
-      summary: creates a new Performance for the employee with [id]
-      description: Will create a new Performance with the provided data in body
-      operationId: createPerformance
+      summary: creates a new PerformancePlan for the employee with [id]
+      description: Will create a new PerformancePlan with the provided data in body
+      operationId: createPerformancePlan
       security:
       - AuthToken: []
       parameters:
@@ -456,10 +493,72 @@ paths:
         format: uint64
       - in: body
         name: performance
-        description: Performance data
+        description: PerformancePlan data
         required: true
         schema:
-          $ref: '#/definitions/IPerformance'
+          $ref: '#/definitions/IPerformancePlan'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+  # ----------------------------- Employee PerformanceReview
+  /employee/{id}/performance/review:
+    get:
+      tags:
+      - Employee
+      summary: get all the PerformanceReviews of the employee with [id]
+      description: | 
+        This returns all the PerformanceReviews of the system.
+        If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term]. 
+      operationId: getPerformanceReviews
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - $ref: '#/parameters/term'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IPerformanceReview'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Employee
+      summary: creates a new PerformanceReview for the employee with [id]
+      description: Will create a new PerformanceReview with the provided data in body
+      operationId: createPerformanceReview
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Employee
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: performance
+        description: PerformanceReview data
+        required: true
+        schema:
+          $ref: '#/definitions/IPerformanceReview'
       responses:
         200:
           $ref: '#/responses/SuccessfulResponse'
@@ -640,23 +739,23 @@ paths:
         default:
           $ref: '#/responses/ErrorResponse'
 
-# ----------------------------- Document
-  /document/{id}:
+# ----------------------------- OnboardingTask
+  /onboarding/task/{id}:
     get:
       tags:
-      - Document
-      summary: gets an specific Document
+      - Onboarding
+      summary: gets an specific OnboardingTask
       description: |
-        Will return the Document that matches with the provided [id] from 
+        Will return the OnboardingTask that matches with the provided [id] from 
         the Employee with [id]
-      operationId: getDocument
+      operationId: getOnboardingTask
       security:
       - AuthToken: []
       parameters:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the searched Document
+        description: id of the searched OnboardingTask
         required: true
         type: integer
         format: uint64
@@ -664,35 +763,35 @@ paths:
         200:
           description: successful operation
           schema:
-            $ref: '#/definitions/IDocument'
+            $ref: '#/definitions/IOnboardingTask'
         401:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
     put:
       tags:
-      - Document
-      summary: updates the Document
+      - Onboarding
+      summary: updates the OnboardingTask
       description:  | 
-        Will update an Document with the provided data in body 
-        if the Document matches the [id]
-      operationId: updateDocument
+        Will update an OnboardingTask with the provided data in body 
+        if the OnboardingTask matches the [id]
+      operationId: updateOnboardingTask
       security:
       - AuthToken: []
       parameters:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the searched Document
+        description: id of the searched OnboardingTask
         required: true
         type: integer
         format: uint64
       - in: body
-        name: document
-        description: Document data
+        name: onboardingTask
+        description: OnboardingTask data
         required: true
         schema:
-          $ref: '#/definitions/IDocument'
+          $ref: '#/definitions/IOnboardingTask'
       responses:
         200:
           $ref: '#/responses/SuccessfulResponse'
@@ -702,19 +801,19 @@ paths:
           $ref: '#/responses/ErrorResponse'
     delete:
       tags:
-      - Document
-      summary: deletes Document
+      - Onboarding
+      summary: deletes OnboardingTask
       description: | 
-        Will delete the Document that matches with the provided [id] from 
+        Will delete the OnboardingTask that matches with the provided [id] from 
         the Employee with [id]
-      operationId: deleteDocument
+      operationId: deleteOnboardingTask
       security:
       - AuthToken: []
       parameters:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the searched Document
+        description: id of the searched OnboardingTask
         required: true
         type: integer
         format: uint64
@@ -725,12 +824,38 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-
-# ----------------------------- Documents
-  /document/type:
+  
+  /onboarding/task/{id}/file:
     get:
       tags:
-      - Document
+      - Onboarding
+      summary: gets an specific OnboardingTask file
+      description: |
+        Will return the OnboardingTask File that matches with the provided [id]
+      operationId: getOnboardingTaskFile
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched OnboardingTask
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: The API responds with a file
+          schema:
+            type: file
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- Document Type
+  /onboarding/documentType:
+    get:
+      tags:
+      - Onboarding
       summary: get all the DocumentTypes
       description: | 
         This returns all the DocumentTypes of the system.
@@ -752,7 +877,7 @@ paths:
           $ref: '#/responses/ErrorResponse'
     post:
       tags:
-      - Document
+      - Onboarding
       summary: creates a new DocumentType
       description: Will create a new DocumentType with the provided data in body
       operationId: createDocumentType
@@ -773,10 +898,10 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  /document/type/{id}:
+  /onboarding/documentType/{id}:
     get:
       tags:
-      - Document
+      - Onboarding
       summary: gets an specific DocumentType
       description: Will return the DocumentType that matches with the provided [id]
       operationId: getDocumentType
@@ -799,9 +924,39 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Onboarding
+      summary: uploads the template to the DocumentType
+      description: Will update an DocumentType with the provided file as a template if the DocumentType matches the [id]
+      operationId: uploadTemplateDocumentType
+      consumes:
+        - multipart/form-data
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the DocumentType to be updated
+        required: true
+        type: integer
+        format: uint64
+      - in: formData
+        name: document
+        required: false
+        type: file
+        description: The document file to be used as a template
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
     put:
       tags:
-      - Document
+      - Onboarding
       summary: updates the DocumentType
       description: Will update an DocumentType with the provided data in body if the DocumentType matches the [id]
       operationId: updateDocumentType
@@ -830,7 +985,7 @@ paths:
           $ref: '#/responses/ErrorResponse'
     delete:
       tags:
-      - Document
+      - Onboarding
       summary: deletes DocumentType
       description: Will delete an DocumentType if the DocumentType matches the [id]
       operationId: deleteDocumentType
@@ -852,23 +1007,93 @@ paths:
         default:
           $ref: '#/responses/ErrorResponse'
 
-# ----------------------------- Performance
-  /performance/{id}:
+  /onboarding/documentType/{id}/file:
     get:
       tags:
-      - Performance
-      summary: gets an specific Performance
+      - Onboarding
+      summary: gets an specific DocumentType file
       description: |
-        Will return the Performance that matches with the provided [id] from 
-        the Employee with [id]
-      operationId: getPerformance
+        Will return the DocumentType File that matches with the provided [id]
+      operationId: getDocumentTypeFile
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched DocumentType
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: The API responds with a file
+          schema:
+            type: file
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- FAQ
+  /onboarding/faq:
+    get:
+      tags:
+      - Onboarding
+      summary: get all the FAQs
+      description: | 
+        This returns all the FAQs of the system.
+      operationId: getFAQs
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IFAQ'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Onboarding
+      summary: creates a new FAQ
+      description: Will create a new FAQ with the provided data in body
+      operationId: createFAQ
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: body
+        name: faq
+        description: FAQ data
+        required: true
+        schema:
+          $ref: '#/definitions/IFAQ'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /onboarding/faq/{id}:
+    get:
+      tags:
+      - Onboarding
+      summary: gets an specific FAQ
+      description: Will return the FAQ that matches with the provided [id]
+      operationId: getFAQ
       security:
       - AuthToken: []
       parameters:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the searched Performance
+        description: id of the searched FAQ
         required: true
         type: integer
         format: uint64
@@ -876,7 +1101,89 @@ paths:
         200:
           description: successful operation
           schema:
-            $ref: '#/definitions/IPerformance'
+            $ref: '#/definitions/IFAQ'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Onboarding
+      summary: updates the FAQ
+      description: Will update an FAQ with the provided data in body if the FAQ matches the [id]
+      operationId: updateFAQ
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the FAQ to be updated
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: faq
+        description: FAQ data
+        required: true
+        schema:
+          $ref: '#/definitions/IFAQ'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Onboarding
+      summary: deletes FAQ
+      description: Will delete an FAQ if the FAQ matches the [id]
+      operationId: deleteFAQ
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the FAQ to be deleted
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+
+# ----------------------------- PerformancePlan
+  /performance/plan/{id}:
+    get:
+      tags:
+      - Performance
+      summary: gets an specific PerformancePlan
+      description: |
+        Will return the PerformancePlan that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: getPerformancePlan
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched PerformancePlan
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IPerformancePlan'
         401:
           $ref: '#/responses/NoAccessResponse'
         default:
@@ -884,27 +1191,27 @@ paths:
     put:
       tags:
       - Performance
-      summary: updates the Performance
+      summary: updates the PerformancePlan
       description:  | 
-        Will update an Performance with the provided data in body 
-        if the Performance matches the [id]
-      operationId: updatePerformance
+        Will update an PerformancePlan with the provided data in body 
+        if the PerformancePlan matches the [id]
+      operationId: updatePerformancePlan
       security:
       - AuthToken: []
       parameters:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the searched Performance
+        description: id of the searched PerformancePlan
         required: true
         type: integer
         format: uint64
       - in: body
         name: performance
-        description: Performance data
+        description: PerformancePlan data
         required: true
         schema:
-          $ref: '#/definitions/IPerformance'
+          $ref: '#/definitions/IPerformancePlan'
       responses:
         200:
           $ref: '#/responses/SuccessfulResponse'
@@ -915,18 +1222,18 @@ paths:
     delete:
       tags:
       - Performance
-      summary: deletes Performance
+      summary: deletes PerformancePlan
       description: | 
-        Will delete the Performance that matches with the provided [id] from 
+        Will delete the PerformancePlan that matches with the provided [id] from 
         the Employee with [id]
-      operationId: deletePerformance
+      operationId: deletePerformancePlan
       security:
       - AuthToken: []
       parameters:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the searched Performance
+        description: id of the searched PerformancePlan
         required: true
         type: integer
         format: uint64
@@ -937,13 +1244,99 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  /performance/{id}/comment:
+
+# ----------------------------- PerformanceReview
+  /performance/review/{id}:
     get:
       tags:
       - Performance
-      summary: get all the Comments from a Performance with [id]
+      summary: gets an specific PerformanceReview
+      description: |
+        Will return the PerformanceReview that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: getPerformanceReview
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched PerformanceReview
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IPerformanceReview'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Performance
+      summary: updates the PerformanceReview
+      description:  | 
+        Will update an PerformanceReview with the provided data in body 
+        if the PerformanceReview matches the [id]
+      operationId: updatePerformanceReview
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched PerformanceReview
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: performance
+        description: PerformanceReview data
+        required: true
+        schema:
+          $ref: '#/definitions/IPerformanceReview'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Performance
+      summary: deletes PerformanceReview
       description: | 
-        This returns all the Comments of the Performance with [id].
+        Will delete the PerformanceReview that matches with the provided [id] from 
+        the Employee with [id]
+      operationId: deletePerformanceReview
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched PerformanceReview
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /performance/review/{id}/comment:
+    get:
+      tags:
+      - Performance
+      summary: get all the Comments from a PerformanceReview with [id]
+      description: | 
+        This returns all the Comments of the PerformanceReview with [id].
       operationId: getComments
       security:
       - AuthToken: []
@@ -951,7 +1344,7 @@ paths:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the Performance with comments
+        description: id of the PerformanceReview with comments
         required: true
         type: integer
         format: uint64
@@ -969,8 +1362,8 @@ paths:
     post:
       tags:
       - Performance
-      summary: creates a new Comment for the Performance with [id]
-      description: Will create a new Comment with the provided data in body, to the Performance with [id]
+      summary: creates a new Comment for the PerformanceReview with [id]
+      description: Will create a new Comment with the provided data in body, to the PerformanceReview with [id]
       operationId: createComment
       security:
       - AuthToken: []
@@ -978,7 +1371,7 @@ paths:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the Performance to be commented
+        description: id of the PerformanceReview to be commented
         required: true
         type: integer
         format: uint64
@@ -995,7 +1388,7 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  /performance/{id}/comment/{idComment}:
+  /performance/review/{id}/comment/{idComment}:
     get:
       tags:
       - Performance
@@ -1008,7 +1401,7 @@ paths:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the Performance with comments
+        description: id of the PerformanceReview with comments
         required: true
         type: integer
         format: uint64
@@ -1039,7 +1432,7 @@ paths:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the Performance with comments
+        description: id of the PerformanceReview with comments
         required: true
         type: integer
         format: uint64
@@ -1074,7 +1467,7 @@ paths:
       - $ref: '#/parameters/securityAuthToken'
       - name: id
         in: path
-        description: id of the Performance with comments
+        description: id of the PerformanceReview with comments
         required: true
         type: integer
         format: uint64
@@ -1092,132 +1485,6 @@ paths:
         default:
           $ref: '#/responses/ErrorResponse'
 
-# ----------------------------- Competency
-  # /competency:
-  #   get:
-  #     tags:
-  #     - Competency
-  #     summary: get all the Competencys
-  #     description: | 
-  #       This returns all the Competencys of the system. 
-  #     operationId: getCompetencys
-  #     security:
-  #     - AuthToken: []
-  #     parameters:
-  #     - $ref: '#/parameters/securityAuthToken'
-  #     responses:
-  #       200:
-  #         description: successful operation
-  #         schema:
-  #           type: array
-  #           items: 
-  #             $ref: '#/definitions/ICompetency'
-  #       401:
-  #         $ref: '#/responses/NoAccessResponse'
-  #       default:
-  #         $ref: '#/responses/ErrorResponse'
-  #   post:
-  #     tags:
-  #     - Competency
-  #     summary: creates a new Competency
-  #     description: Will create a new Competency with the provided data in body
-  #     operationId: createCompetency
-  #     security:
-  #     - AuthToken: []
-  #     parameters:
-  #     - $ref: '#/parameters/securityAuthToken'
-  #     - in: body
-  #       name: competency
-  #       description: Competency data
-  #       required: true
-  #       schema:
-  #         $ref: '#/definitions/ICompetency'
-  #     responses:
-  #       200:
-  #         $ref: '#/responses/SuccessfulResponse'
-  #       401:
-  #         $ref: '#/responses/NoAccessResponse'
-  #       default:
-  #         $ref: '#/responses/ErrorResponse'
-  # /competency/{id}:
-  #   get:
-  #     tags:
-  #     - Competency
-  #     summary: gets an specific Competency
-  #     description: Will return the Competency that matches with the provided [id]
-  #     operationId: getCompetency
-  #     security:
-  #     - AuthToken: []
-  #     parameters:
-  #     - $ref: '#/parameters/securityAuthToken'
-  #     - name: id
-  #       in: path
-  #       description: id of the searched Competency
-  #       required: true
-  #       type: integer
-  #       format: uint64
-  #     responses:
-  #       200:
-  #         description: successful operation
-  #         schema:
-  #           $ref: '#/definitions/ICompetency'
-  #       401:
-  #         $ref: '#/responses/NoAccessResponse'
-  #       default:
-  #         $ref: '#/responses/ErrorResponse'
-  #   put:
-  #     tags:
-  #     - Competency
-  #     summary: updates the Competency
-  #     description: Will update an Competency with the provided data in body if the Competency matches the [id]
-  #     operationId: updateCompetency
-  #     security:
-  #     - AuthToken: []
-  #     parameters:
-  #     - $ref: '#/parameters/securityAuthToken'
-  #     - name: id
-  #       in: path
-  #       description: id of the Competency to be updated
-  #       required: true
-  #       type: integer
-  #       format: uint64
-  #     - in: body
-  #       name: competency
-  #       description: Competency data
-  #       required: true
-  #       schema:
-  #         $ref: '#/definitions/ICompetency'
-  #     responses:
-  #       200:
-  #         $ref: '#/responses/SuccessfulResponse'
-  #       401:
-  #         $ref: '#/responses/NoAccessResponse'
-  #       default:
-  #         $ref: '#/responses/ErrorResponse'
-  #   delete:
-  #     tags:
-  #     - Competency
-  #     summary: deletes Competency
-  #     description: Will delete an Competency if the Competency matches the [id]
-  #     operationId: deleteCompetency
-  #     security:
-  #     - AuthToken: []
-  #     parameters:
-  #     - $ref: '#/parameters/securityAuthToken'
-  #     - name: id
-  #       in: path
-  #       description: id of the Competency to be deleted
-  #       required: true
-  #       type: integer
-  #       format: uint64
-  #     responses:
-  #       200:
-  #         $ref: '#/responses/SuccessfulResponse'
-  #       401:
-  #         $ref: '#/responses/NoAccessResponse'
-  #       default:
-  #         $ref: '#/responses/ErrorResponse'
-  
 # ----------------------------- Roles
   /role:
     get:
@@ -1344,6 +1611,161 @@ paths:
         default:
           $ref: '#/responses/ErrorResponse'
 
+  /role/{idRole}/competency:
+    get:
+      tags:
+      - Roles
+      summary: get all the Competencys
+      description: | 
+        This returns all the Competencys of the system. 
+      operationId: getCompetencys
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: idRole
+        in: path
+        description: id of the Role with searched Competency
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/ICompetency'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    post:
+      tags:
+      - Roles
+      summary: creates a new Competency
+      description: Will create a new Competency with the provided data in body
+      operationId: createCompetency
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: body
+        name: competency
+        description: Competency data
+        required: true
+        schema:
+          $ref: '#/definitions/ICompetency'
+      - name: idRole
+        in: path
+        description: id of the Role with searched Competency
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /role/{idRole}/competency/{id}:
+    get:
+      tags:
+      - Roles
+      summary: gets an specific Competency
+      description: Will return the Competency that matches with the provided [id]
+      operationId: getCompetency
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the searched Competency
+        required: true
+        type: integer
+        format: uint64
+      - name: idRole
+        in: path
+        description: id of the Role with searched Competency
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ICompetency'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Roles
+      summary: updates the Competency
+      description: Will update an Competency with the provided data in body if the Competency matches the [id]
+      operationId: updateCompetency
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Competency to be updated
+        required: true
+        type: integer
+        format: uint64
+      - in: body
+        name: competency
+        description: Competency data
+        required: true
+        schema:
+          $ref: '#/definitions/ICompetency'
+      - name: idRole
+        in: path
+        description: id of the Role with searched Competency
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      tags:
+      - Roles
+      summary: deletes Competency
+      description: Will delete an Competency if the Competency matches the [id]
+      operationId: deleteCompetency
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Competency to be deleted
+        required: true
+        type: integer
+        format: uint64
+      - name: idRole
+        in: path
+        description: id of the Role with searched Competency
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  
 
 definitions:
 
@@ -1425,13 +1847,12 @@ definitions:
       address:
         type: string
       birthdate:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the birthdate of the employee
+        type: string
+        format: date
+        description: The birthdate of the employee
       dateJoined:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the date joined of the employee
+        type: string
+        description: The date joined of the employee
       vacationDays:
         type: integer
         format: uint64
@@ -1515,21 +1936,20 @@ definitions:
         description: The unique identifier of the Employee that updated the data of the Employee
         example: 1
       createdDate:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the date the creation of this version of the employee data
+        type: string
+        format: date
+        description: The date the creation of this version of the employee data
       salary:
         type: number
       address:
         type: string
       birthdate:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the birthdate of the employee
+        type: string
+        format: date
+        description: The birthdate of the employee
       dateJoined:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the date joined of the employee
+        type: string
+        description: The date joined of the employee
       vacationDays:
         type: integer
         format: uint64
@@ -1560,6 +1980,29 @@ definitions:
         type: integer
         format: uint64
         description: The unique identifier of the Role
+        example: 1
+      name:
+        type: string
+      description:
+        type: string
+
+  ICompetency:
+    type: object
+    description: |
+      A Competency contains info of competencies and objectives that each role need to fulfill
+    required:
+    - id
+    - fkRole
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Competency
+        example: 1
+      fkRole:
+        type: integer
+        format: uint64
+        description: Foreign key of the role 
         example: 1
       name:
         type: string
@@ -1603,20 +2046,24 @@ definitions:
         - APPROVED
         - DENIED
       date:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the date when the employee requested the vacation
+        type: string
+        format: date
+        description: The date when the employee requested the vacation
 
-  IDocument:
+  IOnboardingTask:
     type: object
     description: |
-      A Document required for the onbarding proccess of a new Employee
+      An onboarding task required for the onbarding proccess of a new Employee, if the property [requireDoc] is
+      set to 1, then the OnboardingTask require the employee to upload a document, and the fkDocumentType will 
+      contain the id of the IDocumentType object with the template of the document to be filled by the employee. 
+      Otherwise the [fkDocumentType] property will be null.
     required:
     - id
-    - fkDocumentType
     - fkEmployee
     - createdDate
     - dueDate
+    - requireDoc
+    - status
     properties:
       id:
         type: integer
@@ -1634,19 +2081,32 @@ definitions:
         description: The foreign key  of the Employee that needs to upload this Document
         example: 1
       createdDate:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the created date of this Document
-      dueDate:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the due date of this Document
-      expiryDate:
-        type: integer
-        format: uint64
-        description: The unix timestamp of the expiry date of this Document
-      path:
         type: string
+        format: date
+        description: The created date of this Document
+      dueDate:
+        type: string
+        format: date
+        description: The due date of this Document
+      requireDoc:
+        type: integer
+        description: Wether the Onboarding task requires document upload or not.
+        enum:
+        - TASK
+        - UPLOAD
+      status:
+        type: integer
+        description: Wether the Onboarding task is done or not
+        enum:
+        - ACTIVE
+        - DONE
+      expiryDate:
+        type: string
+        format: date
+        description: The expiry date of this Document
+      file:
+        type: string
+        description: The link to the file if it is required
       description:
         type: string
       type:
@@ -1669,13 +2129,14 @@ definitions:
         type: string
       description:
         type: string
-      path:
+      file:
         type: string
+        description: If the document has a template, this will be the link to access it
 
-  IPerformance:
+  IPerformancePlan:
     type: object
     description: |
-      A Performance contains info of a performance record of an employee
+      PerformancePlan contains info of the sections of a performance plan of an employee
     required:
     - id
     - fkEmployee
@@ -1693,157 +2154,82 @@ definitions:
         description: Foreign key of the employee with this performance review
         example: 1
       date:
-        type: number
-        format: uint64
-        description: The unix timestamp of the date the performance review was created
+        type: string
+        format: date
+        description: The date the performance review was created
       status:
         type: integer
         enum:
         - UNPUBLISHED
         - PUBLISHED
-      jabcGoals:
-        description: Contains all the JABC Goals (Section 1) of this performance review
+      sections:
+        description: Contains all the IPerformanceSections Related to this IPerformancePlan
         type: array
         items: 
-          $ref: '#/definitions/IJABCGoal'
-      personalTargets:
-        description: Contains all the Personal Targets (Section 2) of this performance review
-        type: array
-        items: 
-          $ref: '#/definitions/IPersonalTarget'
-      objectives:
-        description: Contains all the Objectives (Section 3) of this performance review
-        type: array
-        items: 
-          $ref: '#/definitions/IObjective'
-      developmentGoals:
-        description: Contains all the Development Goals (Section 4) of this performance review
-        type: array
-        items: 
-          $ref: '#/definitions/IDevelopmentGoal'
+          $ref: '#/definitions/IPerformanceSection'
       comments:
-        description: Contains all the comments (Section 5) of this performance review
+        description: Contains all the comments of this performance review
         type: array
         items: 
           $ref: '#/definitions/IComment'
 
-  IJABCGoal:
+  IPerformanceReview:
     type: object
     description: |
-      A JABCGoal contains what another employee thinks about the performance record of another employee
+      PerformanceReview contains info of the sections of a performance plan of an employee
     required:
     - id
-    - fkPerformance
+    - fkEmployee
+    - fkPerformancePlan
+    - date
+    - status
     properties:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the JABCGoal
+        description: The unique identifier of the Performance
         example: 1
-      fkPerformance:
+      fkEmployee:
         type: integer
         format: uint64
-        description: Foreign key of Performance that has this JABCGoal
+        description: Foreign key of the employee with this performance review
         example: 1
-      name:
+      fkPerformancePlan:
+        type: integer
+        format: uint64
+        description: Foreign key of the performance plan
+        example: 1
+      date:
         type: string
-      goal:
-        type: string
-      previousYear:
-        type: string
+        format: date
+        description: The date the performance review was created
+      status:
+        type: integer
+        enum:
+        - UNPUBLISHED
+        - PUBLISHED
+      sections:
+        description: Contains all the IPerformanceSections Related to this IPerformanceReview
+        type: array
+        items: 
+          $ref: '#/definitions/IPerformanceSection'
+      comments:
+        description: Contains all the comments of this performance review
+        type: array
+        items: 
+          $ref: '#/definitions/IComment'
 
-  IPersonalTarget:
+  IPerformanceSection:
+    description: | 
+      A JSON object containing all the information of a section in either PerformancePlan or PerformanceReview
     type: object
-    description: |
-      A PersonalTarget contains what another employee thinks about the performance record of another employee
-    required:
-    - id
-    - fkPerformance
-    properties:
-      id:
-        type: integer
-        format: uint64
-        description: The unique identifier of the PersonalTarget
-        example: 1
-      fkPerformance:
-        type: integer
-        format: uint64
-        description: Foreign key of Performance that has this PersonalTarget
-        example: 1
-      description:
-        type: string
-      rating:
-        type: string
 
-  IObjective:
-    type: object
-    description: |
-      A Objective contains what another employee thinks about the performance record of another employee
-    required:
-    - id
-    - fkPerformance
-    properties:
-      id:
-        type: integer
-        format: uint64
-        description: The unique identifier of the Objective
-        example: 1
-      fkPerformance:
-        type: integer
-        format: uint64
-        description: Foreign key of Performance that has this Objective
-        example: 1
-      q1:
-        type: string
-      q2:
-        type: string
-      q3:
-        type: string
-      q4:
-        type: string
-      impact:
-        type: string
-      relevance:
-        type: string
-      volAlum:
-        type: string
-      innovative:
-        type: string
-      foundation:
-        type: string
-
-  IDevelopmentGoal:
-    type: object
-    description: |
-      A DevelopmentGoal contains what another employee thinks about the performance record of another employee
-    required:
-    - id
-    - fkPerformance
-    properties:
-      id:
-        type: integer
-        format: uint64
-        description: The unique identifier of the DevelopmentGoal
-        example: 1
-      fkPerformance:
-        type: integer
-        format: uint64
-        description: Foreign key of Performance that has this DevelopmentGoal
-        example: 1
-      goal:
-        type: string
-      keyActivities:
-        type: string
-      rating:
-        type: string
-  
   IComment:
     type: object
     description: |
       A Comment contains what another employee thinks about the performance record of another employee
     required:
     - id
-    - fkPerformance
     - fkCommenter
     - comment
     - date
@@ -1853,10 +2239,15 @@ definitions:
         format: uint64
         description: The unique identifier of the Comment
         example: 1
-      fkPerformance:
+      fkPerformancePlan:
         type: integer
         format: uint64
-        description: Foreign key of Performance that has this Comment
+        description: Foreign key of PerformancePlan that has this Comment
+        example: 1
+      fkPerformanceReview:
+        type: integer
+        format: uint64
+        description: Foreign key of PerformanceReview that has this Comment
         example: 1
       fkCommenter:
         type: integer
@@ -1866,9 +2257,28 @@ definitions:
       comment:
         type: string
       date:
+        type: string
+        format: date
+        description: The date when the Comment was created
+
+  IFAQ:
+    type: object
+    description: |
+      A FAQ contains a question and answer, to help the employee while onboarding
+    required:
+    - id
+    - question
+    - answer
+    properties:
+      id:
         type: integer
         format: uint64
-        description: The unix timestamp of the date when the Comment was created
+        description: The unique identifier of the FAQ
+        example: 1
+      question:
+        type: string
+      answer:
+        type: string
 
   ILogin:
     description: Represents the basic info to logged into the system
@@ -1906,40 +2316,3 @@ definitions:
         type: string
       employee:
         $ref: '#/definitions/IEmployee'
-
-# ----------------------------- Competency
-  # ICompetency:
-  #   type: object
-  #   description: |
-  #     A Competency contains info of competencies and objectives that each role need to fulfill
-  #   required:
-  #   - id
-  #   - fkRole
-  #   - name
-  #   - minRating
-  #   - maxRating
-  #   - status
-  #   properties:
-  #     id:
-  #       type: integer
-  #       format: uint64
-  #       description: The unique identifier of the Competency
-  #       example: 1
-  #     fkRole:
-  #       type: integer
-  #       format: uint64
-  #       description: Foreign key of the role 
-  #       example: 1
-  #     name:
-  #       type: string
-  #     minRating:
-  #       type: number
-  #     maxRating:
-  #       type: number
-  #     status:
-  #       type: string
-  #       enum:
-  #       - OBJECTIVE
-  #       - COMPETENCY
-  #     description:
-  #       type: string

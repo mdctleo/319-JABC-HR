@@ -33,9 +33,9 @@ export interface IVacation {
     requestedDays: number;
     requestedStatus: number;
     /**
-     * The unix timestamp of the date when the employee requested the vacation
+     * The date when the employee requested the vacation
      */
-    date: number;
+    date: string;
 }
 
 export class Vacation implements IVacation{
@@ -57,9 +57,9 @@ export class Vacation implements IVacation{
     requestedDays: number;
     requestedStatus: number;
     /**
-     * The unix timestamp of the date when the employee requested the vacation
+     * The date when the employee requested the vacation
      */
-    date: number;
+    date: string;
 
     constructor(rawVacation: any){
         this.id = rawVacation.VACATION_REQUEST_ID;

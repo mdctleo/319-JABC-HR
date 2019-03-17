@@ -29,10 +29,22 @@ module.exports.deleteComment = function deleteComment (req, res, next) {
     });
 };
 
-module.exports.deletePerformance = function deletePerformance (req, res, next) {
+module.exports.deletePerformancePlan = function deletePerformancePlan (req, res, next) {
   var id = req.swagger.params['id'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.deletePerformance(id,xAuthToken)
+  Performance.deletePerformancePlan(id,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
+module.exports.deletePerformanceReview = function deletePerformanceReview (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Performance.deletePerformanceReview(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -66,10 +78,22 @@ module.exports.getComments = function getComments (req, res, next) {
     });
 };
 
-module.exports.getPerformance = function getPerformance (req, res, next) {
+module.exports.getPerformancePlan = function getPerformancePlan (req, res, next) {
   var id = req.swagger.params['id'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.getPerformance(id,xAuthToken)
+  Performance.getPerformancePlan(id,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
+module.exports.getPerformanceReview = function getPerformanceReview (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Performance.getPerformanceReview(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -92,11 +116,24 @@ module.exports.updateComment = function updateComment (req, res, next) {
     });
 };
 
-module.exports.updatePerformance = function updatePerformance (req, res, next) {
+module.exports.updatePerformancePlan = function updatePerformancePlan (req, res, next) {
   var id = req.swagger.params['id'].value;
   var performance = req.swagger.params['performance'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.updatePerformance(id,performance,xAuthToken)
+  Performance.updatePerformancePlan(id,performance,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
+module.exports.updatePerformanceReview = function updatePerformanceReview (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var performance = req.swagger.params['performance'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Performance.updatePerformanceReview(id,performance,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })

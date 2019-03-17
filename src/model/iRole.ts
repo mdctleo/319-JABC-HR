@@ -11,8 +11,6 @@
  */
 
 
-import {Document, IDocument} from "./iDocument";
-import {IEmployee} from "./iEmployee";
 
 /**
  * An Role is contains all the current information of a current or onboarding employee 
