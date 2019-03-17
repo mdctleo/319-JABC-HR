@@ -24,31 +24,21 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Button from '@material-ui/core/Button';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Chip from '@material-ui/core/Chip';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
-import green from "@material-ui/core/colors/green";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
-import Radio from "@material-ui/core/Radio";
-import FormControl from "@material-ui/core/FormControl";
 import grey from '@material-ui/core/colors/grey';
+import RoleDisplay from '../../components/RoleDisplay';
+import RoleForm from '../../components/RoleForm';
 
 let counter = 0;
-function createData(position, description, competencies) {
+function createData(name, description, competencies) {
   counter += 1;
-  return { id: counter, position, description, competencies };
+  return { id: counter, name, description, competencies };
 }
 
 function desc(a, b, orderBy) {
@@ -216,7 +206,7 @@ const styles = theme => ({
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
-    paddingBottom: '20px',
+    paddingBottom: '100px',
   },
   addButton: {
     float: 'right',
@@ -321,9 +311,27 @@ class EnhancedTable extends React.Component {
     displayedPage: "table",
     addButtonClicked: 0,
     editButtonClicked: 0,
-    selectedProfile: {position: "", description: "", competencies: [{name: "", description: "", rating: 0}]},
+    selectedProfile: {name: "", description: "", competencies: [{name: "", description: "", rating: 0}]},
     value: 1,
     data: [
+      createData('Developer', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Database Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('DevOps Master', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Manager', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('HR Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('President', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Executive Assistant', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Secretary', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Volunteer Coordinator', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Developer', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Database Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('DevOps Master', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Manager', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('HR Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('President', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Executive Assistant', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Secretary', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Volunteer Coordinator', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
       createData('Developer', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
       createData('Database Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
       createData('DevOps Master', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
@@ -446,12 +454,26 @@ class EnhancedTable extends React.Component {
   }
 
   handleSaveButton = (event, value) => {
-    var position = document.getElementById("addRole-position").value;
-    var description = document.getElementById("addRole-description").value;
-    var ccName = document.getElementById("cc-name").value;
-    var ccDescription = document.getElementById("cc-description").value;
-    var competencies=[{name:ccName, description:ccDescription, rating:0}];
-    this.setState({ data: this.state.data.concat(createData(position, description, competencies)) });
+    var id = this.state.selectedProfile.id;
+    for (var i = 0; i < this.state.data.length; i++) {
+      if (this.state.data[i].id == id) {
+        this.state.data[i].description = document.getElementById("rf-description").value;
+        this.state.data[i].name = document.getElementById("rf-name").value;
+        var competencies = [];
+        var foundCompetencyCells = document.getElementsByClassName("rf-rows");
+        for (var i = 0; i < foundCompetencyCells.length; i++) {
+          var input = foundCompetencyCells[i].firstChild.firstChild;
+          if (i % 3 == 0) {
+            input.value ? competencies.push({ name: input.value }) : competencies.push({ name: input.defaultValue });
+          } else if (i % 3 == 1) {
+            competencies[Math.floor(i/3)].description = input.value ? input.value : input.defaultValue;
+          } else {
+            competencies[Math.floor(i/3)].rating = input.value ? input.value : input.defaultValue;
+          }
+        }
+        this.state.data[i].competencies = competencies;
+      }
+    }
     this.setState({ value: 1 });
     this.setState({ displayedPage: "table" });
     this.setState({ editButtonClicked: 0 });
@@ -461,12 +483,22 @@ class EnhancedTable extends React.Component {
     var id = this.state.selectedProfile.id;
     for (var i = 0; i < this.state.data.length; i++) {
       if (this.state.data[i].id == id) {
-        this.state.data[i].description = document.getElementById("role-description").value;
-        this.state.data[i].position = document.getElementById("role-name").value;
-        console.log(this.state.data[i].competencies[0].name);
-        this.state.data[i].competencies[0].name = document.getElementById("cc-name").value;
-        console.log(this.state.data[i].competencies[0].name);
-        this.state.data[i].competencies[0].description = document.getElementById("cc-description").value;
+        this.state.data[i].description = document.getElementById("rf-description").value;
+        this.state.data[i].name = document.getElementById("rf-name").value;
+        var competencies = [];
+        var foundCompetencyCells = document.getElementsByClassName("rf-rows");
+        for (var i = 0; i < foundCompetencyCells.length; i++) {
+          var input = foundCompetencyCells[i].firstChild.firstChild;
+          console.log("made it into inner loop");
+          if (i % 3 == 0) {
+            input.value ? competencies.push({ name: input.value }) : competencies.push({ name: input.defaultValue });
+          } else if (i % 3 == 1) {
+            competencies[Math.floor(i/3)].description = input.value ? input.value : input.defaultValue;
+          } else {
+            competencies[Math.floor(i/3)].rating = input.value ? input.value : input.defaultValue;
+          }
+        }
+        this.state.data[i].competencies = competencies;
       }
     }
     this.setState({ value: 1 });
@@ -475,22 +507,44 @@ class EnhancedTable extends React.Component {
   }
 
   handleAddSubmitButton = (event, value) => {
-    var position = document.getElementById("addRole-position").value;
-    var description = document.getElementById("addRole-description").value;
-    var ccName = document.getElementById("cc-name").value;
-    var ccDescription = document.getElementById("cc-description").value;
-    var radioButtons = document.getElementsByClassName("cc-radio");
-    var buttonRating;
-    for (var i = 0; i < radioButtons.length; i++) {
-      console.log(radioButtons);
-      if (radioButtons[i].checked) {
-        console.log("found checked one");
-        console.log(radioButtons[i].value);
-        buttonRating = parseInt(radioButtons[i].value, 10);
+    var description = document.getElementById("rf-description").value;
+    var name = document.getElementById("rf-name").value;
+    var competencies = [];
+    var foundCompetencyCells = document.getElementsByClassName("rf-rows");
+    for (var i = 0; i < foundCompetencyCells.length; i++) {
+      var input = foundCompetencyCells[i].firstChild.firstChild;
+      if (i % 3 == 0) {
+        input.value ? competencies.push({ name: input.value }) : competencies.push({ name: input.defaultValue });
+      } else if (i % 3 == 1) {
+        competencies[Math.floor(i/3)].description = input.value ? input.value : input.defaultValue;
+      } else {
+        competencies[Math.floor(i/3)].rating = input.value ? input.value : input.defaultValue;
       }
     }
-    var competencies=[{name: ccName, description: ccDescription, rating: buttonRating}];
-    this.setState({ data: this.state.data.concat(createData(position, description, competencies)) });
+    var data = this.state.data;
+    this.setState({ data: data.concat(createData(name, description, competencies ))});
+    this.setState({ value: 1 });
+    this.setState({ displayedPage: "table" });
+    this.setState({ editButtonClicked: 0 });
+  }
+
+  handleAddSaveButton = (event, value) => {
+    var description = document.getElementById("rf-description").value;
+    var name = document.getElementById("rf-name").value;
+    var competencies = [];
+    var foundCompetencyCells = document.getElementsByClassName("rf-rows");
+    for (var i = 0; i < foundCompetencyCells.length; i++) {
+      var input = foundCompetencyCells[i].firstChild.firstChild;
+      if (i % 3 == 0) {
+        input.value ? competencies.push({ name: input.value }) : competencies.push({ name: input.defaultValue });
+      } else if (i % 3 == 1) {
+        competencies[Math.floor(i/3)].description = input.value ? input.value : input.defaultValue;
+      } else {
+        competencies[Math.floor(i/3)].rating = input.value ? input.value : input.defaultValue;
+      }
+    }
+    var data = this.state.data;
+    this.setState({ data: data.concat(createData(name, description, competencies ))});
     this.setState({ value: 1 });
     this.setState({ displayedPage: "table" });
     this.setState({ editButtonClicked: 0 });
@@ -502,7 +556,7 @@ class EnhancedTable extends React.Component {
     const { classes } = this.props;
     const { data, order, orderBy, selected, displayedPage, editButtonClicked, value, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    const blankCompetency = [{name: "", description: "", rating: 0}];
+    const blankRole = {position: "", description: "", competencies: [{name: "", description: "", rating: 0}]};
 
     return (
       <div>
@@ -510,61 +564,19 @@ class EnhancedTable extends React.Component {
         <Button className={classes.addButton} onClick={this.handleAddButton}>Add Role</Button>
         { displayedPage == "add" ?   
           (<Paper className={classes.root}>
-            <div> 
               <AppBar position="static" width="100%">
-                <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
-                  onChange={this.handleChange}>
-                  <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                   onClick={this.handleBackButton} label="<  Back" />
-                </Tabs>
-              </AppBar>
-            <div>
-            <form id="add-role-form" className={classes.container} noValidation autocomplete="off">
-              <div className={classes.topFieldContainer}>
-                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Title</Typography>
-               </div>
-               <div className={classes.fieldContainer}>
-                 <TextField
-                   id="addRole-position"
-                   defaultValue=""
-                   rows="4"
-                   className={classes.textField}
-                   margin="normal"
-                   onClick={this.handleClickTextField}
-                   variant="outlined">
-                 </TextField>
-               </div>
-               <div className={classes.fieldContainer}>      
-                 <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
-               </div>
-               <div className={classes.fieldContainer}>
-                 <TextField
-                   id="addRole-description"
-                   multiline
-                   rows="4"
-                   className={classes.textField}
-                   margin="normal"
-                   onClick={this.handleClickTextField}
-                   variant="outlined">
-                 </TextField>
-               </div>
-               <div className={classes.fieldContainer}>
-                 <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
-               </div>
-               <div id="add-profile-cc-container">
-               <CompetencyCard dataObject={blankCompetency} disabled={false}/>
-               </div>
-            </form>
-          { editButtonClicked == 1 &&
-              (<Fab color="green" aria-label="Add" className={classes.fab}>
-                 <AddIcon />
-               </Fab>)}
-          { editButtonClicked == 1 &&
-              (<Button className={classes.formButtons} onClick={this.handleAddSubmitButton}>Submit</Button>)
-          }
-       </div>
-     </div>
-    </Paper>) :
+              <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }} 
+                    onChange={this.handleChange}>
+                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                     onClick={this.handleBackButton} label="<  Back" />           
+              </Tabs>
+             </AppBar>
+               <div className="profile-card">
+                <RoleForm role={this.state.selectedProfile} add={1}/>
+                <Button className={classes.formButtons} onClick={this.handleAddSubmitButton}>Submit</Button>
+                <Button className={classes.formButtons} onClick={this.handleAddSaveButton}>Save</Button>
+              </div>
+          </Paper>) :
     ( displayedPage == "table" ? 
       (<Paper className={classes.root}>
          <EnhancedTableToolbar numSelected={selected.length} selected={selected}/>
@@ -607,7 +619,7 @@ class EnhancedTable extends React.Component {
                       scope="row" 
                       padding="none"
                       onClick={event => this.handleClickProfile(event, n)}>
-                      {n.position}
+                      {n.name}
                     </TableCell>
                     <TableCell align="right">
                       <Tooltip title="Delete">
@@ -651,56 +663,17 @@ class EnhancedTable extends React.Component {
                  onClick={this.handleBackButton} label="<  Back" />           
           </Tabs>
          </AppBar>
-         <div>
-           <form className={classes.container} noValidation autocomplete="off">
-             <div className={classes.topFieldContainer}>
              {!editButtonClicked &&
-               <Typography className={classes.positionName} variant="h5">{this.state.selectedProfile.position}</Typography>}
-             {editButtonClicked &&
-               <TextField
-                id="role-name"
-                className={classes.textField}
-                margin="normal"
-                onClick={this.handleClickTextField}
-                variant="outlined"
-                defaultValue={this.state.selectedProfile.position}
-                InputProps={{ readOnly: !editButtonClicked }}
-                 />}
-               <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button>
-             </div>
-             <div className={classes.fieldContainer}>      
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
-             </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="role-description"
-                   multiline
-                   rows="4"
-                   className={classes.textField}
-                   margin="normal"
-                   onClick={this.handleClickTextField}
-                   variant="outlined"
-                   defaultValue={this.state.selectedProfile.description}
-                   InputProps={{ readOnly: !editButtonClicked }}
-                   />
-              </div>
-              <div className={classes.fieldContainer}>
-                <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
-              </div>
-              <div id="profile-cc-container">
-                <CompetencyCard dataObject={this.state.selectedProfile.competencies[0]} disabled={!editButtonClicked}/>
-              </div>
-            </form>
+               <div className="profile-card">
+                 <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button> 
+                 <RoleDisplay role={this.state.selectedProfile}/>
+               </div>}
+          { editButtonClicked == 1 &&
+          <div>
+            <RoleForm role={this.state.selectedProfile} add={0}/>
+            <Button className={classes.formButtons} onClick={this.handleSubmitButton}>Submit</Button>
+            <Button className={classes.formButtons} onClick={this.handleSaveButton}>Save</Button>
           </div>
-          { editButtonClicked == 1 &&
-          (<Fab color="green" aria-label="Add" className={classes.fab}>
-               <AddIcon />
-           </Fab>)}
-          { editButtonClicked == 1 &&
-              (<Button className={classes.formButtons} onClick={this.handleSubmitButton}>Submit</Button>)
-          }
-          { editButtonClicked == 1 &&
-              (<Button className={classes.formButtons} onClick={this.handleSaveButton}>Save</Button>)
           }
       </div>
       </Paper>))}

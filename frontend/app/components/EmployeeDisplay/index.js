@@ -46,7 +46,7 @@ class EmployeeDisplay extends React.PureComponent {
     var profile = state.profile;
 
     return (
-        <div>
+        <div className="profile-card">
           <Typography variant="h5" className={classes.title}>{profile.firstname} {profile.lastname}</Typography>
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Employee Information</Typography>
         <Table className={classes.displayTable}>

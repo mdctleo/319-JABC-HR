@@ -55,10 +55,9 @@ class RoleDisplay extends React.PureComponent  {
   }
 
   render() {
-    const { classes, login } = this.props;
+    const { classes, role, login } = this.props;
     // will replace with login logic eventually
-    const role = {name: "Developer", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", competencies: [{name: "C++", description: "Can program in C++", rating: 1},
-                                                                                            {name: "Java", description: "Can program in Java", rating: 2}]};
+    
     function generateCompetencies() {
         return (
           <div>

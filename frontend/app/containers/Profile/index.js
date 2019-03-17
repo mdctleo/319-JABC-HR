@@ -111,7 +111,7 @@ class Profile extends React.PureComponent {
     value: 0,
     loginCred: 1,
     edit: 0,
-    profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
+    profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer", description: "kasjdbaksbaksdjbcakjsdcakjsd", competencies: [{name: "C++", description: "Can code in C++", rating: 0 }]}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
   };
 
   handleChange = (event, value) => {
@@ -188,7 +188,7 @@ class Profile extends React.PureComponent {
             <Button className={classes.formButton} onClick={this.updateProfile}>Submit</Button>
             <Button className={classes.formButton} onClick={this.updateProfile}>Save</Button> 
            </div>}
-           { state.value == 1 && <RoleDisplay />}
+           { state.value == 1 && <RoleDisplay role={this.state.profile.role} />}
            </div>
      </Paper>
     </div>
