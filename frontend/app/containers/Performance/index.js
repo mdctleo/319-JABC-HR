@@ -17,6 +17,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import WorkPlanDisplay from '../../components/WorkPlanDisplay';
+import PerformanceReviewDisplay from '../../components/PerformanceReviewDisplay';
 import WorkPlanForm from '../../components/WorkPlanForm';
 import Button from '@material-ui/core/Button';
 
@@ -113,6 +114,10 @@ class PerformacePage extends React.Component {
     });
   };
 
+  handleSelect = (event, value) => {
+    this.setState({ years: event.target.value });
+  }
+
   updatePlan = (event, value) => {
     var date = document.getElementById("wpf-date").value ? document.getElementById("wpf-date").value : document.getElementById("wpf-date").defaultValue;
     var section1 = { rows: []};
@@ -191,6 +196,10 @@ class PerformacePage extends React.Component {
     this.setState({ edit: 0 });
 }
 
+handleChange = (event, value) => {
+  this.setState({ value });
+};
+
   render() {
     const { classes } = this.props;
     const { profile, form, years, value, edit } = this.state;
@@ -202,7 +211,8 @@ class PerformacePage extends React.Component {
           <InputLabel>
             Year
           </InputLabel>
-          <Select>
+          <Select
+            onChange={this.handleSelect}>
             <MenuItem value="2019-2020">
               <em>2019-2020</em>
             </MenuItem>
@@ -238,7 +248,7 @@ class PerformacePage extends React.Component {
       { value == 1 && edit == 0 &&
       <div className="profile-card">
         <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button> 
-        <WorkPlanDisplay form={form} years={years} profile={profile}/>
+        <PerformanceReviewDisplay form={form} years={years} profile={profile}/>
       </div>}
       { value == 1 && edit == 1 && 
         <div>

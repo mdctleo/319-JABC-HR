@@ -151,44 +151,37 @@ class Profile extends React.PureComponent {
 }
 
   render() {
+    const {value, loginCred, edit, profile} = this.state;
     const state = this.state;
     const { classes } = this.props;
 
-    if (!state.profile) return null;
+    if (!profile) return null;
     return (
       <div>
         <h1>My Profile</h1>
         <Paper className={classes.root}>
-        { state.edit == 0 &&
           <AppBar position="static" className={classes.appBar}>
-            <Tabs value={state.value} classes={{ indicator: classes.tabsIndicator }}
+            <Tabs value={value} classes={{ indicator: classes.tabsIndicator }}
                   onChange={this.handleChange}>
               <Tab disableRipple label="Profile" />
               <Tab disableRipple label="Role" />
             </Tabs>
-        </AppBar> }
-        { state.edit == 1 &&
-          <AppBar position="static" className={classes.appBar}>
-            <Tabs value={state.value} classes={{ indicator: classes.tabsIndicator }}
-                  onChange={this.handleChange}>
-              <Tab disableRipple label="Back" />
-            </Tabs>
-          </AppBar> }
+        </AppBar> 
            <div  className="profile-card">
-           { state.value == 0 && state.loginCred == 0 && 
+           { value == 0 && loginCred == 0 && 
            <EmployeeDisplay state={state} /> }
-           { state.value == 0 && state.loginCred == 1 && state.edit == 0 &&
+           { value == 0 && loginCred == 1 && edit == 0 &&
             <div>
               <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button> 
               <EmployeeDisplay state={state} />
            </div> } 
-           { state.value == 0 && state.loginCred == 1 && state.edit == 1 && 
+           { value == 0 && loginCred == 1 && edit == 1 && 
            <div>
             <EmployeeEditForm state={state} />
             <Button className={classes.formButton} onClick={this.updateProfile}>Submit</Button>
             <Button className={classes.formButton} onClick={this.updateProfile}>Save</Button> 
            </div>}
-           { state.value == 1 && <RoleDisplay role={this.state.profile.role} />}
+           { value == 1 && <RoleDisplay role={profile.role} />}
            </div>
      </Paper>
     </div>
