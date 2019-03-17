@@ -76,6 +76,25 @@ class WorkPlanForm extends React.PureComponent  {
   render() {
     const { classes, form, years, profile} = this.props;
     const { theForm } = this.state;
+
+    function handleAdd2ColRow(index) {
+    //   var something = document.getElementById("wpf-tbody-2");
+    //   console.log(something);
+    //   var tbody = document.getElementById("wpf-tbody-"+index);
+    //   var lastChild = tbody.lastChild;
+    //   tbody.removeChild(lastChild);
+    //   var newRow = <TableRow className={classes.row}>
+    //                 <TableCell align="left"><TextField id={"rf-col-1-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
+    //                 <TableCell align="left"><TextField id={"rf-col-2-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
+    //                 <TableCell align="left"><TextField id={"rf-col-3-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
+    //                 <TableCell align="left" id={"rf-col-4-sec-"+numCompetencies+"delete"} className={"rf-rows-delete"}><IconButton><DeleteIcon /></IconButton></TableCell>
+    //                </TableRow>;
+    //   var addRow = <TableRow>
+    //                 <TableCell colspan={3}><IconButton className={classes.addButton} handleClick={handleAdd2ColRow(section.rows.length)}><AddIcon /></IconButton></TableCell>
+    //                </TableRow>;
+    // tbody.appendChild(newRow);
+    // tbody.appendChild(addRow);
+  }
     
     function generate2ColumnTableForm(column1, column2, section, sectionNum) {
         return (
@@ -92,7 +111,7 @@ class WorkPlanForm extends React.PureComponent  {
                             <TableCell align="left"id={"wpf-col-2-sec-"+sectionNum+index+"delete"} className={"wpf-rows-"+sectionNum+"delete"}><IconButton><DeleteIcon /></IconButton></TableCell>
                          </TableRow>; })}
             <TableRow>
-              <TableCell colspan={3}><IconButton className={classes.addButton}><AddIcon /></IconButton></TableCell>
+              <TableCell colspan={3}><IconButton className={classes.addButton} handleClick={handleAdd2ColRow(section.rows.length)}><AddIcon /></IconButton></TableCell>
             </TableRow>
           </div>
         )};
@@ -127,37 +146,37 @@ class WorkPlanForm extends React.PureComponent  {
           <TextField id="wpf-date" className={classes.topHeading} label="Date" defaultValue={theForm.date} />
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 1: JABC Goals</Typography>
           <Table className={classes.displayTable}>
-            <TableBody>
+            <TableBody id="wpf-tbody-1">
               {generate2ColumnTableForm("DEPARTMENT", "GOAL", theForm.section1, "1")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 2: Personal Targets</Typography>
           <Table className={classes.displayTable} fullWidth>
-            <TableBody>
+            <TableBody id="wpf-tbody-2">
               {generate2ColumnTableForm("PROGRAM", "GOAL", theForm.section2, "2")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 3: Core competencies</Typography>
           <Table className={classes.displayTable} fullWidth>
-            <TableBody>
+            <TableBody id="wpf-tbody-3">
               {generate2ColumnTableForm("COMPETENCY", "HOW IT RELATES", theForm.section3, "3")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 4: Objectives</Typography>
           <Table className={classes.displayTable} fullWidth>
-            <TableBody>
+            <TableBody id="wpf-tbody-4">
               {generate2ColumnTableForm("OBJECTIVES & ACTIITES", "SUPPORT / COLLABORATION", theForm.section4, "4")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 5: Professional Development Goals</Typography>
           <Table className={classes.displayTable} fullWidth>
-            <TableBody>
+            <TableBody id="wpf-tbody-5">
               {generate2ColumnTableForm("GOAL", "KEY ACTIVITES", theForm.section5, "5")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 6: Comments</Typography>
           <Table className={classes.displayTable} fullWidth>
-            <TableBody>
+            <TableBody id="wpf-tbody-6">
               {generate3ColumnTableForm("DATE", "COMMENTER", "COMMENT", theForm.section6, "6")}
             </TableBody>
           </Table> 

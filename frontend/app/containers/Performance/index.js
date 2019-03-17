@@ -56,7 +56,6 @@ const styles = theme => ({
     float: 'right',
     marginTop: '50px',
     marginRight: '2.5%',
-    backgroundColor: 'white',
     width: '200px',
   },
   appBar: {
@@ -199,18 +198,11 @@ class PerformacePage extends React.Component {
     return (
       <div>
       <h1>Performance</h1>
-      <FormControl variant="outlined" className={classes.formControl}>
+      <FormControl className={classes.formControl}>
           <InputLabel>
             Year
           </InputLabel>
-          <Select
-            input={
-              <OutlinedInput
-                name="year"
-                id="outlined-year-simple"
-              />
-            }
-          >
+          <Select>
             <MenuItem value="2019-2020">
               <em>2019-2020</em>
             </MenuItem>
