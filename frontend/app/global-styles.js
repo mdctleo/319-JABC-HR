@@ -101,14 +101,6 @@ const GlobalStyle = createGlobalStyle`
   .profile-card-table td{
     padding: 0px;
   }
-  
-  .profile-card-table td:nth-child(odd){
-    width: 250px;
-  }
-
-  .profile-card-spacer {
-    height: 40px;
-  }
  
   .profile-card-subtitle {
     margin-bottom: 30px;

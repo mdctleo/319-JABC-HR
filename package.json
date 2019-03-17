@@ -33,6 +33,7 @@
     "mysql2": "^1.6.5",
     "promise": "^8.0.2",
     "serve-static": "^1.13.2",
+    "superagent": "^4.1.0",
     "swagger-tools": "^0.10.4",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.1"

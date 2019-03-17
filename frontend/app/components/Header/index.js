@@ -28,12 +28,12 @@ class Header extends React.PureComponent {
           <Link className="nav-link" to="/onboarding">
             Onboarding
           </Link>
-          {this.props.adminLevel >= 2 && (
+          {this.props.adminLevel >= 1 && (
             <Link className="nav-link" to="/employees">
               Employees
             </Link>
           )}
-          {this.props.adminLevel >= 3 && (
+          {this.props.adminLevel >= 2 && (
             <Link className="nav-link" to="/roles">
               Roles
             </Link>
