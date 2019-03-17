@@ -17,14 +17,14 @@ BEGIN
 
   SET checker = 0;
 
-  SELECT COUNT(`NAME`) INTO checker
+  SELECT COUNT(`ROLE_NAME`) INTO checker
   FROM ROLE
-  WHERE `NAME` = role_name;
+  WHERE ROLE.`ROLE_NAME` = role_name;
 
   IF checker > 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Role name already in use.';
   ELSE
-    INSERT INTO ROLE (`ROLE`.NAME, DESCRIPTION)
+    INSERT INTO ROLE (`ROLE`.ROLE_NAME, DESCRIPTION)
     VALUES (role_name, description);
   END IF;
 END //
@@ -49,7 +49,7 @@ BEGIN
 
   SELECT COUNT(`ROLE_ID`) INTO checker
   FROM ROLE
-  WHERE `ROLE_ID` = role_id;
+  WHERE ROLE.`ROLE_ID` = role_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Role does not exist.';
@@ -78,14 +78,14 @@ BEGIN
 
   SELECT COUNT(`ROLE_ID`) INTO checker
   FROM ROLE
-  WHERE `ROLE_ID` = role_id;
+  WHERE ROLE.`ROLE_ID` = role_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Role does not exist.';
   ELSE
     SELECT *
     FROM ROLE
-    WHERE ROLE_ID = role_id;
+    WHERE ROLE.ROLE_ID = role_id;
   END IF;
 END //
 
@@ -128,13 +128,13 @@ BEGIN
 
   SELECT COUNT(`ROLE_ID`) INTO checker
   FROM ROLE
-  WHERE `ROLE_ID` = role_id;
+  WHERE ROLE.`ROLE_ID` = role_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Role does not exist.';
   ELSE
     UPDATE ROLE
-    SET ROLE.NAME = role_name, DESCRIPTION = description
+    SET ROLE.ROLE_NAME = role_name, DESCRIPTION = description
     WHERE ROLE.role_id = role_id;
   END IF;
 END //

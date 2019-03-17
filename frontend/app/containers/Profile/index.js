@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import selectProfile from './selectors';
+import { selectProfile, selectRole } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import actions, {getData} from './actions';
+import actions from './actions';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -104,7 +104,7 @@ const styles = theme => ({
 
 class Profile extends React.PureComponent {
   componentDidMount() {
-    this.props.getData();
+    this.props.getProfileData();
   }
 
   state = {
@@ -199,11 +199,13 @@ class Profile extends React.PureComponent {
 Profile.propTypes = {
   classes: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  getData: PropTypes.func,
+  role: PropTypes.object,
+  getProfileData: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
-  profile: selectProfile(),
+  profile: selectProfile,
+  role: selectRole,
 });
 
 const mapDispatchToProps = {

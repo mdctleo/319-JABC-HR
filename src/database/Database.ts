@@ -1,6 +1,7 @@
-import IDatabaseClient, {DatabaseConnectionError, DatabaseQueryError} from "./IDatabaseClient";
+import IDatabaseClient, {DatabaseConnectionError, DatabaseQueryError, DatabaseWriteError} from "./IDatabaseClient";
 import Log from "../../util/Log";
 import * as config from "../database/dbConfig.json";
+import { JABCResponseType } from "../utils/ResponseManager";
 
 export default class Database implements IDatabaseClient {
 
@@ -19,17 +20,17 @@ export default class Database implements IDatabaseClient {
         this.mysql = require('mysql2/promise');
     }
 
-    public async query(query: any): Promise<any> {
+    public async query(query: any, params: any[], responseType?: JABCResponseType): Promise<any> {
         let response: any;
         try {
             await this.initConnection(config);
-            response = await this.connection.query(query);
+            response = await this.connection.execute(query, params);
             await this.closeConnection();
             return response;
         } catch (err) {
             const errMsg: string = `Database::Failed to perform query: ${query}, with err: ${err}`;
             Log.error(errMsg);
-            throw new DatabaseQueryError(errMsg);
+            throw new DatabaseQueryError(responseType, err, errMsg);
         }
     }
 
@@ -53,10 +54,17 @@ export default class Database implements IDatabaseClient {
         }
     }
 
-    public async write(query: any): Promise<void> {
-        // TODO
-        return Promise.reject(`Not implemented`);
+    public async write(query: any, params: any[], responseType?: JABCResponseType): Promise<void> {
+        let response: any;
+        try {
+            await this.initConnection(config);
+            response = await this.connection.execute(query, params);
+            await this.closeConnection();
+            return response;
+        } catch (err) {
+            const errMsg: string = `Database::Failed to perform query: ${query}, with err: ${err}`;
+            Log.error(errMsg);
+            throw new DatabaseWriteError(responseType, err, errMsg);
+        }
     }
-
-
 }

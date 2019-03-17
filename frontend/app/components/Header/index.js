@@ -28,12 +28,12 @@ class Header extends React.PureComponent {
           <Link className="nav-link" to="/onboarding">
             Onboarding
           </Link>
-          {this.props.userRole >= 2 && (
+          {this.props.adminLevel >= 2 && (
             <Link className="nav-link" to="/employees">
               Employees
             </Link>
           )}
-          {this.props.userRole >= 3 && (
+          {this.props.adminLevel >= 3 && (
             <Link className="nav-link" to="/roles">
               Roles
             </Link>
@@ -54,7 +54,7 @@ class Header extends React.PureComponent {
 }
 
 Header.propTypes = {
-  userRole: PropTypes.number,
+  adminLevel: PropTypes.number,
   logout: PropTypes.func,
 };
 

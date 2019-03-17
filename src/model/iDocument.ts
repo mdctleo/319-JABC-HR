@@ -41,5 +41,55 @@ export interface IDocument {
      */
     expiryDate?: number;
     path?: string;
+    description?: string;
     type?: IDocumentType;
+}
+
+export class Document implements IDocument{
+    /**
+     * The unique identifier of the Role
+     */
+    id: number;
+    /**
+     * The foreign key  of the DocumentType of this Document
+     */
+    fkDocumentType: number;
+    /**
+     * The foreign key  of the Employee that needs to upload this Document
+     */
+    fkEmployee: number;
+    /**
+     * The unix timestamp of the created date of this Document
+     */
+    createdDate: number;
+    /**
+     * The unix timestamp of the due date of this Document
+     */
+    dueDate: number;
+    /**
+     * The unix timestamp of the expiry date of this Document
+     */
+    expiryDate?: number;
+    path?: string;
+    description?: string;
+    type?: IDocumentType;
+
+    constructor(rawDocument: any){
+        this.id = rawDocument.SUPPORT_DOC_ID;
+        this.fkDocumentType = rawDocument.TYPE_ID;
+        this.fkEmployee = rawDocument.EMPLOYEE_ID;
+        this.createdDate = rawDocument.CREATED_DATE;
+        this.dueDate = rawDocument.DUE_DATE;
+        this.expiryDate = rawDocument.EXPIRY_DATE;
+        this.path = rawDocument.PATH;
+        this.description = rawDocument.DESCRIPTION;
+    }
+
+    static Documents(rawDocuments: any[]){
+        let documents: IDocument[] = [];
+        for(let rawDocument of rawDocuments){
+            documents.push(new Document(rawDocument))
+        }
+        return documents
+    }
 }
