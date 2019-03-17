@@ -21,7 +21,10 @@ export interface IDocumentType {
     id: number;
     name: string;
     description?: string;
-    path?: string;
+    /**
+     * If the document has a template, this will be the link to access it
+     */
+    file?: string;
 }
 
 export class DocumentType implements IDocumentType{
@@ -31,12 +34,15 @@ export class DocumentType implements IDocumentType{
     id: number;
     name: string;
     description?: string;
-    path?: string;
+    /**
+     * If the document has a template, this will be the link to access it
+     */
+    file?: string;
 
     constructor(rawDocumentType: any){
         this.id = rawDocumentType.TYPE_ID;
         this.name = rawDocumentType.TYPE_NAME;
-        this.path = rawDocumentType.PATH;
+        this.file = rawDocumentType.PATH;
         this.description = rawDocumentType.DESCRIPTION;
     }
 

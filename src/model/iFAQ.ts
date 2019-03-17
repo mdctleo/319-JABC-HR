@@ -12,18 +12,13 @@
 
 
 /**
- * A JABCGoal contains what another employee thinks about the performance record of another employee 
+ * A FAQ contains a question and answer, to help the employee while onboarding 
  */
-export interface IJABCGoal { 
+export interface IFAQ { 
     /**
-     * The unique identifier of the JABCGoal
+     * The unique identifier of the FAQ
      */
     id: number;
-    /**
-     * Foreign key of Performance that has this JABCGoal
-     */
-    fkPerformance: number;
-    name?: string;
-    goal?: string;
-    previousYear?: string;
+    question: string;
+    answer: string;
 }

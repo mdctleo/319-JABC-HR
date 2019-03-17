@@ -15,27 +15,23 @@ class JABCResponse {
 }
 JABCResponse.EMPLOYEE = {
     error: 410,
-    success: 210
+    success: 200
 };
 JABCResponse.DOCUMENT = {
     error: 411,
-    success: 211
+    success: 200
 };
 JABCResponse.PERFORMANCE = {
     error: 412,
-    success: 212
+    success: 200
 };
 JABCResponse.ROLE = {
     error: 413,
-    success: 213
+    success: 200
 };
 JABCResponse.VACATION = {
     error: 414,
-    success: 214
-};
-JABCResponse.UNHANDLED_SUCCESS = {
-    error: 200,
-    message: ''
+    success: 200
 };
 JABCResponse.UNHANDLED_ERROR = {
     error: 500,
@@ -92,7 +88,6 @@ JABCError.NAME = 'JABCError';
 exports.JABCError = JABCError;
 class JABCSuccess {
     constructor(response, message) {
-        response = (response == undefined) ? JABCResponse.UNHANDLED_SUCCESS : response;
         this.message = message;
         this.responseCode = response.success;
         this.type = models_1.IApiResponse.TypeEnum.SUCCESS;

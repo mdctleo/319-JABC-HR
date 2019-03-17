@@ -12,17 +12,17 @@
 
 
 /**
- * A PersonalTarget contains what another employee thinks about the performance record of another employee 
+ * A Competency contains info of competencies and objectives that each role need to fulfill 
  */
-export interface IPersonalTarget { 
+export interface ICompetency { 
     /**
-     * The unique identifier of the PersonalTarget
+     * The unique identifier of the Competency
      */
     id: number;
     /**
-     * Foreign key of Performance that has this PersonalTarget
+     * Foreign key of the role
      */
-    fkPerformance: number;
+    fkRole: number;
+    name?: string;
     description?: string;
-    rating?: string;
 }

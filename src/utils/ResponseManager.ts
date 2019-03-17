@@ -14,27 +14,23 @@ export interface JABCResponseType {
 export class JABCResponse {
     static EMPLOYEE = {
         error: 410,
-        success: 210
+        success: 200
     }
     static DOCUMENT = {
         error: 411,
-        success: 211
+        success: 200
     }
     static PERFORMANCE = {
         error: 412,
-        success: 212
+        success: 200
     }
     static ROLE = {
         error: 413,
-        success: 213
+        success: 200
     }
     static VACATION = {
         error: 414,
-        success: 214
-    }
-    static UNHANDLED_SUCCESS = {
-        error: 200,
-        message: ''
+        success: 200
     }
 
     static UNHANDLED_ERROR = {
@@ -103,7 +99,6 @@ export class JABCSuccess implements IApiResponse {
     type: IApiResponse.TypeEnum;
 
     constructor(response: JABCResponseType, message: string) {
-        response = (response == undefined) ? JABCResponse.UNHANDLED_SUCCESS : response;
         this.message = message;
         this.responseCode = response.success;
         this.type = IApiResponse.TypeEnum.SUCCESS;

@@ -1,13 +1,12 @@
 'use strict';
 
 var utils = require('../utils/writer.js');
-var Performance = require('../service/PerformanceService');
+var Onboarding = require('../service/OnboardingService');
 
-module.exports.createComment = function createComment (req, res, next) {
-  var id = req.swagger.params['id'].value;
-  var comment = req.swagger.params['comment'].value;
+module.exports.createDocumentType = function createDocumentType (req, res, next) {
+  var documentType = req.swagger.params['documentType'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.createComment(id,comment,xAuthToken)
+  Onboarding.createDocumentType(documentType,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -16,11 +15,10 @@ module.exports.createComment = function createComment (req, res, next) {
     });
 };
 
-module.exports.deleteComment = function deleteComment (req, res, next) {
-  var id = req.swagger.params['id'].value;
-  var idComment = req.swagger.params['idComment'].value;
+module.exports.createFAQ = function createFAQ (req, res, next) {
+  var faq = req.swagger.params['faq'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.deleteComment(id,idComment,xAuthToken)
+  Onboarding.createFAQ(faq,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -29,10 +27,10 @@ module.exports.deleteComment = function deleteComment (req, res, next) {
     });
 };
 
-module.exports.deletePerformancePlan = function deletePerformancePlan (req, res, next) {
+module.exports.deleteDocumentType = function deleteDocumentType (req, res, next) {
   var id = req.swagger.params['id'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.deletePerformancePlan(id,xAuthToken)
+  Onboarding.deleteDocumentType(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -41,10 +39,10 @@ module.exports.deletePerformancePlan = function deletePerformancePlan (req, res,
     });
 };
 
-module.exports.deletePerformanceReview = function deletePerformanceReview (req, res, next) {
+module.exports.deleteFAQ = function deleteFAQ (req, res, next) {
   var id = req.swagger.params['id'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.deletePerformanceReview(id,xAuthToken)
+  Onboarding.deleteFAQ(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -53,11 +51,10 @@ module.exports.deletePerformanceReview = function deletePerformanceReview (req, 
     });
 };
 
-module.exports.getComment = function getComment (req, res, next) {
+module.exports.deleteOnboardingTask = function deleteOnboardingTask (req, res, next) {
   var id = req.swagger.params['id'].value;
-  var idComment = req.swagger.params['idComment'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.getComment(id,idComment,xAuthToken)
+  Onboarding.deleteOnboardingTask(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -66,10 +63,10 @@ module.exports.getComment = function getComment (req, res, next) {
     });
 };
 
-module.exports.getComments = function getComments (req, res, next) {
+module.exports.getDocumentType = function getDocumentType (req, res, next) {
   var id = req.swagger.params['id'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.getComments(id,xAuthToken)
+  Onboarding.getDocumentType(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -78,10 +75,9 @@ module.exports.getComments = function getComments (req, res, next) {
     });
 };
 
-module.exports.getPerformancePlan = function getPerformancePlan (req, res, next) {
-  var id = req.swagger.params['id'].value;
+module.exports.getDocumentTypes = function getDocumentTypes (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.getPerformancePlan(id,xAuthToken)
+  Onboarding.getDocumentTypes(xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -90,10 +86,10 @@ module.exports.getPerformancePlan = function getPerformancePlan (req, res, next)
     });
 };
 
-module.exports.getPerformanceReview = function getPerformanceReview (req, res, next) {
+module.exports.getFAQ = function getFAQ (req, res, next) {
   var id = req.swagger.params['id'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.getPerformanceReview(id,xAuthToken)
+  Onboarding.getFAQ(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -102,12 +98,9 @@ module.exports.getPerformanceReview = function getPerformanceReview (req, res, n
     });
 };
 
-module.exports.updateComment = function updateComment (req, res, next) {
-  var id = req.swagger.params['id'].value;
-  var idComment = req.swagger.params['idComment'].value;
-  var comment = req.swagger.params['comment'].value;
+module.exports.getFAQs = function getFAQs (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.updateComment(id,idComment,comment,xAuthToken)
+  Onboarding.getFAQs(xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -116,11 +109,10 @@ module.exports.updateComment = function updateComment (req, res, next) {
     });
 };
 
-module.exports.updatePerformancePlan = function updatePerformancePlan (req, res, next) {
+module.exports.getOnboardingTask = function getOnboardingTask (req, res, next) {
   var id = req.swagger.params['id'].value;
-  var performance = req.swagger.params['performance'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.updatePerformancePlan(id,performance,xAuthToken)
+  Onboarding.getOnboardingTask(id,xAuthToken)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
@@ -129,11 +121,50 @@ module.exports.updatePerformancePlan = function updatePerformancePlan (req, res,
     });
 };
 
-module.exports.updatePerformanceReview = function updatePerformanceReview (req, res, next) {
+module.exports.updateDocumentType = function updateDocumentType (req, res, next) {
   var id = req.swagger.params['id'].value;
-  var performance = req.swagger.params['performance'].value;
+  var documentType = req.swagger.params['documentType'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
-  Performance.updatePerformanceReview(id,performance,xAuthToken)
+  Onboarding.updateDocumentType(id,documentType,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
+module.exports.updateFAQ = function updateFAQ (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var faq = req.swagger.params['faq'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Onboarding.updateFAQ(id,faq,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
+module.exports.updateOnboardingTask = function updateOnboardingTask (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var document = req.swagger.params['document'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Onboarding.updateOnboardingTask(id,document,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
+module.exports.uploadTemplateDocumentType = function uploadTemplateDocumentType (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  var document = req.swagger.params['document'].value;
+  Onboarding.uploadTemplateDocumentType(id,xAuthToken,document)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })

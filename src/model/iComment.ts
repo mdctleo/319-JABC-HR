@@ -20,16 +20,20 @@ export interface IComment {
      */
     id: number;
     /**
-     * Foreign key of Performance that has this Comment
+     * Foreign key of PerformancePlan that has this Comment
      */
-    fkPerformance: number;
+    fkPerformancePlan?: number;
+    /**
+     * Foreign key of PerformanceReview that has this Comment
+     */
+    fkPerformanceReview?: number;
     /**
      * Foreign key of Employee that created the Comment
      */
     fkCommenter: number;
     comment: string;
     /**
-     * The unix timestamp of the date when the Comment was created
+     * The date when the Comment was created
      */
-    date: number;
+    date: string;
 }
