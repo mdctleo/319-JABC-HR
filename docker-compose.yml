@@ -7,25 +7,10 @@ services:
     environment:
     - MYSQL_ROOT_PASSWORD=root
     ports:
-    - "3306:3306"
-
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_ARBITRARY: 1
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "80:80"
-    links:
-      - "database:database"
-
-  frontend:
-    build: frontend
+    - "3307:3306"
 
   backend:
     build: .
     ports:
     - "8080:8080"
+    network_mode: host
