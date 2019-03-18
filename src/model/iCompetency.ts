@@ -11,6 +11,7 @@
  */
 
 
+
 /**
  * A Competency contains info of competencies and objectives that each role need to fulfill 
  */
@@ -40,7 +41,7 @@ export class Competency implements ICompetency{
     description?: string;
 
     constructor(rawCompetency: any){
-        this.id = rawCompetency.COMMENT_ID;
+        this.id = rawCompetency.COMPETENCY_ID;
         this.fkRole = rawCompetency.ROLE_ID;
         this.name = rawCompetency.COMPETENCY_NAME;
         this.description = rawCompetency.DESCRIPTION;
@@ -52,5 +53,11 @@ export class Competency implements ICompetency{
             Competencys.push(new Competency(rawCompetency))
         }
         return Competencys
+    }
+
+    static Prepare(rawCompetency: ICompetency) {
+        rawCompetency.name = (rawCompetency.name) ? rawCompetency.name : null;
+        rawCompetency.description = (rawCompetency.description) ? rawCompetency.description : null;
+        return rawCompetency;
     }
 }

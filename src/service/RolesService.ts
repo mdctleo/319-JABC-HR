@@ -1,5 +1,5 @@
 'use strict';
-import { IRole, Role, ICompetency } from "../model/models";
+import {IRole, Role, ICompetency, Competency} from "../model/models";
 import { JABCResponse, JABCSuccess } from "../utils/ResponseManager";
 import Database from "../database/Database";
 
@@ -13,10 +13,15 @@ import Database from "../database/Database";
  * xAuthToken String Auth Token that grants access to the system (optional)
  * returns IApiResponse
  **/
-exports.createCompetency = function (competency: ICompetency, idRole: number, xAuthToken: string) {
+export async function createCompetency(competency: ICompetency, idRole: number, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL create_competency(?,?,?)', [
+            competency.fkRole,
+            competency.name,
+            competency.description
+        ], JABCResponse.COMPETENCY);
+
+        return new JABCSuccess(JABCResponse.ROLE, `The competency was created successfully.`)
     } catch (error) {
         throw error;
     }
@@ -56,8 +61,8 @@ export async function createRole(role: IRole, xAuthToken: String) {
  **/
 export async function deleteCompetency(id: Number, idRole: Number, xAuthToken: String) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL delete_competency(?)', [id], JABCResponse.COMPETENCY);
+        return new JABCSuccess(JABCResponse.COMPETENCY, `The competency was deleted successfully.`);
     } catch (error) {
         throw error;
     }
@@ -91,10 +96,10 @@ export async function deleteRole(id: Number, xAuthToken: String) {
  * xAuthToken String Auth Token that grants access to the system (optional)
  * returns ICompetency
  **/
-export async function getCompetency(id: Number, idRole: Number, xAuthToken: String) {    
+export async function getCompetency(id: Number, idRole: Number, xAuthToken: String) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL get_competency(?)', [id], JABCResponse.COMPETENCY);
+        return new Competency(res[0][0][0]);
     } catch (error) {
         throw error;
     }
@@ -109,10 +114,10 @@ export async function getCompetency(id: Number, idRole: Number, xAuthToken: Stri
  * xAuthToken String Auth Token that grants access to the system (optional)
  * returns List
  **/
-export async function getCompetencys(idRole: Number, xAuthToken: String) {    
+export async function getCompetencys(idRole: Number, xAuthToken: String) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL get_competencies(?)', [idRole], JABCResponse.COMPETENCY);
+        return Competency.Competencys(res[0][0]);
     } catch (error) {
         throw error;
     }
@@ -130,7 +135,10 @@ export async function getCompetencys(idRole: Number, xAuthToken: String) {
 export async function getRole(id: Number, xAuthToken: String) {
     try {
         let res = await Database.getInstance().query('CALL get_role(?)', [id], JABCResponse.ROLE);
-        return new Role(res[0][0][0]);
+        let role = new Role(res[0][0][0]);
+        role.competencies = await getCompetencys(id, xAuthToken);
+
+        return role;
     } catch (error) {
         throw error;
     }
@@ -166,13 +174,17 @@ export async function getRoles(xAuthToken: String) {
  **/
 export async function updateCompetency(id: Number, competency: ICompetency, idRole: Number, xAuthToken: String) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        competency = Competency.Prepare(competency);
+        let res = await Database.getInstance().query('CALL update_competency(?,?,?)', [
+            id,
+            competency.name,
+            competency.description
+        ], JABCResponse.COMPETENCY);
+        return new JABCSuccess(JABCResponse.ROLE, `The competency, ${competency.name}, was updated successfully.`);
     } catch (error) {
         throw error;
     }
 }
-
 
 
 /**

@@ -140,3 +140,159 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure create_competency
+--    - create competency and attach it to the given role,
+--    - provided the competency name is not in use for the role
+--    - and the role exists.
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS create_competency;
+
+DELIMITER //
+
+CREATE PROCEDURE `create_competency` (IN role_id INT
+, IN competency_name VARCHAR(100)
+, IN description VARCHAR(512)
+)
+BEGIN
+  DECLARE checker INT;
+  DECLARE nameChecker INT;
+
+  SET checker = 0;
+  SET nameChecker = 0;
+
+  SELECT COUNT(*) INTO checker
+  FROM ROLE
+  WHERE ROLE.`ROLE_ID` = role_id;
+
+  SELECT COUNT(*) INTO nameChecker
+  FROM COMPETENCY
+  WHERE COMPETENCY.`ROLE_ID` = role_id AND COMPETENCY.COMPETENCY_NAME LIKE competency_name;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Role not found.';
+  ELSEIF competency_name IS NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Competency name cannot be null.';
+  ELSEIF nameChecker > 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Competency name already in use.';
+  ELSE
+    INSERT INTO COMPETENCY (ROLE_ID, COMPETENCY_NAME, DESCRIPTION)
+    VALUES (role_id, competency_name, description);
+  END IF;
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure delete_competency
+--    - delete competency with given id, if it exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS delete_competency;
+
+DELIMITER //
+
+CREATE PROCEDURE `delete_competency` (IN competency_id INT)
+
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(*) INTO checker
+  FROM COMPETENCY
+  WHERE COMPETENCY.`COMPETENCY_ID` = competency_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Competency does not exist.';
+  ELSE
+    DELETE FROM COMPETENCY
+    WHERE COMPETENCY.`COMPETENCY_ID` = competency_id;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_competency
+--    - get competency with given id, if it exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_competency;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_competency` (IN competency_id INT)
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(*) INTO checker
+  FROM COMPETENCY
+  WHERE COMPETENCY.`COMPETENCY_ID` = competency_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Competency does not exist.';
+  ELSE
+    SELECT *
+    FROM COMPETENCY
+    WHERE COMPETENCY.COMPETENCY_ID = competency_id;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_competencies
+--    - get all competencies for a given role
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_competencies;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_competencies` (IN role_id INT)
+BEGIN
+    SELECT *
+    FROM COMPETENCY
+    WHERE ROLE_ID = role_id;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure update_competency
+--    - update competency with given id, if it exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS update_competency;
+
+DELIMITER //
+
+CREATE PROCEDURE `update_competency` (IN competency_id INT
+, IN competency_name VARCHAR(100)
+, IN description VARCHAR(512)
+)
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(*) INTO checker
+  FROM COMPETENCY
+  WHERE COMPETENCY.`COMPETENCY_ID` = competency_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Competency does not exist.';
+  ELSEIF competency_name IS NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Competency name cannot be null.';
+  ELSE
+    UPDATE COMPETENCY
+    SET COMPETENCY.COMPETENCY_NAME = competency_name, COMPETENCY.DESCRIPTION = description
+    WHERE COMPETENCY.COMPETENCY_ID = competency_id;
+  END IF;
+END //
+
+DELIMITER ;
