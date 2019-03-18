@@ -171,23 +171,23 @@ export default class EmployeeApi {
      * creates a new OnboardingTask for the employee with [id]
      * Will create a new OnboardingTask with the provided data in body
      * @param {Number} id id of the searched Employee
-     * @param {module:model/IOnboardingTask} document OnboardingTask data
+     * @param {module:model/IOnboardingTask} onboardingTask OnboardingTask data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
      */
-    createOnboardingTaskWithHttpInfo(id, document, opts) {
+    createOnboardingTaskWithHttpInfo(id, onboardingTask, opts) {
       opts = opts || {};
-      let postBody = document;
+      let postBody = onboardingTask;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
         throw new Error("Missing the required parameter 'id' when calling createOnboardingTask");
       }
 
-      // verify the required parameter 'document' is set
-      if (document === undefined || document === null) {
-        throw new Error("Missing the required parameter 'document' when calling createOnboardingTask");
+      // verify the required parameter 'onboardingTask' is set
+      if (onboardingTask === undefined || onboardingTask === null) {
+        throw new Error("Missing the required parameter 'onboardingTask' when calling createOnboardingTask");
       }
 
 
@@ -218,13 +218,13 @@ export default class EmployeeApi {
      * creates a new OnboardingTask for the employee with [id]
      * Will create a new OnboardingTask with the provided data in body
      * @param {Number} id id of the searched Employee
-     * @param {module:model/IOnboardingTask} document OnboardingTask data
+     * @param {module:model/IOnboardingTask} onboardingTask OnboardingTask data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
      */
-    createOnboardingTask(id, document, opts) {
-      return this.createOnboardingTaskWithHttpInfo(id, document, opts)
+    createOnboardingTask(id, onboardingTask, opts) {
+      return this.createOnboardingTaskWithHttpInfo(id, onboardingTask, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

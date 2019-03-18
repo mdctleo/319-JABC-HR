@@ -13,8 +13,10 @@ const makeSelectLocation = () =>
 const makeSelectGlobal = () =>
   createSelector(selectGlobal, substate => substate.toJS());
 
-const selectUser = () =>
-  createSelector(makeSelectGlobal(), substate => substate.user);
+const selectUser = () => createSelector(
+  makeSelectGlobal(),
+  substate => substate.user,
+);
 
 const selectProfile = createSelector(
   [selectUser(), selectResource('employee')],
@@ -26,4 +28,4 @@ const selectProfile = createSelector(
   },
 );
 
-export { makeSelectLocation, makeSelectGlobal, selectProfile };
+export { makeSelectLocation, makeSelectGlobal, selectProfile, selectUser };

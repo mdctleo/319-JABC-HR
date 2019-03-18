@@ -32,18 +32,19 @@ export default class IOnboardingTask {
     * @class
     * @param id {Number} The unique identifier of the Role
     * @param fkEmployee {Number} The foreign key  of the Employee that needs to upload this Document
-    * @param createdDate {Number} The unix timestamp of the created date of this Document
-    * @param dueDate {Number} The unix timestamp of the due date of this Document
+    * @param createdDate {Date} The created date of this Document
+    * @param dueDate {Date} The due date of this Document
     * @param requireDoc {Number} Wether the Onboarding task requires document upload or not.
+    * @param status {Number} Wether the Onboarding task is done or not
     */
 
-    constructor(id, fkEmployee, createdDate, dueDate, requireDoc) {
+    constructor(id, fkEmployee, createdDate, dueDate, requireDoc, status) {
         
 
         
         
 
-        this['id'] = id;this['fkEmployee'] = fkEmployee;this['createdDate'] = createdDate;this['dueDate'] = dueDate;this['requireDoc'] = requireDoc;
+        this['id'] = id;this['fkEmployee'] = fkEmployee;this['createdDate'] = createdDate;this['dueDate'] = dueDate;this['requireDoc'] = requireDoc;this['status'] = status;
 
         
     }
@@ -73,16 +74,19 @@ export default class IOnboardingTask {
                 obj['fkEmployee'] = ApiClient.convertToType(data['fkEmployee'], 'Number');
             }
             if (data.hasOwnProperty('createdDate')) {
-                obj['createdDate'] = ApiClient.convertToType(data['createdDate'], 'Number');
+                obj['createdDate'] = ApiClient.convertToType(data['createdDate'], 'Date');
             }
             if (data.hasOwnProperty('dueDate')) {
-                obj['dueDate'] = ApiClient.convertToType(data['dueDate'], 'Number');
+                obj['dueDate'] = ApiClient.convertToType(data['dueDate'], 'Date');
             }
             if (data.hasOwnProperty('requireDoc')) {
                 obj['requireDoc'] = ApiClient.convertToType(data['requireDoc'], 'Number');
             }
+            if (data.hasOwnProperty('status')) {
+                obj['status'] = ApiClient.convertToType(data['status'], 'Number');
+            }
             if (data.hasOwnProperty('expiryDate')) {
-                obj['expiryDate'] = ApiClient.convertToType(data['expiryDate'], 'Number');
+                obj['expiryDate'] = ApiClient.convertToType(data['expiryDate'], 'Date');
             }
             if (data.hasOwnProperty('file')) {
                 obj['file'] = ApiClient.convertToType(data['file'], 'String');
@@ -113,13 +117,13 @@ export default class IOnboardingTask {
     */
     fkEmployee = undefined;
     /**
-    * The unix timestamp of the created date of this Document
-    * @member {Number} createdDate
+    * The created date of this Document
+    * @member {Date} createdDate
     */
     createdDate = undefined;
     /**
-    * The unix timestamp of the due date of this Document
-    * @member {Number} dueDate
+    * The due date of this Document
+    * @member {Date} dueDate
     */
     dueDate = undefined;
     /**
@@ -128,12 +132,17 @@ export default class IOnboardingTask {
     */
     requireDoc = undefined;
     /**
-    * The unix timestamp of the expiry date of this Document
-    * @member {Number} expiryDate
+    * Wether the Onboarding task is done or not
+    * @member {Number} status
+    */
+    status = undefined;
+    /**
+    * The expiry date of this Document
+    * @member {Date} expiryDate
     */
     expiryDate = undefined;
     /**
-    * The link to the file
+    * The link to the file if it is required
     * @member {String} file
     */
     file = undefined;

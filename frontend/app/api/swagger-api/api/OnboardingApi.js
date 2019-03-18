@@ -272,13 +272,13 @@ export default class OnboardingApi {
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
      */
-    deleteIOnboardingTaskWithHttpInfo(id, opts) {
+    deleteOnboardingTaskWithHttpInfo(id, opts) {
       opts = opts || {};
       let postBody = null;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling deleteIOnboardingTask");
+        throw new Error("Missing the required parameter 'id' when calling deleteOnboardingTask");
       }
 
 
@@ -313,8 +313,8 @@ export default class OnboardingApi {
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
      */
-    deleteIOnboardingTask(id, opts) {
-      return this.deleteIOnboardingTaskWithHttpInfo(id, opts)
+    deleteOnboardingTask(id, opts) {
+      return this.deleteOnboardingTaskWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -372,6 +372,63 @@ export default class OnboardingApi {
      */
     getDocumentType(id, opts) {
       return this.getDocumentTypeWithHttpInfo(id, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * gets an specific DocumentType file
+     * Will return the DocumentType File that matches with the provided [id] 
+     * @param {Number} id id of the searched DocumentType
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link File} and HTTP response
+     */
+    getDocumentTypeFileWithHttpInfo(id, opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling getDocumentTypeFile");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = File;
+
+      return this.apiClient.callApi(
+        '/onboarding/documentType/{id}/file', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * gets an specific DocumentType file
+     * Will return the DocumentType File that matches with the provided [id] 
+     * @param {Number} id id of the searched DocumentType
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link File}
+     */
+    getDocumentTypeFile(id, opts) {
+      return this.getDocumentTypeFileWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -541,13 +598,13 @@ export default class OnboardingApi {
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IOnboardingTask} and HTTP response
      */
-    getIOnboardingTaskWithHttpInfo(id, opts) {
+    getOnboardingTaskWithHttpInfo(id, opts) {
       opts = opts || {};
       let postBody = null;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling getIOnboardingTask");
+        throw new Error("Missing the required parameter 'id' when calling getOnboardingTask");
       }
 
 
@@ -582,8 +639,65 @@ export default class OnboardingApi {
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IOnboardingTask}
      */
-    getIOnboardingTask(id, opts) {
-      return this.getIOnboardingTaskWithHttpInfo(id, opts)
+    getOnboardingTask(id, opts) {
+      return this.getOnboardingTaskWithHttpInfo(id, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * gets an specific OnboardingTask file
+     * Will return the OnboardingTask File that matches with the provided [id] 
+     * @param {Number} id id of the searched OnboardingTask
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link File} and HTTP response
+     */
+    getOnboardingTaskFileWithHttpInfo(id, opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling getOnboardingTaskFile");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = File;
+
+      return this.apiClient.callApi(
+        '/onboarding/task/{id}/file', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * gets an specific OnboardingTask file
+     * Will return the OnboardingTask File that matches with the provided [id] 
+     * @param {Number} id id of the searched OnboardingTask
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link File}
+     */
+    getOnboardingTaskFile(id, opts) {
+      return this.getOnboardingTaskFileWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -722,23 +836,23 @@ export default class OnboardingApi {
      * updates the OnboardingTask
      * Will update an OnboardingTask with the provided data in body  if the OnboardingTask matches the [id] 
      * @param {Number} id id of the searched OnboardingTask
-     * @param {module:model/IOnboardingTask} document OnboardingTask data
+     * @param {module:model/IOnboardingTask} onboardingTask OnboardingTask data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
      */
-    updateIOnboardingTaskWithHttpInfo(id, document, opts) {
+    updateOnboardingTaskWithHttpInfo(id, onboardingTask, opts) {
       opts = opts || {};
-      let postBody = document;
+      let postBody = onboardingTask;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling updateIOnboardingTask");
+        throw new Error("Missing the required parameter 'id' when calling updateOnboardingTask");
       }
 
-      // verify the required parameter 'document' is set
-      if (document === undefined || document === null) {
-        throw new Error("Missing the required parameter 'document' when calling updateIOnboardingTask");
+      // verify the required parameter 'onboardingTask' is set
+      if (onboardingTask === undefined || onboardingTask === null) {
+        throw new Error("Missing the required parameter 'onboardingTask' when calling updateOnboardingTask");
       }
 
 
@@ -769,13 +883,13 @@ export default class OnboardingApi {
      * updates the OnboardingTask
      * Will update an OnboardingTask with the provided data in body  if the OnboardingTask matches the [id] 
      * @param {Number} id id of the searched OnboardingTask
-     * @param {module:model/IOnboardingTask} document OnboardingTask data
+     * @param {module:model/IOnboardingTask} onboardingTask OnboardingTask data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
      */
-    updateIOnboardingTask(id, document, opts) {
-      return this.updateIOnboardingTaskWithHttpInfo(id, document, opts)
+    updateOnboardingTask(id, onboardingTask, opts) {
+      return this.updateOnboardingTaskWithHttpInfo(id, onboardingTask, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

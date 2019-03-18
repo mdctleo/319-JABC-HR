@@ -71,9 +71,6 @@ export default class IDocumentType {
             if (data.hasOwnProperty('file')) {
                 obj['file'] = ApiClient.convertToType(data['file'], 'String');
             }
-            if (data.hasOwnProperty('path')) {
-                obj['path'] = ApiClient.convertToType(data['path'], 'String');
-            }
         }
         return obj;
     }
@@ -92,13 +89,10 @@ export default class IDocumentType {
     */
     description = undefined;
     /**
+    * If the document has a template, this will be the link to access it
     * @member {String} file
     */
     file = undefined;
-    /**
-    * @member {String} path
-    */
-    path = undefined;
 
 
 

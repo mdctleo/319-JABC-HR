@@ -41,7 +41,7 @@ export default class IEmployeeHistory {
     * @param adminLevel {Number} 
     * @param version {Number} The number of the version of the Employee data
     * @param fkCreator {Number} The unique identifier of the Employee that updated the data of the Employee
-    * @param createdDate {Number} The unix timestamp of the date the creation of this version of the employee data
+    * @param createdDate {Date} The date the creation of this version of the employee data
     */
 
     constructor(id, sin, email, password, firstname, lastname, fte, status, adminLevel, version, fkCreator, createdDate) {
@@ -104,7 +104,7 @@ export default class IEmployeeHistory {
                 obj['fkCreator'] = ApiClient.convertToType(data['fkCreator'], 'Number');
             }
             if (data.hasOwnProperty('createdDate')) {
-                obj['createdDate'] = ApiClient.convertToType(data['createdDate'], 'Number');
+                obj['createdDate'] = ApiClient.convertToType(data['createdDate'], 'Date');
             }
             if (data.hasOwnProperty('salary')) {
                 obj['salary'] = ApiClient.convertToType(data['salary'], 'Number');
@@ -113,10 +113,10 @@ export default class IEmployeeHistory {
                 obj['address'] = ApiClient.convertToType(data['address'], 'String');
             }
             if (data.hasOwnProperty('birthdate')) {
-                obj['birthdate'] = ApiClient.convertToType(data['birthdate'], 'Number');
+                obj['birthdate'] = ApiClient.convertToType(data['birthdate'], 'Date');
             }
             if (data.hasOwnProperty('dateJoined')) {
-                obj['dateJoined'] = ApiClient.convertToType(data['dateJoined'], 'Number');
+                obj['dateJoined'] = ApiClient.convertToType(data['dateJoined'], 'String');
             }
             if (data.hasOwnProperty('vacationDays')) {
                 obj['vacationDays'] = ApiClient.convertToType(data['vacationDays'], 'Number');
@@ -185,8 +185,8 @@ export default class IEmployeeHistory {
     */
     fkCreator = undefined;
     /**
-    * The unix timestamp of the date the creation of this version of the employee data
-    * @member {Number} createdDate
+    * The date the creation of this version of the employee data
+    * @member {Date} createdDate
     */
     createdDate = undefined;
     /**
@@ -198,13 +198,13 @@ export default class IEmployeeHistory {
     */
     address = undefined;
     /**
-    * The unix timestamp of the birthdate of the employee
-    * @member {Number} birthdate
+    * The birthdate of the employee
+    * @member {Date} birthdate
     */
     birthdate = undefined;
     /**
-    * The unix timestamp of the date joined of the employee
-    * @member {Number} dateJoined
+    * The date joined of the employee
+    * @member {String} dateJoined
     */
     dateJoined = undefined;
     /**

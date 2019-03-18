@@ -101,10 +101,10 @@ export default class IEmployee {
                 obj['address'] = ApiClient.convertToType(data['address'], 'String');
             }
             if (data.hasOwnProperty('birthdate')) {
-                obj['birthdate'] = ApiClient.convertToType(data['birthdate'], 'Number');
+                obj['birthdate'] = ApiClient.convertToType(data['birthdate'], 'String');
             }
             if (data.hasOwnProperty('dateJoined')) {
-                obj['dateJoined'] = ApiClient.convertToType(data['dateJoined'], 'Number');
+                obj['dateJoined'] = ApiClient.convertToType(data['dateJoined'], 'String');
             }
             if (data.hasOwnProperty('vacationDays')) {
                 obj['vacationDays'] = ApiClient.convertToType(data['vacationDays'], 'Number');
@@ -171,13 +171,13 @@ export default class IEmployee {
     */
     address = undefined;
     /**
-    * The unix timestamp of the birthdate of the employee
-    * @member {Number} birthdate
+    * The birthdate of the employee
+    * @member {Date} birthdate
     */
     birthdate = undefined;
     /**
-    * The unix timestamp of the date joined of the employee
-    * @member {Number} dateJoined
+    * The date joined of the employee
+    * @member {String} dateJoined
     */
     dateJoined = undefined;
     /**

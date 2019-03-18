@@ -6,11 +6,11 @@ import {
   updateEmployee,
   getCompetenciesForRole,
 } from 'api/saga';
-import { selectProfile } from '../App/selectors';
+import { selectProfile, selectUser } from '../App/selectors';
 import { selectRole } from './selectors';
 
 export function* getProfileData() {
-  const user = yield select(selectProfile);
+  const user = yield select(selectUser());
   yield call(getEmployee, user.id);
   const profile = yield select(selectProfile);
   if (profile.fkRole) {
