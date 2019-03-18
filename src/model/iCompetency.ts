@@ -11,6 +11,7 @@
  */
 
 
+
 /**
  * A Competency contains info of competencies and objectives that each role need to fulfill 
  */
@@ -52,5 +53,11 @@ export class Competency implements ICompetency{
             Competencys.push(new Competency(rawCompetency))
         }
         return Competencys
+    }
+
+    static Prepare(rawCompetency: ICompetency) {
+        rawCompetency.name = (rawCompetency.name) ? rawCompetency.name : null;
+        rawCompetency.description = (rawCompetency.description) ? rawCompetency.description : null;
+        return rawCompetency;
     }
 }
