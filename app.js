@@ -1,16 +1,17 @@
 'use strict';
 
+require('dotenv').config()
 var fs = require('fs'),
     path = require('path'),
     http = require('http');
 
-var app = require('connect')();
+var app = require('express')();
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 var serveStatic = require('serve-static')
 var Auth = require('./src/utils/Auth').default
 var ResponseManager = require('./src/utils//ResponseManager')
-var serverPort = 8080;
+var serverPort = process.env.PORT;
 
 // swaggerRouter configuration
 var options = {
@@ -46,7 +47,10 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   app.use(ResponseManager.ErrorHandler)
 
   // Serve static files of frontend
-  app.use(serveStatic('frontend/build/', {'index': ['index.html']}))
+  app.use(serveStatic('frontend/build/'));
+  app.get('*', (req, res) =>
+      res.sendFile(path.join(__dirname,'./frontend/build/index.html'))
+  );
 
   // Start the server
   http.createServer(app).listen(serverPort, function () {

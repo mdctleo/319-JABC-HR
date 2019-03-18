@@ -4,14 +4,24 @@
  *
  */
 
-import { GET_DATA } from './constants';
+import { GET_PROFILE_DATA, SAVE_PROFILE } from './constants';
 
-export function getData() {
+export function getProfileData() {
   return {
-    type: GET_DATA,
+    type: GET_PROFILE_DATA,
+  };
+}
+
+export function saveProfile(profile) {
+  return {
+    type: SAVE_PROFILE,
+    payload: {
+      profile,
+    },
   };
 }
 
 export default {
-  getData,
+  getProfileData,
+  saveProfile,
 };

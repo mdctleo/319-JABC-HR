@@ -5,20 +5,15 @@
  */
 
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import selectProfile from './selectors';
+import { selectProfile} from '../App/selectors';
+import { selectRole } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import actions, {getData} from './actions';
+import actions from './actions';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -26,166 +21,129 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
+import EmployeeDisplay from '../../components/EmployeeDisplay';
+import RoleDisplay from '../../components/RoleDisplay';
+import EmployeeEditForm from '../../components/EmployeeEditForm';
 import Button from '@material-ui/core/Button';
-import CompetencyCard from '../../components/CompetencyCard';
 
 const styles = theme => ({
   root: {
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
-    paddingBottom: '30px',
+    paddingBottom: '100px',
   },
   tabsIndicator: {
     display: 'inline-block',
     backgroundColor: '#ff5000',
   },
-  title: {
-    marginLeft: '2.5%',
+  editButton: {
+    float: 'right',
+    display: 'inline',
     color: 'white',
-  },
-  card: {
-    marginLeft: '30px',
-    marginBottom: '20px',
-    paddingTop: '5px',
-    paddingBottom: '5px',
-    width: '75%',
-    backgroundColor: '#00954D',
-  },
-  fieldContainer: {
-    width: '100%',
-    marginBottom: '15px',
-  },
-  positionName: {
-    display: 'inline',
-    marginTop: '30px',
-  },
-  formSubheading: {
-    display: 'inline',
-  },
-  container: {
-    width: '95%',
-    marginLeft: '2.5%',
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  topFieldContainer: {
-    width: '100%',
-    marginBottom: '15px',
-    marginTop: '50px',
-  },
-  textField: {
-    width: '100%',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    },
   },
 });
 
 class Profile extends React.PureComponent {
   componentDidMount() {
-    this.props.getData();
+    this.props.getProfileData();
   }
 
   state = {
-    value: 0,
+    activeTab: 0,
+    isAdmin: true,
+    edit: false,
   };
 
   handleChange = (event, value) => {
-    this.setState({ value });
+    this.setState({ activeTab: value });
+    this.setState({ edit: false });
   };
 
+  handleClickEdit = (event, value) => {
+    this.setState({
+      edit: true,
+    });
+  };
+
+  saveProfile = (profile) => {
+    this.props.saveProfile(profile);
+    this.setState({
+      edit: false,
+    });
+  }
+
+  cancelEdit = () => {
+    this.setState({
+      edit: false,
+    });
+  }
+
   render() {
-    const { value }  = this.state;
-    const { classes, profile } = this.props;
+    const { activeTab, isAdmin, edit } = this.state;
+    const { classes, role, profile } = this.props;
+
     if (!profile) return null;
     return (
       <div>
-        <h1>{profile.firstname} {profile.lastname}</h1>
+        <h1>My Profile</h1>
         <Paper className={classes.root}>
           <AppBar position="static" className={classes.appBar}>
-            <Tabs value={value} classes={{ indicator: classes.tabsIndicator }}
-                  onChange={this.handleChange}>
-              <Tab disableRipple label="Employee Information" />
-              <Tab disableRipple label="Contact Information" />
-              <Tab disableRipple label="Role Information" />
+            <Tabs
+              value={activeTab}
+              classes={{ indicator: classes.tabsIndicator }}
+              onChange={this.handleChange}
+            >
+              <Tab disableRipple label="Profile" />
+              {role && <Tab disableRipple label="Role" />}
             </Tabs>
-           </AppBar>
-           { value == 0 ?
-            (<div className="profile-card">
-            <Table className="profile-card-table">
-              <TableBody>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">EMPLOYEE ID</Typography></TableCell>
-                  <TableCell align="left">{profile.id}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">SIN</Typography></TableCell>
-                  <TableCell align="left">{profile.sin}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">POSITION</Typography></TableCell>
-                  <TableCell align="left">{profile.role.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">VACATION DAYS REMAINING</Typography></TableCell>
-                  <TableCell align="left">{profile.remainingVacationDays}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">EMPLOYEE TYPE</Typography></TableCell>
-                  <TableCell align="left">FT</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">STATUS</Typography></TableCell>
-                  <TableCell align="left">Active</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-            </div>) :
-            ( value == 1 ? 
-            (<div className="profile-card">
-            <Table className="profile-card-table">
-              <TableBody>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">ADDRESS</Typography></TableCell>
-                  <TableCell align="left">
-                    {profile.address}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left"><Typography variant="caption">PHONE NUMBER</Typography></TableCell>
-                  <TableCell align="left">{}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-            </div>) :
-              <div className="profile-card">
-              <form className={classes.container} noValidation autocomplete="off">
-                <div className={classes.topFieldContainer}>
-                  <Typography className={classes.positionName} variant="h5">{profile.role.name}</Typography>
+          </AppBar>
+          <div className="profile-card">
+            {activeTab === 0 &&
+              !isAdmin && (
+                <EmployeeDisplay
+                  profile={profile}
+                  roleName={role && role.name}
+                  isAdmin={isAdmin}
+                />
+              )}
+            {activeTab === 0 &&
+              isAdmin &&
+              !edit && (
+                <div>
+                  <Button
+                    className={classes.editButton}
+                    onClick={this.handleClickEdit}
+                  >
+                    Edit
+                  </Button>
+                  <EmployeeDisplay
+                    profile={profile}
+                    roleName={role && role.name}
+                    isAdmin={isAdmin}
+                  />
                 </div>
-                <div className={classes.fieldContainer}>      
-                  <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Description</Typography>
-                </div>
-                 <div className={classes.fieldContainer}>
-                    <TextField
-                      id="role-description"
-                      multiline
-                      rows="4"
-                      className={classes.textField}
-                      margin="normal"
-                      variant="outlined"
-                      defaultValue={profile.role.description}
-                      InputProps={{ readOnly: true }}
-                      />
-                 </div>
-                 <div className={classes.fieldContainer}>
-                   <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Competencies</Typography>
-                 </div>
-                   <CompetencyCard dataObject={[{name:"", description:"", rating:0}]} disabled={true}/>
-               </form>
-             </div>
-            )
-          }
-     </Paper>
-    </div>
+              )}
+            {activeTab === 0 &&
+              isAdmin &&
+              edit && (
+                <EmployeeEditForm
+                  profile={profile}
+                  saveProfile={this.saveProfile}
+                  cancelEdit={this.cancelEdit}
+                />
+              )}
+            {activeTab === 1 && <RoleDisplay role={role} />}
+          </div>
+        </Paper>
+      </div>
     );
   }
 }
@@ -193,11 +151,14 @@ class Profile extends React.PureComponent {
 Profile.propTypes = {
   classes: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  getData: PropTypes.func,
+  role: PropTypes.object,
+  getProfileData: PropTypes.func,
+  saveProfile: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
-  profile: selectProfile(),
+  profile: selectProfile,
+  role: selectRole,
 });
 
 const mapDispatchToProps = {

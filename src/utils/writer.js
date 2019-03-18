@@ -44,9 +44,9 @@ var writeJson = exports.writeJson = function(response, arg1, arg2) {
   response.end(payload);
 }
 
-var writeImg = exports.writeImg = function(response, imgData) {
-  response.writeHead(200, {'Content-Type': imgData.type });
-  response.end(imgData.img, 'binary');
+exports.writeFile = function(response, file, code = 200) {
+  response.writeHead(code, {'Content-Type': file.mimetype });
+  response.end(file.buffer, 'binary');
 }
 
 exports.deleteNulls  = function(data){

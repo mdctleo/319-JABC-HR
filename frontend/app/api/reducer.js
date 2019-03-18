@@ -3,7 +3,7 @@ import { SET_RESOURCE } from './constants';
 
 export const initialState = fromJS({});
 
-function loginReducer(state = initialState, action) {
+function apiReducer(state = initialState, action) {
   switch (action.type) {
     case SET_RESOURCE:
       return state.merge({
@@ -16,4 +16,4 @@ function loginReducer(state = initialState, action) {
   }
 }
 
-export default loginReducer;
+export default apiReducer;

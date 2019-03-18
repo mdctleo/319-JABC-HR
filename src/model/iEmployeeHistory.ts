@@ -37,19 +37,19 @@ export interface IEmployeeHistory {
      */
     fkCreator: number;
     /**
-     * The unix timestamp of the date the creation of this version of the employee data
+     * The date the creation of this version of the employee data
      */
-    createdDate: number;
+    createdDate: string;
     salary?: number;
     address?: string;
     /**
-     * The unix timestamp of the birthdate of the employee
+     * The birthdate of the employee
      */
-    birthdate?: number;
+    birthdate?: string;
     /**
-     * The unix timestamp of the date joined of the employee
+     * The date joined of the employee
      */
-    dateJoined?: number;
+    dateJoined?: string;
     /**
      * The number of vacation days allowed to the employee per year
      */
@@ -88,19 +88,19 @@ export class EmployeeHistory implements IEmployeeHistory{
      */
     fkCreator: number;
     /**
-     * The unix timestamp of the date the creation of this version of the employee data
+     * The date the creation of this version of the employee data
      */
-    createdDate: number;
+    createdDate: string;
     salary?: number;
     address?: string;
     /**
-     * The unix timestamp of the birthdate of the employee
+     * The birthdate of the employee
      */
-    birthdate?: number;
+    birthdate?: string;
     /**
-     * The unix timestamp of the date joined of the employee
+     * The date joined of the employee
      */
-    dateJoined?: number;
+    dateJoined?: string;
     /**
      * The number of vacation days allowed to the employee per year
      */

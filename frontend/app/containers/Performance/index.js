@@ -5,237 +5,36 @@
  */
 
 import React from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
-import Button from '@material-ui/core/Button';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Chip from '@material-ui/core/Chip';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
-import green from "@material-ui/core/colors/green";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import Radio from "@material-ui/core/Radio";
-import Input from '@material-ui/core/Input';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import FilledInput from '@material-ui/core/FilledInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
+import WorkPlanDisplay from '../../components/WorkPlanDisplay';
+import PerformanceReviewDisplay from '../../components/PerformanceReviewDisplay';
+import PerformanceReviewForm from '../../components/PerformanceReviewForm';
+import WorkPlanForm from '../../components/WorkPlanForm';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
-let counter = 0;
-function createData(position) {
-  counter += 1;
-  return { id: counter, position };
-}
-
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
-}
-
-const rows = [
-  { id: 'position', numeric: false, disablePadding: true, label: 'Position' },
-];
-
-class EnhancedTableHead extends React.Component {
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property);
-  };
-
-  render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
-
-    return (
-      <TableHead>
-        <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-              labelStyle={{ color: 'grey' }}
-              iconStyle={{ fill: 'grey' }}
-              inputStyle={{ color: 'grey' }}
-              style={{ color: 'grey' }}
-            />
-          </TableCell>
-          {rows.map(
-            row => (
-              <TableCell
-                key={row.id}
-                align={row.numeric ? 'right' : 'left'}
-                padding={row.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === row.id ? order : false}
-              >
-                <Tooltip
-                  title="Sort"
-                  placement={row.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
-                >
-                  <TableSortLabel
-                    active={orderBy === row.id}
-                    direction={order}
-                    onClick={this.createSortHandler(row.id)}
-                  >
-                    {row.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            ),
-            this,
-          )}
-        </TableRow>
-      </TableHead>
-    );
-  }
-}
-
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
-  },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: 'white',
-          backgroundColor: ' #00954D',
-        }
-      : {
-          color: 'white',
-          backgroundColor: ' #00954D',
-        },
-  spacer: {
-    flex: '1 1 100%',
-  },
-  actions: {
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flex: '0 0 auto',
-  },
-});
-
-let EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props;
-
-  return (
-    <Toolbar
-      className={classNames(classes.root, classes.highlight)}
-    >
-    <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography></Typography>)}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
-    </Toolbar>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-};
-
-EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
 const styles = theme => ({
   root: {
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
-  },
-  yearContainer: {
-    float: 'right',
-    marginTop: '30px',
-    marginRight: '2.5%',
-    width: 'auto',
-  },
-  addYearButton: {
-    verticalAlign: 'middle',
-    display: 'inline-block',
-    color: 'white',
-    width: '125px',
-    backgroundColor: '#ff6600',
-    borderRadius: '15px',
-    transition: '0.3s',
-    '&:hover': {
-      backgroundColor: '#ff944d',
-    }
+    paddingBottom: '100px',
   },
   editButton: {
     float: 'right',
@@ -249,9 +48,6 @@ const styles = theme => ({
       backgroundColor: '#ff944d',
     }
   },
-  table: {
-    minWidth: 800,
-  },
   tableWrapper: {
     overflowX: 'auto',
   },
@@ -259,230 +55,386 @@ const styles = theme => ({
     display: 'inline-block',
     backgroundColor: '#ff5000',
   },
-  tabSelected: {},
-  typography: {
-    padding: theme.spacing.unit * 3,
-  },
   container: {
     width: '95%',
     marginLeft: '2.5%',
     display: 'flex',
     flexWrap: 'wrap',
   },
-  textField: {
-    width: '75%',
-  },
-  fieldContainer: {
-    width: '100%',
-    marginTop: '20px',
-    marginBottom: '15px',
-  },
-   topFieldContainer: {
-    width: '100%',
-    marginBottom: '15px',
-    marginTop: '50px',
-  },
-  positionName: {
-    marginTop: '30px',
-  },
-  formSubheading: {
-    marginTop: '30px',
-    display: 'inline',
-  },
-  radio: {
-    color: green[600],
-    "&$checked": {
-      color: green[500]
-    }
-  },
-  card: {
-    width: "75%",
-  },
-  fab: {
-    marginTop: '30px',
-    marginBottom: '30px',
-    marginLeft: '37.5%',
-    display: 'block',
-  },
   formControl: {
     float: 'right',
     marginTop: '50px',
     marginRight: '2.5%',
-    backgroundColor: 'white',
     width: '200px',
   },
   appBar: {
     width: '100%',
   },
-  leftField: {
-    width: '30%',
+  editButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
   },
-  rightField: {
-    marginLeft: '5%',
-    width: '55%',
+  formButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    height: '40px',
+    width: '100px',
+    marginTop: '30px',
+    marginRight: '20px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
   },
-  addGoalButton: {
-    margin: theme.spacing.unit,
-    marginTop: '20px',
-    marginLeft: '2.5%',
-  },
-  competencyField: {
-    width: '90%',
+  addDocButton: {
+    display: 'inline',
+    color: 'white',
+    height: '40px',
+    width: '200px',
+    marginTop: '30px',
+    marginRight: '20px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
   },
 });
 
 
-class EnhancedTable extends React.Component {
+class PerformacePage extends React.Component {
+
+
   state = {
-    order: 'asc',
-    orderBy: 'position',
-    selected: [],
-    displayedPage: "table",
-    addButtonClicked: 0,
-    editButtonClicked: 0,
-    selectedProfileName: '',
-    years: [],
-    selectedYear: 2019,
-    value: 0,
-    data: [
-      createData('Developer'),
-      createData('Database Admin'),
-      createData('DevOps Master'),
-      createData('Manager'),
-      createData('HR Admin'),
-      createData('President'),
-      createData('Executive Assistant'),
-      createData('Secretary'),
-      createData('Volunteer Coordinator'),
-    ],
-    page: 0,
-    rowsPerPage: 10,
-  };
-
-  handleRequestSort = (event, property) => {
-    const orderBy = property;
-    let order = 'desc';
-
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
-    }
-
-    this.setState({ order, orderBy });
-  };
-
-  handleSelectAllClick = event => {
-    if (event.target.checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
-      return;
-    }
-    this.setState({ selected: [] });
-  };
-
-  handleClick = (event, id) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.setState({ selected: newSelected });
-  };
-
-  handleClickProfile = (event, id, position) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.setState({ selected: newSelected });
-    this.setState({ displayedPage: "profile" });
-    this.setState({ selectedProfileName: position });
-  };
-
-  handleChangePage = (event, page) => {
-    this.setState({ page });
-  };
-
-  handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
-
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-
-  handleBackButton = (event, value) => {
-    this.setState({ value: 1 });
-    this.setState({ displayedPage: "table" });
-  }
+    addDialog: false,
+    profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
+    workPlans: {},
+    performanceReviews: {},
   
-  handleAddButton = (event, value) => {
-    this.setState({ displayedPage: "add" });
+    //   workPlans: { "2019-2020": {date: "September 16, 2019", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
+  //                                    section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
+  //                                    section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
+  //                                    section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
+  //                                    section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
+  //                                    section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
+  //           "2018-2019": {date: "September 16, 2018", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
+  //                                    section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
+  //                                    section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
+  //                                    section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
+  //                                    section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
+  //                                    section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}}, 
+  //           "2017-2018": {date: "September 16, 2017", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
+  //                                    section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
+  //                                    section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
+  //                                    section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
+  //                                    section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
+  //                                    section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},  
+  //           "2016-2017": {date: "September 16, 2016", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
+  //                                    section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
+  //                                    section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
+  //                                    section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
+  //                                    section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
+  //                                    section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
+  // },
+  
+  // performanceReviews: { "2019-2020": {date: "March 16, 2020", section1: { rows: [{ column1: "Department X", column2: "Goal X", column3: "Comment X"}, {column1: "Department Y", column2: "Goal Y", column3: "Comment Y"}]}, 
+  //                                   section2: { rows: [{ column1: "Program X", column2: "Goal X", column3: "Comment X"}, {column1: "Program Y", column2: "Goal Y", column3: "Comment Y"}]},
+  //                                   section3: { rows: [{ column1: "Competency X", column2: "Explanation X", column3: "Comment X"}, {column1: "Competency Y", column2: "Explanation Y", column3: "Comment Y"}]},
+  //                                   section4: { rows: [{ column1: "Objective X", column2: "Support X", column3: "Comment X"}, {column1: "Objective Y", column2: "Support Y", column3: "Comment Y"}]},
+  //                                   section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
+  //                                   section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
+  //                       "2018-2019": {date: "March 16, 2019", section1: { rows: [{ column1: "Department X", column2: "Goal X", column3: "Comment X"}, {column1: "Department Y", column2: "Goal Y", column3: "Comment Y"}]}, 
+  //                                   section2: { rows: [{ column1: "Program X", column2: "Goal X", column3: "Comment X"}, {column1: "Program Y", column2: "Goal Y", column3: "Comment Y"}]},
+  //                                   section3: { rows: [{ column1: "Competency X", column2: "Explanation X", column3: "Comment X"}, {column1: "Competency Y", column2: "Explanation Y", column3: "Comment Y"}]},
+  //                                   section4: { rows: [{ column1: "Objective X", column2: "Support X", column3: "Comment X"}, {column1: "Objective Y", column2: "Support Y", column3: "Comment Y"}]},
+  //                                   section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
+  //                                   section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
+  //                       "2017-2018": {date: "March 16, 2018", section1: { rows: [{ column1: "Department X", column2: "Goal X", column3: "Comment X"}, {column1: "Department Y", column2: "Goal Y", column3: "Comment Y"}]}, 
+  //                                   section2: { rows: [{ column1: "Program X", column2: "Goal X", column3: "Comment X"}, {column1: "Program Y", column2: "Goal Y", column3: "Comment Y"}]},
+  //                                   section3: { rows: [{ column1: "Competency X", column2: "Explanation X", column3: "Comment X"}, {column1: "Competency Y", column2: "Explanation Y", column3: "Comment Y"}]},
+  //                                   section4: { rows: [{ column1: "Objective X", column2: "Support X", column3: "Comment X"}, {column1: "Objective Y", column2: "Support Y", column3: "Comment Y"}]},
+  //                                   section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
+  //                                   section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}}, 
+  //                       "2016-2017": {date: "March 16, 2017", section1: { rows: [{ column1: "Department X", column2: "Goal X", column3: "Comment X"}, {column1: "Department Y", column2: "Goal Y", column3: "Comment Y"}]}, 
+  //                                   section2: { rows: [{ column1: "Program X", column2: "Goal X", column3: "Comment X"}, {column1: "Program Y", column2: "Goal Y", column3: "Comment Y"}]},
+  //                                   section3: { rows: [{ column1: "Competency X", column2: "Explanation X", column3: "Comment X"}, {column1: "Competency Y", column2: "Explanation Y", column3: "Comment Y"}]},
+  //                                   section4: { rows: [{ column1: "Objective X", column2: "Support X", column3: "Comment X"}, {column1: "Objective Y", column2: "Support Y", column3: "Comment Y"}]},
+  //                                   section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
+  //                                   section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
+// },
+
+    currentYears: 0,  
+    value: 0,
+    edit: 0,
   }
- 
-   handleEditButton = (event, value) => {
-    var textFields = document.getElementsByName("textField");
-    this.setState({ editButtonClicked: 1 });
-    for (var i = 0; i < textFields.length; i++) {
-      console.log(textFields[i]);
-      textFields[i].readOnly = false;
-      textFields[i].children[0].children[0].style = { borderColor: 'green' };
+
+  handleClickEdit = (event, value) => {
+    this.setState({
+      edit: 1,
+    });
+  };
+
+  handleCancel = (event, value) => {
+    this.setState({ edit: 0});
+  }
+
+  handleSelect = (event, value) => {
+    if (event.target.value == 0) {
+      this.setState({ addDialog: true });
+    } else {
+      this.setState({ currentYears: event.target.value });
     }
   }
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
+  handleClose = (event, value) => {
+    this.setState({ addDialog: false });
+    this.setState({ edit: 1 });
+  }
+
+  handleYearsDialog = (event, value) => {
+    var newYears = document.getElementById("years-dialog").value;
+    this.setState({ currentYears: newYears});
+    var newWP = { date: "", section1: { rows: [{ column1: "", column2: ""}]}, section2: { rows: [{ column1: "", column2: ""}]}, section3: { rows: [{ column1: "", column2: ""}]}, section4: { rows: [{ column1: "", column2: ""}]}, section5: { rows: [{ column1: "", column2: ""}]}, section6: { rows: [{ column1: "", column2: "", column3: ""}]}};
+    var newPR = { date: "", section1: { rows: [{ column1: "", column2: "", column3: ""}]}, section2: { rows: [{ column1: "", column2: "", column3: ""}]}, section3: { rows: [{ column1: "", column2: "", column3: ""}]}, section4: { rows: [{ column1: "", column2: "", column3: ""}]}, section5: { rows: [{ column1: "", column2: "", column3: ""}]}, section6: { rows: [{ column1: "", column2: "", column3: ""}]}};
+    var prCopy = this.state.performanceReviews;
+    prCopy[newYears] = newPR;
+    var wpCopy = this.state.workPlans;
+    wpCopy[newYears] = newWP;
+    this.setState({ workPlans: wpCopy });
+    this.setState({ performanceReviews: prCopy });
+    this.setState({ addDialog: false});
+    this.setState({ edit: 1 });
+
+  }
+
+  updatePlan = (event, value) => {
+    var date = document.getElementById("wpf-date").value ? document.getElementById("wpf-date").value : document.getElementById("wpf-date").defaultValue;
+    var section1 = { rows: []};
+    var section1s = document.getElementsByClassName("wpf-rows-1");
+    console.log(section1s[1].firstChild.firstChild);
+    for (var i = 0; i < section1s.length; i++) {
+      var input = section1s[i].firstChild.firstChild;
+      if (i % 2 == 0) {
+        input.value ? section1.rows.push({ column1: input.value }) : section1.rows.push({ column1: input.defaultValue });
+        console.log(input.value);
+        console.log(section1.rows);
+      } else {
+        console.log(Math.floor(i/2));
+        section1.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+      }
+    }
+
+    var section2 = { rows: []};
+    var section2s = document.getElementsByClassName("wpf-rows-2");
+    for (var i = 0; i < section2s.length; i++) {
+      var input = section2s[i].firstChild.firstChild;
+      if (i % 2 == 0) {
+        input.value ? section2.rows.push({ column1: input.value }) : section2.rows.push({ column1: input.defaultValue });
+      } else {
+        section2.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+      }
+    }
+
+    var section3 = { rows: []};
+    var section3s = document.getElementsByClassName("wpf-rows-3");
+    for (var i = 0; i < section3s.length; i++) {
+      var input = section3s[i].firstChild.firstChild;
+      if (i % 2 == 0) {
+        input.value ? section3.rows.push({ column1: input.value }) : section3.rows.push({ column1: input.defaualue });
+      } else {
+        section3.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+      }
+    }
+
+    var section4 = { rows: []};
+    var section4s = document.getElementsByClassName("wpf-rows-4");
+    for (var i = 0; i < section4s.length; i++) {
+      var input = section4s[i].firstChild.firstChild;
+      if (i % 2 == 0) {
+        input.value  ? section4.rows.push({ column1: input.value }) : section4.rows.push({ column1: input.defaultValue });
+      } else {
+        section4.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+      }
+    }
+
+    var section5 = { rows: []};
+    var section5s = document.getElementsByClassName("wpf-rows-5");
+    for (var i = 0; i < section5s.length; i++) {
+      var input = section5s[i].firstChild.firstChild;
+      if (i % 2 == 0) {
+        input.value ? section5.rows.push({ column1: input.value }) : section5.rows.push({ column1: input.defaultValue });
+      } else {
+        section5.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+      }
+    }
+
+    var section6 = { rows: []};
+    var section6s = document.getElementsByClassName("wpf-rows-6");
+    for (var i = 0; i < section6s.length; i++) {
+      var input = section6s[i].firstChild.firstChild;
+      if (i % 3 == 0) {
+        input.value ? section6.rows.push({ column1: input.value }) : section6.rows.push({ column1: input.defaultValue });
+      } else if (i % 3 == 1) {
+        section6.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+      } else {
+        section6.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+      }
+    }
+    var workPlansCopy = this.state.workPlans;
+    workPlansCopy[this.state.currentYears] = { date: date, section1: section1, section2: section2, section3: section3, section4: section4, section5: section5, section6: section6};
+    this.setState({ workPlans: workPlansCopy });
+    var prCopy = this.state.performanceReviews;
+    prCopy[this.state.currentYears] = { date: prCopy[this.state.currentYears].date, section1: workPlansCopy[this.state.currentYears].section1, section2: workPlansCopy[this.state.currentYears].section2, section3: workPlansCopy[this.state.currentYears].section3, section4: workPlansCopy[this.state.currentYears].section4, section5: workPlansCopy[this.state.currentYears].section5, section6: workPlansCopy[this.state.currentYears].section6};
+    this.setState({ performanceReviews: prCopy });
+    this.setState({ edit: 0 });
+}
+
+updateReview = (event, value) => {
+  var date = document.getElementById("prf-date").value ? document.getElementById("prf-date").value : document.getElementById("prf-date").defaultValue;
+  var section1 = { rows: []};
+  var section1s = document.getElementsByClassName("prf-rows-1");
+  console.log(section1s[1].firstChild.firstChild);
+  for (var i = 0; i < section1s.length; i++) {
+    var input = section1s[i].firstChild.firstChild;
+    if (i % 2 == 0) {
+      input.value ? section1.rows.push({ column1: input.value }) : section1.rows.push({ column1: input.defaultValue });
+      console.log(input.value);
+      console.log(section1.rows);
+    } else {
+      console.log(Math.floor(i/2));
+      section1.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+    }
+  }
+
+  var section2 = { rows: []};
+  var section2s = document.getElementsByClassName("wpf-rows-2");
+  for (var i = 0; i < section2s.length; i++) {
+    var input = section2s[i].firstChild.firstChild;
+    if (i % 3 == 0) {
+      input.value ? section2.rows.push({ column1: input.value }) : section2.rows.push({ column1: input.defaultValue });
+    } else if (i % 3 == 1) {
+      section2.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+    } else {
+      section2.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+    }
+  }
+
+  var section3 = { rows: []};
+  var section3s = document.getElementsByClassName("wpf-rows-3");
+  for (var i = 0; i < section3s.length; i++) {
+    var input = section3s[i].firstChild.firstChild;
+    if (i % 3 == 0) {
+      input.value ? section3.rows.push({ column1: input.value }) : section3.rows.push({ column1: input.defaultValue });
+    } else if (i % 3 == 1) {
+      section3.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+    } else {
+      section3.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+    }
+  }
+
+  var section4 = { rows: []};
+  var section4s = document.getElementsByClassName("wpf-rows-4");
+  for (var i = 0; i < section4s.length; i++) {
+    var input = section4s[i].firstChild.firstChild;
+    if (i % 3 == 0) {
+      input.value ? section4.rows.push({ column1: input.value }) : section4.rows.push({ column1: input.defaultValue });
+    } else if (i % 3 == 1) {
+      section4.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+    } else {
+      section4.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+    }
+  }
+
+  var section5 = { rows: []};
+  var section5s = document.getElementsByClassName("wpf-rows-5");
+  for (var i = 0; i < section5s.length; i++) {
+    var input = section5s[i].firstChild.firstChild;
+    if (i % 3 == 0) {
+      input.value ? section5.rows.push({ column1: input.value }) : section5.rows.push({ column1: input.defaultValue });
+    } else if (i % 3 == 1) {
+      section5.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+    } else {
+      section5.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+    }
+  }
+
+  var section6 = { rows: []};
+  var section6s = document.getElementsByClassName("wpf-rows-6");
+  for (var i = 0; i < section6s.length; i++) {
+    var input = section6s[i].firstChild.firstChild;
+    if (i % 3 == 0) {
+      input.value ? section6.rows.push({ column1: input.value }) : section6.rows.push({ column1: input.defaultValue });
+    } else if (i % 3 == 1) {
+      section6.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+    } else {
+      section6.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+    }
+  }
+  var prCopy = this.state.performanceReviews;
+  prCopy[this.state.currentYears] = { date: date, section1: section1, section2: section2, section3: section3, section4: section4, section5: section5, section6: section6};
+  this.setState({ performanceReviews: prCopy });
+  this.setState({ edit: 0 });
+}
+
+handleChange = (event, value) => {
+  this.setState({ value });
+};
+
+generateDropdown() {
+    var years = Object.keys(this.state.workPlans);
+    return (<Select
+              onChange={this.handleSelect}>
+              {years.map(function(yearSpan, index){
+                return <MenuItem value={yearSpan}>{yearSpan}</MenuItem>})}
+              <MenuItem value={0}>Add Year</MenuItem>
+          </Select>)
+}
+
+// prHandleAddButton = (sectionNum) => {
+//   var prCopy = this.state.performanceReviews;
+//   var currPR = prCopy[this.state.currentYears];
+//   var section = currPR["section"+sectionNum];
+//   prCopy["section"+sectionNum].rows = section.rows.concat({column1: "", column2: "", column3: ""});
+//   this.setState({ performanceReviews: prCopy});
+// }
+
+// wpHandleAddButton = (sectionNum) => {
+//   var wpCopy = this.state.workPlans;
+//   var currWP = wpCopy[this.state.currentYears];
+//   var section = currWP["section"+sectionNum];
+//   var currYears = this.state.currentYears;
+//   wpCopy[currYears]["section"+sectionNum].rows = section.rows.concat({column1: "", column2: ""});
+//   console.log(this.state.workPlans[currYears]);
+//   this.setState({ workPlans: wpCopy});
+// }
+
+
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, displayedPage, editButtonClicked, value, years, selectedYear, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const { profile, workPlans, performanceReviews, currentYears, value, edit } = this.state;
 
+    console.log("rendering performance");
     return (
       <div>
       <h1>Performance</h1>
-      <FormControl variant="outlined" className={classes.formControl}>
+      <FormControl className={classes.formControl}>
           <InputLabel>
             Year
           </InputLabel>
-          <Select
-            input={
-              <OutlinedInput
-                name="year"
-                id="outlined-year-simple"
-              />
-            }
-          >
-            <MenuItem value={2019}>
-              <em>2019</em>
-            </MenuItem>
-            <MenuItem value={2018}>2018</MenuItem>
-            <MenuItem value={2017}>2017</MenuItem>
-            <MenuItem value={2016}>2016</MenuItem>
-            <MenuItem value={0}>Add Year</MenuItem>
-          </Select>
+          {this.generateDropdown()}
         </FormControl>
         <Paper className={classes.root}>
           <div> 
@@ -495,172 +447,61 @@ class EnhancedTable extends React.Component {
                  label="Performance Review" />
         </Tabs>
          </AppBar>
+         <Dialog
+          open={this.state.addDialog}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Enter Year Span</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Enter the span of years for the new performance documents:
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="years-dialog"
+              label="Year Span"
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleYearsDialog} color="primary">
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
       <div>
-      { value == 0 &&
-           <form className={classes.container} noValidation autocomplete="off">
-             <div className={classes.topFieldContainer}>
-              <Typography className={classes.formSubheading} variant="h5">{selectedYear} Work Plan</Typography>
-              <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button> 
-             </div>
-               <div className={classes.fieldContainer}>
-                 <TextField
-                   name="textField"
-                   label="Date"
-                   multiline
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined"
-                   InputProps={{readOnly: true}}/>
-              </div>
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">JABC Goals</Typography>
-                <div className={classes.fieldContainer}>
-                 <Card className={classes.card}>
-                   <CardContent>
-                     <TextField
-                       name="textField"
-                       label="Department"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.leftField}
-                       InputProps={{readOnly: true}}
-                      />
-                     <TextField
-                       name="textField"
-                       label="Goal"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.rightField}
-                       InputProps={{readOnly: true}}
-                      />
-                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
-                      <AddIcon />
-                    </Fab>
-                    </CardContent>
-                  </Card>
-              </div>
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Personal Targets</Typography>
-              <div className={classes.fieldContainer}>
-                 <Card className={classes.card}>
-                   <CardContent>
-                     <TextField
-                       name="textField"
-                       label="Program"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.leftField}
-                       InputProps={{readOnly: true}}
-                      />
-                     <TextField
-                       name="textField"
-                       label="Goal"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.rightField}
-                       InputProps={{readOnly: true}}
-                      />
-                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
-                      <AddIcon />
-                    </Fab>
-                    </CardContent>
-                  </Card>
-              </div>
-              <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Core Competencies</Typography>
-              <div className={classes.fieldContainer}>
-                 <Card className={classes.card}>
-                   <CardContent>
-                     <TextField
-                       name="textField"
-                       label="Competency"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.competencyField}
-                       InputProps={{readOnly: true}}
-                      />
-                    <Fab size="small" color="secondary" aria-label="Add" className={classes.addGoalButton}>
-                      <AddIcon />
-                    </Fab>
-                    </CardContent>
-                  </Card>
-              </div>
-           </form>}
-{value == 1 && 
-<form className={classes.container} noValidation autocomplete="off">
-             <div className={classes.topFieldContainer}>
-              <Typography className={classes.formSubheading} variant="h5">{selectedYear} Performance Review</Typography>
-              <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button> 
-             </div>
-               <div className={classes.fieldContainer}>
-                 <TextField
-                   name="textField"
-                   label="Date"
-                   multiline
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined"
-                   InputProps={{readOnly: true}}/>
-              </div>
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">JABC Goals</Typography>
-                <div className={classes.fieldContainer}>
-                 <Card className={classes.card}>
-                   <CardContent>
-                     <TextField
-                       name="textField"
-                       label="Department"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.leftField}
-                       InputProps={{readOnly: true}}
-                      />
-                     <TextField
-                       name="textField"
-                       label="Goal"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.rightField}
-                       InputProps={{readOnly: true}}
-                      />
-                    </CardContent>
-                  </Card>
-              </div>
-               <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Personal Targets</Typography>
-              <div className={classes.fieldContainer}>
-                 <Card className={classes.card}>
-                   <CardContent>
-                     <TextField
-                       name="textField"
-                       label="Program"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.leftField}
-                       InputProps={{readOnly: true}}
-                      />
-                     <TextField
-                       name="textField"
-                       label="Goal"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.rightField}
-                       InputProps={{readOnly: true}}
-                      />
-                    </CardContent>
-                  </Card>
-              </div>
-              <Typography className={classes.formSubheading} variant="subtitle1" color="textSecondary">Core Competencies</Typography>
-              <div className={classes.fieldContainer}>
-                 <Card className={classes.card}>
-                   <CardContent>
-                     <TextField
-                       name="textField"
-                       label="Competency"
-                       margin="normal"
-                       variant="outlined"
-                       className={classes.competencyField}
-                       InputProps={{readOnly: true}}
-                      />
-                    </CardContent>
-                  </Card>
-              </div>
-           </form>}
+      { currentYears == 0 &&
+        <div className="profile-card">
+          <Typography>You currently have no performance documents. Click on the button below to add your first set of Performance Documents: </Typography>
+          <Button className={classes.addDocButton} value={0} onClick={this.handleSelect}>Add Documents</Button>
+        </div> }
+      { currentYears !== 0 && value == 0 && edit == 0 &&
+      <div className="profile-card">
+        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button> 
+        <WorkPlanDisplay form={workPlans[currentYears]} years={currentYears} profile={profile}/>
+        </div>}
+      { currentYears !== 0 && value == 0 && edit == 1 && 
+        <div>
+          <WorkPlanForm form={workPlans[currentYears]} years={currentYears} profile={profile}/>
+          <Button className={classes.formButton} onClick={this.updatePlan}>Submit</Button>
+          <Button className={classes.formButton} onClick={this.handleCancel}>Cancel</Button>
+        </div>}
+      { currentYears !== 0 && value == 1 && edit == 0 &&
+      <div className="profile-card">
+        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button> 
+        <PerformanceReviewDisplay form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
+      </div>}
+      { currentYears !== 0 && value == 1 && edit == 1 && 
+        <div>
+          <PerformanceReviewForm form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
+          <Button className={classes.formButton} onClick={this.updateReview}>Submit</Button>
+          <Button className={classes.formButton} onClick={this.handleCancel}>Cancel</Button>
+        </div>}
          </div>
          </div>
           </Paper>
@@ -670,9 +511,9 @@ class EnhancedTable extends React.Component {
 }
 
 
-EnhancedTable.propTypes = {
+PerformacePage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(EnhancedTable);  
+export default withStyles(styles)(PerformacePage);  
 

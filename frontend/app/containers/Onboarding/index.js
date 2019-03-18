@@ -102,7 +102,6 @@ export default class Onboarding extends React.PureComponent {
   state = {
     tabValue: 0,
     openHelp: false,
-    openFAQ: false,
     documentsActive: [],
     documentsDone: [],
     openSnack: false,
@@ -114,14 +113,6 @@ export default class Onboarding extends React.PureComponent {
 
   handleCloseHelp = () => {
     this.setState({ openHelp: false });
-  };
-
-  handleOpenFAQ = () => {
-    this.setState({ openFAQ: true });
-  };
-
-  handleCloseFAQ = () => {
-    this.setState({ openFAQ: false });
   };
 
   handleChangeTab = (event, value) => {
@@ -198,37 +189,6 @@ export default class Onboarding extends React.PureComponent {
               <Modal
                 aria-labelledby="onboarding-modal-title"
                 aria-describedby="onboarding-modal-description"
-                open={this.state.openFAQ}
-                onClose={this.handleCloseFAQ}>
-                <div className="onboarding-modal">
-                  <Typography variant="h5">Frequently Asked Questions</Typography>
-                  <div className="faq-section">
-                    <ExpansionPanel>
-                      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className="faq-question">How to fill the required documents?</Typography>
-                      </ExpansionPanelSummary>
-                      <ExpansionPanelDetails>
-                        <Typography>
-                          On the document section in the onboarding page, you will find the necessary templates that you need download and fill out on Word.
-                        </Typography>
-                      </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <ExpansionPanel>
-                      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className="faq-question">How to upload the required documents?</Typography>
-                      </ExpansionPanelSummary>
-                      <ExpansionPanelDetails>
-                        <Typography>
-                          After filling out your required documents, just upload them.
-                        </Typography>
-                      </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                  </div>
-                </div>
-              </Modal>
-              <Modal
-                aria-labelledby="onboarding-modal-title"
-                aria-describedby="onboarding-modal-description"
                 open={this.state.openHelp}
                 onClose={this.handleCloseHelp}
               >
@@ -260,7 +220,6 @@ export default class Onboarding extends React.PureComponent {
             <Tabs value={this.state.tabValue} onChange={this.handleChangeTab}>
               <Tab label={`Active (${this.state.documentsActive.length})`} />
               <Tab label={`Done (${this.state.documentsDone.length})`} />
-              <Tab label="FAQ" onClick={this.handleOpenFAQ} />
               <Tab label="Get Help" onClick={this.handleOpenHelp}/>
             </Tabs>
           </AppBar>

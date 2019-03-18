@@ -4,6 +4,14 @@ ADD app.js /home/
 
 ADD package.json /home/
 
+ADD ./src/ /home/src
+
+ADD ./util/ /home/util
+
+ADD ./tsconfig.json /home/
+
+ADD ./frontend/build /home/frontend/build
+
 WORKDIR /home/
 
 RUN npm install -g -s --no-progress yarn && \
