@@ -31,13 +31,13 @@ export interface IEmployee {
     salary?: number;
     address?: string;
     /**
-     * The unix timestamp of the birthdate of the employee
+     * The birthdate of the employee
      */
-    birthdate?: number;
+    birthdate?: string;
     /**
-     * The unix timestamp of the date joined of the employee
+     * The date joined of the employee
      */
-    dateJoined?: number;
+    dateJoined?: string;
     /**
      * The number of vacation days allowed to the employee per year
      */
@@ -94,13 +94,13 @@ export class Employee implements IEmployee{
     salary?: number;
     address?: string;
     /**
-     * The unix timestamp of the birthdate of the employee
+     * The birthdate of the employee
      */
-    birthdate?: number;
+    birthdate?: string;
     /**
-     * The unix timestamp of the date joined of the employee
+     * The date joined of the employee
      */
-    dateJoined?: number;
+    dateJoined?: string;
     /**
      * The number of vacation days allowed to the employee per year
      */

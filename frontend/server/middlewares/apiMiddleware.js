@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const Jane = {
+let Jane = {
   id: 12345,
   sin: '324354',
   email: 'admin',
@@ -50,12 +50,21 @@ router.post('/employee/token', (req, res, next) => {
   }
 });
 
-router.use('/employee/12345', (req, res, next) => res.send(Jane));
+router.put('/employee/:id', (req, res) => {
+  Jane = req.body;
+  res.send({
+    message: 'The employee was updated successfully',
+    responseCode: 200,
+    type: 'SUCCESS',
+  });
+});
 
-router.use('/role/1', (req, res, next) =>
+router.get('/employee/12345', (req, res, next) => res.send(Jane));
+
+router.get('/role/1', (req, res, next) =>
   res.send({ id: 1, name: 'Dev', description: 'Do dev work' }),
 );
 
-router.use('*', (req, res, next) => res.send(req.path));
+router.use('*', (req, res, next) => res.send());
 
 module.exports = router;

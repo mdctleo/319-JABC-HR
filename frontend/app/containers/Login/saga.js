@@ -1,4 +1,4 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest, put, all } from 'redux-saga/effects';
 import { LOGIN } from './constants';
 import { setUser } from 'containers/App/actions';
 import { loginError } from './actions';
@@ -17,15 +17,22 @@ export function* login(action) {
     const { employee } = response;
     AuthToken.apiKey = response.token;
 
-    yield put(setResource('employee', employee.id, employee));
-    yield put(
-      setUser({
+    sessionStorage.setItem(
+      'user',
+      JSON.stringify({
         id: employee.id,
-        firstname: employee.firstname,
-        lastname: employee.lastname,
-        adminLevel: employee.adminLevel,
+        token: response.token,
       }),
     );
+
+    yield all([
+      put(
+        setUser({
+          id: employee.id,
+        }),
+      ),
+      put(setResource('employee', employee.id, employee)),
+    ]);
   } catch (e) {
     yield put(loginError(e.response.body.message));
   }

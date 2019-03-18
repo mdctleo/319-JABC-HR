@@ -15,21 +15,21 @@
 import ApiClient from './ApiClient';
 import IApiResponse from './model/IApiResponse';
 import IComment from './model/IComment';
-import IDevelopmentGoal from './model/IDevelopmentGoal';
-import IDocument from './model/IDocument';
+import ICompetency from './model/ICompetency';
 import IDocumentType from './model/IDocumentType';
 import IEmployee from './model/IEmployee';
 import IEmployeeHistory from './model/IEmployeeHistory';
-import IJABCGoal from './model/IJABCGoal';
+import IFAQ from './model/IFAQ';
 import ILogin from './model/ILogin';
 import ILoginResponse from './model/ILoginResponse';
-import IObjective from './model/IObjective';
-import IPerformance from './model/IPerformance';
-import IPersonalTarget from './model/IPersonalTarget';
+import IOnboardingTask from './model/IOnboardingTask';
+import IPerformancePlan from './model/IPerformancePlan';
+import IPerformanceReview from './model/IPerformanceReview';
+import IPerformanceSection from './model/IPerformanceSection';
 import IRole from './model/IRole';
 import IVacation from './model/IVacation';
-import DocumentApi from './api/DocumentApi';
 import EmployeeApi from './api/EmployeeApi';
+import OnboardingApi from './api/OnboardingApi';
 import PerformanceApi from './api/PerformanceApi';
 import RolesApi from './api/RolesApi';
 import VacationApi from './api/VacationApi';
@@ -86,16 +86,10 @@ export {
     IComment,
 
     /**
-     * The IDevelopmentGoal model constructor.
-     * @property {module:model/IDevelopmentGoal}
+     * The ICompetency model constructor.
+     * @property {module:model/ICompetency}
      */
-    IDevelopmentGoal,
-
-    /**
-     * The IDocument model constructor.
-     * @property {module:model/IDocument}
-     */
-    IDocument,
+    ICompetency,
 
     /**
      * The IDocumentType model constructor.
@@ -116,10 +110,10 @@ export {
     IEmployeeHistory,
 
     /**
-     * The IJABCGoal model constructor.
-     * @property {module:model/IJABCGoal}
+     * The IFAQ model constructor.
+     * @property {module:model/IFAQ}
      */
-    IJABCGoal,
+    IFAQ,
 
     /**
      * The ILogin model constructor.
@@ -134,22 +128,28 @@ export {
     ILoginResponse,
 
     /**
-     * The IObjective model constructor.
-     * @property {module:model/IObjective}
+     * The IOnboardingTask model constructor.
+     * @property {module:model/IOnboardingTask}
      */
-    IObjective,
+    IOnboardingTask,
 
     /**
-     * The IPerformance model constructor.
-     * @property {module:model/IPerformance}
+     * The IPerformancePlan model constructor.
+     * @property {module:model/IPerformancePlan}
      */
-    IPerformance,
+    IPerformancePlan,
 
     /**
-     * The IPersonalTarget model constructor.
-     * @property {module:model/IPersonalTarget}
+     * The IPerformanceReview model constructor.
+     * @property {module:model/IPerformanceReview}
      */
-    IPersonalTarget,
+    IPerformanceReview,
+
+    /**
+     * The IPerformanceSection model constructor.
+     * @property {module:model/IPerformanceSection}
+     */
+    IPerformanceSection,
 
     /**
      * The IRole model constructor.
@@ -164,16 +164,16 @@ export {
     IVacation,
 
     /**
-    * The DocumentApi service constructor.
-    * @property {module:api/DocumentApi}
-    */
-    DocumentApi,
-
-    /**
     * The EmployeeApi service constructor.
     * @property {module:api/EmployeeApi}
     */
     EmployeeApi,
+
+    /**
+    * The OnboardingApi service constructor.
+    * @property {module:api/OnboardingApi}
+    */
+    OnboardingApi,
 
     /**
     * The PerformanceApi service constructor.

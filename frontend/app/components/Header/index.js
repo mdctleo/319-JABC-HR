@@ -25,9 +25,11 @@ class Header extends React.PureComponent {
           <Link className="nav-link" to="/performance">
             Performance
           </Link>
-          <Link className="nav-link" to="/onboarding">
-            Onboarding
-          </Link>
+          {this.props.onboarding && (
+            <Link className="nav-link" to="/onboarding">
+              Onboarding
+            </Link>
+          )}
           {this.props.adminLevel >= 1 && (
             <Link className="nav-link" to="/employees">
               Employees
@@ -56,6 +58,7 @@ class Header extends React.PureComponent {
 Header.propTypes = {
   adminLevel: PropTypes.number,
   logout: PropTypes.func,
+  onboarding: PropTypes.bool.isRequired,
 };
 
 export default Header;

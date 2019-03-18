@@ -1,35 +1,67 @@
 'use strict';
-import { Employee, Performance, Document, Vacation, IDocument, IEmployee, IPerformance, IVacation, EmployeeHistory } from '../model/models'
+import { Employee, PerformancePlan, PerformanceReview, OnboardingTask, Vacation, IEmployee, IPerformancePlan, IPerformanceReview, IPerformanceSection, IVacation, EmployeeHistory, IOnboardingTask } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import * as jwt from 'jsonwebtoken';
 import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
 
-// JATJ: save key on .env file
+// TODO: save key on .env file
 const KEY = 'JABC IS SUPER SECURE';
 
+
 /**
- * creates a new Document for the employee with [id]
- * Will create a new Document with the provided data in body
+ * completes the OnboardingTask with [idOnboardingTask] for the employee with [id]
+ * If the OnboardingTask requires a document to be completed, then the parameter [document] must be provided to successfully complete the OnboardingTask. 
  *
- * @param {Number} id of the searched Employee
- * @param {IDocument} document Document data
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
+ * @param {Number} id Integer id of the searched Employee
+ * @param {Number} idOnboardingTask Integer id of the OnboardingTask to be completed
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @param {any} document File The document file filled by the employee. (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function createDocument (id: Number, document: IDocument, xAuthToken: String) {
+export async function completeOnboardingTask(id: Number, idOnboardingTask: Number, xAuthToken: string, document: any) {
 	try{
-		let res = await Database.getInstance().query('CALL create_support_doc(?,?,?,?,?,?,?)', [
-			id,
-			document.fkDocumentType,
-			document.createdDate,
-			document.dueDate,
-			document.expiryDate,
-			document.path,
-			document.description,
+		if(document){
+			if(document.buffer.length > process.env.MAX_FILE)
+				throw new JABCError(JABCResponse.ONBOARDING, 'The file exceeded the size limit of 16 mb')
+		}else{
+			document = {buffer: null, mimetype: null};
+		}
+		let res = await Database.getInstance().query('CALL complete_onboarding_task(?,?,?)', [
+			idOnboardingTask,
+			document.buffer,
+			document.mimetype
 		], JABCResponse.EMPLOYEE)
-		return new JABCSuccess(JABCResponse.EMPLOYEE, `The document was saved successfully`)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The onboarding task was saved successfully`)
+	}catch(error){
+		throw error;
+	}
+}
+
+
+/**
+ * creates a new OnboardingTask for the employee with [id]
+ * Will create a new OnboardingTask with the provided data in body
+ *
+ * @param {Number} id Integer id of the searched Employee
+ * @param {IOnboardingTask} onboardingTask IOnboardingTask OnboardingTask data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
+ **/
+export async function createOnboardingTask(id: Number, onboardingTask: IOnboardingTask, xAuthToken: string) {
+	try{
+		onboardingTask = OnboardingTask.Prepare(onboardingTask)
+		let res = await Database.getInstance().query('CALL create_onboarding_task(?,?,?,?,?,?,?)', [
+			id,
+			onboardingTask.fkDocumentType,
+			onboardingTask.createdDate,
+			onboardingTask.dueDate,
+			onboardingTask.expiryDate,
+			onboardingTask.description,
+			onboardingTask.requireDoc
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The onboarding task was saved successfully`)
 	}catch(error){
 		throw error;
 	}
@@ -74,22 +106,37 @@ export async function createEmployee (employee: IEmployee, xAuthToken: String) {
 
 
 /**
- * creates a new Performance for the employee with [id]
- * Will create a new Performance with the provided data in body
+ * creates a new PerformancePlan for the employee with [id]
+ * Will create a new PerformancePlan with the provided data in body
  *
- * @param {Number} id of the searched Employee
- * @param {IPerformance} performance Performance data
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
+ * @param {Number} id Integer id of the searched Employee
+ * @param {IPerformancePlan} performance IPerformancePlan PerformancePlan data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function createPerformance (id: Number, performance: IPerformance, xAuthToken: String) {
+export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
 	try{
-		let res = await Database.getInstance().query('CALL create_employee_performance(?,?,?)', [
-			id,
-			performance.date,
-			performance.status,
-		], JABCResponse.EMPLOYEE)
-		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was successfully created`)
+		// TODO: Implement
+		throw 'NOT IMPLEMENTED'
+	}catch(error){
+		throw error;
+	}
+}
+  
+  
+  /**
+   * creates a new PerformanceReview for the employee with [id]
+   * Will create a new PerformanceReview with the provided data in body
+   *
+   * @param {Number} id Integer id of the searched Employee
+   * performance IPerformanceReview PerformanceReview data
+   * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+   * @returns {Promise<IApiResponse>}
+   **/
+  export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
+	try{
+		// TODO: Implement
+		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
 	}
@@ -132,31 +179,12 @@ export async function createVacation (id: Number, vacation: IVacation, xAuthToke
  **/
 export async function deleteEmployee (id: Number, xAuthToken: String, idAdmin: Number) {
 	try{
-		let employee = await getEmployee(id, xAuthToken)
+		let employee = await getEmployee(id,  xAuthToken)
 		employee.status = IEmployee.statusEnum.INACTIVE
 		if(employee.status === IEmployee.statusEnum.INACTIVE)
 			throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is already inactive')
-		await updateEmployee(id, employee, xAuthToken, idAdmin)
+		await updateEmployee(id,  employee, xAuthToken, idAdmin)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The employee was successfully set up to inactive')
-	}catch(error){
-		throw error;
-	}
-}
-
-
-/**
- * get all the Documents of the employee with [id]
- * This returns all the Documents of the system.  If [term] is provided this returns the Documents of the Employee that match with the [term].  
- *
- * @param {Number} id of the searched Employee
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @param {String} term Search term for filter the data (optional)
- * @returns {Promise<[]>}
- **/
-export async function getDocuments (id: Number, xAuthToken: String, term: String) {
-	try{
-		let res = await Database.getInstance().query('CALL get_employee_docs(?)', [id], JABCResponse.EMPLOYEE)
-		return Document.Documents(res[0][0])
 	}catch(error){
 		throw error;
 	}
@@ -236,18 +264,56 @@ export async function getEmployeesByManager (idManager: Number, xAuthToken: Stri
 
 
 /**
- * get all the Performances of the employee with [id]
- * This returns all the Performances of the system. If [term] is provided this returns the Performances of the Employee that match with the [term].  
+ * get all the OnboardingTasks of the employee with [id]
+ * This returns all the OnboardingTasks of the system.  If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term].  
  *
- * @param {Number} id of the searched Employee
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @param {String} term Search term for filter the data (optional)
- * @returns {Promise<[]>}
+ * @param {Number} id Integer id of the searched Employee
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * term String Search term for filter the data (optional)
+ * returns List
  **/
-export async function getPerformances (id: Number, xAuthToken: String, term: String) {
+export async function getOnboardingTasks(id: Number, xAuthToken: string, term: string) {
 	try{
-		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE)
-		return Performance.Performances(res[0][0])
+		let res = await Database.getInstance().query('CALL get_employee_tasks(?)', [id], JABCResponse.EMPLOYEE)
+		return OnboardingTask.OnboardingTasks(res[0][0])
+	}catch(error){
+		throw error;
+	}
+}
+
+
+/**
+ * get all the PerformancePlans of the employee with [id]
+ * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].  
+ *
+ * @param {Number} id Integer id of the searched Employee
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * term String Search term for filter the data (optional)
+ * returns List
+ **/
+export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
+	try{
+		// TODO: Implement
+		throw 'NOT IMPLEMENTED'
+	}catch(error){
+		throw error;
+	}
+}
+  
+  
+  /**
+   * get all the PerformanceReviews of the employee with [id]
+   * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].  
+   *
+   * @param {Number} id Integer id of the searched Employee
+   * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+   * term String Search term for filter the data (optional)
+   * returns List
+   **/
+export async function getPerformanceReviews(id: Number, xAuthToken: string, term: string) {
+	try{
+		// TODO: Implement
+		throw 'NOT IMPLEMENTED'
 	}catch(error){
 		throw error;
 	}

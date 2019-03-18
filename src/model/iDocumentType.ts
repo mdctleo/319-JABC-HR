@@ -21,7 +21,10 @@ export interface IDocumentType {
     id: number;
     name: string;
     description?: string;
-    path?: string;
+    /**
+     * If the document has a template, this will be the link to access it
+     */
+    file?: string;
 }
 
 export class DocumentType implements IDocumentType{
@@ -31,12 +34,15 @@ export class DocumentType implements IDocumentType{
     id: number;
     name: string;
     description?: string;
-    path?: string;
+    /**
+     * If the document has a template, this will be the link to access it
+     */
+    file?: string;
 
     constructor(rawDocumentType: any){
-        this.id = rawDocumentType.TYPE_ID;
-        this.name = rawDocumentType.TYPE_NAME;
-        this.path = rawDocumentType.PATH;
+        this.id = rawDocumentType.DOC_TYPE_ID;
+        this.name = rawDocumentType.DOC_NAME;
+        this.file = this.getLink();
         this.description = rawDocumentType.DESCRIPTION;
     }
 
@@ -46,5 +52,9 @@ export class DocumentType implements IDocumentType{
             documentTypes.push(new DocumentType(rawDocumentType))
         }
         return documentTypes
+    }
+
+    getLink(){
+        return `http://${process.env.HOST}:${process.env.PORT}/JABC/1.0.0/onboarding/documentType/${this.id}/file`
     }
 }

@@ -30,19 +30,18 @@ export default class IComment {
     * @alias module:model/IComment
     * @class
     * @param id {Number} The unique identifier of the Comment
-    * @param fkPerformance {Number} Foreign key of Performance that has this Comment
     * @param fkCommenter {Number} Foreign key of Employee that created the Comment
     * @param comment {String} 
     * @param _date {Number} The unix timestamp of the date when the Comment was created
     */
 
-    constructor(id, fkPerformance, fkCommenter, comment, _date) {
+    constructor(id, fkCommenter, comment, _date) {
         
 
         
         
 
-        this['id'] = id;this['fkPerformance'] = fkPerformance;this['fkCommenter'] = fkCommenter;this['comment'] = comment;this['date'] = _date;
+        this['id'] = id;this['fkCommenter'] = fkCommenter;this['comment'] = comment;this['date'] = _date;
 
         
     }
@@ -65,8 +64,11 @@ export default class IComment {
             if (data.hasOwnProperty('id')) {
                 obj['id'] = ApiClient.convertToType(data['id'], 'Number');
             }
-            if (data.hasOwnProperty('fkPerformance')) {
-                obj['fkPerformance'] = ApiClient.convertToType(data['fkPerformance'], 'Number');
+            if (data.hasOwnProperty('fkPerformancePlan')) {
+                obj['fkPerformancePlan'] = ApiClient.convertToType(data['fkPerformancePlan'], 'Number');
+            }
+            if (data.hasOwnProperty('fkPerformanceReview')) {
+                obj['fkPerformanceReview'] = ApiClient.convertToType(data['fkPerformanceReview'], 'Number');
             }
             if (data.hasOwnProperty('fkCommenter')) {
                 obj['fkCommenter'] = ApiClient.convertToType(data['fkCommenter'], 'Number');
@@ -87,10 +89,15 @@ export default class IComment {
     */
     id = undefined;
     /**
-    * Foreign key of Performance that has this Comment
-    * @member {Number} fkPerformance
+    * Foreign key of PerformancePlan that has this Comment
+    * @member {Number} fkPerformancePlan
     */
-    fkPerformance = undefined;
+    fkPerformancePlan = undefined;
+    /**
+    * Foreign key of PerformanceReview that has this Comment
+    * @member {Number} fkPerformanceReview
+    */
+    fkPerformanceReview = undefined;
     /**
     * Foreign key of Employee that created the Comment
     * @member {Number} fkCommenter

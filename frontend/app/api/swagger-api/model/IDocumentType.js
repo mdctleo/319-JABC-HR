@@ -68,6 +68,9 @@ export default class IDocumentType {
             if (data.hasOwnProperty('description')) {
                 obj['description'] = ApiClient.convertToType(data['description'], 'String');
             }
+            if (data.hasOwnProperty('file')) {
+                obj['file'] = ApiClient.convertToType(data['file'], 'String');
+            }
             if (data.hasOwnProperty('path')) {
                 obj['path'] = ApiClient.convertToType(data['path'], 'String');
             }
@@ -88,6 +91,10 @@ export default class IDocumentType {
     * @member {String} description
     */
     description = undefined;
+    /**
+    * @member {String} file
+    */
+    file = undefined;
     /**
     * @member {String} path
     */

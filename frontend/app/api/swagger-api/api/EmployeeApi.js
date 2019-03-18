@@ -14,12 +14,13 @@
 
 import ApiClient from "../ApiClient";
 import IApiResponse from '../model/IApiResponse';
-import IDocument from '../model/IDocument';
 import IEmployee from '../model/IEmployee';
 import IEmployeeHistory from '../model/IEmployeeHistory';
 import ILogin from '../model/ILogin';
 import ILoginResponse from '../model/ILoginResponse';
-import IPerformance from '../model/IPerformance';
+import IOnboardingTask from '../model/IOnboardingTask';
+import IPerformancePlan from '../model/IPerformancePlan';
+import IPerformanceReview from '../model/IPerformanceReview';
 import IVacation from '../model/IVacation';
 
 /**
@@ -43,31 +44,33 @@ export default class EmployeeApi {
 
 
     /**
-     * creates a new Document for the employee with [id]
-     * Will create a new Document with the provided data in body
+     * completes the OnboardingTask with [idOnboardingTask] for the employee with [id]
+     * If the OnboardingTask requires a document to be completed, then the parameter [document] must be provided to successfully complete the OnboardingTask. 
      * @param {Number} id id of the searched Employee
-     * @param {module:model/IDocument} document Document data
+     * @param {Number} idOnboardingTask id of the OnboardingTask to be completed
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @param {File} opts.document The document file filled by the employee.
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
      */
-    createDocumentWithHttpInfo(id, document, opts) {
+    completeOnboardingTaskWithHttpInfo(id, idOnboardingTask, opts) {
       opts = opts || {};
-      let postBody = document;
+      let postBody = null;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling createDocument");
+        throw new Error("Missing the required parameter 'id' when calling completeOnboardingTask");
       }
 
-      // verify the required parameter 'document' is set
-      if (document === undefined || document === null) {
-        throw new Error("Missing the required parameter 'document' when calling createDocument");
+      // verify the required parameter 'idOnboardingTask' is set
+      if (idOnboardingTask === undefined || idOnboardingTask === null) {
+        throw new Error("Missing the required parameter 'idOnboardingTask' when calling completeOnboardingTask");
       }
 
 
       let pathParams = {
-        'id': id
+        'id': id,
+        'idOnboardingTask': idOnboardingTask
       };
       let queryParams = {
       };
@@ -75,31 +78,33 @@ export default class EmployeeApi {
         'X-Auth-Token': opts['xAuthToken']
       };
       let formParams = {
+        'document': opts['document']
       };
 
       let authNames = ['AuthToken'];
-      let contentTypes = ['application/json'];
+      let contentTypes = ['multipart/form-data'];
       let accepts = ['application/json'];
       let returnType = IApiResponse;
 
       return this.apiClient.callApi(
-        '/employee/{id}/document', 'POST',
+        '/employee/{id}/task/{idOnboardingTask}', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
 
     /**
-     * creates a new Document for the employee with [id]
-     * Will create a new Document with the provided data in body
+     * completes the OnboardingTask with [idOnboardingTask] for the employee with [id]
+     * If the OnboardingTask requires a document to be completed, then the parameter [document] must be provided to successfully complete the OnboardingTask. 
      * @param {Number} id id of the searched Employee
-     * @param {module:model/IDocument} document Document data
+     * @param {Number} idOnboardingTask id of the OnboardingTask to be completed
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @param {File} opts.document The document file filled by the employee.
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
      */
-    createDocument(id, document, opts) {
-      return this.createDocumentWithHttpInfo(id, document, opts)
+    completeOnboardingTask(id, idOnboardingTask, opts) {
+      return this.completeOnboardingTaskWithHttpInfo(id, idOnboardingTask, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -163,26 +168,26 @@ export default class EmployeeApi {
 
 
     /**
-     * creates a new Performance for the employee with [id]
-     * Will create a new Performance with the provided data in body
+     * creates a new OnboardingTask for the employee with [id]
+     * Will create a new OnboardingTask with the provided data in body
      * @param {Number} id id of the searched Employee
-     * @param {module:model/IPerformance} performance Performance data
+     * @param {module:model/IOnboardingTask} document OnboardingTask data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
      */
-    createPerformanceWithHttpInfo(id, performance, opts) {
+    createOnboardingTaskWithHttpInfo(id, document, opts) {
       opts = opts || {};
-      let postBody = performance;
+      let postBody = document;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling createPerformance");
+        throw new Error("Missing the required parameter 'id' when calling createOnboardingTask");
       }
 
-      // verify the required parameter 'performance' is set
-      if (performance === undefined || performance === null) {
-        throw new Error("Missing the required parameter 'performance' when calling createPerformance");
+      // verify the required parameter 'document' is set
+      if (document === undefined || document === null) {
+        throw new Error("Missing the required parameter 'document' when calling createOnboardingTask");
       }
 
 
@@ -203,23 +208,151 @@ export default class EmployeeApi {
       let returnType = IApiResponse;
 
       return this.apiClient.callApi(
-        '/employee/{id}/performance', 'POST',
+        '/employee/{id}/task', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
 
     /**
-     * creates a new Performance for the employee with [id]
-     * Will create a new Performance with the provided data in body
+     * creates a new OnboardingTask for the employee with [id]
+     * Will create a new OnboardingTask with the provided data in body
      * @param {Number} id id of the searched Employee
-     * @param {module:model/IPerformance} performance Performance data
+     * @param {module:model/IOnboardingTask} document OnboardingTask data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
      */
-    createPerformance(id, performance, opts) {
-      return this.createPerformanceWithHttpInfo(id, performance, opts)
+    createOnboardingTask(id, document, opts) {
+      return this.createOnboardingTaskWithHttpInfo(id, document, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * creates a new PerformancePlan for the employee with [id]
+     * Will create a new PerformancePlan with the provided data in body
+     * @param {Number} id id of the searched Employee
+     * @param {module:model/IPerformancePlan} performance PerformancePlan data
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
+     */
+    createPerformancePlanWithHttpInfo(id, performance, opts) {
+      opts = opts || {};
+      let postBody = performance;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling createPerformancePlan");
+      }
+
+      // verify the required parameter 'performance' is set
+      if (performance === undefined || performance === null) {
+        throw new Error("Missing the required parameter 'performance' when calling createPerformancePlan");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IApiResponse;
+
+      return this.apiClient.callApi(
+        '/employee/{id}/performance/plan', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * creates a new PerformancePlan for the employee with [id]
+     * Will create a new PerformancePlan with the provided data in body
+     * @param {Number} id id of the searched Employee
+     * @param {module:model/IPerformancePlan} performance PerformancePlan data
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
+     */
+    createPerformancePlan(id, performance, opts) {
+      return this.createPerformancePlanWithHttpInfo(id, performance, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * creates a new PerformanceReview for the employee with [id]
+     * Will create a new PerformanceReview with the provided data in body
+     * @param {Number} id id of the searched Employee
+     * @param {module:model/IPerformanceReview} performance PerformanceReview data
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
+     */
+    createPerformanceReviewWithHttpInfo(id, performance, opts) {
+      opts = opts || {};
+      let postBody = performance;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling createPerformanceReview");
+      }
+
+      // verify the required parameter 'performance' is set
+      if (performance === undefined || performance === null) {
+        throw new Error("Missing the required parameter 'performance' when calling createPerformanceReview");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IApiResponse;
+
+      return this.apiClient.callApi(
+        '/employee/{id}/performance/review', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * creates a new PerformanceReview for the employee with [id]
+     * Will create a new PerformanceReview with the provided data in body
+     * @param {Number} id id of the searched Employee
+     * @param {module:model/IPerformanceReview} performance PerformanceReview data
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
+     */
+    createPerformanceReview(id, performance, opts) {
+      return this.createPerformanceReviewWithHttpInfo(id, performance, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -344,66 +477,6 @@ export default class EmployeeApi {
      */
     deleteEmployee(id, opts) {
       return this.deleteEmployeeWithHttpInfo(id, opts)
-        .then(function(response_and_data) {
-          return response_and_data.data;
-        });
-    }
-
-
-    /**
-     * get all the Documents of the employee with [id]
-     * This returns all the Documents of the system.  If [term] is provided this returns the Documents of the Employee that match with the [term].  
-     * @param {Number} id id of the searched Employee
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.xAuthToken Auth Token that grants access to the system
-     * @param {String} opts.term Search term for filter the data
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IDocument>} and HTTP response
-     */
-    getDocumentsWithHttpInfo(id, opts) {
-      opts = opts || {};
-      let postBody = null;
-
-      // verify the required parameter 'id' is set
-      if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling getDocuments");
-      }
-
-
-      let pathParams = {
-        'id': id
-      };
-      let queryParams = {
-        'term': opts['term']
-      };
-      let headerParams = {
-        'X-Auth-Token': opts['xAuthToken']
-      };
-      let formParams = {
-      };
-
-      let authNames = ['AuthToken'];
-      let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = [IDocument];
-
-      return this.apiClient.callApi(
-        '/employee/{id}/document', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType
-      );
-    }
-
-    /**
-     * get all the Documents of the employee with [id]
-     * This returns all the Documents of the system.  If [term] is provided this returns the Documents of the Employee that match with the [term].  
-     * @param {Number} id id of the searched Employee
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.xAuthToken Auth Token that grants access to the system
-     * @param {String} opts.term Search term for filter the data
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IDocument>}
-     */
-    getDocuments(id, opts) {
-      return this.getDocumentsWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -634,21 +707,21 @@ export default class EmployeeApi {
 
 
     /**
-     * get all the Performances of the employee with [id]
-     * This returns all the Performances of the system. If [term] is provided this returns the Performances of the Employee that match with the [term].  
+     * get all the OnboardingTasks of the employee with [id]
+     * This returns all the OnboardingTasks of the system.  If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term].  
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @param {String} opts.term Search term for filter the data
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IPerformance>} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IOnboardingTask>} and HTTP response
      */
-    getPerformancesWithHttpInfo(id, opts) {
+    getOnboardingTasksWithHttpInfo(id, opts) {
       opts = opts || {};
       let postBody = null;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling getPerformances");
+        throw new Error("Missing the required parameter 'id' when calling getOnboardingTasks");
       }
 
 
@@ -667,26 +740,146 @@ export default class EmployeeApi {
       let authNames = ['AuthToken'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = [IPerformance];
+      let returnType = [IOnboardingTask];
 
       return this.apiClient.callApi(
-        '/employee/{id}/performance', 'GET',
+        '/employee/{id}/task', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
 
     /**
-     * get all the Performances of the employee with [id]
-     * This returns all the Performances of the system. If [term] is provided this returns the Performances of the Employee that match with the [term].  
+     * get all the OnboardingTasks of the employee with [id]
+     * This returns all the OnboardingTasks of the system.  If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term].  
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @param {String} opts.term Search term for filter the data
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IPerformance>}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IOnboardingTask>}
      */
-    getPerformances(id, opts) {
-      return this.getPerformancesWithHttpInfo(id, opts)
+    getOnboardingTasks(id, opts) {
+      return this.getOnboardingTasksWithHttpInfo(id, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * get all the PerformancePlans of the employee with [id]
+     * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].  
+     * @param {Number} id id of the searched Employee
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @param {String} opts.term Search term for filter the data
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IPerformancePlan>} and HTTP response
+     */
+    getPerformancePlansWithHttpInfo(id, opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling getPerformancePlans");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+        'term': opts['term']
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = [IPerformancePlan];
+
+      return this.apiClient.callApi(
+        '/employee/{id}/performance/plan', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * get all the PerformancePlans of the employee with [id]
+     * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].  
+     * @param {Number} id id of the searched Employee
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @param {String} opts.term Search term for filter the data
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IPerformancePlan>}
+     */
+    getPerformancePlans(id, opts) {
+      return this.getPerformancePlansWithHttpInfo(id, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * get all the PerformanceReviews of the employee with [id]
+     * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].  
+     * @param {Number} id id of the searched Employee
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @param {String} opts.term Search term for filter the data
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IPerformanceReview>} and HTTP response
+     */
+    getPerformanceReviewsWithHttpInfo(id, opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling getPerformanceReviews");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+        'term': opts['term']
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = [IPerformanceReview];
+
+      return this.apiClient.callApi(
+        '/employee/{id}/performance/review', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * get all the PerformanceReviews of the employee with [id]
+     * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].  
+     * @param {Number} id id of the searched Employee
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @param {String} opts.term Search term for filter the data
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IPerformanceReview>}
+     */
+    getPerformanceReviews(id, opts) {
+      return this.getPerformanceReviewsWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

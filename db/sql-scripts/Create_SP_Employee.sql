@@ -2,37 +2,74 @@
 
 
 -- -----------------------------------------------------
--- procedure create_support_doc
---    - create a support doc for the given employee,
+-- procedure create_onboarding_task
+--    - create a onboarding task for the given employee,
 --    - only if the employee and type exist
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS create_support_doc;
+DROP PROCEDURE IF EXISTS create_onboarding_task;
 
 DELIMITER //
 
-CREATE PROCEDURE `create_support_doc` (IN employee_id INT
+CREATE PROCEDURE `create_onboarding_task` (IN employee_id INT
 , IN type_id INT
-, IN created_date BIGINT
-, IN due_date BIGINT
-, IN expiry_date BIGINT
-, IN path VARCHAR(512)
+, IN created_date DATE
+, IN due_date DATE
+, IN expiry_date DATE
 , IN description VARCHAR(512)
+, IN require_doc TINYINT
 )
 BEGIN
     DECLARE typeChecker INT;
     DECLARE emplChecker INT;
     SET typeChecker = 0;
     SET emplChecker = 0;
-    SELECT COUNT(TYPE_ID) INTO typeChecker FROM `TYPE` WHERE `TYPE`.TYPE_ID = type_id;
+    SELECT COUNT(DOC_TYPE_ID) INTO typeChecker FROM `DOC_TYPE` WHERE `DOC_TYPE`.DOC_TYPE_ID = type_id;
     SELECT COUNT(EMPLOYEE_ID) INTO emplChecker FROM `HR_RECORD` WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
 
-    IF typeChecker = 0 THEN
+    IF typeChecker = 0 AND type_id != NULL THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Document type does not exist.';
     ELSEIF emplChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
     ELSE
-      INSERT INTO SUPPORT_DOC (EMPLOYEE_ID, TYPE_ID, CREATED_DATE, DUE_DATE, EXPIRY_DATE, PATH, DESCRIPTION)
-      VALUES (employee_id, type_id, created_date, due_date, expiry_date, path, description);
+      INSERT INTO ONBOARDING_TASK (EMPLOYEE_ID, DOC_TYPE_ID, CREATED_DATE, DUE_DATE, EXPIRY_DATE, DESCRIPTION, REQUIRE_DOC)
+      VALUES (employee_id, type_id, created_date, due_date, expiry_date, description, require_doc);
+    END IF;
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure complete_onboarding_task
+--    - create a onboarding task for the given employee,
+--    - only if the employee and type exist
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS complete_onboarding_task;
+
+DELIMITER //
+
+CREATE PROCEDURE `complete_onboarding_task` (IN onboarding_task_id INT
+, IN actual_file MEDIUMBLOB
+, IN mime_type VARCHAR(100)
+)
+BEGIN
+    DECLARE taskChecker INT;
+    DECLARE requireChecker INT;
+    SET taskChecker = 0;
+    SET requireChecker = 0;
+
+    SELECT COUNT(EMPLOYEE_ID) INTO taskChecker FROM `ONBOARDING_TASK` WHERE `ONBOARDING_TASK`.ONBOARDING_TASK_ID = onboarding_task_id;
+
+    IF taskChecker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The onboarding task does not exist.';
+    ELSE
+      SELECT REQUIRE_DOC INTO requireChecker FROM `ONBOARDING_TASK` WHERE `ONBOARDING_TASK`.ONBOARDING_TASK_ID = onboarding_task_id;
+      IF requireChecker = 0 THEN
+        UPDATE ONBOARDING_TASK SET 
+        ONBOARDING_TASK.STATUS = 1 WHERE ONBOARDING_TASK_ID = onboarding_task_id;
+      ELSE
+        UPDATE ONBOARDING_TASK SET 
+        ONBOARDING_TASK.STATUS = 1, ONBOARDING_TASK.ACTUAL_FILE = actual_file, ONBOARDING_TASK.MIME_TYPE = mime_type  WHERE ONBOARDING_TASK_ID = onboarding_task_id;
+      END IF;
     END IF;
 END //
 
@@ -56,14 +93,14 @@ CREATE PROCEDURE `create_employee`(IN created_by_id INT
 , IN first_name VARCHAR(100)
 , IN last_name VARCHAR(100)
 , IN address VARCHAR(255)
-, IN birthdate BIGINT
+, IN birthdate DATE
 , IN vacation_days INT
 , IN remaining_vacation_days INT
 , IN FTE TINYINT
 , IN status TINYINT
 , IN password VARCHAR(64)
 , IN salary DECIMAL(10, 2)
-, IN date_joined BIGINT
+, IN date_joined DATE
 , IN admin_level TINYINT
 , IN phone_number VARCHAR(45)
 )
@@ -71,20 +108,20 @@ BEGIN
     DECLARE sinChecker INT;
     DECLARE emailChecker INT;
     DECLARE employeeID INT;
-    DECLARE created_date BIGINT;
+    DECLARE created_date DATE;
 
     SET sinChecker = 0;
     SET emailChecker = 0;
 
-    SELECT UNIX_TIMESTAMP() INTO created_date;
+    SELECT NOW() INTO created_date;
 
     SELECT COUNT(SIN) INTO sinChecker
-    FROM `HR_RECORD`
-    WHERE `HR_RECORD`.SIN = SIN;
+    FROM `LATEST_HR_RECORDS`
+    WHERE `LATEST_HR_RECORDS`.SIN = SIN;
 
     SELECT COUNT(EMAIL) INTO emailChecker
-    FROM `HR_RECORD`
-    WHERE `HR_RECORD`.EMAIL = email;
+    FROM `LATEST_HR_RECORDS`
+    WHERE `LATEST_HR_RECORDS`.EMAIL = email;
 
     IF sinChecker > 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'SIN already in use.';
@@ -115,7 +152,7 @@ DROP PROCEDURE IF EXISTS create_employee_performance;
 DELIMITER //
 
 CREATE PROCEDURE `create_employee_performance` (IN employee_id INT
-, IN created_date BIGINT
+, IN created_date DATE
 , IN status TINYINT
 )
 BEGIN
@@ -124,8 +161,8 @@ BEGIN
     SET checker = 0;
 
     SELECT COUNT(EMPLOYEE_ID) INTO checker
-    FROM `HR_RECORD`
-    WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+    FROM `EMPLOYEE`
+    WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
     IF checker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -152,7 +189,7 @@ CREATE PROCEDURE `create_employee_vacation` (IN employee_id INT
 , IN approver_id INT
 , IN requested_days INT
 , IN request_status TINYINT
-, IN created_date BIGINT
+, IN created_date DATE
 )
 BEGIN
     DECLARE emplChecker INT;
@@ -162,12 +199,12 @@ BEGIN
     SET approvChecker = 0;
 
     SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
-    FROM `HR_RECORD`
-    WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+    FROM `EMPLOYEE`
+    WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
     SELECT COUNT(EMPLOYEE_ID) INTO approvChecker
-    FROM `HR_RECORD`
-    WHERE `HR_RECORD`.EMPLOYEE_ID = approver_id;
+    FROM `EMPLOYEE`
+    WHERE `EMPLOYEE`.EMPLOYEE_ID = approver_id;
 
     IF emplChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -200,14 +237,14 @@ CREATE PROCEDURE `update_employee`(IN employee_id INT
 , IN first_name VARCHAR(100)
 , IN last_name VARCHAR(100)
 , IN address VARCHAR(255)
-, IN birthdate BIGINT
+, IN birthdate DATE
 , IN vacation_days INT
 , IN remaining_vacation_days INT
 , IN FTE TINYINT
 , IN status TINYINT
 , IN password VARCHAR(64)
 , IN salary DECIMAL(10, 2)
-, IN date_joined BIGINT
+, IN date_joined DATE
 , IN admin_level TINYINT
 , IN phone_number VARCHAR(45)
 )
@@ -216,24 +253,24 @@ BEGIN
     DECLARE emailChecker INT;
     DECLARE emplChecker INT;
     DECLARE version INT;
-    DECLARE created_date BIGINT;
+    DECLARE created_date DATE;
     
     SET sinChecker = 0;
     SET emailChecker = 0;
     SET emplChecker = 0;
 
-    SELECT UNIX_TIMESTAMP() INTO created_date;
+    SELECT NOW() INTO created_date;
     SELECT COUNT(SIN) INTO sinChecker
-    FROM `HR_RECORD`
-    WHERE `HR_RECORD`.SIN = SIN AND `HR_RECORD`.employee_id <> employee_id;
+    FROM `LATEST_HR_RECORDS`
+    WHERE `LATEST_HR_RECORDS`.SIN = SIN AND `LATEST_HR_RECORDS`.employee_id <> employee_id;
 
     SELECT COUNT(EMAIL) INTO emailChecker
-    FROM `HR_RECORD`
-    WHERE `HR_RECORD`.EMAIL = email AND `HR_RECORD`.employee_id <> employee_id;
+    FROM `LATEST_HR_RECORDS`
+    WHERE `LATEST_HR_RECORDS`.EMAIL = email AND `LATEST_HR_RECORDS`.employee_id <> employee_id;
 
     SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
-    FROM `HR_RECORD`
-    WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+    FROM `EMPLOYEE`
+    WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
     IF sinChecker > 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'SIN already in use.';
@@ -256,30 +293,30 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
--- procedure get_employee_docs
+-- procedure get_employee_tasks
 --    - get the documents of an employee, provided
 --    - the employee exists
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS get_employee_docs;
+DROP PROCEDURE IF EXISTS get_employee_tasks;
 
 DELIMITER //
 
-CREATE PROCEDURE `get_employee_docs`(IN employee_id INT)
+CREATE PROCEDURE `get_employee_tasks`(IN employee_id INT)
 BEGIN
   DECLARE checker INT;
 
   SET checker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO checker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
   ELSE
     SELECT *
-    FROM SUPPORT_DOC
-    WHERE SUPPORT_DOC.EMPLOYEE_ID = employee_id;
+    FROM ONBOARDING_TASK
+    WHERE ONBOARDING_TASK.EMPLOYEE_ID = employee_id;
   END IF;
 END //
 
@@ -302,8 +339,8 @@ BEGIN
   SET checker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO checker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -338,8 +375,8 @@ BEGIN
   SET checker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO checker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -365,12 +402,7 @@ DELIMITER //
 CREATE PROCEDURE `get_all_employees` ()
 BEGIN
     SELECT *
-    FROM HR_RECORD hr1
-    INNER JOIN (
-      SELECT EMPLOYEE_ID, MAX(VERSION) AS VERSION
-      FROM HR_RECORD
-      GROUP BY EMPLOYEE_ID
-    ) hr2 ON hr1.EMPLOYEE_ID = hr2.EMPLOYEE_ID AND hr1.VERSION = hr2.VERSION;
+    FROM LATEST_HR_RECORDS;
 END //
 
 DELIMITER ;
@@ -392,19 +424,14 @@ BEGIN
   SET checker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO checker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = manager_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = manager_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager does not exist.';
   ELSE
-    SELECT *
-    FROM HR_RECORD hr1
-    INNER JOIN (
-      SELECT EMPLOYEE_ID, MAX(VERSION) AS VERSION
-      FROM HR_RECORD
-      GROUP BY EMPLOYEE_ID
-    ) hr2 ON hr1.EMPLOYEE_ID = hr2.EMPLOYEE_ID AND hr1.VERSION = hr2.VERSION
+    SELECT * 
+    FROM LATEST_HR_RECORDS hr1
     WHERE hr1.EMPLOYEE_ID in (
       SELECT m.EMPLOYEE_ID
       FROM MANAGER_EMPLOYEE m
@@ -432,8 +459,8 @@ BEGIN
   SET checker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO checker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -468,8 +495,8 @@ BEGIN
   SET checker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO checker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -502,12 +529,12 @@ BEGIN
   SET managChecker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = e_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = e_id;
 
   SELECT COUNT(EMPLOYEE_ID) INTO managChecker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = m_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
 
   IF emplChecker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -541,12 +568,12 @@ BEGIN
   SET managChecker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = e_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = e_id;
 
   SELECT COUNT(EMPLOYEE_ID) INTO managChecker
-  FROM `HR_RECORD`
-  WHERE `HR_RECORD`.EMPLOYEE_ID = m_id;
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
 
   IF emplChecker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -571,22 +598,28 @@ CREATE PROCEDURE `login`(IN `EMAIL` VARCHAR(100), IN `PASSWORD` VARCHAR(500))
 BEGIN
     DECLARE checker INT;
     DECLARE checker2 INT;
+    DECLARE versionID INT;
 
     SET checker = 0;
     SET checker2 = 0;
+    SET versionID = 0;
 
-    SELECT EMPLOYEE_ID INTO checker FROM HR_RECORD where HR_RECORD.EMAIL = EMAIL AND HR_RECORD.STATUS != 0;
+    SELECT COUNT(EMPLOYEE_ID) INTO checker FROM LATEST_HR_RECORDS where LATEST_HR_RECORDS.EMAIL = EMAIL AND LATEST_HR_RECORDS.STATUS != 0;
     IF checker = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'The email is not registered.';
     END IF;
 
-    SELECT EMPLOYEE_ID INTO checker2 FROM HR_RECORD WHERE HR_RECORD.EMAIL = EMAIL AND HR_RECORD.PASSWORD = PASSWORD AND HR_RECORD.STATUS != 0 ORDER BY HR_RECORD.VERSION DESC LIMIT 1;
+    SELECT COUNT(EMPLOYEE_ID) INTO checker2 FROM LATEST_HR_RECORDS WHERE LATEST_HR_RECORDS.EMAIL = EMAIL AND LATEST_HR_RECORDS.PASSWORD = PASSWORD AND LATEST_HR_RECORDS.STATUS != 0;
     IF checker2 = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'The password is incorrect';
     END IF;
 
-    SELECT * FROM HR_RECORD WHERE EMPLOYEE_ID = checker2 LIMIT 1;
+    SELECT * FROM LATEST_HR_RECORDS WHERE LATEST_HR_RECORDS.EMAIL = EMAIL AND LATEST_HR_RECORDS.PASSWORD = PASSWORD;
 END$$
 DELIMITER ;
+
+
+DROP VIEW IF EXISTS LATEST_HR_RECORDS;
+CREATE VIEW LATEST_HR_RECORDS AS SELECT HR_RECORD.* FROM HR_RECORD WHERE (EMPLOYEE_ID, HR_RECORD.VERSION) IN (SELECT EMPLOYEE_ID, MAX(HR_RECORD.VERSION) AS LATEST_VERSION FROM `HR_RECORD` GROUP BY EMPLOYEE_ID);

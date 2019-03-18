@@ -14,25 +14,22 @@
 
 import ApiClient from '../ApiClient';
 import IComment from './IComment';
-import IDevelopmentGoal from './IDevelopmentGoal';
-import IJABCGoal from './IJABCGoal';
-import IObjective from './IObjective';
-import IPersonalTarget from './IPersonalTarget';
+import IPerformanceSection from './IPerformanceSection';
 
 
 
 
 
 /**
-* The IPerformance model module.
-* @module model/IPerformance
+* The IPerformanceReview model module.
+* @module model/IPerformanceReview
 * @version 1.0.0
 */
-export default class IPerformance {
+export default class IPerformanceReview {
     /**
-    * Constructs a new <code>IPerformance</code>.
-    * A Performance contains info of a performance record of an employee 
-    * @alias module:model/IPerformance
+    * Constructs a new <code>IPerformanceReview</code>.
+    * PerformanceReview contains info of the sections of a performance plan of an employee 
+    * @alias module:model/IPerformanceReview
     * @class
     * @param id {Number} The unique identifier of the Performance
     * @param fkEmployee {Number} Foreign key of the employee with this performance review
@@ -52,15 +49,15 @@ export default class IPerformance {
     }
 
     /**
-    * Constructs a <code>IPerformance</code> from a plain JavaScript object, optionally creating a new instance.
+    * Constructs a <code>IPerformanceReview</code> from a plain JavaScript object, optionally creating a new instance.
     * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
     * @param {Object} data The plain JavaScript object bearing properties of interest.
-    * @param {module:model/IPerformance} obj Optional instance to populate.
-    * @return {module:model/IPerformance} The populated <code>IPerformance</code> instance.
+    * @param {module:model/IPerformanceReview} obj Optional instance to populate.
+    * @return {module:model/IPerformanceReview} The populated <code>IPerformanceReview</code> instance.
     */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new IPerformance();
+            obj = obj || new IPerformanceReview();
 
             
             
@@ -78,17 +75,8 @@ export default class IPerformance {
             if (data.hasOwnProperty('status')) {
                 obj['status'] = ApiClient.convertToType(data['status'], 'Number');
             }
-            if (data.hasOwnProperty('jabcGoals')) {
-                obj['jabcGoals'] = ApiClient.convertToType(data['jabcGoals'], [IJABCGoal]);
-            }
-            if (data.hasOwnProperty('personalTargets')) {
-                obj['personalTargets'] = ApiClient.convertToType(data['personalTargets'], [IPersonalTarget]);
-            }
-            if (data.hasOwnProperty('objectives')) {
-                obj['objectives'] = ApiClient.convertToType(data['objectives'], [IObjective]);
-            }
-            if (data.hasOwnProperty('developmentGoals')) {
-                obj['developmentGoals'] = ApiClient.convertToType(data['developmentGoals'], [IDevelopmentGoal]);
+            if (data.hasOwnProperty('sections')) {
+                obj['sections'] = ApiClient.convertToType(data['sections'], [IPerformanceSection]);
             }
             if (data.hasOwnProperty('comments')) {
                 obj['comments'] = ApiClient.convertToType(data['comments'], [IComment]);
@@ -117,27 +105,12 @@ export default class IPerformance {
     */
     status = undefined;
     /**
-    * Contains all the JABC Goals (Section 1) of this performance review
-    * @member {Array.<module:model/IJABCGoal>} jabcGoals
+    * Contains all the IPerformanceSections Related to this IPerformanceReview
+    * @member {Array.<module:model/IPerformanceSection>} sections
     */
-    jabcGoals = undefined;
+    sections = undefined;
     /**
-    * Contains all the Personal Targets (Section 2) of this performance review
-    * @member {Array.<module:model/IPersonalTarget>} personalTargets
-    */
-    personalTargets = undefined;
-    /**
-    * Contains all the Objectives (Section 3) of this performance review
-    * @member {Array.<module:model/IObjective>} objectives
-    */
-    objectives = undefined;
-    /**
-    * Contains all the Development Goals (Section 4) of this performance review
-    * @member {Array.<module:model/IDevelopmentGoal>} developmentGoals
-    */
-    developmentGoals = undefined;
-    /**
-    * Contains all the comments (Section 5) of this performance review
+    * Contains all the comments of this performance review
     * @member {Array.<module:model/IComment>} comments
     */
     comments = undefined;

@@ -4,7 +4,7 @@
  *
  */
 
-import { GET_PROFILE_DATA } from './constants';
+import { GET_PROFILE_DATA, SAVE_PROFILE } from './constants';
 
 export function getProfileData() {
   return {
@@ -12,6 +12,16 @@ export function getProfileData() {
   };
 }
 
+export function saveProfile(profile) {
+  return {
+    type: SAVE_PROFILE,
+    payload: {
+      profile,
+    },
+  };
+}
+
 export default {
   getProfileData,
+  saveProfile,
 };

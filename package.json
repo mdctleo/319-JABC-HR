@@ -25,6 +25,7 @@
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.21",
     "connect": "^3.6.6",
+    "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "js-yaml": "^3.12.2",
     "jsonwebtoken": "^8.5.0",

@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { selectResource } from 'api/selector';
 
 const selectGlobal = state => state.get('global');
 
@@ -15,4 +16,14 @@ const makeSelectGlobal = () =>
 const selectUser = () =>
   createSelector(makeSelectGlobal(), substate => substate.user);
 
-export { makeSelectLocation, makeSelectGlobal, selectUser };
+const selectProfile = createSelector(
+  [selectUser(), selectResource('employee')],
+  (user, employees) => {
+    if (employees && user) {
+      return employees.get(`${user.id}`);
+    }
+    return null;
+  },
+);
+
+export { makeSelectLocation, makeSelectGlobal, selectProfile };
