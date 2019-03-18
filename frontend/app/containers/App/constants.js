@@ -11,3 +11,5 @@
 
 export const SET_USER = 'app/App/SET_USER';
 export const LOGOUT = 'app/App/LOGOUT';
+export const DISPLAY_ERROR = 'app/App/DISPLAY_ERROR';
+export const CLEAR_ERROR = 'app/App/CLEAR_ERROR';

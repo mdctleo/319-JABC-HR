@@ -19,41 +19,41 @@ import ApiClient from '../ApiClient';
 
 
 /**
-* The IDocumentType model module.
-* @module model/IDocumentType
+* The ICompetency model module.
+* @module model/ICompetency
 * @version 1.0.0
 */
-export default class IDocumentType {
+export default class ICompetency {
     /**
-    * Constructs a new <code>IDocumentType</code>.
-    * A DocumentType contains info of the template support document for the onboarding process 
-    * @alias module:model/IDocumentType
+    * Constructs a new <code>ICompetency</code>.
+    * A Competency contains info of competencies and objectives that each role need to fulfill 
+    * @alias module:model/ICompetency
     * @class
-    * @param id {Number} The unique identifier of the DocumentType
-    * @param name {String} 
+    * @param id {Number} The unique identifier of the Competency
+    * @param fkRole {Number} Foreign key of the role
     */
 
-    constructor(id, name) {
+    constructor(id, fkRole) {
         
 
         
         
 
-        this['id'] = id;this['name'] = name;
+        this['id'] = id;this['fkRole'] = fkRole;
 
         
     }
 
     /**
-    * Constructs a <code>IDocumentType</code> from a plain JavaScript object, optionally creating a new instance.
+    * Constructs a <code>ICompetency</code> from a plain JavaScript object, optionally creating a new instance.
     * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
     * @param {Object} data The plain JavaScript object bearing properties of interest.
-    * @param {module:model/IDocumentType} obj Optional instance to populate.
-    * @return {module:model/IDocumentType} The populated <code>IDocumentType</code> instance.
+    * @param {module:model/ICompetency} obj Optional instance to populate.
+    * @return {module:model/ICompetency} The populated <code>ICompetency</code> instance.
     */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new IDocumentType();
+            obj = obj || new ICompetency();
 
             
             
@@ -62,27 +62,29 @@ export default class IDocumentType {
             if (data.hasOwnProperty('id')) {
                 obj['id'] = ApiClient.convertToType(data['id'], 'Number');
             }
+            if (data.hasOwnProperty('fkRole')) {
+                obj['fkRole'] = ApiClient.convertToType(data['fkRole'], 'Number');
+            }
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
             if (data.hasOwnProperty('description')) {
                 obj['description'] = ApiClient.convertToType(data['description'], 'String');
             }
-            if (data.hasOwnProperty('file')) {
-                obj['file'] = ApiClient.convertToType(data['file'], 'String');
-            }
-            if (data.hasOwnProperty('path')) {
-                obj['path'] = ApiClient.convertToType(data['path'], 'String');
-            }
         }
         return obj;
     }
 
     /**
-    * The unique identifier of the DocumentType
+    * The unique identifier of the Competency
     * @member {Number} id
     */
     id = undefined;
+    /**
+    * Foreign key of the role
+    * @member {Number} fkRole
+    */
+    fkRole = undefined;
     /**
     * @member {String} name
     */
@@ -91,14 +93,6 @@ export default class IDocumentType {
     * @member {String} description
     */
     description = undefined;
-    /**
-    * @member {String} file
-    */
-    file = undefined;
-    /**
-    * @member {String} path
-    */
-    path = undefined;
 
 
 

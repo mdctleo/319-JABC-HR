@@ -48,21 +48,6 @@ const styles = theme => ({
       backgroundColor: '#ff944d',
     },
   },
-  formButton: {
-    float: 'right',
-    display: 'inline',
-    color: 'white',
-    height: '40px',
-    width: '100px',
-    marginTop: '30px',
-    marginLeft: '20px',
-    backgroundColor: '#ff6600',
-    borderRadius: '15px',
-    transition: '0.3s',
-    '&:hover': {
-      backgroundColor: '#ff944d',
-    },
-  },
 });
 
 class Profile extends React.PureComponent {
@@ -87,60 +72,22 @@ class Profile extends React.PureComponent {
     });
   };
 
-  handleClose = value => {
+  saveProfile = (profile) => {
+    this.props.saveProfile(profile);
     this.setState({
       edit: false,
     });
-    this.state.profile = value;
-  };
+  }
 
-  updateProfile = (event, value) => {
-    const firstname = document.getElementById('edit-prof-fname').value;
-    const id = document.getElementById('edit-prof-id').value;
-    const sin = document.getElementById('edit-prof-sin').value;
-    const name = document.getElementById('edit-prof-position').value;
-    const remainingVacationDays = document.getElementById('edit-prof-vacation')
-      .value;
-    const address = document.getElementById('edit-prof-address').value;
-    const lastname = document.getElementById('edit-prof-lname').value;
-    const status = document.getElementById('edit-prof-status').value;
-    const salary = document.getElementById('edit-prof-salary').value;
-    const manager = document.getElementById('edit-prof-manager').value;
-    const type = document.getElementById('edit-prof-type').value;
-    const phone = document.getElementById('edit-prof-phone').value;
+  cancelEdit = () => {
     this.setState({
-      profile: {
-        firstname,
-        lastname,
-        id,
-        sin,
-        role: { name },
-        status,
-        salary,
-        manager,
-        type,
-        vacation: remainingVacationDays,
-        address,
-        phone,
-      },
+      edit: false,
     });
-    console.log('made it into fn');
-    this.setState({ edit: false });
-  };
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.profile && !state.profile) {
-      return {
-        profile: props.profile,
-      };
-    }
-    return null;
   }
 
   render() {
-    const { activeTab, isAdmin, edit, profile } = this.state;
-    const state = this.state;
-    const { classes, role } = this.props;
+    const { activeTab, isAdmin, edit } = this.state;
+    const { classes, role, profile } = this.props;
 
     if (!profile) return null;
     return (
@@ -186,21 +133,11 @@ class Profile extends React.PureComponent {
             {activeTab === 0 &&
               isAdmin &&
               edit && (
-                <div>
-                  <EmployeeEditForm state={state} />
-                  <Button
-                    className={classes.formButton}
-                    onClick={this.updateProfile}
-                  >
-                    Submit
-                  </Button>
-                  <Button
-                    className={classes.formButton}
-                    onClick={this.updateProfile}
-                  >
-                    Save
-                  </Button>
-                </div>
+                <EmployeeEditForm
+                  profile={profile}
+                  saveProfile={this.saveProfile}
+                  cancelEdit={this.cancelEdit}
+                />
               )}
             {activeTab === 1 && <RoleDisplay role={role} />}
           </div>
@@ -215,6 +152,7 @@ Profile.propTypes = {
   profile: PropTypes.object,
   role: PropTypes.object,
   getProfileData: PropTypes.func,
+  saveProfile: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({

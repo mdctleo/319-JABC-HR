@@ -20,44 +20,44 @@ import IDocumentType from './IDocumentType';
 
 
 /**
-* The IDocument model module.
-* @module model/IDocument
+* The IOnboardingTask model module.
+* @module model/IOnboardingTask
 * @version 1.0.0
 */
-export default class IDocument {
+export default class IOnboardingTask {
     /**
-    * Constructs a new <code>IDocument</code>.
-    * A Document required for the onbarding proccess of a new Employee 
-    * @alias module:model/IDocument
+    * Constructs a new <code>IOnboardingTask</code>.
+    * An onboarding task required for the onbarding proccess of a new Employee, if the property [requireDoc] is set to 1, then the OnboardingTask require the employee to upload a document, and the fkDocumentType will  contain the id of the IDocumentType object with the template of the document to be filled by the employee.  Otherwise the [fkDocumentType] property will be null. 
+    * @alias module:model/IOnboardingTask
     * @class
     * @param id {Number} The unique identifier of the Role
-    * @param fkDocumentType {Number} The foreign key  of the DocumentType of this Document
     * @param fkEmployee {Number} The foreign key  of the Employee that needs to upload this Document
     * @param createdDate {Number} The unix timestamp of the created date of this Document
     * @param dueDate {Number} The unix timestamp of the due date of this Document
+    * @param requireDoc {Number} Wether the Onboarding task requires document upload or not.
     */
 
-    constructor(id, fkDocumentType, fkEmployee, createdDate, dueDate) {
+    constructor(id, fkEmployee, createdDate, dueDate, requireDoc) {
         
 
         
         
 
-        this['id'] = id;this['fkDocumentType'] = fkDocumentType;this['fkEmployee'] = fkEmployee;this['createdDate'] = createdDate;this['dueDate'] = dueDate;
+        this['id'] = id;this['fkEmployee'] = fkEmployee;this['createdDate'] = createdDate;this['dueDate'] = dueDate;this['requireDoc'] = requireDoc;
 
         
     }
 
     /**
-    * Constructs a <code>IDocument</code> from a plain JavaScript object, optionally creating a new instance.
+    * Constructs a <code>IOnboardingTask</code> from a plain JavaScript object, optionally creating a new instance.
     * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
     * @param {Object} data The plain JavaScript object bearing properties of interest.
-    * @param {module:model/IDocument} obj Optional instance to populate.
-    * @return {module:model/IDocument} The populated <code>IDocument</code> instance.
+    * @param {module:model/IOnboardingTask} obj Optional instance to populate.
+    * @return {module:model/IOnboardingTask} The populated <code>IOnboardingTask</code> instance.
     */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new IDocument();
+            obj = obj || new IOnboardingTask();
 
             
             
@@ -78,11 +78,17 @@ export default class IDocument {
             if (data.hasOwnProperty('dueDate')) {
                 obj['dueDate'] = ApiClient.convertToType(data['dueDate'], 'Number');
             }
+            if (data.hasOwnProperty('requireDoc')) {
+                obj['requireDoc'] = ApiClient.convertToType(data['requireDoc'], 'Number');
+            }
             if (data.hasOwnProperty('expiryDate')) {
                 obj['expiryDate'] = ApiClient.convertToType(data['expiryDate'], 'Number');
             }
-            if (data.hasOwnProperty('path')) {
-                obj['path'] = ApiClient.convertToType(data['path'], 'String');
+            if (data.hasOwnProperty('file')) {
+                obj['file'] = ApiClient.convertToType(data['file'], 'String');
+            }
+            if (data.hasOwnProperty('description')) {
+                obj['description'] = ApiClient.convertToType(data['description'], 'String');
             }
             if (data.hasOwnProperty('type')) {
                 obj['type'] = IDocumentType.constructFromObject(data['type']);
@@ -117,14 +123,24 @@ export default class IDocument {
     */
     dueDate = undefined;
     /**
+    * Wether the Onboarding task requires document upload or not.
+    * @member {Number} requireDoc
+    */
+    requireDoc = undefined;
+    /**
     * The unix timestamp of the expiry date of this Document
     * @member {Number} expiryDate
     */
     expiryDate = undefined;
     /**
-    * @member {String} path
+    * The link to the file
+    * @member {String} file
     */
-    path = undefined;
+    file = undefined;
+    /**
+    * @member {String} description
+    */
+    description = undefined;
     /**
     * @member {module:model/IDocumentType} type
     */

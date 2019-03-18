@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const Jane = {
+let Jane = {
   id: 12345,
   sin: '324354',
   email: 'admin',
@@ -48,6 +48,15 @@ router.post('/employee/token', (req, res, next) => {
       message: "Email doesn't exist",
     });
   }
+});
+
+router.put('/employee/:id', (req, res) => {
+  Jane = req.body;
+  res.send({
+    message: 'The employee was updated successfully',
+    responseCode: 200,
+    type: 'SUCCESS',
+  });
 });
 
 router.use('/employee/12345', (req, res, next) => res.send(Jane));

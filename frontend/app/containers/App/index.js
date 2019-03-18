@@ -33,6 +33,7 @@ import { withRouter } from 'react-router';
 
 import { makeSelectGlobal } from './selectors';
 import actions from './actions';
+import ErrorDialog from '../../components/ErrorDialog';
 
 const Contents = styled.div`
   margin-top: 80px;
@@ -42,6 +43,7 @@ export class App extends React.PureComponent {
   render() {
     const mainApp = (
       <div>
+        <ErrorDialog message={this.props.data.error} clearError={this.props.clearError}/>
         <Header
           adminLevel={this.props.data.user && this.props.data.user.adminLevel}
           logout={this.props.logout}
@@ -74,6 +76,7 @@ export class App extends React.PureComponent {
 App.propTypes = {
   data: PropTypes.object,
   logout: PropTypes.func,
+  clearError: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({

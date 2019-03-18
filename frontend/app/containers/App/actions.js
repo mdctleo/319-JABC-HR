@@ -4,7 +4,7 @@
  *
  */
 
-import { SET_USER, LOGOUT } from './constants';
+import {SET_USER, LOGOUT, DISPLAY_ERROR, CLEAR_ERROR} from './constants';
 
 export function setUser(user) {
   return {
@@ -19,6 +19,20 @@ export function logout() {
   };
 }
 
+export function displayError(message) {
+  return {
+    type: DISPLAY_ERROR,
+    message,
+  };
+}
+
+export function clearError() {
+  return {
+    type: CLEAR_ERROR,
+  };
+}
+
 export default {
   logout,
+  clearError,
 };
