@@ -15,7 +15,7 @@ import Database from "../database/Database";
  **/
 export async function createCompetency(competency: ICompetency, idRole: number, xAuthToken: string) {
     try {
-        let res = await Database.getInstance().query('CALL create_competency(?,?)', [
+        let res = await Database.getInstance().query('CALL create_competency(?,?,?)', [
             competency.fkRole,
             competency.name,
             competency.description
@@ -172,7 +172,7 @@ export async function getRoles(xAuthToken: String) {
 export async function updateCompetency(id: Number, competency: ICompetency, idRole: Number, xAuthToken: String) {
     try {
         competency = Competency.Prepare(competency);
-        let res = await Database.getInstance().query('CALL update_role(?,?,?)', [
+        let res = await Database.getInstance().query('CALL update_competency(?,?,?)', [
             id,
             competency.name,
             competency.description

@@ -41,7 +41,7 @@ export class Competency implements ICompetency{
     description?: string;
 
     constructor(rawCompetency: any){
-        this.id = rawCompetency.COMMENT_ID;
+        this.id = rawCompetency.COMPETENCY_ID;
         this.fkRole = rawCompetency.ROLE_ID;
         this.name = rawCompetency.COMPETENCY_NAME;
         this.description = rawCompetency.DESCRIPTION;
