@@ -8,5 +8,6 @@ mysql -h 127.0.0.1 --user root --password=root jabc_db < sql-scripts/procedures/
 mysql -h 127.0.0.1 --user root --password=root jabc_db < sql-scripts/procedures/Create_SP_Performance.sql
 mysql -h 127.0.0.1 --user root --password=root jabc_db < sql-scripts/procedures/Create_SP_Role.sql
 mysql -h 127.0.0.1 --user root --password=root jabc_db < sql-scripts/procedures/Create_SP_Vacation.sql
+mysql -h 127.0.0.1 --user root --password=root jabc_db < sql-scripts/procedures/Create_SP_Onboarding.sql
 
 
