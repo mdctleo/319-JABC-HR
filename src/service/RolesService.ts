@@ -135,7 +135,10 @@ export async function getCompetencys(idRole: Number, xAuthToken: String) {
 export async function getRole(id: Number, xAuthToken: String) {
     try {
         let res = await Database.getInstance().query('CALL get_role(?)', [id], JABCResponse.ROLE);
-        return new Role(res[0][0][0]);
+        let role = new Role(res[0][0][0]);
+        role.competencies = await getCompetencys(id, xAuthToken);
+
+        return role;
     } catch (error) {
         throw error;
     }
