@@ -4,7 +4,20 @@
  *
  */
 
-import {SET_USER, LOGOUT, DISPLAY_ERROR, CLEAR_ERROR} from './constants';
+import {
+  GET_USER,
+  SET_USER,
+  LOGOUT,
+  DISPLAY_ERROR,
+  CLEAR_ERROR,
+} from './constants';
+
+export function getUser(id) {
+  return {
+    type: GET_USER,
+    id,
+  };
+}
 
 export function setUser(user) {
   return {
@@ -33,6 +46,7 @@ export function clearError() {
 }
 
 export default {
+  getUser,
   logout,
   clearError,
 };

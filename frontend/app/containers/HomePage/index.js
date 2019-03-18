@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import connect from 'react-redux/es/connect/connect';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { selectUser } from '../App/selectors';
+import { selectProfile } from '../App/selectors';
 
 /* eslint-disable react/prefer-stateless-function */
 export class HomePage extends React.PureComponent {
@@ -32,7 +32,7 @@ HomePage.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  user: selectUser(),
+  user: selectProfile,
 });
 
 const mapDispatchToProps = {};

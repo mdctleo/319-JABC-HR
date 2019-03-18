@@ -59,12 +59,12 @@ router.put('/employee/:id', (req, res) => {
   });
 });
 
-router.use('/employee/12345', (req, res, next) => res.send(Jane));
+router.get('/employee/12345', (req, res, next) => res.send(Jane));
 
-router.use('/role/1', (req, res, next) =>
+router.get('/role/1', (req, res, next) =>
   res.send({ id: 1, name: 'Dev', description: 'Do dev work' }),
 );
 
-router.use('*', (req, res, next) => res.send(req.path));
+router.use('*', (req, res, next) => res.send());
 
 module.exports = router;

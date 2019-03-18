@@ -6,8 +6,16 @@
 
 import { fromJS } from 'immutable';
 import { SET_USER, LOGOUT, DISPLAY_ERROR, CLEAR_ERROR } from './constants';
+import { ApiClient } from 'api/swagger-api';
 
-export const initialState = fromJS({error: ''});
+let user = null;
+const localUser = sessionStorage.getItem('user');
+if (localUser) {
+  user = JSON.parse(localUser);
+  ApiClient.instance.authentications.AuthToken.apiKey = user.token;
+}
+
+export const initialState = fromJS({ error: '', user });
 
 function appReducer(state = initialState, action) {
   switch (action.type) {
