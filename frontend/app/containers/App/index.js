@@ -58,6 +58,7 @@ export class App extends React.PureComponent {
         <Header
           adminLevel={this.props.user && this.props.user.adminLevel}
           logout={this.props.logout}
+          onboarding={this.props.user && this.props.user.status === 2}
         />
         <Contents>
           <Switch>
