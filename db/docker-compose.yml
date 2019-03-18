@@ -7,13 +7,14 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
     ports:
-    - "3306:3306"
+    - "3307:3306"
 
   phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_ARBITRARY: 1
+      PMA_PORT: 3307
       MYSQL_USER: root
       MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root
