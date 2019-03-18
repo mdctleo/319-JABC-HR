@@ -26,3 +26,8 @@ export function* getRole(id) {
   const role = yield rolesApi.getRole(id);
   yield put(setResource('role', role.id, role));
 }
+
+export function* getCompetenciesForRole(roleId) {
+  const competencies = yield rolesApi.getCompetencys(roleId);
+  yield put(displayError("Competencies aren't available yet"));
+}
