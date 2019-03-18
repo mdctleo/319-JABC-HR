@@ -15,7 +15,8 @@
 import ApiClient from "../ApiClient";
 import IApiResponse from '../model/IApiResponse';
 import IComment from '../model/IComment';
-import IPerformance from '../model/IPerformance';
+import IPerformancePlan from '../model/IPerformancePlan';
+import IPerformanceReview from '../model/IPerformanceReview';
 
 /**
 * Performance service.
@@ -38,9 +39,9 @@ export default class PerformanceApi {
 
 
     /**
-     * creates a new Comment for the Performance with [id]
-     * Will create a new Comment with the provided data in body, to the Performance with [id]
-     * @param {Number} id id of the Performance to be commented
+     * creates a new Comment for the PerformanceReview with [id]
+     * Will create a new Comment with the provided data in body, to the PerformanceReview with [id]
+     * @param {Number} id id of the PerformanceReview to be commented
      * @param {module:model/IComment} comment Comment data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -78,16 +79,16 @@ export default class PerformanceApi {
       let returnType = IApiResponse;
 
       return this.apiClient.callApi(
-        '/performance/{id}/comment', 'POST',
+        '/performance/review/{id}/comment', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
 
     /**
-     * creates a new Comment for the Performance with [id]
-     * Will create a new Comment with the provided data in body, to the Performance with [id]
-     * @param {Number} id id of the Performance to be commented
+     * creates a new Comment for the PerformanceReview with [id]
+     * Will create a new Comment with the provided data in body, to the PerformanceReview with [id]
+     * @param {Number} id id of the PerformanceReview to be commented
      * @param {module:model/IComment} comment Comment data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -104,7 +105,7 @@ export default class PerformanceApi {
     /**
      * deletes Comment
      * Will delete an Comment if the Comment matches the [idComment]
-     * @param {Number} id id of the Performance with comments
+     * @param {Number} id id of the PerformanceReview with comments
      * @param {Number} idComment idComment of the Comment to be deleted
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -143,7 +144,7 @@ export default class PerformanceApi {
       let returnType = IApiResponse;
 
       return this.apiClient.callApi(
-        '/performance/{id}/comment/{idComment}', 'DELETE',
+        '/performance/review/{id}/comment/{idComment}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
@@ -152,7 +153,7 @@ export default class PerformanceApi {
     /**
      * deletes Comment
      * Will delete an Comment if the Comment matches the [idComment]
-     * @param {Number} id id of the Performance with comments
+     * @param {Number} id id of the PerformanceReview with comments
      * @param {Number} idComment idComment of the Comment to be deleted
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -167,20 +168,20 @@ export default class PerformanceApi {
 
 
     /**
-     * deletes Performance
-     * Will delete the Performance that matches with the provided [id] from  the Employee with [id] 
-     * @param {Number} id id of the searched Performance
+     * deletes PerformancePlan
+     * Will delete the PerformancePlan that matches with the provided [id] from  the Employee with [id] 
+     * @param {Number} id id of the searched PerformancePlan
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
      */
-    deletePerformanceWithHttpInfo(id, opts) {
+    deletePerformancePlanWithHttpInfo(id, opts) {
       opts = opts || {};
       let postBody = null;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling deletePerformance");
+        throw new Error("Missing the required parameter 'id' when calling deletePerformancePlan");
       }
 
 
@@ -201,22 +202,79 @@ export default class PerformanceApi {
       let returnType = IApiResponse;
 
       return this.apiClient.callApi(
-        '/performance/{id}', 'DELETE',
+        '/performance/plan/{id}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
 
     /**
-     * deletes Performance
-     * Will delete the Performance that matches with the provided [id] from  the Employee with [id] 
-     * @param {Number} id id of the searched Performance
+     * deletes PerformancePlan
+     * Will delete the PerformancePlan that matches with the provided [id] from  the Employee with [id] 
+     * @param {Number} id id of the searched PerformancePlan
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
      */
-    deletePerformance(id, opts) {
-      return this.deletePerformanceWithHttpInfo(id, opts)
+    deletePerformancePlan(id, opts) {
+      return this.deletePerformancePlanWithHttpInfo(id, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * deletes PerformanceReview
+     * Will delete the PerformanceReview that matches with the provided [id] from  the Employee with [id] 
+     * @param {Number} id id of the searched PerformanceReview
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
+     */
+    deletePerformanceReviewWithHttpInfo(id, opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling deletePerformanceReview");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IApiResponse;
+
+      return this.apiClient.callApi(
+        '/performance/review/{id}', 'DELETE',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * deletes PerformanceReview
+     * Will delete the PerformanceReview that matches with the provided [id] from  the Employee with [id] 
+     * @param {Number} id id of the searched PerformanceReview
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
+     */
+    deletePerformanceReview(id, opts) {
+      return this.deletePerformanceReviewWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -226,7 +284,7 @@ export default class PerformanceApi {
     /**
      * gets an specific Comment
      * Will return the Comment that matches with the provided [idComment]
-     * @param {Number} id id of the Performance with comments
+     * @param {Number} id id of the PerformanceReview with comments
      * @param {Number} idComment idComment of the searched Comment
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -265,7 +323,7 @@ export default class PerformanceApi {
       let returnType = IComment;
 
       return this.apiClient.callApi(
-        '/performance/{id}/comment/{idComment}', 'GET',
+        '/performance/review/{id}/comment/{idComment}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
@@ -274,7 +332,7 @@ export default class PerformanceApi {
     /**
      * gets an specific Comment
      * Will return the Comment that matches with the provided [idComment]
-     * @param {Number} id id of the Performance with comments
+     * @param {Number} id id of the PerformanceReview with comments
      * @param {Number} idComment idComment of the searched Comment
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -289,9 +347,9 @@ export default class PerformanceApi {
 
 
     /**
-     * get all the Comments from a Performance with [id]
-     * This returns all the Comments of the Performance with [id]. 
-     * @param {Number} id id of the Performance with comments
+     * get all the Comments from a PerformanceReview with [id]
+     * This returns all the Comments of the PerformanceReview with [id]. 
+     * @param {Number} id id of the PerformanceReview with comments
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IComment>} and HTTP response
@@ -323,16 +381,16 @@ export default class PerformanceApi {
       let returnType = [IComment];
 
       return this.apiClient.callApi(
-        '/performance/{id}/comment', 'GET',
+        '/performance/review/{id}/comment', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
 
     /**
-     * get all the Comments from a Performance with [id]
-     * This returns all the Comments of the Performance with [id]. 
-     * @param {Number} id id of the Performance with comments
+     * get all the Comments from a PerformanceReview with [id]
+     * This returns all the Comments of the PerformanceReview with [id]. 
+     * @param {Number} id id of the PerformanceReview with comments
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IComment>}
@@ -346,20 +404,20 @@ export default class PerformanceApi {
 
 
     /**
-     * gets an specific Performance
-     * Will return the Performance that matches with the provided [id] from  the Employee with [id] 
-     * @param {Number} id id of the searched Performance
+     * gets an specific PerformancePlan
+     * Will return the PerformancePlan that matches with the provided [id] from  the Employee with [id] 
+     * @param {Number} id id of the searched PerformancePlan
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IPerformance} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IPerformancePlan} and HTTP response
      */
-    getPerformanceWithHttpInfo(id, opts) {
+    getPerformancePlanWithHttpInfo(id, opts) {
       opts = opts || {};
       let postBody = null;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling getPerformance");
+        throw new Error("Missing the required parameter 'id' when calling getPerformancePlan");
       }
 
 
@@ -377,25 +435,82 @@ export default class PerformanceApi {
       let authNames = ['AuthToken'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = IPerformance;
+      let returnType = IPerformancePlan;
 
       return this.apiClient.callApi(
-        '/performance/{id}', 'GET',
+        '/performance/plan/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
 
     /**
-     * gets an specific Performance
-     * Will return the Performance that matches with the provided [id] from  the Employee with [id] 
-     * @param {Number} id id of the searched Performance
+     * gets an specific PerformancePlan
+     * Will return the PerformancePlan that matches with the provided [id] from  the Employee with [id] 
+     * @param {Number} id id of the searched PerformancePlan
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IPerformance}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IPerformancePlan}
      */
-    getPerformance(id, opts) {
-      return this.getPerformanceWithHttpInfo(id, opts)
+    getPerformancePlan(id, opts) {
+      return this.getPerformancePlanWithHttpInfo(id, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * gets an specific PerformanceReview
+     * Will return the PerformanceReview that matches with the provided [id] from  the Employee with [id] 
+     * @param {Number} id id of the searched PerformanceReview
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IPerformanceReview} and HTTP response
+     */
+    getPerformanceReviewWithHttpInfo(id, opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling getPerformanceReview");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IPerformanceReview;
+
+      return this.apiClient.callApi(
+        '/performance/review/{id}', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * gets an specific PerformanceReview
+     * Will return the PerformanceReview that matches with the provided [id] from  the Employee with [id] 
+     * @param {Number} id id of the searched PerformanceReview
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IPerformanceReview}
+     */
+    getPerformanceReview(id, opts) {
+      return this.getPerformanceReviewWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -405,7 +520,7 @@ export default class PerformanceApi {
     /**
      * updates the Comment
      * Will update an Comment with the provided data in body if the Comment matches the [idComment]
-     * @param {Number} id id of the Performance with comments
+     * @param {Number} id id of the PerformanceReview with comments
      * @param {Number} idComment idComment of the Comment to be updated
      * @param {module:model/IComment} comment Comment data
      * @param {Object} opts Optional parameters
@@ -450,7 +565,7 @@ export default class PerformanceApi {
       let returnType = IApiResponse;
 
       return this.apiClient.callApi(
-        '/performance/{id}/comment/{idComment}', 'PUT',
+        '/performance/review/{id}/comment/{idComment}', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
@@ -459,7 +574,7 @@ export default class PerformanceApi {
     /**
      * updates the Comment
      * Will update an Comment with the provided data in body if the Comment matches the [idComment]
-     * @param {Number} id id of the Performance with comments
+     * @param {Number} id id of the PerformanceReview with comments
      * @param {Number} idComment idComment of the Comment to be updated
      * @param {module:model/IComment} comment Comment data
      * @param {Object} opts Optional parameters
@@ -475,26 +590,26 @@ export default class PerformanceApi {
 
 
     /**
-     * updates the Performance
-     * Will update an Performance with the provided data in body  if the Performance matches the [id] 
-     * @param {Number} id id of the searched Performance
-     * @param {module:model/IPerformance} performance Performance data
+     * updates the PerformancePlan
+     * Will update an PerformancePlan with the provided data in body  if the PerformancePlan matches the [id] 
+     * @param {Number} id id of the searched PerformancePlan
+     * @param {module:model/IPerformancePlan} performance PerformancePlan data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
      */
-    updatePerformanceWithHttpInfo(id, performance, opts) {
+    updatePerformancePlanWithHttpInfo(id, performance, opts) {
       opts = opts || {};
       let postBody = performance;
 
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling updatePerformance");
+        throw new Error("Missing the required parameter 'id' when calling updatePerformancePlan");
       }
 
       // verify the required parameter 'performance' is set
       if (performance === undefined || performance === null) {
-        throw new Error("Missing the required parameter 'performance' when calling updatePerformance");
+        throw new Error("Missing the required parameter 'performance' when calling updatePerformancePlan");
       }
 
 
@@ -515,23 +630,87 @@ export default class PerformanceApi {
       let returnType = IApiResponse;
 
       return this.apiClient.callApi(
-        '/performance/{id}', 'PUT',
+        '/performance/plan/{id}', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
 
     /**
-     * updates the Performance
-     * Will update an Performance with the provided data in body  if the Performance matches the [id] 
-     * @param {Number} id id of the searched Performance
-     * @param {module:model/IPerformance} performance Performance data
+     * updates the PerformancePlan
+     * Will update an PerformancePlan with the provided data in body  if the PerformancePlan matches the [id] 
+     * @param {Number} id id of the searched PerformancePlan
+     * @param {module:model/IPerformancePlan} performance PerformancePlan data
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
      */
-    updatePerformance(id, performance, opts) {
-      return this.updatePerformanceWithHttpInfo(id, performance, opts)
+    updatePerformancePlan(id, performance, opts) {
+      return this.updatePerformancePlanWithHttpInfo(id, performance, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * updates the PerformanceReview
+     * Will update an PerformanceReview with the provided data in body  if the PerformanceReview matches the [id] 
+     * @param {Number} id id of the searched PerformanceReview
+     * @param {module:model/IPerformanceReview} performance PerformanceReview data
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
+     */
+    updatePerformanceReviewWithHttpInfo(id, performance, opts) {
+      opts = opts || {};
+      let postBody = performance;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling updatePerformanceReview");
+      }
+
+      // verify the required parameter 'performance' is set
+      if (performance === undefined || performance === null) {
+        throw new Error("Missing the required parameter 'performance' when calling updatePerformanceReview");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IApiResponse;
+
+      return this.apiClient.callApi(
+        '/performance/review/{id}', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * updates the PerformanceReview
+     * Will update an PerformanceReview with the provided data in body  if the PerformanceReview matches the [id] 
+     * @param {Number} id id of the searched PerformanceReview
+     * @param {module:model/IPerformanceReview} performance PerformanceReview data
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
+     */
+    updatePerformanceReview(id, performance, opts) {
+      return this.updatePerformanceReviewWithHttpInfo(id, performance, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

@@ -30,18 +30,18 @@ export default class ILoginResponse {
     * The data returned by the login path contains the employee info as well as the auth token
     * @alias module:model/ILoginResponse
     * @class
-    * @param errorCode {Number} 
+    * @param responseCode {Number} 
     * @param type {module:model/ILoginResponse.TypeEnum} 
     * @param message {String} 
     */
 
-    constructor(errorCode, type, message) {
+    constructor(responseCode, type, message) {
         
 
         
         
 
-        this['errorCode'] = errorCode;this['type'] = type;this['message'] = message;
+        this['responseCode'] = responseCode;this['type'] = type;this['message'] = message;
 
         
     }
@@ -61,8 +61,8 @@ export default class ILoginResponse {
             
             
 
-            if (data.hasOwnProperty('errorCode')) {
-                obj['errorCode'] = ApiClient.convertToType(data['errorCode'], 'Number');
+            if (data.hasOwnProperty('responseCode')) {
+                obj['responseCode'] = ApiClient.convertToType(data['responseCode'], 'Number');
             }
             if (data.hasOwnProperty('type')) {
                 obj['type'] = ApiClient.convertToType(data['type'], 'String');
@@ -84,9 +84,9 @@ export default class ILoginResponse {
     }
 
     /**
-    * @member {Number} errorCode
+    * @member {Number} responseCode
     */
-    errorCode = undefined;
+    responseCode = undefined;
     /**
     * @member {module:model/ILoginResponse.TypeEnum} type
     */

@@ -84,12 +84,6 @@ class EmployeeDisplay extends React.PureComponent {
               </TableRow>
             )}
             <TableRow className={classes.row}>
-              <TableCell className={classes.leftCell} align="left">
-                <Typography variant="caption">EMPLOYEE ID</Typography>
-              </TableCell>
-              <TableCell align="left">{profile.id}</TableCell>
-            </TableRow>
-            <TableRow className={classes.row}>
               <TableCell align="left">
                 <Typography variant="caption">SIN</Typography>
               </TableCell>

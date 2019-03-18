@@ -10,6 +10,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import injectSaga from 'utils/injectSaga';
 
 import HomePage from 'containers/HomePage/Loadable';
 import Profile from 'containers/Profile/Loadable';
@@ -31,20 +32,33 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { withRouter } from 'react-router';
 
-import { makeSelectGlobal } from './selectors';
+import { makeSelectGlobal, selectProfile } from './selectors';
 import actions from './actions';
+import ErrorDialog from '../../components/ErrorDialog';
+import saga from './saga';
 
 const Contents = styled.div`
   margin-top: 80px;
 `;
 
 export class App extends React.PureComponent {
+  componentDidMount() {
+    if (!this.props.user && this.props.data.user) {
+      this.props.getUser(this.props.data.user.id);
+    }
+  }
+
   render() {
     const mainApp = (
       <div>
+        <ErrorDialog
+          message={this.props.data.error}
+          clearError={this.props.clearError}
+        />
         <Header
-          adminLevel={this.props.data.user && this.props.data.user.adminLevel}
+          adminLevel={this.props.user && this.props.user.adminLevel}
           logout={this.props.logout}
+          onboarding={this.props.user && this.props.user.status === 2}
         />
         <Contents>
           <Switch>
@@ -73,11 +87,15 @@ export class App extends React.PureComponent {
 
 App.propTypes = {
   data: PropTypes.object,
+  user: PropTypes.object,
   logout: PropTypes.func,
+  clearError: PropTypes.func,
+  getUser: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   data: makeSelectGlobal(),
+  user: selectProfile,
 });
 
 const mapDispatchToProps = {
@@ -88,8 +106,10 @@ const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps,
 );
+const withSaga = injectSaga({ key: 'app', saga });
 
 export default compose(
   withRouter,
+  withSaga,
   withConnect,
 )(App);

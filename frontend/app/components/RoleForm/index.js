@@ -84,16 +84,16 @@ class RoleForm extends React.PureComponent  {
     super(props);
   }
 
-  handleAddButton = (event, numCompetencies) => {
-      var tbody = document.getElementById("rf-tbody");
-      var newRow = <TableRow className={classes.row}>
-                    <TableCell align="left"><TextField id={"rf-col-1-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
-                    <TableCell align="left"><TextField id={"rf-col-2-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
-                    <TableCell align="left"><TextField id={"rf-col-3-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
-                    <TableCell align="left" id={"rf-col-4-sec-"+numCompetencies+"delete"} className={"rf-rows-delete"}><IconButton><DeleteIcon /></IconButton></TableCell>
-                   </TableRow>;
-    tbody.appendChild(newRow);
-  }
+  // handleAddButton = (event, numCompetencies) => {
+  //     var tbody = document.getElementById("rf-tbody");
+  //     var newRow = <TableRow className={classes.row}>
+  //                   <TableCell align="left"><TextField id={"rf-col-1-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
+  //                   <TableCell align="left"><TextField id={"rf-col-2-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
+  //                   <TableCell align="left"><TextField id={"rf-col-3-sec-"+numCompetencies} className={"rf-rows"} defaultValue=""/></TableCell>
+  //                   <TableCell align="left" id={"rf-col-4-sec-"+numCompetencies+"delete"} className={"rf-rows-delete"}><IconButton><DeleteIcon /></IconButton></TableCell>
+  //                  </TableRow>;
+  //   tbody.appendChild(newRow);
+  // }
 
   render() {
     const { classes, role, add } = this.props;
@@ -115,7 +115,7 @@ class RoleForm extends React.PureComponent  {
                             <TableCell align="left" id={"rf-col-4-sec-"+index+"delete"} className={"rf-rows-delete"}><IconButton><DeleteIcon /></IconButton></TableCell>
                          </TableRow>; })}
             <TableRow>
-              <TableCell colspan={4}><IconButton className={classes.addButton} onClick={handleAddButton(competencies.length)}><AddIcon /></IconButton></TableCell>
+              <TableCell colspan={4}><IconButton className={classes.addButton}><AddIcon /></IconButton></TableCell>
             </TableRow>
           </div>
         )};

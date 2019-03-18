@@ -61,21 +61,6 @@ class PerformanceReviewDisplay extends React.PureComponent  {
 
   render() {
     const { classes, form, years, profile } = this.props;
-    
-    function generate2ColumnTable(column1, column2, section, sectionNum) {
-        return (
-          <div>
-            <TableRow className={classes.tableHead}>
-                <TableCell id={"prd-sec-head-1-"+sectionNum} align="left"><Typography variant="caption">{column1}</Typography></TableCell>
-                <TableCell id={"prd-sec-head-2-"+sectionNum} align="left"><Typography variant="caption">{column2}</Typography></TableCell>
-            </TableRow>
-              {section.rows.map(function(row, index){
-                  return <TableRow className={classes.row}>
-                            <TableCell id={"prd-col-1-sec-"+sectionNum} align="left">{row.column1}</TableCell>
-                            <TableCell id={"prd-col-2-sec-"+sectionNum} align="left">{row.column2}</TableCell>
-                         </TableRow>; })}
-          </div>
-        )};
 
     function generate3ColumnTable(column1, column2, column3, section, sectionNum) {
         return (
@@ -103,31 +88,31 @@ class PerformanceReviewDisplay extends React.PureComponent  {
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 1: JABC Goals</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody>
-              {generate2ColumnTable("DEPARTMENT", "GOAL", form.section1, "1")}
+              {generate3ColumnTable("DEPARTMENT", "GOAL", "COMMENTS", form.section1, "1")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 2: Personal Targets</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody>
-              {generate2ColumnTable("PROGRAM", "GOAL", form.section2, "2")}
+              {generate3ColumnTable("PROGRAM", "GOAL", "COMMENTS", form.section2, "2")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 3: Core competencies</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody>
-              {generate2ColumnTable("COMPETENCY", "HOW IT RELATES", form.section3, "3")}
+              {generate3ColumnTable("COMPETENCY", "HOW IT RELATES", "COMMENTS", form.section3, "3")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 4: Objectives</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody>
-              {generate2ColumnTable("OBJECTIVES & ACTIITES", "SUPPORT / COLLABORATION", form.section4, "4")}
+              {generate3ColumnTable("OBJECTIVES & ACTIITES", "SUPPORT / COLLABORATION", "COMMENTS", form.section4, "4")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 5: Professional Development Goals</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody>
-              {generate2ColumnTable("GOAL", "KEY ACTIVITES", form.section5, "5")}
+              {generate3ColumnTable("GOAL", "KEY ACTIVITES", "COMMENTS", form.section5, "5")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 6: Comments</Typography>
