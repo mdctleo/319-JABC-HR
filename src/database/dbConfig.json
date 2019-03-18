@@ -3,5 +3,6 @@
   "port": 3307,
   "database": "jabc_db",
   "user": "root",
-  "password": "root"
+  "password": "root",
+  "dateString": true
 }
