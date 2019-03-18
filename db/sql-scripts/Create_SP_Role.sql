@@ -158,6 +158,7 @@ CREATE PROCEDURE `create_competency` (IN role_id INT
 )
 BEGIN
   DECLARE checker INT;
+  DECLARE nameChecker INT;
 
   SET checker = 0;
   SET nameChecker = 0;
