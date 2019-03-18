@@ -70,7 +70,7 @@ class EmployeeEditForm extends React.PureComponent {
   }
 
   render() {
-    const { classes, state } = this.props;
+    const { classes, state, role } = this.props;
     var profile = state.profile;
 
     return (
@@ -145,7 +145,7 @@ class EmployeeEditForm extends React.PureComponent {
          <div className={classes.fieldContainer}>
             <TextField
               id="edit-prof-position"
-              defaultValue={profile.role.name}
+              defaultValue={role.name}
               label="Position"
               className={classes.textField}
               margin="normal"
@@ -238,6 +238,7 @@ class EmployeeEditForm extends React.PureComponent {
 EmployeeEditForm.propTypes = {
   classes: PropTypes.object.isRequired,
   state: PropTypes.object.isRequired,
+  role: PropType.object.isRequired,
 };
 
 export default withStyles(styles)(EmployeeEditForm);
