@@ -599,10 +599,12 @@ export default class EmployeeApi {
 
     /**
      * get all the Employees
-     * This returns all the Employees of the system.  If [term] is provided this returns the Employees of the system that match with the [term]. 
+     * This returns all the Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [term] is provided this returns the Employees of the system that match with the [term]. 
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @param {String} opts.term Search term for filter the data
+     * @param {Date} opts.start Search employees with a birthday after this date, if this isn&#39;t provided there won&#39;t be any filtering
+     * @param {Date} opts.end Search employees with a birthday before this date, if this isn&#39;t provided there won&#39;t be any filtering
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IEmployee>} and HTTP response
      */
     getEmployeesWithHttpInfo(opts) {
@@ -613,7 +615,9 @@ export default class EmployeeApi {
       let pathParams = {
       };
       let queryParams = {
-        'term': opts['term']
+        'term': opts['term'],
+        'start': opts['start'],
+        'end': opts['end']
       };
       let headerParams = {
         'X-Auth-Token': opts['xAuthToken']
@@ -635,10 +639,12 @@ export default class EmployeeApi {
 
     /**
      * get all the Employees
-     * This returns all the Employees of the system.  If [term] is provided this returns the Employees of the system that match with the [term]. 
+     * This returns all the Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [term] is provided this returns the Employees of the system that match with the [term]. 
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @param {String} opts.term Search term for filter the data
+     * @param {Date} opts.start Search employees with a birthday after this date, if this isn&#39;t provided there won&#39;t be any filtering
+     * @param {Date} opts.end Search employees with a birthday before this date, if this isn&#39;t provided there won&#39;t be any filtering
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IEmployee>}
      */
     getEmployees(opts) {
@@ -700,6 +706,63 @@ export default class EmployeeApi {
      */
     getEmployeesByManager(idManager, opts) {
       return this.getEmployeesByManagerWithHttpInfo(idManager, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * get all the Managers of an employee with the provided [id]
+     * This returns all the Employees of the system that manage the employee with the [id].  
+     * @param {Number} id id of the Employee with the searched Managers
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IEmployee>} and HTTP response
+     */
+    getManagersByEmployeeWithHttpInfo(id, opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling getManagersByEmployee");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = [IEmployee];
+
+      return this.apiClient.callApi(
+        '/employee/{id}/manager', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * get all the Managers of an employee with the provided [id]
+     * This returns all the Employees of the system that manage the employee with the [id].  
+     * @param {Number} id id of the Employee with the searched Managers
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IEmployee>}
+     */
+    getManagersByEmployee(id, opts) {
+      return this.getManagersByEmployeeWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

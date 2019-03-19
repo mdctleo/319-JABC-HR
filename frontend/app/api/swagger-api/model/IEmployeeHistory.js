@@ -116,7 +116,7 @@ export default class IEmployeeHistory {
                 obj['birthdate'] = ApiClient.convertToType(data['birthdate'], 'Date');
             }
             if (data.hasOwnProperty('dateJoined')) {
-                obj['dateJoined'] = ApiClient.convertToType(data['dateJoined'], 'String');
+                obj['dateJoined'] = ApiClient.convertToType(data['dateJoined'], 'Date');
             }
             if (data.hasOwnProperty('vacationDays')) {
                 obj['vacationDays'] = ApiClient.convertToType(data['vacationDays'], 'Number');
@@ -204,7 +204,7 @@ export default class IEmployeeHistory {
     birthdate = undefined;
     /**
     * The date joined of the employee
-    * @member {String} dateJoined
+    * @member {Date} dateJoined
     */
     dateJoined = undefined;
     /**

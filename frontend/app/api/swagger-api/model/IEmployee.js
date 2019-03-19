@@ -177,7 +177,7 @@ export default class IEmployee {
     birthdate = undefined;
     /**
     * The date joined of the employee
-    * @member {String} dateJoined
+    * @member {Date} dateJoined
     */
     dateJoined = undefined;
     /**

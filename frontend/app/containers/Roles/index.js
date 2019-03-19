@@ -6,8 +6,13 @@
 
 import React from 'react';
 import classNames from 'classnames';
-import CompetencyCard from '../../components/CompetencyCard';
 import PropTypes from 'prop-types';
+import actions from './actions';
+import injectSaga from 'utils/injectSaga';
+import injectReducer from 'utils/injectReducer';
+import reducer from './reducer';
+import saga from './saga';
+import { selectAllRoles } from './selectors';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -27,13 +32,13 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import Button from '@material-ui/core/Button';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import TextField from '@material-ui/core/TextField';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
 import grey from '@material-ui/core/colors/grey';
 import RoleDisplay from '../../components/RoleDisplay';
 import RoleForm from '../../components/RoleForm';
+import connect from 'react-redux/es/connect/connect';
+import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
 
 let counter = 0;
 function createData(name, description, competencies) {
@@ -62,7 +67,9 @@ function stableSort(array, cmp) {
 }
 
 function getSorting(order, orderBy) {
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+  return order === 'desc'
+    ? (a, b) => desc(a, b, orderBy)
+    : (a, b) => -desc(a, b, orderBy);
 }
 
 const rows = [
@@ -76,7 +83,13 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const {
+      onSelectAllClick,
+      order,
+      orderBy,
+      numSelected,
+      rowCount,
+    } = this.props;
 
     return (
       <TableHead>
@@ -162,16 +175,15 @@ let EnhancedTableToolbar = props => {
   const { numSelected, selected, classes } = props;
 
   return (
-    <Toolbar
-      className={classNames(classes.root, classes.highlight)}
-    >
-    <div className={classes.title}>
+    <Toolbar className={classNames(classes.root, classes.highlight)}>
+      <div className={classes.title}>
         {numSelected > 0 ? (
           <Typography color="inherit" variant="subtitle1">
             {numSelected} selected
           </Typography>
         ) : (
-          <Typography></Typography>)}
+          <Typography />
+        )}
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
@@ -220,7 +232,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   editButton: {
     float: 'right',
@@ -232,7 +244,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   formButtons: {
     float: 'right',
@@ -246,7 +258,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   table: {
     minWidth: 800,
@@ -287,7 +299,7 @@ const styles = theme => ({
     marginTop: '50px',
   },
   card: {
-    width: "75%",
+    width: '75%',
   },
   fab: {
     marginTop: '30px',
@@ -302,45 +314,106 @@ const styles = theme => ({
   },
 });
 
-
 class EnhancedTable extends React.Component {
+  componentDidMount() {
+    this.props.getAllRoles();
+  }
+
   state = {
     order: 'asc',
     orderBy: 'position',
     selected: [],
-    displayedPage: "table",
+    displayedPage: 'table',
     addButtonClicked: 0,
     editButtonClicked: 0,
-    selectedProfile: {name: "", description: "", competencies: [{name: "", description: "", rating: 0}]},
+    selectedProfile: {
+      name: '',
+      description: '',
+      competencies: [{ name: '', description: '', rating: 0 }],
+    },
     value: 1,
     data: [
-      createData('Developer', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Database Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('DevOps Master', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Manager', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('HR Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('President', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Executive Assistant', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Secretary', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Volunteer Coordinator', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Developer', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Database Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('DevOps Master', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Manager', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('HR Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('President', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Executive Assistant', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Secretary', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Volunteer Coordinator', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Developer', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Database Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('DevOps Master', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Manager', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('HR Admin', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('President', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Executive Assistant', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Secretary', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
-      createData('Volunteer Coordinator', 'Develops company website.', [{name: 'C++', description: 'Can code in c++', rating: 3 }]),
+      createData('Developer', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Database Admin', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('DevOps Master', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Manager', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('HR Admin', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('President', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Executive Assistant', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Secretary', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Volunteer Coordinator', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Developer', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Database Admin', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('DevOps Master', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Manager', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('HR Admin', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('President', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Executive Assistant', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Secretary', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Volunteer Coordinator', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Developer', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Database Admin', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('DevOps Master', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Manager', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('HR Admin', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('President', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Executive Assistant', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Secretary', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
+      createData('Volunteer Coordinator', 'Develops company website.', [
+        { name: 'C++', description: 'Can code in c++', rating: 3 },
+      ]),
     ],
     page: 0,
     rowsPerPage: 25,
@@ -405,7 +478,7 @@ class EnhancedTable extends React.Component {
     }
 
     this.setState({ selected: newSelected });
-    this.setState({ displayedPage: "profile" });
+    this.setState({ displayedPage: 'profile' });
     this.setState({ selectedProfile: profile });
   };
 
@@ -423,217 +496,402 @@ class EnhancedTable extends React.Component {
 
   handleBackButton = (event, value) => {
     this.setState({ value: 1 });
-    this.setState({ displayedPage: "table" });
+    this.setState({ displayedPage: 'table' });
     this.setState({ editButtonClicked: 0 });
-  }
-  
+  };
+
   handleAddButton = (event, value) => {
-    this.setState({ displayedPage: "add" });
+    this.setState({ displayedPage: 'add' });
     this.setState({ editButtonClicked: 1 });
-  }
-  
+  };
+
   handleEditButton = (event, value) => {
     this.setState({ editButtonClicked: 1 });
-  }
+  };
 
   handleDeleteButton = (event, value) => {
-    var profiles = this.state.selected;
+    const profiles = this.state.selected;
     this.state.data.filter(n => !profiles.includes(n.id));
-  }
+  };
 
   handleDeleteSingleButton = (event, profile) => {
     console.log(profile.id);
     console.log(this.state.data);
-    var data = this.state.data;
-    this.setState({ data: data.filter(n => (n.id != profile.id)) });
-  }
+    const data = this.state.data;
+    this.setState({ data: data.filter(n => n.id != profile.id) });
+  };
 
   handleClickTextField = (event, value) => {
-    if (this.state.editButtonClicked)
-    event.readOnly = false;
-  }
+    if (this.state.editButtonClicked) event.readOnly = false;
+  };
 
   handleSaveButton = (event, value) => {
-    var id = this.state.selectedProfile.id;
+    const id = this.state.selectedProfile.id;
     for (var i = 0; i < this.state.data.length; i++) {
       if (this.state.data[i].id == id) {
-        this.state.data[i].description = document.getElementById("rf-description").value;
-        this.state.data[i].name = document.getElementById("rf-name").value;
-        var competencies = [];
-        var foundCompetencyCells = document.getElementsByClassName("rf-rows");
+        this.state.data[i].description = document.getElementById(
+          'rf-description',
+        ).value;
+        this.state.data[i].name = document.getElementById('rf-name').value;
+        const competencies = [];
+        const foundCompetencyCells = document.getElementsByClassName('rf-rows');
         for (var i = 0; i < foundCompetencyCells.length; i++) {
-          var input = foundCompetencyCells[i].firstChild.firstChild;
+          const input = foundCompetencyCells[i].firstChild.firstChild;
           if (i % 3 == 0) {
-            input.value ? competencies.push({ name: input.value }) : competencies.push({ name: input.defaultValue });
+            input.value
+              ? competencies.push({ name: input.value })
+              : competencies.push({ name: input.defaultValue });
           } else if (i % 3 == 1) {
-            competencies[Math.floor(i/3)].description = input.value ? input.value : input.defaultValue;
+            competencies[Math.floor(i / 3)].description = input.value
+              ? input.value
+              : input.defaultValue;
           } else {
-            competencies[Math.floor(i/3)].rating = input.value ? input.value : input.defaultValue;
+            competencies[Math.floor(i / 3)].rating = input.value
+              ? input.value
+              : input.defaultValue;
           }
         }
         this.state.data[i].competencies = competencies;
       }
     }
     this.setState({ value: 1 });
-    this.setState({ displayedPage: "table" });
+    this.setState({ displayedPage: 'table' });
     this.setState({ editButtonClicked: 0 });
-  }
+  };
 
-  handleAddSaveButton = (event, value) => {
-    var description = document.getElementById("rf-description").value;
-    var name = document.getElementById("rf-name").value;
-    var competencies = [];
-    var foundCompetencyCells = document.getElementsByClassName("rf-rows");
-    for (var i = 0; i < foundCompetencyCells.length; i++) {
-      var input = foundCompetencyCells[i].firstChild.firstChild;
-      if (i % 3 == 0) {
-        input.value ? competencies.push({ name: input.value }) : competencies.push({ name: input.defaultValue });
-      } else if (i % 3 == 1) {
-        competencies[Math.floor(i/3)].description = input.value ? input.value : input.defaultValue;
-      } else {
-        competencies[Math.floor(i/3)].rating = input.value ? input.value : input.defaultValue;
+  handleSubmitButton = (event, value) => {
+    const id = this.state.selectedProfile.id;
+    for (var i = 0; i < this.state.data.length; i++) {
+      if (this.state.data[i].id == id) {
+        this.state.data[i].description = document.getElementById(
+          'rf-description',
+        ).value;
+        this.state.data[i].name = document.getElementById('rf-name').value;
+        const competencies = [];
+        const foundCompetencyCells = document.getElementsByClassName('rf-rows');
+        for (var i = 0; i < foundCompetencyCells.length; i++) {
+          const input = foundCompetencyCells[i].firstChild.firstChild;
+          console.log('made it into inner loop');
+          if (i % 3 == 0) {
+            input.value
+              ? competencies.push({ name: input.value })
+              : competencies.push({ name: input.defaultValue });
+          } else if (i % 3 == 1) {
+            competencies[Math.floor(i / 3)].description = input.value
+              ? input.value
+              : input.defaultValue;
+          } else {
+            competencies[Math.floor(i / 3)].rating = input.value
+              ? input.value
+              : input.defaultValue;
+          }
+        }
+        this.state.data[i].competencies = competencies;
       }
     }
-    var data = this.state.data;
-    this.setState({ data: data.concat(createData(name, description, competencies ))});
     this.setState({ value: 1 });
-    this.setState({ displayedPage: "table" });
+    this.setState({ displayedPage: 'table' });
     this.setState({ editButtonClicked: 0 });
-  }
+  };
+
+  handleAddSubmitButton = (event, value) => {
+    const description = document.getElementById('rf-description').value;
+    const name = document.getElementById('rf-name').value;
+    const competencies = [];
+    const foundCompetencyCells = document.getElementsByClassName('rf-rows');
+    for (let i = 0; i < foundCompetencyCells.length; i++) {
+      const input = foundCompetencyCells[i].firstChild.firstChild;
+      if (i % 3 == 0) {
+        input.value
+          ? competencies.push({ name: input.value })
+          : competencies.push({ name: input.defaultValue });
+      } else if (i % 3 == 1) {
+        competencies[Math.floor(i / 3)].description = input.value
+          ? input.value
+          : input.defaultValue;
+      } else {
+        competencies[Math.floor(i / 3)].rating = input.value
+          ? input.value
+          : input.defaultValue;
+      }
+    }
+    const data = this.state.data;
+    this.setState({
+      data: data.concat(createData(name, description, competencies)),
+    });
+    this.setState({ value: 1 });
+    this.setState({ displayedPage: 'table' });
+    this.setState({ editButtonClicked: 0 });
+  };
+
+  handleAddSaveButton = (event, value) => {
+    const description = document.getElementById('rf-description').value;
+    const name = document.getElementById('rf-name').value;
+    const competencies = [];
+    const foundCompetencyCells = document.getElementsByClassName('rf-rows');
+    for (let i = 0; i < foundCompetencyCells.length; i++) {
+      const input = foundCompetencyCells[i].firstChild.firstChild;
+      if (i % 3 == 0) {
+        input.value
+          ? competencies.push({ name: input.value })
+          : competencies.push({ name: input.defaultValue });
+      } else if (i % 3 == 1) {
+        competencies[Math.floor(i / 3)].description = input.value
+          ? input.value
+          : input.defaultValue;
+      } else {
+        competencies[Math.floor(i / 3)].rating = input.value
+          ? input.value
+          : input.defaultValue;
+      }
+    }
+    const data = this.state.data;
+    this.setState({
+      data: data.concat(createData(name, description, competencies)),
+    });
+    this.setState({ value: 1 });
+    this.setState({ displayedPage: 'table' });
+    this.setState({ editButtonClicked: 0 });
+  };
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes } = this.props;
-    const { data, order, orderBy, selected, displayedPage, editButtonClicked, value, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    const blankRole = {position: "", description: "", competencies: [{name: "", description: "", rating: 0}]};
+    const { classes, allRoles } = this.props;
+    const {
+      order,
+      orderBy,
+      selected,
+      displayedPage,
+      editButtonClicked,
+      value,
+      rowsPerPage,
+      page,
+    } = this.state;
+    const emptyRows =
+      rowsPerPage - Math.min(rowsPerPage, allRoles.length - page * rowsPerPage);
+    const blankRole = {
+      position: '',
+      description: '',
+      competencies: [{ name: '', description: '', rating: 0 }],
+    };
 
     return (
       <div>
         <h1>Roles</h1>
-        <Button className={classes.addButton} onClick={this.handleAddButton}>Add Role</Button>
-        { displayedPage == "add" ?   
-          (<Paper className={classes.root}>
-              <AppBar position="static" width="100%">
-              <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }} 
-                    onChange={this.handleChange}>
-                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                     onClick={this.handleBackButton} label="<  Back" />           
+        <Button className={classes.addButton} onClick={this.handleAddButton}>
+          Add Role
+        </Button>
+        {displayedPage == 'add' ? (
+          <Paper className={classes.root}>
+            <AppBar position="static" width="100%">
+              <Tabs
+                value={value}
+                classes={{
+                  root: classes.tabsRoot,
+                  indicator: classes.tabsIndicator,
+                }}
+                onChange={this.handleChange}
+              >
+                <Tab
+                  disableRipple
+                  classes={{
+                    root: classes.tabRoot,
+                    selected: classes.tabSelected,
+                  }}
+                  onClick={this.handleBackButton}
+                  label="<  Back"
+                />
               </Tabs>
-             </AppBar>
-               <div className="profile-card">
-                <RoleForm role={this.state.selectedProfile} add={1}/>
-                <Button className={classes.formButtons} onClick={this.handleAddSaveButton}>Save</Button>
-              </div>
-          </Paper>) :
-    ( displayedPage == "table" ? 
-      (<Paper className={classes.root}>
-         <EnhancedTableToolbar numSelected={selected.length} selected={selected}/>
-           <div className={classes.tableWrapper}>
-           <Table className={classes.table} aria-labelledby="tableTitle">
-             <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={this.handleSelectAllClick}
-                onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
-             />
-             <TableBody>
-               {stableSort(data, getSorting(order, orderBy))
-                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                 .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={n.id}
-                    selected={isSelected}
+            </AppBar>
+            <div className="profile-card">
+              <RoleForm role={this.state.selectedProfile} add={1} />
+              <Button
+                className={classes.formButtons}
+                onClick={this.handleAddSubmitButton}
+              >
+                Submit
+              </Button>
+              <Button
+                className={classes.formButtons}
+                onClick={this.handleAddSaveButton}
+              >
+                Save
+              </Button>
+            </div>
+          </Paper>
+        ) : displayedPage == 'table' ? (
+          <Paper className={classes.root}>
+            <EnhancedTableToolbar
+              numSelected={selected.length}
+              selected={selected}
+            />
+            <div className={classes.tableWrapper}>
+              <Table className={classes.table} aria-labelledby="tableTitle">
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={this.handleSelectAllClick}
+                  onRequestSort={this.handleRequestSort}
+                  rowCount={allRoles.length}
+                />
+                <TableBody>
+                  {stableSort(allRoles, getSorting(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map(n => {
+                      const isSelected = this.isSelected(n.id);
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          tabIndex={-1}
+                          key={n.id}
+                          selected={isSelected}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              onClick={event => this.handleClick(event, n.id)}
+                              checked={isSelected}
+                              labelStyle={{ color: 'grey' }}
+                              iconStyle={{ fill: 'grey' }}
+                              inputStyle={{ color: 'grey' }}
+                              style={{ color: 'grey' }}
+                            />
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            component="th"
+                            scope="row"
+                            padding="none"
+                            onClick={event => this.handleClickProfile(event, n)}
+                          >
+                            {n.name}
+                          </TableCell>
+                          <TableCell align="right">
+                            <Tooltip title="Delete">
+                              <IconButton
+                                aria-label="Delete"
+                                onClick={event =>
+                                  this.handleDeleteSingleButton(event, n)
+                                }
+                              >
+                                <DeleteIcon className={classes.deleteIcon} />
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 49 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={allRoles.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                'aria-label': 'Previous Page',
+              }}
+              nextIconButtonProps={{
+                'aria-label': 'Next Page',
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
+          </Paper>
+        ) : (
+          <Paper className={classes.root}>
+            <div>
+              <AppBar position="static" width="100%">
+                <Tabs
+                  value={value}
+                  classes={{
+                    root: classes.tabsRoot,
+                    indicator: classes.tabsIndicator,
+                  }}
+                  onChange={this.handleChange}
+                >
+                  <Tab
+                    disableRipple
+                    classes={{
+                      root: classes.tabRoot,
+                      selected: classes.tabSelected,
+                    }}
+                    onClick={this.handleBackButton}
+                    label="<  Back"
+                  />
+                </Tabs>
+              </AppBar>
+              {!editButtonClicked && (
+                <div className="profile-card">
+                  <Button
+                    className={classes.editButton}
+                    onClick={this.handleEditButton}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox 
-                        onClick={event => this.handleClick(event, n.id)}
-                        checked={isSelected} 
-                        labelStyle={{ color: 'grey' }}
-                        iconStyle={{ fill: 'grey' }}
-                        inputStyle={{ color: 'grey' }}
-                        style={{ color: 'grey' }} />
-                    </TableCell>
-                    <TableCell 
-                      align="left"
-                      component="th" 
-                      scope="row" 
-                      padding="none"
-                      onClick={event => this.handleClickProfile(event, n)}>
-                      {n.name}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Tooltip title="Delete">
-                      <IconButton aria-label="Delete" onClick={event => this.handleDeleteSingleButton(event, n)}>
-                        <DeleteIcon className={classes.deleteIcon}/>
-                      </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-               );
-             })}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 49 * emptyRows }}>
-                <TableCell colSpan={6} />
-               </TableRow>
-             )}
-           </TableBody>
-          </Table>
-        </div>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        /></Paper>) : 
-        (<Paper className={classes.root}>
-        <div>
-          <AppBar position="static" width="100%">
-          <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }} 
-                onChange={this.handleChange}>
-            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                 onClick={this.handleBackButton} label="<  Back" />           
-          </Tabs>
-         </AppBar>
-             {!editButtonClicked &&
-               <div className="profile-card">
-                 <Button className={classes.editButton} onClick={this.handleEditButton}>Edit</Button> 
-                 <RoleDisplay role={this.state.selectedProfile}/>
-               </div>}
-          { editButtonClicked == 1 &&
-          <div>
-            <RoleForm role={this.state.selectedProfile} add={0}/>
-            <Button className={classes.formButtons} onClick={this.handleSaveButton}>Save</Button>
-          </div>
-          }
-      </div>
-      </Paper>))}
+                    Edit
+                  </Button>
+                  <RoleDisplay role={this.state.selectedProfile} />
+                </div>
+              )}
+              {editButtonClicked == 1 && (
+                <div>
+                  <RoleForm role={this.state.selectedProfile} add={0} />
+                  <Button
+                    className={classes.formButtons}
+                    onClick={this.handleSubmitButton}
+                  >
+                    Submit
+                  </Button>
+                  <Button
+                    className={classes.formButtons}
+                    onClick={this.handleSaveButton}
+                  >
+                    Save
+                  </Button>
+                </div>
+              )}
+            </div>
+          </Paper>
+        )}
       </div>
     );
-  }  
+  }
 }
-
 
 EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
+  allRoles: PropTypes.object,
+  getAllRoles: PropTypes.func,
 };
 
-export default withStyles(styles)(EnhancedTable);  
+const mapStateToProps = createStructuredSelector({
+  allRoles: selectAllRoles,
+});
+
+const mapDispatchToProps = {
+  ...actions,
+};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withReducer = injectReducer({ key: 'profile', reducer });
+const withSaga = injectSaga({ key: 'profile', saga });
+
+export default compose(
+  withReducer,
+  withSaga,
+  withConnect,
+  withStyles(styles),
+)(EnhancedTable);
