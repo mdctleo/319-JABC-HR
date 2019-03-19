@@ -89,6 +89,53 @@ router.get('/role/1', (req, res, next) =>
   }),
 );
 
+router.get('/role/2', (req, res) =>
+  res.send({
+    id: 2,
+    name: 'Singer',
+    description: 'Make the pretty sounds',
+    competencies: [],
+  }),
+);
+
+router.get('/role/3', (req, res) =>
+  res.send({
+    id: 3,
+    name: 'CEO',
+    description: 'The head honcho',
+    competencies: [
+      {
+        id: 4,
+        fkRole: 3,
+        name: 'Power Stance',
+        description: "You gotta show em who's boss",
+      },
+      {
+        id: 5,
+        fkRole: 3,
+        name: 'Leadership',
+        description: null,
+      },
+    ],
+  }),
+);
+
+router.get('/role/4', (req, res) =>
+  res.send({
+    id: 4,
+    name: 'Janitor',
+    description: null,
+    competencies: [
+      {
+        id: 6,
+        fkRole: 4,
+        name: 'Mop Prowess',
+        description: 'You must be quick with a broom and zany with a mop',
+      },
+    ],
+  }),
+);
+
 router.get('/role', (req, res) => {
   res.send([
     {
