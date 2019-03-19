@@ -11,7 +11,7 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
 import saga from './saga';
-import { selectAllRoles } from './selectors';
+import { selectAllRoles, selectSelectedRole} from './selectors';
 import { withStyles } from '@material-ui/core/styles';
 
 import { ViewRole, RolesTable } from 'components/RolePageComponents';
@@ -129,8 +129,7 @@ class Roles extends React.Component {
   }
 
   state = {
-    editButtonClicked: 0,
-    selectedProfile: null,
+    editButtonClicked: false,
     tableSettings: {
       order: 'asc',
       orderBy: 'position',
@@ -145,18 +144,17 @@ class Roles extends React.Component {
   };
 
   handleBackButton = () => {
-    this.setState({ value: 1 });
-    this.setState({ selectedProfile: null });
-    this.setState({ editButtonClicked: 0 });
+    this.props.getRole(null);
+    this.setState({ editButtonClicked: false });
   };
 
   handleAddButton = () => {
     this.setState({ displayedPage: 'add' });
-    this.setState({ editButtonClicked: 1 });
+    this.setState({ editButtonClicked: true });
   };
 
   handleEditButton = () => {
-    this.setState({ editButtonClicked: 1 });
+    this.setState({ editButtonClicked: true });
   };
 
   handleDeleteButton = () => {
@@ -165,8 +163,6 @@ class Roles extends React.Component {
   };
 
   handleDeleteSingleButton = (event, profile) => {
-    console.log(profile.id);
-    console.log(this.state.data);
     const data = this.state.data;
     this.setState({ data: data.filter(n => n.id != profile.id) });
   };
@@ -206,7 +202,7 @@ class Roles extends React.Component {
     }
     this.setState({ value: 1 });
     this.setState({ displayedPage: 'table' });
-    this.setState({ editButtonClicked: 0 });
+    this.setState({ editButtonClicked: false });
   };
 
   handleSubmitButton = (event, value) => {
@@ -241,7 +237,7 @@ class Roles extends React.Component {
     }
     this.setState({ value: 1 });
     this.setState({ displayedPage: 'table' });
-    this.setState({ editButtonClicked: 0 });
+    this.setState({ editButtonClicked: false });
   };
 
   handleAddSubmitButton = (event, value) => {
@@ -270,7 +266,7 @@ class Roles extends React.Component {
       data: data.concat(createData(name, description, competencies)),
     });
     this.setState({ value: 1 });
-    this.setState({ editButtonClicked: 0 });
+    this.setState({ editButtonClicked: false });
   };
 
   handleAddSaveButton = (event, value) => {
@@ -299,12 +295,16 @@ class Roles extends React.Component {
       data: data.concat(createData(name, description, competencies)),
     });
     this.setState({ value: 1 });
-    this.setState({ editButtonClicked: 0 });
+    this.setState({ editButtonClicked: false });
+  };
+
+  selectProfile = profile => {
+    this.props.getRole(profile.id);
   };
 
   render() {
-    const { classes, allRoles } = this.props;
-    const { selectedProfile, editButtonClicked, tableSettings } = this.state;
+    const { classes, allRoles, selectedRole } = this.props;
+    const { editButtonClicked, tableSettings } = this.state;
 
     return (
       <div>
@@ -312,12 +312,10 @@ class Roles extends React.Component {
         <Button className={classes.addButton} onClick={this.handleAddButton}>
           Add Role
         </Button>
-        {!selectedProfile ? (
+        {!selectedRole ? (
           <RolesTable
             allRoles={allRoles}
-            selectProfile={profile =>
-              this.setState({ selectedProfile: profile })
-            }
+            selectProfile={this.selectProfile}
             tableSettings={tableSettings}
             updateTableSettings={settings =>
               this.setState(state => ({
@@ -332,7 +330,7 @@ class Roles extends React.Component {
             handleEditButton={this.handleEditButton}
             handleSubmitButton={this.handleSubmitButton}
             handleSaveButton={this.handleSaveButton}
-            selectedProfile={this.state.selectedProfile}
+            selectedProfile={selectedRole}
           />
         )}
       </div>
@@ -344,10 +342,12 @@ Roles.propTypes = {
   classes: PropTypes.object.isRequired,
   allRoles: PropTypes.array,
   getAllRoles: PropTypes.func,
+  getRole: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   allRoles: selectAllRoles,
+  selectedRole: selectSelectedRole,
 });
 
 const mapDispatchToProps = {
@@ -359,8 +359,8 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer({ key: 'profile', reducer });
-const withSaga = injectSaga({ key: 'profile', saga });
+const withReducer = injectReducer({ key: 'roles', reducer });
+const withSaga = injectSaga({ key: 'roles', saga });
 
 export default compose(
   withReducer,

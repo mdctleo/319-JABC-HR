@@ -189,24 +189,6 @@ class RolesTable extends React.PureComponent {
   };
 
   handleClickProfile = (event, profile) => {
-    const { selected } = this.props.tableSettings;
-    const selectedIndex = selected.indexOf(profile.id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, profile.id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.props.updateTableSettings({ selected: newSelected });
     this.props.selectProfile(profile);
   };
 
