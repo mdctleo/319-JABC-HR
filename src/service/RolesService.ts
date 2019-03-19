@@ -2,6 +2,7 @@
 import {IRole, Role, ICompetency, Competency} from "../model/models";
 import { JABCResponse, JABCSuccess } from "../utils/ResponseManager";
 import Database from "../database/Database";
+import Log from "../../util/Log";
 
 
 /**
@@ -117,6 +118,7 @@ export async function getCompetency(id: Number, idRole: Number, xAuthToken: Stri
 export async function getCompetencys(idRole: Number, xAuthToken: String) {
     try {
         let res = await Database.getInstance().query('CALL get_competencies(?)', [idRole], JABCResponse.COMPETENCY);
+
         return Competency.Competencys(res[0][0]);
     } catch (error) {
         throw error;
