@@ -42,6 +42,14 @@ const styles = theme => ({
       backgroundColor: '#ff944d',
     },
   },
+  cancelButton: {
+    float: 'right',
+    display: 'inline',
+    width: '100px',
+    marginRight: '2.5%',
+    marginTop: '50px',
+    borderRadius: '15px',
+  },
   tabsIndicator: {
     backgroundColor: '#ff5000',
   },
@@ -54,7 +62,7 @@ const ViewRole = props => {
     editButtonClicked,
     handleBackButton,
     handleEditButton,
-    handleSubmitButton,
+    cancelEdit,
     handleSaveButton,
     selectedProfile,
   } = props;
@@ -91,11 +99,8 @@ const ViewRole = props => {
         {editButtonClicked && (
           <div>
             <RoleForm role={selectedProfile} add={0} />
-            <Button
-              className={classes.formButtons}
-              onClick={handleSubmitButton}
-            >
-              Submit
+            <Button className={classes.cancelButton} onClick={cancelEdit}>
+              Cancel
             </Button>
             <Button className={classes.formButtons} onClick={handleSaveButton}>
               Save
@@ -112,7 +117,7 @@ ViewRole.propTypes = {
   editButtonClicked: PropTypes.bool.isRequired,
   handleBackButton: PropTypes.func.isRequired,
   handleEditButton: PropTypes.func.isRequired,
-  handleSubmitButton: PropTypes.func.isRequired,
+  cancelEdit: PropTypes.func.isRequired,
   handleSaveButton: PropTypes.func.isRequired,
   selectedProfile: PropTypes.object.isRequired,
 };

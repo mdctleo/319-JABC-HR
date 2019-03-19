@@ -4,6 +4,8 @@ import { initialState } from './reducer';
 
 const selectRoleDomain = state => state.get('roles', initialState);
 
+export const selectRoleDomainJS = createSelector([selectRoleDomain], rolesDomain => rolesDomain.toJS());
+
 const selectSelectedRoleId = createSelector([selectRoleDomain], rolesDomain =>
   rolesDomain.get('selectedRoleId'),
 );

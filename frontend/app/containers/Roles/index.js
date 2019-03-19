@@ -11,7 +11,7 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
 import saga from './saga';
-import { selectAllRoles, selectSelectedRole} from './selectors';
+import { selectAllRoles, selectSelectedRole, selectRoleDomainJS } from './selectors';
 import { withStyles } from '@material-ui/core/styles';
 
 import { ViewRole, RolesTable } from 'components/RolePageComponents';
@@ -145,16 +145,16 @@ class Roles extends React.Component {
 
   handleBackButton = () => {
     this.props.getRole(null);
-    this.setState({ editButtonClicked: false });
+    this.props.setEditing(false);
   };
 
   handleAddButton = () => {
     this.setState({ displayedPage: 'add' });
-    this.setState({ editButtonClicked: true });
+    this.props.setEditing(true);
   };
 
   handleEditButton = () => {
-    this.setState({ editButtonClicked: true });
+    this.props.setEditing(true);
   };
 
   handleDeleteButton = () => {
@@ -165,10 +165,6 @@ class Roles extends React.Component {
   handleDeleteSingleButton = (event, profile) => {
     const data = this.state.data;
     this.setState({ data: data.filter(n => n.id != profile.id) });
-  };
-
-  handleClickTextField = event => {
-    if (this.state.editButtonClicked) event.readOnly = false;
   };
 
   handleSaveButton = () => {
@@ -202,7 +198,7 @@ class Roles extends React.Component {
     }
     this.setState({ value: 1 });
     this.setState({ displayedPage: 'table' });
-    this.setState({ editButtonClicked: false });
+    this.props.setEditing(false);
   };
 
   handleSubmitButton = (event, value) => {
@@ -237,7 +233,7 @@ class Roles extends React.Component {
     }
     this.setState({ value: 1 });
     this.setState({ displayedPage: 'table' });
-    this.setState({ editButtonClicked: false });
+    this.props.setEditing(false);
   };
 
   handleAddSubmitButton = (event, value) => {
@@ -266,7 +262,7 @@ class Roles extends React.Component {
       data: data.concat(createData(name, description, competencies)),
     });
     this.setState({ value: 1 });
-    this.setState({ editButtonClicked: false });
+    this.props.setEditing(false);
   };
 
   handleAddSaveButton = (event, value) => {
@@ -295,7 +291,7 @@ class Roles extends React.Component {
       data: data.concat(createData(name, description, competencies)),
     });
     this.setState({ value: 1 });
-    this.setState({ editButtonClicked: false });
+    this.props.setEditing(false);
   };
 
   selectProfile = profile => {
@@ -303,8 +299,9 @@ class Roles extends React.Component {
   };
 
   render() {
-    const { classes, allRoles, selectedRole } = this.props;
-    const { editButtonClicked, tableSettings } = this.state;
+    const { classes, allRoles, selectedRole, roleDomain } = this.props;
+    const { editing } = roleDomain;
+    const { tableSettings } = this.state;
 
     return (
       <div>
@@ -325,10 +322,10 @@ class Roles extends React.Component {
           />
         ) : (
           <ViewRole
-            editButtonClicked={editButtonClicked}
+            editButtonClicked={editing}
             handleBackButton={this.handleBackButton}
             handleEditButton={this.handleEditButton}
-            handleSubmitButton={this.handleSubmitButton}
+            cancelEdit={() => this.props.setEditing(false)}
             handleSaveButton={this.handleSaveButton}
             selectedProfile={selectedRole}
           />
@@ -340,14 +337,18 @@ class Roles extends React.Component {
 
 Roles.propTypes = {
   classes: PropTypes.object.isRequired,
+  selectedRole: PropTypes.object,
+  roleDomain: PropTypes.object,
   allRoles: PropTypes.array,
   getAllRoles: PropTypes.func,
   getRole: PropTypes.func,
+  setEditing: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   allRoles: selectAllRoles,
   selectedRole: selectSelectedRole,
+  roleDomain: selectRoleDomainJS,
 });
 
 const mapDispatchToProps = {
