@@ -1,4 +1,4 @@
-import { put } from 'redux-saga/effects';
+import { put, all } from 'redux-saga/effects';
 import { setResource } from './actions';
 import { displayError } from 'containers/App/actions';
 import { EmployeeApi, IEmployee, RolesApi } from 'api/swagger-api';
@@ -25,4 +25,9 @@ export function* updateEmployee(employee) {
 export function* getRole(id) {
   const role = yield rolesApi.getRole(id);
   yield put(setResource('role', role.id, role));
+}
+
+export function* getRoles() {
+  const roles = yield rolesApi.getRoles();
+  yield all(roles.map(role => put(setResource('role', role.id, role))));
 }

@@ -89,6 +89,35 @@ router.get('/role/1', (req, res, next) =>
   }),
 );
 
+router.get('/role', (req, res) => {
+  res.send([
+    {
+      id: 1,
+      name: 'Developer',
+      description: 'Make a funky fresh website',
+      competencies: [],
+    },
+    {
+      id: 2,
+      name: 'Singer',
+      description: 'Make the pretty sounds',
+      competencies: [],
+    },
+    {
+      id: 3,
+      name: 'CEO',
+      description: 'The head honcho',
+      competencies: [],
+    },
+    {
+      id: 4,
+      name: 'Janitor',
+      description: null,
+      competencies: [],
+    },
+  ]);
+});
+
 router.use('*', (req, res, next) => res.send());
 
 module.exports = router;

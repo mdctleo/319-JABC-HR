@@ -6,7 +6,7 @@ export const initialState = fromJS({});
 function apiReducer(state = initialState, action) {
   switch (action.type) {
     case SET_RESOURCE:
-      return state.merge({
+      return state.mergeDeep({
         [action.payload.resourceName]: {
           [action.payload.id]: action.payload.resource,
         },
