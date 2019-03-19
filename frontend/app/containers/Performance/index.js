@@ -457,8 +457,8 @@ generateDropdown() {
       <div>
       { currentYears == 0 &&
         <div className="profile-card">
-          <Typography>You currently have no performance documents. Click on the button below to add your first set of Performance Documents: </Typography>
-          <Button className={classes.addDocButton} value={0} onClick={this.handleSelect}>Add Documents</Button>
+          <Typography>You currently have no performance documents. Click on the button below to add your first Performance Documents for a given year: </Typography>
+          <Button className={classes.addDocButton} value={0} onClick={this.handleSelect}>Add Year</Button>
         </div> }
       { currentYears !== 0 && value == 0 && edit == 0 &&
       <div className="profile-card">

@@ -126,13 +126,13 @@ class PerformanceReviewForm extends React.PureComponent  {
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 4: Objectives</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="prf-tbody-4">
-              {generate3ColumnTableForm("OBJECTIVES & ACTIITES", "SUPPORT / COLLABORATION", "COMMENTS", form.section4, "4")}
+              {generate3ColumnTableForm("OBJECTIVES & ACTIVITIES", "SUPPORT / COLLABORATION", "COMMENTS", form.section4, "4")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 5: Professional Development Goals</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="prf-tbody-5">
-              {generate3ColumnTableForm("GOAL", "KEY ACTIVITES", "COMMENTS", form.section5, "5")}
+              {generate3ColumnTableForm("GOAL", "KEY ACTIVITIES", "COMMENTS", form.section5, "5")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 6: Comments</Typography>
