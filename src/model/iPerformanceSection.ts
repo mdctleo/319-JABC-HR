@@ -15,4 +15,63 @@
  * A JSON object containing all the information of a section in either PerformancePlan or PerformanceReview 
  */
 export interface IPerformanceSection { 
+    /**
+     * The unique identifier of the Performance
+     */
+    id: number;
+    /**
+     * The object that represents all the data of this performance section
+     */
+    data: any;
+    sectionName: string;
+    /**
+     * The unique identifier of the Performance Plan that owns this section
+     */
+    fkPerformancePlan?: number;
+    /**
+     * The unique identifier of the Performance Review that owns this section
+     */
+    fkPerformanceReview?: number;
+}
+
+export class PerformanceSection implements IPerformanceSection{
+    /**
+     * The unique identifier of the Performance
+     */
+    id: number;
+    /**
+     * The object that represents all the data of this performance section
+     */
+    data: any;
+    sectionName: string;
+    /**
+     * The unique identifier of the Performance Plan that owns this section
+     */
+    fkPerformancePlan?: number;
+    /**
+     * The unique identifier of the Performance Review that owns this section
+     */
+    fkPerformanceReview?: number;
+
+    constructor(rawPerformanceSection: any){
+        this.id = rawPerformanceSection.SECTION_ID;
+        this.data = rawPerformanceSection.DATA;
+        this.sectionName = rawPerformanceSection.SECTION_NAME;
+        this.fkPerformancePlan = rawPerformanceSection.PERFORMANCE_PLAN_ID;
+        this.fkPerformanceReview = rawPerformanceSection.PERFORMANCE_REVIEW_ID;
+    }
+
+    static PerformanceSections(rawPerformanceSections: any[]){
+        let documents: IPerformanceSection[] = [];
+        for(let rawPerformanceSection of rawPerformanceSections){
+            documents.push(new PerformanceSection(rawPerformanceSection))
+        }
+        return documents
+    }
+
+    static Prepare(rawPerformanceSection: IPerformanceSection){
+        rawPerformanceSection.fkPerformancePlan = (rawPerformanceSection.fkPerformancePlan) ? rawPerformanceSection.fkPerformancePlan : null;
+        rawPerformanceSection.fkPerformanceReview = (rawPerformanceSection.fkPerformanceReview) ? rawPerformanceSection.fkPerformanceReview : null;
+        return rawPerformanceSection
+    }
 }

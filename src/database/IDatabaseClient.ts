@@ -26,11 +26,6 @@ export class DatabaseQueryError extends JABCError {
     }
 }
 
-export interface IDatabaseQuery{
-    query: string;
-    params?: Array<any>
-}
-
 export default interface IDatabaseClient {
 
 
@@ -56,6 +51,44 @@ export default interface IDatabaseClient {
      *
      */
     query(query: any, params: any[], responseType?: JABCResponseType): Promise<any>;
+
+    /**
+     * Performs a query on an already opened connection without closing it
+     *
+     * @param {JABCResponseType} [responseType] JABC service that requested the transaction
+     * @returns {Promise<any>}
+     * @memberof IDatabaseClient
+     */
+    rawQuery(query: any, params: any[], responseType?: JABCResponseType): Promise<any>;
+
+    /**
+     * Initializes the connection and begins a transaction
+     * Note: when using transactions after commit or rollback the database 
+     * has to be close manually calling closeConnection
+     *
+     * @param {JABCResponseType} [responseType] JABC service that requested the transaction
+     * @returns {Promise<any>}
+     * @memberof IDatabaseClient
+     */
+    beginTransaction(responseType?: JABCResponseType): Promise<any>;
+
+    /**
+     * Commits the transaction
+     *
+     * @param {JABCResponseType} [responseType] JABC service that requested the transaction
+     * @returns {Promise<any>}
+     * @memberof IDatabaseClient
+     */
+    commit(responseType?: JABCResponseType): Promise<any>;
+
+    /**
+     * Rollback a transaction
+     *
+     * @param {JABCResponseType} [responseType] JABC service that requested the transaction
+     * @returns {Promise<any>}
+     * @memberof IDatabaseClient
+     */
+    rollback(responseType?: JABCResponseType): Promise<any>;
 
     /**
      * Opens a connection to a database service

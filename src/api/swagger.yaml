@@ -10,8 +10,8 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "virtserver.swaggerhub.com"
-basePath: "/jatj/JABC/1.0.0"
+host: "localhost:8080"
+basePath: "/JABC/1.0.0"
 tags:
 - name: "Employee"
   description: "Provides access to all employee data and history, manage Performances\
@@ -27,7 +27,6 @@ tags:
 - name: "Vacation"
   description: "Manage the vacation requests from employees\n"
 schemes:
-- "https"
 - "http"
 consumes:
 - "application/json"
@@ -2455,7 +2454,8 @@ definitions:
         example: 1
         description: "The unique identifier of the Employee"
       sin:
-        type: "string"
+        type: "number"
+        format: "uint64"
       email:
         type: "string"
         format: "email"
@@ -2528,19 +2528,19 @@ definitions:
           description: "description"
           id: 1
         id: 1
-      adminLevel: 0
+      adminLevel: 1
       dateJoined: "2000-01-23"
-      salary: 5.962133916683182377482808078639209270477294921875
+      salary: 5.63737665663332876420099637471139430999755859375
       lastname: "lastname"
       password: "password"
       phoneNumber: "phoneNumber"
-      remainingVacationDays: 2
+      remainingVacationDays: 7
       fte: 0
-      sin: "sin"
-      vacationDays: 5
+      sin: 0.80082819046101150206595775671303272247314453125
+      vacationDays: 2
       id: 1
       email: "email"
-      status: 1
+      status: 0
   IEmployeeHistory:
     type: "object"
     required:
@@ -2932,8 +2932,18 @@ definitions:
       fkEmployee: 1
       id: 1
       sections:
-      - {}
-      - {}
+      - sectionName: "sectionName"
+        data:
+          value: "value"
+        fkPerformanceReview: 1
+        fkPerformancePlan: 1
+        id: 1
+      - sectionName: "sectionName"
+        data:
+          value: "value"
+        fkPerformanceReview: 1
+        fkPerformancePlan: 1
+        id: 1
       status: 0
   IPerformanceReview:
     type: "object"
@@ -2998,13 +3008,56 @@ definitions:
       fkPerformancePlan: 1
       id: 1
       sections:
-      - {}
-      - {}
+      - sectionName: "sectionName"
+        data:
+          value: "value"
+        fkPerformanceReview: 1
+        fkPerformancePlan: 1
+        id: 1
+      - sectionName: "sectionName"
+        data:
+          value: "value"
+        fkPerformanceReview: 1
+        fkPerformancePlan: 1
+        id: 1
       status: 0
   IPerformanceSection:
     type: "object"
+    required:
+    - "data"
+    - "id"
+    - "sectionName"
+    properties:
+      id:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Performance"
+      data:
+        $ref: "#/definitions/IPerformanceSection_data"
+      sectionName:
+        type: "string"
+      fkPerformancePlan:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Performance Plan that owns this\
+          \ section"
+      fkPerformanceReview:
+        type: "integer"
+        format: "uint64"
+        example: 1
+        description: "The unique identifier of the Performance Review that owns this\
+          \ section"
     description: "A JSON object containing all the information of a section in either\
       \ PerformancePlan or PerformanceReview\n"
+    example:
+      sectionName: "sectionName"
+      data:
+        value: "value"
+      fkPerformanceReview: 1
+      fkPerformancePlan: 1
+      id: 1
   IComment:
     type: "object"
     required:
@@ -3131,21 +3184,28 @@ definitions:
             description: "description"
             id: 1
           id: 1
-        adminLevel: 0
+        adminLevel: 1
         dateJoined: "2000-01-23"
-        salary: 5.962133916683182377482808078639209270477294921875
+        salary: 5.63737665663332876420099637471139430999755859375
         lastname: "lastname"
         password: "password"
         phoneNumber: "phoneNumber"
-        remainingVacationDays: 2
+        remainingVacationDays: 7
         fte: 0
-        sin: "sin"
-        vacationDays: 5
+        sin: 0.80082819046101150206595775671303272247314453125
+        vacationDays: 2
         id: 1
         email: "email"
-        status: 1
+        status: 0
       responseCode: 0
       token: "token"
+  IPerformanceSection_data:
+    properties:
+      value:
+        type: "string"
+    description: "The object that represents all the data of this performance section"
+    example:
+      value: "value"
 parameters:
   securityAuthToken:
     name: "X-Auth-Token"

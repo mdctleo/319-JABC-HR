@@ -20,12 +20,12 @@ const KEY = process.env.JWT_KEY;
  * @returns {Promise<IApiResponse>}
  **/
 export async function completeOnboardingTask(id: Number, idOnboardingTask: Number, xAuthToken: string, document: any) {
-	try{
-		if(document){
-			if(document.buffer.length > process.env.MAX_FILE)
+	try {
+		if (document) {
+			if (document.buffer.length > process.env.MAX_FILE)
 				throw new JABCError(JABCResponse.ONBOARDING, 'The file exceeded the size limit of 16 mb')
-		}else{
-			document = {buffer: null, mimetype: null};
+		} else {
+			document = { buffer: null, mimetype: null };
 		}
 		let res = await Database.getInstance().query('CALL complete_onboarding_task(?,?,?)', [
 			idOnboardingTask,
@@ -33,7 +33,7 @@ export async function completeOnboardingTask(id: Number, idOnboardingTask: Numbe
 			document.mimetype
 		], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The onboarding task was saved successfully`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -49,7 +49,7 @@ export async function completeOnboardingTask(id: Number, idOnboardingTask: Numbe
  * @returns {Promise<IApiResponse>}
  **/
 export async function createOnboardingTask(id: Number, onboardingTask: IOnboardingTask, xAuthToken: string) {
-	try{
+	try {
 		onboardingTask = OnboardingTask.Prepare(onboardingTask)
 		let res = await Database.getInstance().query('CALL create_onboarding_task(?,?,?,?,?,?,?)', [
 			id,
@@ -61,7 +61,7 @@ export async function createOnboardingTask(id: Number, onboardingTask: IOnboardi
 			onboardingTask.requireDoc
 		], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The onboarding task was saved successfully`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -75,12 +75,12 @@ export async function createOnboardingTask(id: Number, onboardingTask: IOnboardi
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function createEmployee (employee: IEmployee, xAuthToken: String) {
-	try{
+export async function createEmployee(employee: IEmployee, xAuthToken: String) {
+	try {
 		employee = Employee.Prepare(employee)
 		let res = await Database.getInstance().query('CALL create_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			null,
-			employee.role,
+			employee.fkRole,
 			employee.sin,
 			employee.email,
 			employee.firstname,
@@ -98,7 +98,7 @@ export async function createEmployee (employee: IEmployee, xAuthToken: String) {
 			employee.phoneNumber,
 		], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, ${employee.firstname} ${employee.lastname}, was registered successfully`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -114,38 +114,80 @@ export async function createEmployee (employee: IEmployee, xAuthToken: String) {
  * @returns {Promise<IApiResponse>}
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
-	try{
-		let res = await Database.getInstance().query('CALL create_employee_performance_plan(?,?,?)', [
-			performance.fkEmployee,
+	let db = Database.getInstance()
+	try {
+		await db.beginTransaction()
+		// Insert performance plan
+		let res = await db.rawQuery('CALL create_employee_performance_plan(?,?,?)', [
+			id,
 			performance.date,
 			performance.status
 		], JABCResponse.EMPLOYEE)
+
+		const PERFORMANCE_PLAN_ID = res[0][0][0].PERFORMANCE_PLAN_ID;
+
+		// Insert sections
+		for (let section of performance.sections) {
+			await db.rawQuery('CALL create_employee_performance_plan_section(?,?,?)', [
+				PERFORMANCE_PLAN_ID,
+				section.data,
+				section.sectionName
+			])
+		}
+
+		await db.commit()
+		await db.closeConnection()
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
-	}catch(error){
+	} catch (error) {
+		try {
+			await db.rollback()
+			await db.closeConnection()
+		} catch (err) { }
 		throw error;
 	}
 }
-  
-  
-  /**
-   * creates a new PerformanceReview for the employee with [id]
-   * Will create a new PerformanceReview with the provided data in body
-   *
-   * @param {Number} id Integer id of the searched Employee
-   * @param {IPerformanceReview} performance IPerformanceReview PerformanceReview data
-   * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
-   * @returns {Promise<IApiResponse>}
-   **/
-  export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
-	try{
-		let res = await Database.getInstance().query('CALL create_employee_performance_review(?,?,?,?)', [
-			performance.fkEmployee,
+
+
+/**
+ * creates a new PerformanceReview for the employee with [id]
+ * Will create a new PerformanceReview with the provided data in body
+ *
+ * @param {Number} id Integer id of the searched Employee
+ * @param {IPerformanceReview} performance IPerformanceReview PerformanceReview data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
+ **/
+export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
+	let db = Database.getInstance()
+	try {
+		await db.beginTransaction()
+		// Insert performance review
+		let res = await db.rawQuery('CALL create_employee_performance_review(?,?,?,?)', [
+			id,
 			performance.fkPerformancePlan,
 			performance.date,
 			performance.status
 		], JABCResponse.EMPLOYEE)
+
+		const PERFORMANCE_REVIEW_ID = res[0][0][0].PERFORMANCE_REVIEW_ID;
+
+		// Insert sections
+		for (let section of performance.sections) {
+			await db.rawQuery('CALL create_employee_performance_review_section(?,?,?)', [
+				PERFORMANCE_REVIEW_ID,
+				section.data,
+				section.sectionName
+			])
+		}
+
+		await db.commit()
+		await db.closeConnection()
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was registered successfully`)
-	}catch(error){
+	} catch (error) {
+		try {
+			await db.rollback()
+			await db.closeConnection()
+		} catch (err) { }
 		throw error;
 	}
 }
@@ -160,8 +202,8 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function createVacation (id: Number, vacation: IVacation, xAuthToken: String) {
-	try{
+export async function createVacation(id: Number, vacation: IVacation, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL create_employee_vacation(?,?,?,?,?)', [
 			id,
 			vacation.fkApprover,
@@ -170,7 +212,7 @@ export async function createVacation (id: Number, vacation: IVacation, xAuthToke
 			vacation.date
 		], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The vacation request was successfully created, wait for a manager to approve it`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -185,15 +227,15 @@ export async function createVacation (id: Number, vacation: IVacation, xAuthToke
  * @param {Number} idAdmin Who is deleting the employee (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function deleteEmployee (id: Number, xAuthToken: String, idAdmin: Number) {
-	try{
-		let employee = await getEmployee(id,  xAuthToken)
+export async function deleteEmployee(id: Number, xAuthToken: String, idAdmin: Number) {
+	try {
+		let employee = await getEmployee(id, xAuthToken)
 		employee.status = IEmployee.statusEnum.INACTIVE
-		if(employee.status === IEmployee.statusEnum.INACTIVE)
+		if (employee.status === IEmployee.statusEnum.INACTIVE)
 			throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is already inactive')
-		await updateEmployee(id,  employee, xAuthToken, idAdmin)
+		await updateEmployee(id, employee, xAuthToken, idAdmin)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The employee was successfully set up to inactive')
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -207,11 +249,11 @@ export async function deleteEmployee (id: Number, xAuthToken: String, idAdmin: N
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IEmployee>}
  **/
-export async function getEmployee (id: Number, xAuthToken: String) {
-	try{
+export async function getEmployee(id: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL get_employee(?)', [id], JABCResponse.EMPLOYEE)
 		return new Employee(res[0][0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -225,11 +267,11 @@ export async function getEmployee (id: Number, xAuthToken: String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<[]>}
  **/
-export async function getEmployeeHistory (id: Number, xAuthToken: String) {
-	try{
+export async function getEmployeeHistory(id: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL get_employee_history(?)', [id], JABCResponse.EMPLOYEE)
 		return EmployeeHistory.Employees(res[0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -247,11 +289,15 @@ export async function getEmployeeHistory (id: Number, xAuthToken: String) {
  * @param {String} term Search term for filter the data (optional)
  * @returns {Promise<[]>}
  **/
-export async function getEmployees (xAuthToken: String, term: String, start: String, end: String) {
-	try{
-		let res = await Database.getInstance().query('CALL get_all_employees()', [], JABCResponse.EMPLOYEE)
+export async function getEmployees(xAuthToken: String, term: String, start: String, end: String) {
+	try {
+		let res: any;
+		if(start != undefined && end != undefined)
+			res = await Database.getInstance().query('CALL get_all_employees_with_birthday(?,?)', [start, end], JABCResponse.EMPLOYEE)
+		else
+			res = await Database.getInstance().query('CALL get_all_employees()', [], JABCResponse.EMPLOYEE)
 		return Employee.Employees(res[0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -265,11 +311,11 @@ export async function getEmployees (xAuthToken: String, term: String, start: Str
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<[]>}
  **/
-export async function getEmployeesByManager (idManager: Number, xAuthToken: String) {
-	try{
+export async function getEmployeesByManager(idManager: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL get_manager_employees(?)', [idManager], JABCResponse.EMPLOYEE)
 		return Employee.Employees(res[0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -285,10 +331,10 @@ export async function getEmployeesByManager (idManager: Number, xAuthToken: Stri
  * @returns {Promise<[]>}
  **/
 export async function getOnboardingTasks(id: Number, xAuthToken: string, term: string) {
-	try{
+	try {
 		let res = await Database.getInstance().query('CALL get_employee_tasks(?)', [id], JABCResponse.EMPLOYEE)
 		return OnboardingTask.OnboardingTasks(res[0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -303,10 +349,10 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
  * @returns {Promise<[]>}
  **/
 export async function getManagersByEmployee(id: Number, xAuthToken: string) {
-	try{
-		// TODO: Implement
-		throw 'NOT IMPLEMENTED'
-	}catch(error){
+	try {
+		let res = await Database.getInstance().query('CALL get_employee_managers(?)', [id], JABCResponse.EMPLOYEE)
+		return Employee.Employees(res[0][0])
+	} catch (error) {
 		throw error;
 	}
 }
@@ -322,29 +368,29 @@ export async function getManagersByEmployee(id: Number, xAuthToken: string) {
  * @returns {Promise<[]>}
  **/
 export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
-	try{
-		// TODO: Implement
-		throw 'NOT IMPLEMENTED'
-	}catch(error){
+	try {
+		let res = await Database.getInstance().query('CALL get_employee_performance_plans(?)', [id], JABCResponse.EMPLOYEE)
+		return PerformancePlan.PerformancePlans(res[0][0])
+	} catch (error) {
 		throw error;
 	}
 }
-  
-  
-  /**
-   * get all the PerformanceReviews of the employee with [id]
-   * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].  
-   *
-   * @param {Number} id Integer id of the searched Employee
-   * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
-   * @param {string} term String Search term for filter the data (optional)
-   * @returns {Promise<[]>}
-   **/
+
+
+/**
+ * get all the PerformanceReviews of the employee with [id]
+ * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].  
+ *
+ * @param {Number} id Integer id of the searched Employee
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @param {string} term String Search term for filter the data (optional)
+ * @returns {Promise<[]>}
+ **/
 export async function getPerformanceReviews(id: Number, xAuthToken: string, term: string) {
-	try{
-		// TODO: Implement
-		throw 'NOT IMPLEMENTED'
-	}catch(error){
+	try {
+		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE)
+		return PerformanceReview.PerformanceReviews(res[0][0])
+	} catch (error) {
 		throw error;
 	}
 }
@@ -359,11 +405,11 @@ export async function getPerformanceReviews(id: Number, xAuthToken: string, term
  * @param {String} term Search term for filter the data (optional)
  * @returns {Promise<[]>}
  **/
-export async function getVacations (id: Number, xAuthToken: String, term: String) {
-	try{
+export async function getVacations(id: Number, xAuthToken: String, term: String) {
+	try {
 		let res = await Database.getInstance().query('CALL get_employee_vacation(?)', [id], JABCResponse.EMPLOYEE)
 		return Vacation.Vacations(res[0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -378,11 +424,11 @@ export async function getVacations (id: Number, xAuthToken: String, term: String
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function linkEmployeeManager (id: Number, idManager: Number, xAuthToken: String) {
-	try{
+export async function linkEmployeeManager(id: Number, idManager: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL link_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, was assigned to the manager`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -394,8 +440,8 @@ export async function linkEmployeeManager (id: Number, idManager: Number, xAuthT
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * @returns {Promise<ILoginResponse>}
  **/
-export async function login (body: ILogin, xAuthToken: string) {
-	try{
+export async function login(body: ILogin, xAuthToken: string) {
+	try {
 		let res = await Database.getInstance().query('CALL login(?,?)', [body.email, body.password], JABCResponse.EMPLOYEE)
 		var employee = new Employee(res[0][0][0]);
 		var token = jwt.sign({
@@ -411,7 +457,7 @@ export async function login (body: ILogin, xAuthToken: string) {
 			employee: employee
 		}
 		return loginResponse;
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -426,11 +472,11 @@ export async function login (body: ILogin, xAuthToken: string) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function unlinkEmployeeManager (id: Number, idManager: Number, xAuthToken: String) {
-	try{
+export async function unlinkEmployeeManager(id: Number, idManager: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL unlink_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, was unassigned from the manager`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -446,8 +492,8 @@ export async function unlinkEmployeeManager (id: Number, idManager: Number, xAut
  * @param {Number} idAdmin Who is updating the employee (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function updateEmployee (id: Number, employee: IEmployee, xAuthToken: String, idAdmin: Number) {
-	try{
+export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken: String, idAdmin: Number) {
+	try {
 		employee = Employee.Prepare(employee)
 		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			id,
@@ -470,7 +516,7 @@ export async function updateEmployee (id: Number, employee: IEmployee, xAuthToke
 			employee.phoneNumber,
 		], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, ${employee.firstname} ${employee.lastname}, was updated successfully`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
