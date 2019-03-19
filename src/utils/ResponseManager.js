@@ -33,6 +33,10 @@ JABCResponse.VACATION = {
     error: 414,
     success: 200
 };
+JABCResponse.COMPETENCY = {
+    error: 415,
+    success: 200
+};
 JABCResponse.UNHANDLED_ERROR = {
     error: 500,
     message: 'There was a problem, try again later.'

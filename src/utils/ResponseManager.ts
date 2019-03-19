@@ -32,6 +32,10 @@ export class JABCResponse {
         error: 414,
         success: 200
     }
+    static COMPETENCY = {
+        error: 415,
+        success: 200
+    }
 
     static UNHANDLED_ERROR = {
         error: 500,
