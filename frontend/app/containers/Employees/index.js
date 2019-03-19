@@ -26,7 +26,6 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import Button from '@material-ui/core/Button';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -35,16 +34,25 @@ import Chip from '@material-ui/core/Chip';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
+import EmployeeEditForm from '../../components/EmployeeEditForm';
+import EmployeeDisplay from '../../components/EmployeeDisplay';
 import FormControl from "@material-ui/core/FormControl";
+import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
+import WorkPlanDisplay from '../../components/WorkPlanDisplay';
+import WorkPlanForm from '../../components/WorkPlanForm';
+import PerformanceReviewDisplay from '../../components/PerformanceReviewDisplay';
+import PerformanceReviewForm from '../../components/PerformanceReviewForm';
+import orange from '@material-ui/core/colors/orange';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 let counter = 0;
-function createData(firstName, lastName, employeeID, position) {
+function createData(firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, address, phoneNumber ) {
   counter += 1;
-  return { id: counter, firstName, lastName, employeeID, position };
+  return { id: counter, firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, address, phoneNumber };
 }
 
 function desc(a, b, orderBy) {
@@ -72,9 +80,8 @@ function getSorting(order, orderBy) {
 }
 
 const rows = [
-  { id: 'firstName', numeric: false, disablePadding: true, label: 'First Name' },
-  { id: 'lastName', numeric: false, disablePadding: false, label: 'Last Name' },
-  { id: 'employeeID', numeric: true, disablePadding: false, label: 'Employee ID' },
+  { id: 'firstname', numeric: false, disablePadding: true, label: 'First Name' },
+  { id: 'lastname', numeric: false, disablePadding: false, label: 'Last Name' },
   { id: 'position', numeric: false, disablePadding: false, label: 'Position' },
 ];
 
@@ -262,9 +269,10 @@ const styles = theme => ({
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
-    paddingBottom: '50px',
+    paddingBottom: '100px',
   },
   addButton: {
+    display: 'inline',
     float: 'right',
     display: 'inline',
     marginTop: '50px',
@@ -300,7 +308,9 @@ const styles = theme => ({
   tabsIndicator: {
     backgroundColor: '#ff5000',
   },
-  tabSelected: {},
+  miniTabs: {
+    backgroundColor: 'white',
+  },
   typography: {
     padding: theme.spacing.unit * 3,
   },
@@ -312,6 +322,7 @@ const styles = theme => ({
     flexWrap: 'wrap',
   },
   employeeName: {
+    display: 'inline',
     marginTop: '30px',
     marginBottom: '30px',
   },
@@ -342,8 +353,81 @@ const styles = theme => ({
     backgroundColor: ' #00954D',
     color: 'white',
   },
+  formControl: {
+    float: 'right',
+    marginRight: '2.5%',
+    marginBottom: '30px',
+    width: '200px',
+  },
+  editButton: {
+    marginRight: '25%',
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    },
+  },
+  editWPButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    },
+  },
+  docDisplay: {
+    marginTop: '30px',
+    marginLeft: '30px',
+  },
+  saveButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    height: '40px',
+    width: '100px',
+    marginTop: '30px',
+    marginRight: '20px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
+  cancelButton: {
+    float: 'right',
+    display: 'inline',
+    height: '40px',
+    width: '100px',
+    marginTop: '30px',
+    marginLeft: '20px',
+    borderRadius: '15px',
+  },
+  colorSwitchBase: {
+    color: orange[300],
+    '&$colorChecked': {
+      color: orange[500],
+      '& + $colorBar': {
+        backgroundColor: orange[500],
+      },
+    },
+  },
+  colorBar: {},
+  colorChecked: {},
+  switch: {
+    float: 'right',
+    display: 'inline',
+  }
 });
-
 
 class EnhancedTable extends React.Component {
   state = {
@@ -352,24 +436,42 @@ class EnhancedTable extends React.Component {
     selected: [],
     displayedPage: "table",
     pageTitle: "Manage Employees",
+    currProfile: {},
     value: 1,
+    miniTabValue: 0,
     data: [
-      createData('Mikayla', 'Preete', 918984, 'Developer'),
-      createData('James', 'Yoo', 902873, 'Developer'),
-      createData('Sam', 'Veloso', 837982, 'Database Admin'),
-      createData('Anita', 'Tse', 876321, 'DevOps Master'),
-      createData('Abraham', 'Torres Juarez', 758982, 'Developer'),
-      createData('Leo', 'Lin', 123142, 'Developer'),
-      createData('Reed', 'Esler', 382981, 'Developer'),
-      createData('John', 'Doe', 234123, 'Manager'),
-      createData('Jane', 'Smith', 231531, 'HR Admin'),
-      createData('Alex', 'Robinson', 232143, 'President'),
-      createData('Jack', 'Sparrow', 123531, 'Pirate'),
-      createData('Ariana', 'Grande', 123987, 'Singer'),
-      createData('Brad', 'Pitt', 387082, 'Actor'),
+      createData('Mikayla', 'Preete', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Sara', 'Hill', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('James', 'Yoo', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Mark', 'Green', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Jesse', 'Isaac', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Kim', 'Lee', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Lola', 'Ray', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Jerry', 'Jim', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Arthur', 'Marques', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Abraham', 'Torres', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Anita', 'Tse', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Farah', 'Fawcett', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('True', 'Thompson', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Saint', 'West', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Taneisha', 'Dumas', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
     ],
+    sampleWorkPlan: { date: "September 16, 2019", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
+                                                  section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
+                                                  section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
+                                                  section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
+                                                  section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
+                                                  section6: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]}},
+    samplePR:       { date: "September 16, 2019", section1: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]}, 
+                                                  section2: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
+                                                  section3: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
+                                                  section4: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
+                                                  section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
+                                                  section6: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]}},
     page: 0,
     rowsPerPage: 25,
+    edit: false,
+    active: true,
   };
 
   handleRequestSort = (event, property) => {
@@ -390,6 +492,13 @@ class EnhancedTable extends React.Component {
     }
     this.setState({ selected: [] });
   };
+
+  saveProfile = (profile) => {
+    var newData = this.state.data.concat(profile);
+    this.setState({ data: newData });
+    this.setState({ displayedPage: "table" });
+    this.setState({ value: 1 });
+  }
 
   handleClick = (event, id) => {
     const { selected } = this.state;
@@ -412,13 +521,13 @@ class EnhancedTable extends React.Component {
     this.setState({ selected: newSelected });
   };
 
-  handleClickProfile = (event, id) => {
-   const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
+  handleClickProfile = (event, profile) => {
+    const { selected } = this.state;
+    const selectedIndex = selected.indexOf(profile.id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(selected, profile.id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -429,7 +538,7 @@ class EnhancedTable extends React.Component {
         selected.slice(selectedIndex + 1),
       );
     }
-
+    this.setState({ currProfile: profile });
     this.setState({ selected: newSelected });
     this.setState({ displayedPage: "profile" });
   };
@@ -444,7 +553,13 @@ class EnhancedTable extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ value });
+    this.setState({ edit: false });
   };
+
+  handleMiniTabChange = (event, value) => {
+    this.setState({ miniTabValue: value });
+    this.setState({ edit: false });
+  }
 
   handleBackButton = (event, value) => {
     this.setState({ pageTitle: "Manage Employees"});
@@ -455,7 +570,47 @@ class EnhancedTable extends React.Component {
   handleAddButton = (event, value) => {
     this.setState({ pageTitle: "Add Employee"});
     this.setState({ displayedPage: "add" });
+    this.setState({ edit: true });
   }
+
+  handleClickEdit = (event, value) => {
+    this.setState({ edit: true });
+  }
+
+  handleSwitch = name => event => {
+    this.setState({ [name]: event.target.checked });
+  };
+
+  addProfile = (profile) => {
+    // this.props.saveProfile(profile);
+    console.log(profile);
+    var newProfile = createData(profile.firstname, profile.lastname, profile.status, profile.sin, profile.role, profile.salary, profile.manager, profile.fte, profile.remainingVacationDays, profile.address, profile.phoneNumber);
+    console.log(this.state.data);
+    var newData = this.state.data.concat(newProfile);
+    console.log(newData);
+    this.setState({ data: newData });
+    this.setState({
+      edit: false,
+    });
+    this.setState({ displayedPage: "table" });
+    this.setState({ value: 1 });
+  }
+
+  cancelEdit = () => {
+    this.setState({
+      edit: false,
+    });
+  }
+
+//   generateDropdown() {
+//     var years = Object.keys(this.state.workPlans);
+//     return (<Select
+//               onChange={this.handleSelect}>
+//               {years.map(function(yearSpan, index){
+//                 return <MenuItem value={yearSpan}>{yearSpan}</MenuItem>})}
+//               <MenuItem value={0}>Add Year</MenuItem>
+//           </Select>)
+// }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
@@ -488,12 +643,29 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, displayedPage, pageTitle, value, rowsPerPage, page } = this.state;
+    const { order, orderBy, selected, displayedPage, pageTitle, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const  blankProfile = { firstname: "", lastname: "", status: "", sin: "", salary: "", fte: "", remainingVacationDays: "", address: "", phoneNumber: ""};
 
     return (
       <div>
       <h1>{pageTitle}</h1>
+        {/* <FormControlLabel
+          className={classes.switch}
+          control={
+            <Switch
+              checked={this.state.active}
+              onChange={this.handleSwitch('active')}
+              value="active"
+              classes={{
+                switchBase: classes.colorSwitchBase,
+                checked: classes.colorChecked,
+                bar: classes.colorBar,
+              }}
+            />
+          }
+          label="Active"
+        /> */}
       <Button className={classes.addButton} onClick={this.handleAddButton}>Add Employee</Button>
        { displayedPage == "add" ?
          (<Paper className={classes.root}>
@@ -505,140 +677,12 @@ class EnhancedTable extends React.Component {
                  onClick={this.handleBackButton} label="<  Back" />
           </Tabs>
          </AppBar>
-         <div>
-           <form className={classes.container} noValidation autocomplete="off">
-           <Grid container spacing={24}>
-             <Grid item xs={12} sm={6}>
-             <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-fname"
-                   label="First Name"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-             <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-id"
-                   label="Employee ID"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-sin"
-                   label="SIN"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-position"
-                   label="Position"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-vacation"
-                   label="Vacation Days Remaining"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-address"
-                   multiline
-                   rows="4"
-                   label="Address"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-             </Grid>
-             <Grid item xs={12} sm={6}>
-             <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-lname"
-                   label="Last Name"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-              <FormControl variant="outlined" className={classes.textField}>
-                <InputLabel>
-                  Status
-                </InputLabel>
-                <Select
-                  input={
-                    <OutlinedInput
-                    id="add-emp-status"/>
-                  }>
-                  <MenuItem value="Onboarding">Onboarding</MenuItem>
-                  <MenuItem value="Active">Active</MenuItem>
-                </Select>
-              </FormControl>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-salary"
-                   label="Salary"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-manager"
-                   label="Direct Report"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-              <FormControl variant="outlined" className={classes.textField}>
-                <InputLabel>
-                  Employee Type
-                </InputLabel>
-                <Select
-                  input={
-                    <OutlinedInput
-                    id="add-emp-type"/>
-                  }>
-                  <MenuItem value="FT">FT</MenuItem>
-                  <MenuItem value="PT">PT</MenuItem>
-                </Select>
-              </FormControl>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="add-emp-phone"
-                   label="Phone Number"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-             </Grid>
-            </Grid>
-           </form>
-      <Button className={classes.formButtons}>Submit</Button>
-      <Button className={classes.formButtons}>Save</Button>
-         </div>
+         <div className="profile-card">
+          <EmployeeEditForm
+                  profile={blankProfile}
+                  saveProfile={this.addProfile}
+                  cancelEdit={this.handleBackButton}/>
+        </div>
          </div>
           </Paper>) :
        ( displayedPage == "table" ? 
@@ -681,15 +725,13 @@ class EnhancedTable extends React.Component {
                         component="th" 
                         scope="row" 
                         padding="none"
-                        onClick={event => this.handleClickProfile(event, n.id)}>
-                        {n.firstName}
+                        onClick={event => this.handleClickProfile(event, n)}>
+                        {n.firstname}
                       </TableCell>
-                      <TableCell align="left" onClick={event => this.handleClickProfile(event, n.id)}>
-                        {n.lastName}</TableCell>
-                      <TableCell align="right" onClick={event => this.handleClickProfile(event, n.id)}>
-                        {n.employeeID}</TableCell>
-                      <TableCell align="left" onClick={event => this.handleClickProfile(event, n.id)}>
-                        {n.position}</TableCell>
+                      <TableCell align="left" onClick={event => this.handleClickProfile(event, n)}>
+                        {n.lastname}</TableCell>
+                      <TableCell align="left" onClick={event => this.handleClickProfile(event, n)}>
+                        {n.role}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -731,94 +773,73 @@ class EnhancedTable extends React.Component {
                  label="Onboarding" />
           </Tabs>
          </AppBar>
-        {value === 1 && 
+        {value === 1 && !edit &&
          <div>
-           <form className={classes.container} noValidation autocomplete="off">
-             <Typography className={classes.employeeName} variant="h5">John Doe</Typography>
-             <div className={classes.fieldContainer}>      
-               <Typography variant="subtitle1" color="textSecondary">Name</Typography>
-             </div>
-             <div className={classes.fieldContainer}>
-                 <TextField
-                   id="outlined-firstName"
-                   label="First Name"
-                   defaultValue="John"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-                 <TextField
-                   id="outlined-lastName"
-                   label="Last Name"
-                   defaultValue="Doe"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <Typography variant="subtitle1" color="textSecondary">Employee Information</Typography>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="outlined-empID"
-                   label="Employee ID"
-                   defaultValue="234123"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-                 <TextField
-                   id="outlined-sin"
-                   label="SIN"
-                   defaultValue="234123"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-                 <TextField
-                   id="outlined-vacation"
-                   label="Vacation Days"
-                   defaultValue="14"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-                 <TextField
-                   id="outlined-fte"
-                   label="FTE"
-                   defaultValue="XXX"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <Typography variant="subtitle1" color="textSecondary">Contact Information</Typography>
-              </div>
-              <div className={classes.fieldContainer}>
-                 <TextField
-                   id="outlined-address"
-                   label="Address"
-                   multiline
-                   rowsMax="4"
-                   defaultValue="123 Somewhere Street Vancouver BC"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-                 <TextField
-                   id="outlined-name"
-                   label="Phone number"
-                   defaultValue="(604) 555-5555"
-                   className={classes.textField}
-                   margin="normal"
-                   variant="outlined">
-                 </TextField>
-              </div>
-           </form>
+           <Button className={classes.editButton} onClick={this.handleClickEdit}>
+              Edit
+           </Button>
+           <EmployeeDisplay isAdmin={true} profile={currProfile} roleName={currProfile.role}/>
          </div>}
-        {value === 2 && <Typography className={classes.employeeName} variant="h5">Performance Documents</Typography>}
+         {value == 1 && edit &&
+         <div className="profile-card">
+          <EmployeeEditForm
+          profile={currProfile}
+          saveProfile={this.saveProfile}
+          cancelEdit={this.cancelEdit}
+        />
+        </div>}
+        {value === 2 && 
+        <div className="profile-card">
+          <Typography className={classes.employeeName} variant="h5">{currProfile.firstname} {currProfile.lastname}</Typography>
+          <FormControl className={classes.formControl}>
+            <InputLabel>
+              Year
+            </InputLabel>
+            <Select
+              onChange={this.handleSelect}>
+              <MenuItem value={0}>2019-2020</MenuItem>
+              <MenuItem value={1}>2018-2019</MenuItem>
+          </Select>
+            {/* {this.generateDropdown()} */}
+          </FormControl>
+            <AppBar position="static" className={classes.appBar}>
+              <Tabs value={miniTabValue} classes={{ root: classes.miniTabs, indicator: classes.tabsIndicator }}
+                    indicatorColor="#ff5000"
+                    textColor="white"
+                    onChange={this.handleMiniTabChange}>
+                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                     label="Work Plan" />
+                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                     label="Performance Review" />
+              </Tabs>
+            </AppBar>
+            { miniTabValue == 0 && !edit &&
+            <div className={classes.docDisplay}>
+              <Button className={classes.editWPButton} onClick={this.handleClickEdit}>Edit</Button> 
+              <WorkPlanDisplay form={sampleWorkPlan} years="2019-2020" profile={currProfile} />
+            </div>
+            }
+            { miniTabValue == 0 && edit &&
+            <div>
+              <WorkPlanForm form={sampleWorkPlan} years="2019-2020" profile={currProfile} />
+              <Button className={classes.cancelButton} onClick={this.handleCancel}>Cancel</Button>
+              <Button className={classes.saveButton} onClick={this.updateReview}>Save</Button>
+            </div>
+            }
+            { miniTabValue == 1 && !edit &&
+            <div className={classes.docDisplay}>
+              <Button className={classes.editWPButton} onClick={this.handleClickEdit}>Edit</Button> 
+              <PerformanceReviewDisplay form={samplePR} years="2019-2020" profile={currProfile} />
+            </div>
+            }
+            { miniTabValue == 1 && edit &&
+            <div>
+              <PerformanceReviewForm form={samplePR} years="2019-2020" profile={currProfile} />
+              <Button className={classes.cancelButton} onClick={this.handleCancel}>Cancel</Button>
+              <Button className={classes.saveButton} onClick={this.updateReview}>Save</Button>
+            </div>
+            }
+          </div>}
         {value === 3 && 
           <div className={classes.container} style={{position:'relative'}}>
             <Typography className={classes.employeeName} variant="h5">Onboarding documents</Typography>
