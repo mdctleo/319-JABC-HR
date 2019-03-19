@@ -143,15 +143,15 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
--- procedure create_employee_performance
+-- procedure create_employee_performance_plan
 --    - create a performance record for an employee,
 --    - provided that the employee exists
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS create_employee_performance;
+DROP PROCEDURE IF EXISTS create_employee_performance_plan;
 
 DELIMITER //
 
-CREATE PROCEDURE `create_employee_performance` (IN employee_id INT
+CREATE PROCEDURE `create_employee_performance_plan` (IN employee_id INT
 , IN created_date DATE
 , IN status TINYINT
 )
@@ -167,8 +167,49 @@ BEGIN
     IF checker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
     ELSE
-      INSERT INTO `PERFORMANCE` (`DATE`, STATUS, EMPLOYEE_ID)
+      INSERT INTO `PERFORMANCE_PLAN` (`DATE`, STATUS, EMPLOYEE_ID)
       VALUES (created_date, status, employee_id);
+    END IF;
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure create_employee_performance_review
+--    - create a performance record for an employee,
+--    - provided that the employee exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS create_employee_performance_review;
+
+DELIMITER //
+
+CREATE PROCEDURE `create_employee_performance_review` (IN employee_id INT
+, IN work_plan INT
+, IN created_date DATE
+, IN status TINYINT
+)
+BEGIN
+    DECLARE checker INT;
+    DECLARE work_plan_checker INT;
+
+    SET checker = 0;
+    SET work_plan_checker = 0;
+
+    SELECT COUNT(EMPLOYEE_ID) INTO checker
+    FROM `EMPLOYEE`
+    WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
+
+    SELECT COUNT(PERFORMANCE_PLAN_ID) INTO work_plan_checker
+    FROM `PERFORMANCE_PLAN`
+    WHERE `PERFORMANCE_PLAN`.PERFORMANCE_PLAN_ID = work_plan;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+    ELSEIF work_plan_checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Work plan does not exist.';
+    ELSE
+      INSERT INTO `PERFORMANCE_REVIEW` (`DATE`, STATUS, EMPLOYEE_ID, WORK_PLAN_ID)
+      VALUES (created_date, status, employee_id, work_plan);
     END IF;
 END //
 

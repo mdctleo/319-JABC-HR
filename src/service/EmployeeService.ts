@@ -6,8 +6,7 @@ import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
 
-// TODO: save key on .env file
-const KEY = 'JABC IS SUPER SECURE';
+const KEY = process.env.JWT_KEY;
 
 
 /**
@@ -116,8 +115,12 @@ export async function createEmployee (employee: IEmployee, xAuthToken: String) {
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
 	try{
-		// TODO: Implement
-		throw 'NOT IMPLEMENTED'
+		let res = await Database.getInstance().query('CALL create_employee_performance_plan(?,?,?)', [
+			performance.fkEmployee,
+			performance.date,
+			performance.status
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
 	}catch(error){
 		throw error;
 	}
@@ -129,14 +132,19 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
    * Will create a new PerformanceReview with the provided data in body
    *
    * @param {Number} id Integer id of the searched Employee
-   * performance IPerformanceReview PerformanceReview data
+   * @param {IPerformanceReview} performance IPerformanceReview PerformanceReview data
    * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
    * @returns {Promise<IApiResponse>}
    **/
   export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
 	try{
-		// TODO: Implement
-		throw 'NOT IMPLEMENTED'
+		let res = await Database.getInstance().query('CALL create_employee_performance_review(?,?,?,?)', [
+			performance.fkEmployee,
+			performance.fkPerformancePlan,
+			performance.date,
+			performance.status
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was registered successfully`)
 	}catch(error){
 		throw error;
 	}

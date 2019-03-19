@@ -26,6 +26,11 @@ export class DatabaseQueryError extends JABCError {
     }
 }
 
+export interface IDatabaseQuery{
+    query: string;
+    params?: Array<any>
+}
+
 export default interface IDatabaseClient {
 
 
