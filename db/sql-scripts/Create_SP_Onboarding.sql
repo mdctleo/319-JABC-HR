@@ -128,6 +128,196 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
+-- procedure get_all_onboarding_tasks
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_onboarding_tasks;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_onboarding_tasks` ()
+BEGIN
+    SELECT * FROM ONBOARDING_TASK;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_all_onboarding_tasks_due
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_onboarding_tasks_due;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_onboarding_tasks_due` (IN start_period DATE, end_period DATE)
+BEGIN
+    SELECT *
+    FROM ONBOARDING_TASK
+    WHERE DUE_DATE BETWEEN start_period AND end_period;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_all_onboarding_tasks_status
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_onboarding_tasks_status;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_onboarding_tasks_status` (IN status INT)
+BEGIN
+    SELECT *
+    FROM ONBOARDING_TASK
+    WHERE ONBOARDING_TASK.STATUS = status;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_all_onboarding_tasks_of
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_onboarding_tasks_of;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_onboarding_tasks_of` (IN employee_id INT)
+BEGIN
+    DECLARE checker INT;
+
+    SET checker = 0;
+
+    SELECT COUNT(EMPLOYEE_ID) INTO checker
+    FROM `HR_RECORD`
+    WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+    ELSE
+      SELECT *
+      FROM ONBOARDING_TASK
+      WHERE ONBOARDING_TASK.EMPLOYEE_ID = employee_id;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_all_onboarding_tasks_due_of_status
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_onboarding_tasks_due_of_status;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_onboarding_tasks_due_of_status` (IN employee_id INT
+,IN start_period DATE
+,IN end_period DATE
+,IN status INT)
+BEGIN
+    DECLARE checker INT;
+
+    SET checker = 0;
+
+    SELECT COUNT(EMPLOYEE_ID) INTO checker
+    FROM `HR_RECORD`
+    WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+    ELSE
+      SELECT *
+      FROM ONBOARDING_TASK
+      WHERE ONBOARDING_TASK.EMPLOYEE_ID = employee_id AND ONBOARDING_TASK.STATUS = status AND DUE_DATE BETWEEN start_period AND end_period;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_all_onboarding_tasks_due_of
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_onboarding_tasks_due_of;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_onboarding_tasks_due_of` (IN employee_id INT
+,IN start_period DATE
+,IN end_period DATE)
+BEGIN
+    DECLARE checker INT;
+
+    SET checker = 0;
+
+    SELECT COUNT(EMPLOYEE_ID) INTO checker
+    FROM `HR_RECORD`
+    WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+    ELSE
+      SELECT *
+      FROM ONBOARDING_TASK
+      WHERE ONBOARDING_TASK.EMPLOYEE_ID = employee_id AND DUE_DATE BETWEEN start_period AND end_period;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_all_onboarding_tasks_due_status
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_onboarding_tasks_due_status;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_onboarding_tasks_due_status` (IN start_period DATE
+,IN end_period DATE
+, IN status VARCHAR(45))
+BEGIN
+    SELECT *
+    FROM ONBOARDING_TASK
+    WHERE ONBOARDING_TASK.STATUS = status AND DUE_DATE BETWEEN start_period AND end_period;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_all_onboarding_tasks_of_status
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_onboarding_tasks_of_status;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_onboarding_tasks_of_status` (IN employee_id INT
+,IN status INT)
+BEGIN
+    DECLARE checker INT;
+
+    SET checker = 0;
+
+    SELECT COUNT(EMPLOYEE_ID) INTO checker
+    FROM `HR_RECORD`
+    WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+    ELSE
+      SELECT *
+      FROM ONBOARDING_TASK
+      WHERE ONBOARDING_TASK.EMPLOYEE_ID = employee_id AND ONBOARDING_TASK.STATUS = status;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
 -- procedure get_onboarding_task
 --    - get onboarding task with an id if that
 --    - onboarding task exists

@@ -89,6 +89,7 @@ paths:
       summary: get all the Employees
       description: | 
         This returns all the Employees of the system. 
+        If [start] and [end] are provided, it will return all employees with a birthday between those dates
         If [term] is provided this returns the Employees of the system that match with the [term].
       operationId: getEmployees
       security:
@@ -96,6 +97,16 @@ paths:
       parameters:
       - $ref: '#/parameters/securityAuthToken'
       - $ref: '#/parameters/term'
+      - in: query
+        name: start
+        type: string
+        format: date
+        description: Search employees with a birthday after this date, if this isn't provided there won't be any filtering
+      - in: query
+        name: end
+        type: string
+        format: date
+        description: Search employees with a birthday before this date, if this isn't provided there won't be any filtering
       responses:
         200:
           description: successful operation
@@ -216,6 +227,35 @@ paths:
       responses:
         200:
           $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /employee/{id}/manager:
+    get:
+      tags:
+      - Employee
+      summary: get all the Managers of an employee with the provided [id]
+      description: | 
+        This returns all the Employees of the system that manage the employee with the [id]. 
+      operationId: getManagersByEmployee
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Employee with the searched Managers
+        required: true
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IEmployee'
         401:
           $ref: '#/responses/NoAccessResponse'
         default:
@@ -628,6 +668,7 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
+
 # ----------------------------- Employee Login
   /employee/token:
     post:
@@ -740,6 +781,50 @@ paths:
           $ref: '#/responses/ErrorResponse'
 
 # ----------------------------- OnboardingTask
+  /onboarding/task:
+    get:
+      tags:
+      - Onboarding
+      summary: gets all the OnboardingTasks
+      description: |
+        Will return all the OnboardingTasks on the system.
+        If [start] and [end] are provided, it will return all OnboardingTasks with a due date between those dates
+        If [id] is provided, it will return the onboarding tasks of an employee that matches that id
+        If [status] is provided, it will return the onboarding tasks that matches that status (0:active, 1:done)
+      operationId: getAllOnboardingTasks
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - in: query
+        name: start
+        type: string
+        format: date
+        description: Search onboarding tasks with a due date after this date, if this isn't provided there won't be any filtering
+      - in: query
+        name: end
+        type: string
+        format: date
+        description: Search onboarding tasks with a due date before this date, if this isn't provided there won't be any filtering
+      - in: query
+        name: id
+        description: If provided will return the onboarding tasks of an employee that matches that id
+        type: integer
+        format: uint64
+      - in: query
+        name: status
+        description: If provided will return the onboarding tasks that matches that status (0:active, 1:done)
+        type: integer
+        format: uint64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/IOnboardingTask'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
   /onboarding/task/{id}:
     get:
       tags:
@@ -1813,7 +1898,8 @@ definitions:
         description: The unique identifier of the Employee
         example: 1
       sin:
-        type: string
+        type: number
+        format: uint64
       email:
         type: string
         format: email
@@ -1826,22 +1912,19 @@ definitions:
         type: string
       fte:
         type: integer
-        enum:
-        - PART_TIME
-        - FULL_TIME
+        minimum: 0 # PART_TIME
+        maximum: 1 # FULL_TIME
       status:
         type: integer
-        enum:
-        - INACTIVE
-        - ACTIVE
-        - ONBOARDING
-        - PROBATION
+        minimum: 0 # INACTIVE
+        # 1: ACTIVE
+        # 2: ONBOARDING
+        maximum: 3 # PROBATION
       adminLevel:
         type: integer
-        enum:
-        - STAFF
-        - MANAGER
-        - HR_ADMIN
+        minimum: 0 # STAFF
+        # 1: MANAGER
+        maximum: 2 # HR_ADMIN
       salary:
         type: number
       address:
@@ -1852,6 +1935,7 @@ definitions:
         description: The birthdate of the employee
       dateJoined:
         type: string
+        format: date
         description: The date joined of the employee
       vacationDays:
         type: integer
@@ -1909,22 +1993,19 @@ definitions:
         type: string
       fte:
         type: integer
-        enum:
-        - PART_TIME
-        - FULL_TIME
+        minimum: 0 # PART_TIME
+        maximum: 1 # FULL_TIME
       status:
         type: integer
-        enum:
-        - INACTIVE
-        - ACTIVE
-        - ONBOARDING
-        - PROBATION
+        minimum: 0 # INACTIVE
+        # 1: ACTIVE
+        # 2: ONBOARDING
+        maximum: 3 # PROBATION
       adminLevel:
         type: integer
-        enum:
-        - STAFF
-        - MANAGER
-        - HR_ADMIN
+        minimum: 0 # STAFF
+        # 1: MANAGER
+        maximum: 2 # HR_ADMIN
       version:
         type: integer
         format: uint64
@@ -1949,6 +2030,7 @@ definitions:
         description: The birthdate of the employee
       dateJoined:
         type: string
+        format: date
         description: The date joined of the employee
       vacationDays:
         type: integer
@@ -1985,6 +2067,11 @@ definitions:
         type: string
       description:
         type: string
+      competencies:
+        description: Contains all the competencies of this role
+        type: array
+        items: 
+          $ref: '#/definitions/ICompetency'
 
   ICompetency:
     type: object
@@ -2041,10 +2128,9 @@ definitions:
         description: The number of vacation days the employee requested
       requestedStatus:
         type: integer
-        enum:
-        - REQUESTED
-        - APPROVED
-        - DENIED
+        minimum: 0 # REQUESTED
+        # 1: APPROVED
+        maximum: 2 # DENIED
       date:
         type: string
         format: date
@@ -2091,15 +2177,13 @@ definitions:
       requireDoc:
         type: integer
         description: Wether the Onboarding task requires document upload or not.
-        enum:
-        - TASK
-        - UPLOAD
+        minimum: 0 # TASK
+        maximum: 1 # UPLOAD
       status:
         type: integer
         description: Wether the Onboarding task is done or not
-        enum:
-        - ACTIVE
-        - DONE
+        minimum: 0 # ACTIVE
+        maximum: 1 # DONE
       expiryDate:
         type: string
         format: date
@@ -2159,9 +2243,8 @@ definitions:
         description: The date the performance review was created
       status:
         type: integer
-        enum:
-        - UNPUBLISHED
-        - PUBLISHED
+        minimum: 0 # UNPUBLISHED
+        maximum: 1 # PUBLISHED
       sections:
         description: Contains all the IPerformanceSections Related to this IPerformancePlan
         type: array
@@ -2205,9 +2288,8 @@ definitions:
         description: The date the performance review was created
       status:
         type: integer
-        enum:
-        - UNPUBLISHED
-        - PUBLISHED
+        minimum: 0 # UNPUBLISHED
+        maximum: 1 # PUBLISHED
       sections:
         description: Contains all the IPerformanceSections Related to this IPerformanceReview
         type: array
@@ -2223,6 +2305,34 @@ definitions:
     description: | 
       A JSON object containing all the information of a section in either PerformancePlan or PerformanceReview
     type: object
+    required:
+    - id
+    - data
+    - sectionName
+    properties:
+      id:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Performance
+        example: 1
+      data:
+        type: object
+        description: The object that represents all the data of this performance section
+        properties:
+          value:
+            type: string
+      sectionName:
+        type: string
+      fkPerformancePlan:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Performance Plan that owns this section
+        example: 1
+      fkPerformanceReview:
+        type: integer
+        format: uint64
+        description: The unique identifier of the Performance Review that owns this section
+        example: 1
 
   IComment:
     type: object
