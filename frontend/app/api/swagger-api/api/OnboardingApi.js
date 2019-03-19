@@ -322,6 +322,64 @@ export default class OnboardingApi {
 
 
     /**
+     * gets all the OnboardingTasks
+     * Will return all the OnboardingTasks on the system. If [start] and [end] are provided, it will return all OnboardingTasks with a due date between those dates If [status] is provided, it will return the onboarding tasks that matches that status (0:active, 1:done) 
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @param {Date} opts.start Search onboarding tasks with a due date after this date, if this isn&#39;t provided there won&#39;t be any filtering
+     * @param {Date} opts.end Search onboarding tasks with a due date before this date, if this isn&#39;t provided there won&#39;t be any filtering
+     * @param {Number} opts.status If provided will return the onboarding tasks that matches that status (0:active, 1:done)
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IOnboardingTask} and HTTP response
+     */
+    getAllOnboardingTasksWithHttpInfo(opts) {
+      opts = opts || {};
+      let postBody = null;
+
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'start': opts['start'],
+        'end': opts['end'],
+        'status': opts['status']
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IOnboardingTask;
+
+      return this.apiClient.callApi(
+        '/onboarding/task', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * gets all the OnboardingTasks
+     * Will return all the OnboardingTasks on the system. If [start] and [end] are provided, it will return all OnboardingTasks with a due date between those dates If [status] is provided, it will return the onboarding tasks that matches that status (0:active, 1:done) 
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @param {Date} opts.start Search onboarding tasks with a due date after this date, if this isn&#39;t provided there won&#39;t be any filtering
+     * @param {Date} opts.end Search onboarding tasks with a due date before this date, if this isn&#39;t provided there won&#39;t be any filtering
+     * @param {Number} opts.status If provided will return the onboarding tasks that matches that status (0:active, 1:done)
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IOnboardingTask}
+     */
+    getAllOnboardingTasks(opts) {
+      return this.getAllOnboardingTasksWithHttpInfo(opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
      * gets an specific DocumentType
      * Will return the DocumentType that matches with the provided [id]
      * @param {Number} id id of the searched DocumentType

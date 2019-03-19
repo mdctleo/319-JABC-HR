@@ -62,7 +62,31 @@ router.put('/employee/:id', (req, res) => {
 router.get('/employee/12345', (req, res, next) => res.send(Jane));
 
 router.get('/role/1', (req, res, next) =>
-  res.send({ id: 1, name: 'Dev', description: 'Do dev work' }),
+  res.send({
+    id: 1,
+    name: 'Developer',
+    description: 'Make a funky fresh website',
+    competencies: [
+      {
+        id: 1,
+        fkRole: 1,
+        name: 'React',
+        description: 'You should know React',
+      },
+      {
+        id: 2,
+        fkRole: 1,
+        name: 'Fun',
+        description: 'You should have fun',
+      },
+      {
+        id: 3,
+        fkRole: 1,
+        name: 'Memes',
+        description: 'Know your memes',
+      },
+    ],
+  }),
 );
 
 router.use('*', (req, res, next) => res.send());
