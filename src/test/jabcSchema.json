@@ -1,9 +1,9 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "This API provides all the functions needed to manage \nthe JABC HR system.\n",
     "version" : "1.0.0",
     "title" : "JABC",
+    "description" : "This API provides all the functions needed to manage \nthe JABC HR system.\n",
     "contact" : {
       "email" : "jabraham9719@gmail.com"
     },
@@ -14,6 +14,50 @@
   },
   "host" : "localhost:8080",
   "basePath" : "/JABC/1.0.0",
+  "schemes" : [ "http" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "securityDefinitions" : {
+    "AuthToken" : {
+      "type" : "apiKey",
+      "in" : "header",
+      "name" : "X-Auth-Token"
+    }
+  },
+  "parameters" : {
+    "securityAuthToken" : {
+      "name" : "X-Auth-Token",
+      "in" : "header",
+      "type" : "string",
+      "description" : "Auth Token that grants access to the system"
+    },
+    "term" : {
+      "name" : "term",
+      "in" : "query",
+      "type" : "string",
+      "description" : "Search term for filter the data"
+    }
+  },
+  "responses" : {
+    "SuccessfulResponse" : {
+      "description" : "successful operation",
+      "schema" : {
+        "$ref" : "#/definitions/IApiResponse"
+      }
+    },
+    "ErrorResponse" : {
+      "description" : "bad request",
+      "schema" : {
+        "$ref" : "#/definitions/IApiResponse"
+      }
+    },
+    "NoAccessResponse" : {
+      "description" : "unauthorized access",
+      "schema" : {
+        "$ref" : "#/definitions/IApiResponse"
+      }
+    }
+  },
   "tags" : [ {
     "name" : "Employee",
     "description" : "Provides access to all employee data and history, manage Performances of employees,\nVacations and Documents for the onboarding process\n"
@@ -33,9 +77,6 @@
     "name" : "Vacation",
     "description" : "Manage the vacation requests from employees\n"
   } ],
-  "schemes" : [ "http" ],
-  "consumes" : [ "application/json" ],
-  "produces" : [ "application/json" ],
   "paths" : {
     "/employee" : {
       "get" : {
@@ -43,18 +84,13 @@
         "summary" : "get all the Employees",
         "description" : "This returns all the Employees of the system. \nIf [term] is provided this returns the Employees of the system that match with the [term].\n",
         "operationId" : "getEmployees",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
-          "name" : "term",
-          "in" : "query",
-          "description" : "Search term for filter the data",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/term"
         } ],
         "responses" : {
           "200" : {
@@ -67,33 +103,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "post" : {
         "tags" : [ "Employee" ],
         "summary" : "creates a new Employee",
         "description" : "Will create a new Employee with the provided data in body",
         "operationId" : "createEmployee",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "in" : "body",
           "name" : "employee",
@@ -105,27 +131,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/employee/{id}" : {
@@ -134,12 +148,11 @@
         "summary" : "gets an specific Employee",
         "description" : "Will return the Employee that matches with the provided [id]",
         "operationId" : "getEmployee",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -156,33 +169,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "put" : {
         "tags" : [ "Employee" ],
         "summary" : "updates the Employee",
         "description" : "Will update an Employee with the provided data in body if the Employee matches the [id]",
         "operationId" : "updateEmployee",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -199,8 +202,8 @@
             "$ref" : "#/definitions/IEmployee"
           }
         }, {
-          "name" : "idAdmin",
           "in" : "query",
+          "name" : "idAdmin",
           "description" : "Who is updating the employee",
           "required" : false,
           "type" : "integer",
@@ -208,39 +211,26 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "delete" : {
         "tags" : [ "Employee" ],
         "summary" : "deletes Employee",
         "description" : "Will delete (deactivate) an Employee if the Employee matches the [id]",
         "operationId" : "deleteEmployee",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -249,8 +239,8 @@
           "type" : "integer",
           "format" : "uint64"
         }, {
-          "name" : "idAdmin",
           "in" : "query",
+          "name" : "idAdmin",
           "description" : "Who is deleting the employee",
           "required" : false,
           "type" : "integer",
@@ -258,27 +248,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/employee/{id}/manager/{idManager}" : {
@@ -288,22 +266,21 @@
         "description" : "Sets the employee with [id] to be managed by the employee with [idManager]",
         "operationId" : "linkEmployeeManager",
         "consumes" : [ "application/octet-stream" ],
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
-          "name" : "id",
           "in" : "path",
+          "name" : "id",
           "description" : "Employee to be managed by another",
           "required" : true,
           "type" : "integer",
           "format" : "uint64"
         }, {
-          "name" : "idManager",
           "in" : "path",
+          "name" : "idManager",
           "description" : "Employee that will manage the employee with [id]",
           "required" : true,
           "type" : "integer",
@@ -311,49 +288,36 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "delete" : {
         "tags" : [ "Employee" ],
         "summary" : "Unlinks employee from his manager",
         "description" : "Deletes the relation between employee with [id] and the employee with [idManager]",
         "operationId" : "unlinkEmployeeManager",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
-          "name" : "id",
           "in" : "path",
+          "name" : "id",
           "description" : "Employee to be unmanaged by another",
           "required" : true,
           "type" : "integer",
           "format" : "uint64"
         }, {
-          "name" : "idManager",
           "in" : "path",
+          "name" : "idManager",
           "description" : "Employee that will stop managing the employee with [id]",
           "required" : true,
           "type" : "integer",
@@ -361,27 +325,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/employee/manager/{idManager}" : {
@@ -390,15 +342,14 @@
         "summary" : "get all the Employees that are managed by employee with [idManager]",
         "description" : "This returns all the Employees that are managed by employee with [idManager].\n",
         "operationId" : "getEmployeesByManager",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
-          "name" : "idManager",
           "in" : "path",
+          "name" : "idManager",
           "description" : "Employee that will manage the employee with [id]",
           "required" : true,
           "type" : "integer",
@@ -415,21 +366,12 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/employee/{id}/history" : {
@@ -438,12 +380,11 @@
         "summary" : "get all the history of the employee with [id]",
         "description" : "This returns all the history data of the employee with [id]. \n",
         "operationId" : "getEmployeeHistory",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -463,21 +404,12 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/employee/{id}/document" : {
@@ -486,18 +418,13 @@
         "summary" : "get all the Documents of the employee with [id]",
         "description" : "This returns all the Documents of the system. \nIf [term] is provided this returns the Documents of the Employee that match with the [term]. \n",
         "operationId" : "getDocuments",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
-          "name" : "term",
-          "in" : "query",
-          "description" : "Search term for filter the data",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/term"
         }, {
           "name" : "id",
           "in" : "path",
@@ -517,33 +444,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "post" : {
         "tags" : [ "Employee" ],
         "summary" : "creates a new Document for the employee with [id]",
         "description" : "Will create a new Document with the provided data in body",
         "operationId" : "createDocument",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -562,27 +479,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/employee/{id}/performance" : {
@@ -591,18 +496,13 @@
         "summary" : "get all the Performances of the employee with [id]",
         "description" : "This returns all the Performances of the system.\nIf [term] is provided this returns the Performances of the Employee that match with the [term]. \n",
         "operationId" : "getPerformances",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
-          "name" : "term",
-          "in" : "query",
-          "description" : "Search term for filter the data",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/term"
         }, {
           "name" : "id",
           "in" : "path",
@@ -622,33 +522,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "post" : {
         "tags" : [ "Employee" ],
         "summary" : "creates a new Performance for the employee with [id]",
         "description" : "Will create a new Performance with the provided data in body",
         "operationId" : "createPerformance",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -667,27 +557,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/employee/{id}/vacation" : {
@@ -696,18 +574,13 @@
         "summary" : "get all the Vacations of the employee with [id]",
         "description" : "This returns all the Vacations of the system. \nIf [term] is provided this returns the Vacations of the Employee that match with the [term]. \n",
         "operationId" : "getVacations",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
-          "name" : "term",
-          "in" : "query",
-          "description" : "Search term for filter the data",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/term"
         }, {
           "name" : "id",
           "in" : "path",
@@ -727,33 +600,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "post" : {
         "tags" : [ "Employee" ],
         "summary" : "creates a new Vacation for the employee with [id]",
         "description" : "Will create a new Vacation with the provided data in body",
         "operationId" : "createVacation",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -772,27 +635,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/employee/token" : {
@@ -801,14 +652,10 @@
         "summary" : "sign in the employee into the system",
         "operationId" : "login",
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
-          "in" : "body",
           "name" : "body",
+          "in" : "body",
           "description" : "Employee login data",
           "required" : true,
           "schema" : {
@@ -837,12 +684,11 @@
         "summary" : "gets an specific Vacation",
         "description" : "Will return the Vacation that matches with the provided [id] from \nthe Employee with [id]\n",
         "operationId" : "getVacation",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -859,33 +705,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "put" : {
         "tags" : [ "Vacation" ],
         "summary" : "updates the Vacation",
         "description" : "Will update an Vacation with the provided data in body \nif the Vacation matches the [id]\n",
         "operationId" : "updateVacation",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -904,39 +740,26 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "delete" : {
         "tags" : [ "Vacation" ],
         "summary" : "deletes Vacation",
         "description" : "Will delete the Vacation that matches with the provided [id] from \nthe Employee with [id]\n",
         "operationId" : "deleteVacation",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -947,27 +770,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/document/{id}" : {
@@ -976,12 +787,11 @@
         "summary" : "gets an specific Document",
         "description" : "Will return the Document that matches with the provided [id] from \nthe Employee with [id]\n",
         "operationId" : "getDocument",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -998,33 +808,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "put" : {
         "tags" : [ "Document" ],
         "summary" : "updates the Document",
         "description" : "Will update an Document with the provided data in body \nif the Document matches the [id]\n",
         "operationId" : "updateDocument",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1043,39 +843,26 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "delete" : {
         "tags" : [ "Document" ],
         "summary" : "deletes Document",
         "description" : "Will delete the Document that matches with the provided [id] from \nthe Employee with [id]\n",
         "operationId" : "deleteDocument",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1086,27 +873,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/document/type" : {
@@ -1115,12 +890,11 @@
         "summary" : "get all the DocumentTypes",
         "description" : "This returns all the DocumentTypes of the system.\n",
         "operationId" : "getDocumentTypes",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         } ],
         "responses" : {
           "200" : {
@@ -1133,33 +907,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "post" : {
         "tags" : [ "Document" ],
         "summary" : "creates a new DocumentType",
         "description" : "Will create a new DocumentType with the provided data in body",
         "operationId" : "createDocumentType",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "in" : "body",
           "name" : "documentType",
@@ -1171,27 +935,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/document/type/{id}" : {
@@ -1200,12 +952,11 @@
         "summary" : "gets an specific DocumentType",
         "description" : "Will return the DocumentType that matches with the provided [id]",
         "operationId" : "getDocumentType",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1222,33 +973,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "put" : {
         "tags" : [ "Document" ],
         "summary" : "updates the DocumentType",
         "description" : "Will update an DocumentType with the provided data in body if the DocumentType matches the [id]",
         "operationId" : "updateDocumentType",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1267,39 +1008,26 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "delete" : {
         "tags" : [ "Document" ],
         "summary" : "deletes DocumentType",
         "description" : "Will delete an DocumentType if the DocumentType matches the [id]",
         "operationId" : "deleteDocumentType",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1310,27 +1038,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/performance/{id}" : {
@@ -1339,12 +1055,11 @@
         "summary" : "gets an specific Performance",
         "description" : "Will return the Performance that matches with the provided [id] from \nthe Employee with [id]\n",
         "operationId" : "getPerformance",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1361,33 +1076,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "put" : {
         "tags" : [ "Performance" ],
         "summary" : "updates the Performance",
         "description" : "Will update an Performance with the provided data in body \nif the Performance matches the [id]\n",
         "operationId" : "updatePerformance",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1406,39 +1111,26 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "delete" : {
         "tags" : [ "Performance" ],
         "summary" : "deletes Performance",
         "description" : "Will delete the Performance that matches with the provided [id] from \nthe Employee with [id]\n",
         "operationId" : "deletePerformance",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1449,27 +1141,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/performance/{id}/comment" : {
@@ -1478,12 +1158,11 @@
         "summary" : "get all the Comments from a Performance with [id]",
         "description" : "This returns all the Comments of the Performance with [id].\n",
         "operationId" : "getComments",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1503,33 +1182,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "post" : {
         "tags" : [ "Performance" ],
         "summary" : "creates a new Comment for the Performance with [id]",
         "description" : "Will create a new Comment with the provided data in body, to the Performance with [id]",
         "operationId" : "createComment",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1548,27 +1217,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/performance/{id}/comment/{idComment}" : {
@@ -1577,12 +1234,11 @@
         "summary" : "gets an specific Comment",
         "description" : "Will return the Comment that matches with the provided [idComment]",
         "operationId" : "getComment",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1606,33 +1262,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "put" : {
         "tags" : [ "Performance" ],
         "summary" : "updates the Comment",
         "description" : "Will update an Comment with the provided data in body if the Comment matches the [idComment]",
         "operationId" : "updateComment",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1658,39 +1304,26 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "delete" : {
         "tags" : [ "Performance" ],
         "summary" : "deletes Comment",
         "description" : "Will delete an Comment if the Comment matches the [idComment]",
         "operationId" : "deleteComment",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1708,27 +1341,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/role" : {
@@ -1737,12 +1358,11 @@
         "summary" : "get all the Roles",
         "description" : "This returns all the Roles of the system.\n",
         "operationId" : "getRoles",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         } ],
         "responses" : {
           "200" : {
@@ -1755,33 +1375,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "post" : {
         "tags" : [ "Roles" ],
         "summary" : "creates a new Role",
         "description" : "Will create a new Role with the provided data in body",
         "operationId" : "createRole",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "in" : "body",
           "name" : "role",
@@ -1793,27 +1403,15 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
     },
     "/role/{id}" : {
@@ -1822,12 +1420,11 @@
         "summary" : "gets an specific Role",
         "description" : "Will return the Role that matches with the provided [id]",
         "operationId" : "getRole",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1844,33 +1441,23 @@
             }
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "put" : {
         "tags" : [ "Roles" ],
         "summary" : "updates the Role",
         "description" : "Will update an Role with the provided data in body if the Role matches the [id]",
         "operationId" : "updateRole",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1889,39 +1476,26 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       },
       "delete" : {
         "tags" : [ "Roles" ],
         "summary" : "deletes Role",
         "description" : "Will delete an Role if the Role matches the [id]",
         "operationId" : "deleteRole",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
         "parameters" : [ {
-          "name" : "X-Auth-Token",
-          "in" : "header",
-          "description" : "Auth Token that grants access to the system",
-          "required" : false,
-          "type" : "string"
+          "$ref" : "#/parameters/securityAuthToken"
         }, {
           "name" : "id",
           "in" : "path",
@@ -1932,41 +1506,22 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/SuccessfulResponse"
           },
           "401" : {
-            "description" : "unauthorized access",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/NoAccessResponse"
           },
           "default" : {
-            "description" : "bad request",
-            "schema" : {
-              "$ref" : "#/definitions/IApiResponse"
-            }
+            "$ref" : "#/responses/ErrorResponse"
           }
-        },
-        "security" : [ {
-          "AuthToken" : [ ]
-        } ]
+        }
       }
-    }
-  },
-  "securityDefinitions" : {
-    "AuthToken" : {
-      "type" : "apiKey",
-      "name" : "X-Auth-Token",
-      "in" : "header"
     }
   },
   "definitions" : {
     "IApiResponse" : {
       "type" : "object",
-      "required" : [ "message", "responseCode", "type" ],
+      "required" : [ "responseCode", "type", "message" ],
       "properties" : {
         "responseCode" : {
           "type" : "integer",
@@ -1988,25 +1543,17 @@
     },
     "IEmployee" : {
       "type" : "object",
-      "required" : [ "adminLevel", "email", "firstname", "fte", "id", "lastname", "password", "sin", "status" ],
+      "description" : "An Employee contains all the current information of a current or onboarding employee\n",
+      "required" : [ "id", "sin", "email", "password", "firstname", "lastname", "fte", "status", "adminLevel" ],
       "properties" : {
         "id" : {
           "type" : "integer",
-          "faker" : {
-            "random.number": {
-              "min": 0
-            }
-          },
-          "example" : 1,
-          "description" : "The unique identifier of the Employee"
+          "format" : "uint64",
+          "description" : "The unique identifier of the Employee",
+          "example" : 1
         },
         "sin" : {
-          "type" : "string",
-          "faker" : {
-            "random.number": {
-              "min": 0
-            }
-          }
+          "type" : "string"
         },
         "email" : {
           "type" : "string",
@@ -2026,74 +1573,48 @@
         },
         "fte" : {
           "type" : "integer",
-          "faker": {
-            "random.number": {
-              "min": 0,
-              "max": 1
-            }
-          }
+          "enum" : [ "PART_TIME", "FULL_TIME" ]
         },
         "status" : {
           "type" : "integer",
-          "faker": {
-            "random.number": {
-              "min": 0,
-              "max": 3
-            }
-          }
+          "enum" : [ "INACTIVE", "ACTIVE", "ONBOARDING", "PROBATION" ]
         },
         "adminLevel" : {
           "type" : "integer",
-          "faker": {
-            "random.number": {
-              "min": 0,
-              "max": 2
-            }
-          }
+          "enum" : [ "STAFF", "MANAGER", "HR_ADMIN" ]
         },
         "salary" : {
-          "type" : "number",
-          "faker": "finance.amount"
+          "type" : "number"
         },
         "address" : {
           "type" : "string",
-          "faker": "address.streetAddress"
+          "faker": "streetAddress"
         },
         "birthdate" : {
           "type" : "string",
-          "faker": "date.past",
+          "faker" : "date.past",
           "description" : "The unix timestamp of the birthdate of the employee"
         },
         "dateJoined" : {
           "type" : "string",
-          "faker": "date.recent",
+          "faker" : "date.past",
           "description" : "The unix timestamp of the date joined of the employee"
         },
         "vacationDays" : {
           "type" : "integer",
-          "faker": {
-            "random.number":{
-              "min": 50,
-              "max": 365
-            }
-          },
+          "format" : "uint64",
           "description" : "The number of vacation days allowed to the employee per year"
         },
         "remainingVacationDays" : {
           "type" : "integer",
-          "faker": {
-            "random.number": {
-              "min": 0,
-              "max": 49
-            }
-          },
+          "format" : "uint64",
           "description" : "The number of vacation days allowed to the employee on the current year"
         },
         "fkRole" : {
           "type" : "integer",
           "faker" : {
             "random.number": {
-              "min": 0,
+              "min": 1,
               "max": 3
             }
           },
@@ -2107,18 +1628,18 @@
         "role" : {
           "$ref" : "#/definitions/IRole"
         }
-      },
-      "description" : "An Employee contains all the current information of a current or onboarding employee\n"
+      }
     },
     "IEmployeeHistory" : {
       "type" : "object",
-      "required" : [ "adminLevel", "createdDate", "email", "firstname", "fkCreator", "fte", "id", "lastname", "password", "sin", "status", "version" ],
+      "description" : "An Employee contains all the current information of a current or onboarding employee\n",
+      "required" : [ "id", "sin", "email", "password", "firstname", "lastname", "fte", "status", "adminLevel", "version", "fkCreator", "createdDate" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Employee"
+          "description" : "The unique identifier of the Employee",
+          "example" : 1
         },
         "sin" : {
           "type" : "string"
@@ -2138,25 +1659,28 @@
           "type" : "string"
         },
         "fte" : {
-          "type" : "integer"
+          "type" : "integer",
+          "enum" : [ "PART_TIME", "FULL_TIME" ]
         },
         "status" : {
-          "type" : "integer"
+          "type" : "integer",
+          "enum" : [ "INACTIVE", "ACTIVE", "ONBOARDING", "PROBATION" ]
         },
         "adminLevel" : {
-          "type" : "integer"
+          "type" : "integer",
+          "enum" : [ "STAFF", "MANAGER", "HR_ADMIN" ]
         },
         "version" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The number of the version of the Employee data"
+          "description" : "The number of the version of the Employee data",
+          "example" : 1
         },
         "fkCreator" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Employee that updated the data of the Employee"
+          "description" : "The unique identifier of the Employee that updated the data of the Employee",
+          "example" : 1
         },
         "createdDate" : {
           "type" : "integer",
@@ -2201,23 +1725,18 @@
         "role" : {
           "$ref" : "#/definitions/IRole"
         }
-      },
-      "description" : "An Employee contains all the current information of a current or onboarding employee\n"
+      }
     },
     "IRole" : {
       "type" : "object",
+      "description" : "An Role is contains all the current information of a current or onboarding employee\n",
       "required" : [ "id", "name" ],
       "properties" : {
         "id" : {
           "type" : "integer",
-          "faker" : {
-            "random.number": {
-              "min": 0,
-              "max": 3
-            }
-          },
-          "example" : 1,
-          "description" : "The unique identifier of the Role"
+          "format" : "uint64",
+          "description" : "The unique identifier of the Role",
+          "example" : 1
         },
         "name" : {
           "type" : "string"
@@ -2225,30 +1744,30 @@
         "description" : {
           "type" : "string"
         }
-      },
-      "description" : "An Role is contains all the current information of a current or onboarding employee\n"
+      }
     },
     "IVacation" : {
       "type" : "object",
-      "required" : [ "date", "fkEmployee", "id", "requestedDays", "requestedStatus" ],
+      "description" : "A Vacation contains info of the employee asking for a vaction period\n",
+      "required" : [ "id", "fkEmployee", "requestedDays", "requestedStatus", "date" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Vacation"
+          "description" : "The unique identifier of the Vacation",
+          "example" : 1
         },
         "fkEmployee" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Employee that requests the vacation"
+          "description" : "The unique identifier of the Employee that requests the vacation",
+          "example" : 1
         },
         "fkApprover" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Employee that approves the vacation request"
+          "description" : "The unique identifier of the Employee that approves the vacation request",
+          "example" : 1
         },
         "requestedDays" : {
           "type" : "integer",
@@ -2256,37 +1775,38 @@
           "description" : "The number of vacation days the employee requested"
         },
         "requestedStatus" : {
-          "type" : "integer"
+          "type" : "integer",
+          "enum" : [ "REQUESTED", "APPROVED", "DENIED" ]
         },
         "date" : {
           "type" : "integer",
           "format" : "uint64",
           "description" : "The unix timestamp of the date when the employee requested the vacation"
         }
-      },
-      "description" : "A Vacation contains info of the employee asking for a vaction period\n"
+      }
     },
     "IDocument" : {
       "type" : "object",
-      "required" : [ "createdDate", "dueDate", "fkDocumentType", "fkEmployee", "id" ],
+      "description" : "A Document required for the onbarding proccess of a new Employee\n",
+      "required" : [ "id", "fkDocumentType", "fkEmployee", "createdDate", "dueDate" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Role"
+          "description" : "The unique identifier of the Role",
+          "example" : 1
         },
         "fkDocumentType" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The foreign key  of the DocumentType of this Document"
+          "description" : "The foreign key  of the DocumentType of this Document",
+          "example" : 1
         },
         "fkEmployee" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The foreign key  of the Employee that needs to upload this Document"
+          "description" : "The foreign key  of the Employee that needs to upload this Document",
+          "example" : 1
         },
         "createdDate" : {
           "type" : "integer",
@@ -2312,18 +1832,18 @@
         "type" : {
           "$ref" : "#/definitions/IDocumentType"
         }
-      },
-      "description" : "A Document required for the onbarding proccess of a new Employee\n"
+      }
     },
     "IDocumentType" : {
       "type" : "object",
+      "description" : "A DocumentType contains info of the template support document for the onboarding process\n",
       "required" : [ "id", "name" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the DocumentType"
+          "description" : "The unique identifier of the DocumentType",
+          "example" : 1
         },
         "name" : {
           "type" : "string"
@@ -2334,24 +1854,24 @@
         "path" : {
           "type" : "string"
         }
-      },
-      "description" : "A DocumentType contains info of the template support document for the onboarding process\n"
+      }
     },
     "IPerformance" : {
       "type" : "object",
-      "required" : [ "date", "fkEmployee", "id", "status" ],
+      "description" : "A Performance contains info of a performance record of an employee\n",
+      "required" : [ "id", "fkEmployee", "date", "status" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Performance"
+          "description" : "The unique identifier of the Performance",
+          "example" : 1
         },
         "fkEmployee" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "Foreign key of the employee with this performance review"
+          "description" : "Foreign key of the employee with this performance review",
+          "example" : 1
         },
         "date" : {
           "type" : "number",
@@ -2359,61 +1879,62 @@
           "description" : "The unix timestamp of the date the performance review was created"
         },
         "status" : {
-          "type" : "integer"
+          "type" : "integer",
+          "enum" : [ "UNPUBLISHED", "PUBLISHED" ]
         },
         "jabcGoals" : {
-          "type" : "array",
           "description" : "Contains all the JABC Goals (Section 1) of this performance review",
+          "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IJABCGoal"
           }
         },
         "personalTargets" : {
-          "type" : "array",
           "description" : "Contains all the Personal Targets (Section 2) of this performance review",
+          "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IPersonalTarget"
           }
         },
         "objectives" : {
-          "type" : "array",
           "description" : "Contains all the Objectives (Section 3) of this performance review",
+          "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IObjective"
           }
         },
         "developmentGoals" : {
-          "type" : "array",
           "description" : "Contains all the Development Goals (Section 4) of this performance review",
+          "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IDevelopmentGoal"
           }
         },
         "comments" : {
-          "type" : "array",
           "description" : "Contains all the comments (Section 5) of this performance review",
+          "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IComment"
           }
         }
-      },
-      "description" : "A Performance contains info of a performance record of an employee\n"
+      }
     },
     "IJABCGoal" : {
       "type" : "object",
-      "required" : [ "fkPerformance", "id" ],
+      "description" : "A JABCGoal contains what another employee thinks about the performance record of another employee\n",
+      "required" : [ "id", "fkPerformance" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the JABCGoal"
+          "description" : "The unique identifier of the JABCGoal",
+          "example" : 1
         },
         "fkPerformance" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "Foreign key of Performance that has this JABCGoal"
+          "description" : "Foreign key of Performance that has this JABCGoal",
+          "example" : 1
         },
         "name" : {
           "type" : "string"
@@ -2424,24 +1945,24 @@
         "previousYear" : {
           "type" : "string"
         }
-      },
-      "description" : "A JABCGoal contains what another employee thinks about the performance record of another employee\n"
+      }
     },
     "IPersonalTarget" : {
       "type" : "object",
-      "required" : [ "fkPerformance", "id" ],
+      "description" : "A PersonalTarget contains what another employee thinks about the performance record of another employee\n",
+      "required" : [ "id", "fkPerformance" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the PersonalTarget"
+          "description" : "The unique identifier of the PersonalTarget",
+          "example" : 1
         },
         "fkPerformance" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "Foreign key of Performance that has this PersonalTarget"
+          "description" : "Foreign key of Performance that has this PersonalTarget",
+          "example" : 1
         },
         "description" : {
           "type" : "string"
@@ -2449,24 +1970,24 @@
         "rating" : {
           "type" : "string"
         }
-      },
-      "description" : "A PersonalTarget contains what another employee thinks about the performance record of another employee\n"
+      }
     },
     "IObjective" : {
       "type" : "object",
-      "required" : [ "fkPerformance", "id" ],
+      "description" : "A Objective contains what another employee thinks about the performance record of another employee\n",
+      "required" : [ "id", "fkPerformance" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Objective"
+          "description" : "The unique identifier of the Objective",
+          "example" : 1
         },
         "fkPerformance" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "Foreign key of Performance that has this Objective"
+          "description" : "Foreign key of Performance that has this Objective",
+          "example" : 1
         },
         "q1" : {
           "type" : "string"
@@ -2495,24 +2016,24 @@
         "foundation" : {
           "type" : "string"
         }
-      },
-      "description" : "A Objective contains what another employee thinks about the performance record of another employee\n"
+      }
     },
     "IDevelopmentGoal" : {
       "type" : "object",
-      "required" : [ "fkPerformance", "id" ],
+      "description" : "A DevelopmentGoal contains what another employee thinks about the performance record of another employee\n",
+      "required" : [ "id", "fkPerformance" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the DevelopmentGoal"
+          "description" : "The unique identifier of the DevelopmentGoal",
+          "example" : 1
         },
         "fkPerformance" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "Foreign key of Performance that has this DevelopmentGoal"
+          "description" : "Foreign key of Performance that has this DevelopmentGoal",
+          "example" : 1
         },
         "goal" : {
           "type" : "string"
@@ -2523,30 +2044,30 @@
         "rating" : {
           "type" : "string"
         }
-      },
-      "description" : "A DevelopmentGoal contains what another employee thinks about the performance record of another employee\n"
+      }
     },
     "IComment" : {
       "type" : "object",
-      "required" : [ "comment", "date", "fkCommenter", "fkPerformance", "id" ],
+      "description" : "A Comment contains what another employee thinks about the performance record of another employee\n",
+      "required" : [ "id", "fkPerformance", "fkCommenter", "comment", "date" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "The unique identifier of the Comment"
+          "description" : "The unique identifier of the Comment",
+          "example" : 1
         },
         "fkPerformance" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "Foreign key of Performance that has this Comment"
+          "description" : "Foreign key of Performance that has this Comment",
+          "example" : 1
         },
         "fkCommenter" : {
           "type" : "integer",
           "format" : "uint64",
-          "example" : 1,
-          "description" : "Foreign key of Employee that created the Comment"
+          "description" : "Foreign key of Employee that created the Comment",
+          "example" : 1
         },
         "comment" : {
           "type" : "string"
@@ -2556,10 +2077,10 @@
           "format" : "uint64",
           "description" : "The unix timestamp of the date when the Comment was created"
         }
-      },
-      "description" : "A Comment contains what another employee thinks about the performance record of another employee\n"
+      }
     },
     "ILogin" : {
+      "description" : "Represents the basic info to logged into the system",
       "type" : "object",
       "required" : [ "email", "password" ],
       "properties" : {
@@ -2569,12 +2090,12 @@
         "password" : {
           "type" : "string"
         }
-      },
-      "description" : "Represents the basic info to logged into the system"
+      }
     },
     "ILoginResponse" : {
+      "description" : "The data returned by the login path contains the employee info as well as the auth token",
       "type" : "object",
-      "required" : [ "message", "responseCode", "type" ],
+      "required" : [ "responseCode", "type", "message" ],
       "properties" : {
         "responseCode" : {
           "type" : "integer",
@@ -2596,43 +2117,6 @@
         "employee" : {
           "$ref" : "#/definitions/IEmployee"
         }
-      },
-      "description" : "The data returned by the login path contains the employee info as well as the auth token"
-    }
-  },
-  "parameters" : {
-    "securityAuthToken" : {
-      "name" : "X-Auth-Token",
-      "in" : "header",
-      "description" : "Auth Token that grants access to the system",
-      "required" : false,
-      "type" : "string"
-    },
-    "term" : {
-      "name" : "term",
-      "in" : "query",
-      "description" : "Search term for filter the data",
-      "required" : false,
-      "type" : "string"
-    }
-  },
-  "responses" : {
-    "SuccessfulResponse" : {
-      "description" : "successful operation",
-      "schema" : {
-        "$ref" : "#/definitions/IApiResponse"
-      }
-    },
-    "ErrorResponse" : {
-      "description" : "bad request",
-      "schema" : {
-        "$ref" : "#/definitions/IApiResponse"
-      }
-    },
-    "NoAccessResponse" : {
-      "description" : "unauthorized access",
-      "schema" : {
-        "$ref" : "#/definitions/IApiResponse"
       }
     }
   }
