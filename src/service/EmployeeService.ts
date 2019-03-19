@@ -229,13 +229,17 @@ export async function getEmployeeHistory (id: Number, xAuthToken: String) {
 
 /**
  * get all the Employees
- * This returns all the Employees of the system.  If [term] is provided this returns the Employees of the system that match with the [term]. 
+ * This returns all the Employees of the system.  
+ * If [start] and [end] are provided, it will return all employees with a birthday between those dates 
+ * If [term] is provided this returns the Employees of the system that match with the [term]. 
+ * @param {String} start date Search employees with a birthday after this date, if this isn't provided there won't be any filtering (optional)
+ * @param {String} end date Search employees with a birthday before this date, if this isn't provided there won't be any filtering (optional)
  *
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @param {String} term Search term for filter the data (optional)
  * @returns {Promise<[]>}
  **/
-export async function getEmployees (xAuthToken: String, term: String) {
+export async function getEmployees (xAuthToken: String, term: String, start: String, end: String) {
 	try{
 		let res = await Database.getInstance().query('CALL get_all_employees()', [], JABCResponse.EMPLOYEE)
 		return Employee.Employees(res[0][0])
@@ -269,8 +273,8 @@ export async function getEmployeesByManager (idManager: Number, xAuthToken: Stri
  *
  * @param {Number} id Integer id of the searched Employee
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
- * term String Search term for filter the data (optional)
- * returns List
+ * @param {string} term String Search term for filter the data (optional)
+ * @returns {Promise<[]>}
  **/
 export async function getOnboardingTasks(id: Number, xAuthToken: string, term: string) {
 	try{
@@ -283,13 +287,31 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
 
 
 /**
+ * get all the Managers of an employee with the provided [id]
+ * This returns all the Employees of the system that manage the employee with the [id].  
+ *
+ * @param {Number} id Integer id of the Employee with the searched Managers
+ * @param {String} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<[]>}
+ **/
+export async function getManagersByEmployee(id: Number, xAuthToken: string) {
+	try{
+		// TODO: Implement
+		throw 'NOT IMPLEMENTED'
+	}catch(error){
+		throw error;
+	}
+}
+
+
+/**
  * get all the PerformancePlans of the employee with [id]
  * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].  
  *
  * @param {Number} id Integer id of the searched Employee
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
- * term String Search term for filter the data (optional)
- * returns List
+ * @param {string} term String Search term for filter the data (optional)
+ * @returns {Promise<[]>}
  **/
 export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
 	try{
@@ -307,8 +329,8 @@ export async function getPerformancePlans(id: Number, xAuthToken: string, term: 
    *
    * @param {Number} id Integer id of the searched Employee
    * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
-   * term String Search term for filter the data (optional)
-   * returns List
+   * @param {string} term String Search term for filter the data (optional)
+   * @returns {Promise<[]>}
    **/
 export async function getPerformanceReviews(id: Number, xAuthToken: string, term: string) {
 	try{

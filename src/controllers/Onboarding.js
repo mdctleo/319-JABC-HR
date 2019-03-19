@@ -63,6 +63,20 @@ module.exports.deleteOnboardingTask = function deleteOnboardingTask (req, res, n
     });
 };
 
+module.exports.getAllOnboardingTasks = function getAllOnboardingTasks (req, res, next) {
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  var start = req.swagger.params['start'].value;
+  var end = req.swagger.params['end'].value;
+  var status = req.swagger.params['status'].value;
+  Onboarding.getAllOnboardingTasks(xAuthToken,start,end,status)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
 module.exports.getDocumentType = function getDocumentType (req, res, next) {
   var id = req.swagger.params['id'].value;
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;

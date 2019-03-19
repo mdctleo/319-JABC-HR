@@ -10,8 +10,8 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "localhost:8080"
-basePath: "/JABC/1.0.0"
+host: "virtserver.swaggerhub.com"
+basePath: "/jatj/JABC/1.0.0"
 tags:
 - name: "Employee"
   description: "Provides access to all employee data and history, manage Performances\
@@ -27,6 +27,7 @@ tags:
 - name: "Vacation"
   description: "Manage the vacation requests from employees\n"
 schemes:
+- "https"
 - "http"
 consumes:
 - "application/json"
@@ -38,8 +39,10 @@ paths:
       tags:
       - "Employee"
       summary: "get all the Employees"
-      description: "This returns all the Employees of the system. \nIf [term] is provided\
-        \ this returns the Employees of the system that match with the [term].\n"
+      description: "This returns all the Employees of the system. \nIf [start] and\
+        \ [end] are provided, it will return all employees with a birthday between\
+        \ those dates\nIf [term] is provided this returns the Employees of the system\
+        \ that match with the [term].\n"
       operationId: "getEmployees"
       parameters:
       - name: "X-Auth-Token"
@@ -52,6 +55,20 @@ paths:
         description: "Search term for filter the data"
         required: false
         type: "string"
+      - name: "start"
+        in: "query"
+        description: "Search employees with a birthday after this date, if this isn't\
+          \ provided there won't be any filtering"
+        required: false
+        type: "string"
+        format: "date"
+      - name: "end"
+        in: "query"
+        description: "Search employees with a birthday before this date, if this isn't\
+          \ provided there won't be any filtering"
+        required: false
+        type: "string"
+        format: "date"
       responses:
         200:
           description: "successful operation"
@@ -216,6 +233,44 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+  /employee/{id}/manager:
+    get:
+      tags:
+      - "Employee"
+      summary: "get all the Managers of an employee with the provided [id]"
+      description: "This returns all the Employees of the system that manage the employee\
+        \ with the [id]. \n"
+      operationId: "getManagersByEmployee"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Employee with the searched Managers"
+        required: true
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IEmployee"
         401:
           description: "unauthorized access"
           schema:
@@ -914,6 +969,59 @@ paths:
       security:
       - AuthToken: []
       x-swagger-router-controller: "Vacation"
+  /onboarding/task:
+    get:
+      tags:
+      - "Onboarding"
+      summary: "gets all the OnboardingTasks"
+      description: "Will return all the OnboardingTasks on the system.\nIf [start]\
+        \ and [end] are provided, it will return all OnboardingTasks with a due date\
+        \ between those dates\nIf [status] is provided, it will return the onboarding\
+        \ tasks that matches that status (0:active, 1:done)\n"
+      operationId: "getAllOnboardingTasks"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "start"
+        in: "query"
+        description: "Search onboarding tasks with a due date after this date, if\
+          \ this isn't provided there won't be any filtering"
+        required: false
+        type: "string"
+        format: "date"
+      - name: "end"
+        in: "query"
+        description: "Search onboarding tasks with a due date before this date, if\
+          \ this isn't provided there won't be any filtering"
+        required: false
+        type: "string"
+        format: "date"
+      - name: "status"
+        in: "query"
+        description: "If provided will return the onboarding tasks that matches that\
+          \ status (0:active, 1:done)"
+        required: false
+        type: "integer"
+        format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IOnboardingTask"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Onboarding"
   /onboarding/task/{id}:
     get:
       tags:
@@ -2360,10 +2468,16 @@ definitions:
         type: "string"
       fte:
         type: "integer"
+        minimum: 0
+        maximum: 1
       status:
         type: "integer"
+        minimum: 0
+        maximum: 3
       adminLevel:
         type: "integer"
+        minimum: 0
+        maximum: 2
       salary:
         type: "number"
       address:
@@ -2374,6 +2488,7 @@ definitions:
         description: "The birthdate of the employee"
       dateJoined:
         type: "string"
+        format: "date"
         description: "The date joined of the employee"
       vacationDays:
         type: "integer"
@@ -2403,9 +2518,18 @@ definitions:
       role:
         name: "name"
         description: "description"
+        competencies:
+        - fkRole: 1
+          name: "name"
+          description: "description"
+          id: 1
+        - fkRole: 1
+          name: "name"
+          description: "description"
+          id: 1
         id: 1
-      adminLevel: 1
-      dateJoined: "dateJoined"
+      adminLevel: 0
+      dateJoined: "2000-01-23"
       salary: 5.962133916683182377482808078639209270477294921875
       lastname: "lastname"
       password: "password"
@@ -2416,7 +2540,7 @@ definitions:
       vacationDays: 5
       id: 1
       email: "email"
-      status: 6
+      status: 1
   IEmployeeHistory:
     type: "object"
     required:
@@ -2452,10 +2576,16 @@ definitions:
         type: "string"
       fte:
         type: "integer"
+        minimum: 0
+        maximum: 1
       status:
         type: "integer"
+        minimum: 0
+        maximum: 3
       adminLevel:
         type: "integer"
+        minimum: 0
+        maximum: 2
       version:
         type: "integer"
         format: "uint64"
@@ -2481,6 +2611,7 @@ definitions:
         description: "The birthdate of the employee"
       dateJoined:
         type: "string"
+        format: "date"
         description: "The date joined of the employee"
       vacationDays:
         type: "integer"
@@ -2510,9 +2641,18 @@ definitions:
       role:
         name: "name"
         description: "description"
+        competencies:
+        - fkRole: 1
+          name: "name"
+          description: "description"
+          id: 1
+        - fkRole: 1
+          name: "name"
+          description: "description"
+          id: 1
         id: 1
-      adminLevel: 1
-      dateJoined: "dateJoined"
+      adminLevel: 0
+      dateJoined: "2000-01-23"
       salary: 5.962133916683182377482808078639209270477294921875
       version: 1
       fkCreator: 1
@@ -2526,7 +2666,7 @@ definitions:
       vacationDays: 5
       id: 1
       email: "email"
-      status: 6
+      status: 1
   IRole:
     type: "object"
     required:
@@ -2542,11 +2682,25 @@ definitions:
         type: "string"
       description:
         type: "string"
+      competencies:
+        type: "array"
+        description: "Contains all the competencies of this role"
+        items:
+          $ref: "#/definitions/ICompetency"
     description: "An Role is contains all the current information of a current or\
       \ onboarding employee\n"
     example:
       name: "name"
       description: "description"
+      competencies:
+      - fkRole: 1
+        name: "name"
+        description: "description"
+        id: 1
+      - fkRole: 1
+        name: "name"
+        description: "description"
+        id: 1
       id: 1
   ICompetency:
     type: "object"
@@ -2606,6 +2760,8 @@ definitions:
         description: "The number of vacation days the employee requested"
       requestedStatus:
         type: "integer"
+        minimum: 0
+        maximum: 2
       date:
         type: "string"
         format: "date"
@@ -2617,7 +2773,7 @@ definitions:
       fkApprover: 1
       fkEmployee: 1
       id: 1
-      requestedStatus: 6
+      requestedStatus: 1
   IOnboardingTask:
     type: "object"
     required:
@@ -2654,9 +2810,13 @@ definitions:
       requireDoc:
         type: "integer"
         description: "Wether the Onboarding task requires document upload or not."
+        minimum: 0
+        maximum: 1
       status:
         type: "integer"
         description: "Wether the Onboarding task is done or not"
+        minimum: 0
+        maximum: 1
       expiryDate:
         type: "string"
         format: "date"
@@ -2689,7 +2849,7 @@ definitions:
         name: "name"
         description: "description"
         id: 1
-      status: 6
+      status: 0
   IDocumentType:
     type: "object"
     required:
@@ -2740,6 +2900,8 @@ definitions:
         description: "The date the performance review was created"
       status:
         type: "integer"
+        minimum: 0
+        maximum: 1
       sections:
         type: "array"
         description: "Contains all the IPerformanceSections Related to this IPerformancePlan"
@@ -2803,6 +2965,8 @@ definitions:
         description: "The date the performance review was created"
       status:
         type: "integer"
+        minimum: 0
+        maximum: 1
       sections:
         type: "array"
         description: "Contains all the IPerformanceSections Related to this IPerformanceReview"
@@ -2957,9 +3121,18 @@ definitions:
         role:
           name: "name"
           description: "description"
+          competencies:
+          - fkRole: 1
+            name: "name"
+            description: "description"
+            id: 1
+          - fkRole: 1
+            name: "name"
+            description: "description"
+            id: 1
           id: 1
-        adminLevel: 1
-        dateJoined: "dateJoined"
+        adminLevel: 0
+        dateJoined: "2000-01-23"
         salary: 5.962133916683182377482808078639209270477294921875
         lastname: "lastname"
         password: "password"
@@ -2970,7 +3143,7 @@ definitions:
         vacationDays: 5
         id: 1
         email: "email"
-        status: 6
+        status: 1
       responseCode: 0
       token: "token"
 parameters:

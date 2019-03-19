@@ -96,6 +96,26 @@ export async function deleteOnboardingTask(id : Number,  xAuthToken : String) {
 
 
 /**
+ * gets all the OnboardingTasks
+ * Will return all the OnboardingTasks on the system. If [start] and [end] are provided, it will return all OnboardingTasks with a due date between those dates If [status] is provided, it will return the onboarding tasks that matches that status (0:active, 1:done) 
+ *
+ * xAuthToken String Auth Token that grants access to the system (optional)
+ * start date Search onboarding tasks with a due date after this date, if this isn't provided there won't be any filtering (optional)
+ * end date Search onboarding tasks with a due date before this date, if this isn't provided there won't be any filtering (optional)
+ * status Integer If provided will return the onboarding tasks that matches that status (0:active, 1:done) (optional)
+ * returns IOnboardingTask
+ **/
+exports.getAllOnboardingTasks = function(xAuthToken: String, start: String, end: String, status: String) {
+	try{
+		// TODO: Implement
+		throw 'NOT IMPLEMENTED'
+	}catch(error){
+		throw error;
+	}
+}
+
+
+/**
  * gets an specific DocumentType
  * Will return the DocumentType that matches with the provided [id]
  *

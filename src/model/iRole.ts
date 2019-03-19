@@ -37,6 +37,9 @@ export class Role implements IRole {
     id: number;
     name: string;
     description?: string;
+    /**
+     * Contains all the competencies of this role
+     */
     competencies?: Array<ICompetency>;
 
     constructor(rawRole: any) {
