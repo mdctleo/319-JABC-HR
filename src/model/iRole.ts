@@ -12,8 +12,10 @@
 
 
 
+import {ICompetency} from "./iCompetency";
+
 /**
- * An Role is contains all the current information of a current or onboarding employee 
+ * An Role is contains all the current information of a role and its competencies
  */
 export interface IRole { 
     /**
@@ -22,6 +24,10 @@ export interface IRole {
     id: number;
     name: string;
     description?: string;
+    /**
+     * Contains all the competencies of this role
+     */
+    competencies?: Array<ICompetency>;
 }
 
 export class Role implements IRole {
@@ -30,12 +36,17 @@ export class Role implements IRole {
      */
     id: number;
     name: string;
-    description: string;
+    description?: string;
+    /**
+     * Contains all the competencies of this role
+     */
+    competencies?: Array<ICompetency>;
 
     constructor(rawRole: any) {
         this.id = rawRole.ROLE_ID;
         this.name = rawRole.ROLE_NAME;
         this.description = rawRole.DESCRIPTION;
+        this.competencies = [];
     }
 
     static Roles(rawRoles: any[]) {

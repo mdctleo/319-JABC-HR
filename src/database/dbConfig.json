@@ -4,5 +4,5 @@
   "database": "jabc_db",
   "user": "root",
   "password": "root",
-  "multipleStatements": true
+  "dateStrings": true
 }

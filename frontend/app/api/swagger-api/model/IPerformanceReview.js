@@ -33,17 +33,18 @@ export default class IPerformanceReview {
     * @class
     * @param id {Number} The unique identifier of the Performance
     * @param fkEmployee {Number} Foreign key of the employee with this performance review
-    * @param _date {Number} The unix timestamp of the date the performance review was created
+    * @param fkPerformancePlan {Number} Foreign key of the performance plan
+    * @param _date {Date} The date the performance review was created
     * @param status {Number} 
     */
 
-    constructor(id, fkEmployee, _date, status) {
+    constructor(id, fkEmployee, fkPerformancePlan, _date, status) {
         
 
         
         
 
-        this['id'] = id;this['fkEmployee'] = fkEmployee;this['date'] = _date;this['status'] = status;
+        this['id'] = id;this['fkEmployee'] = fkEmployee;this['fkPerformancePlan'] = fkPerformancePlan;this['date'] = _date;this['status'] = status;
 
         
     }
@@ -69,8 +70,11 @@ export default class IPerformanceReview {
             if (data.hasOwnProperty('fkEmployee')) {
                 obj['fkEmployee'] = ApiClient.convertToType(data['fkEmployee'], 'Number');
             }
+            if (data.hasOwnProperty('fkPerformancePlan')) {
+                obj['fkPerformancePlan'] = ApiClient.convertToType(data['fkPerformancePlan'], 'Number');
+            }
             if (data.hasOwnProperty('date')) {
-                obj['date'] = ApiClient.convertToType(data['date'], 'Number');
+                obj['date'] = ApiClient.convertToType(data['date'], 'Date');
             }
             if (data.hasOwnProperty('status')) {
                 obj['status'] = ApiClient.convertToType(data['status'], 'Number');
@@ -96,8 +100,13 @@ export default class IPerformanceReview {
     */
     fkEmployee = undefined;
     /**
-    * The unix timestamp of the date the performance review was created
-    * @member {Number} date
+    * Foreign key of the performance plan
+    * @member {Number} fkPerformancePlan
+    */
+    fkPerformancePlan = undefined;
+    /**
+    * The date the performance review was created
+    * @member {Date} date
     */
     date = undefined;
     /**

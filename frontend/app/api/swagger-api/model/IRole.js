@@ -13,6 +13,7 @@
 
 
 import ApiClient from '../ApiClient';
+import ICompetency from './ICompetency';
 
 
 
@@ -68,6 +69,9 @@ export default class IRole {
             if (data.hasOwnProperty('description')) {
                 obj['description'] = ApiClient.convertToType(data['description'], 'String');
             }
+            if (data.hasOwnProperty('competencies')) {
+                obj['competencies'] = ApiClient.convertToType(data['competencies'], [ICompetency]);
+            }
         }
         return obj;
     }
@@ -85,6 +89,11 @@ export default class IRole {
     * @member {String} description
     */
     description = undefined;
+    /**
+    * Contains all the competencies of this role
+    * @member {Array.<module:model/ICompetency>} competencies
+    */
+    competencies = undefined;
 
 
 

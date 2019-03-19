@@ -9,8 +9,8 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { IComment } from './iComment';
-import { IPerformanceSection } from './iPerformanceSection';
+import { Comment, IComment } from './iComment';
+import { PerformanceSection, IPerformanceSection } from './iPerformanceSection';
 
 
 /**
@@ -68,8 +68,6 @@ export class PerformancePlan implements IPerformancePlan{
         this.fkEmployee = rawPerformancePlan.EMPLOYEE_ID;
         this.date = rawPerformancePlan.CREATED_DATE;
         this.status = rawPerformancePlan.STATUS;
-        this.sections = [];
-        this.comments = [];
     }
 
     static PerformancePlans(rawPerformancePlans: any[]){

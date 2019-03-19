@@ -1,5 +1,5 @@
 'use strict';
-import {OnboardingTask, IOnboardingTask, DocumentType, IDocumentType, IFAQ} from '../model/models'
+import { OnboardingTask, IOnboardingTask, DocumentType, IDocumentType, IFAQ } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import Database from '../database/Database';
 
@@ -11,14 +11,14 @@ import Database from '../database/Database';
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function createDocumentType(documentType : IDocumentType, xAuthToken : String) {
-  try{
+export async function createDocumentType(documentType: IDocumentType, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL create_doc_type(?,?)', [
 			documentType.name,
 			documentType.description,
 		], JABCResponse.ONBOARDING)
 		return new JABCSuccess(JABCResponse.ONBOARDING, `The document template was saved successfully`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -31,13 +31,13 @@ export async function createDocumentType(documentType : IDocumentType, xAuthToke
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function createFAQ(faq : IFAQ, xAuthToken : String) {
- 	try{
-	   // STRETCH: Implement
+export async function createFAQ(faq: IFAQ, xAuthToken: String) {
+	try {
+		// STRETCH: Implement
 		throw 'NOT IMPLEMENTED'
-   	}catch(error){
-	   throw error;
-   	}
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -49,11 +49,11 @@ export async function createFAQ(faq : IFAQ, xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function deleteDocumentType(id : Number,  xAuthToken : String) {
-    try{
+export async function deleteDocumentType(id: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL delete_doc_type(?)', [id], JABCResponse.ONBOARDING)
 		return new JABCSuccess(JABCResponse.ONBOARDING, `The document template was deleted successfuly`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -67,13 +67,13 @@ export async function deleteDocumentType(id : Number,  xAuthToken : String) {
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function deleteFAQ(id : Number,  xAuthToken : String) {
-	try{
-	   // STRETCH: Implement
+export async function deleteFAQ(id: Number, xAuthToken: String) {
+	try {
+		// STRETCH: Implement
 		throw 'NOT IMPLEMENTED'
-   	}catch(error){
-	   throw error;
-   	}
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -85,11 +85,63 @@ export async function deleteFAQ(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function deleteOnboardingTask(id : Number,  xAuthToken : String) {
-    try{
+export async function deleteOnboardingTask(id: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL delete_onboarding_task(?)', [id], JABCResponse.ONBOARDING)
 		return new JABCSuccess(JABCResponse.ONBOARDING, `The document was deleted successfuly`)
-	}catch(error){
+	} catch (error) {
+		throw error;
+	}
+}
+
+
+/**
+ * gets all the OnboardingTasks
+ * Will return all the OnboardingTasks on the system. 
+ * If [start] and [end] are provided, it will return all OnboardingTasks with a due date between those dates 
+ * If [id] is provided will return the onboarding tasks of an employee that matches that id (optional)
+ * If [status] is provided, it will return the onboarding tasks that matches that status (0:active, 1:done) 
+ *
+ * @param {String} xAuthToken String Auth Token that grants access to the system (optional)
+ * @param {String} start date Search onboarding tasks with a due date after this date, if this isn't provided there won't be any filtering (optional)
+ * @param {String} end date Search onboarding tasks with a due date before this date, if this isn't provided there won't be any filtering (optional)
+ * @param {Integer} id Integer If provided will return the onboarding tasks of an employee that matches that id (optional)
+ * @param {Integer} status Integer If provided will return the onboarding tasks that matches that status (0:active, 1:done) (optional)
+ * @returns {Promise<Array<IOnboardingTask>>}
+ **/
+export async function getAllOnboardingTasks(xAuthToken: String, start: String, end: String, id:Number, status: String) {
+	try {
+		let query: string = 'CALL get_all_onboarding_tasks()';
+		let params: any[] = [];
+		if(start != undefined && end != undefined){
+			if (status != undefined && id != undefined){
+				query = 'CALL get_all_onboarding_tasks_due_of_status(?,?,?,?)';
+				params = [start, end, id, status];
+			} else if (id != undefined){
+				query = 'CALL get_all_onboarding_tasks_due_of(?,?,?)';
+				params = [start, end, id];
+			}else if (status != undefined){
+				query = 'CALL get_all_onboarding_tasks_due_status(?,?,?)';
+				params = [start, end, status];
+			}else {
+				query = 'CALL get_all_onboarding_tasks_due(?,?)';
+				params = [start, end];
+			}
+		} else if (status != undefined){
+			if (id != undefined){
+				query = 'CALL get_all_onboarding_tasks_of_status(?,?)';
+				params = [id, status];
+			}else{
+				query = 'CALL get_all_onboarding_tasks_status(?)';
+				params = [status];
+			}
+		} else if (id != undefined){
+			query = 'CALL get_all_onboarding_tasks_of(?)';
+			params = [id];
+		}
+		let res = await Database.getInstance().query(query, params, JABCResponse.ONBOARDING)
+		return OnboardingTask.OnboardingTasks(res[0][0])
+	} catch (error) {
 		throw error;
 	}
 }
@@ -103,11 +155,11 @@ export async function deleteOnboardingTask(id : Number,  xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IDocumentType>}
  **/
-export async function getDocumentType(id : Number,  xAuthToken : String) {
-    try{
+export async function getDocumentType(id: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL get_doc_type(?)', [id], JABCResponse.ONBOARDING)
 		return new DocumentType(res[0][0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -122,17 +174,17 @@ export async function getDocumentType(id : Number,  xAuthToken : String) {
  * @returns {Promise<File>}
  **/
 export async function getDocumentTypeFile(id: Number, xAuthToken: string) {
-	try{
+	try {
 		let documentType = (await Database.getInstance().query('CALL get_doc_type(?)', [id], JABCResponse.ONBOARDING))[0][0][0]
-		if(documentType.TEMPLATE_FILE == null || documentType.STATUS == 0) 
+		if (documentType.TEMPLATE_FILE == null || documentType.STATUS == 0)
 			throw new JABCError(JABCResponse.ONBOARDING, 'The file doesn\'t exists')
 		return {
 			buffer: documentType.TEMPLATE_FILE,
 			mimetype: documentType.MIME_TYPE,
 		}
-   	}catch(error){
-	   throw error;
-   	}
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -143,11 +195,11 @@ export async function getDocumentTypeFile(id: Number, xAuthToken: string) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<[]>}
  **/
-export async function getDocumentTypes(xAuthToken : String) {
-    try{
+export async function getDocumentTypes(xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL get_all_doc_types()', [], JABCResponse.ONBOARDING)
 		return DocumentType.DocumentTypes(res[0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -161,13 +213,13 @@ export async function getDocumentTypes(xAuthToken : String) {
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * @returns {Promise<IFAQ>}
  **/
-export async function getFAQ(id : Number,  xAuthToken : String) {
-	try{
-	   // STRETCH: Implement
+export async function getFAQ(id: Number, xAuthToken: String) {
+	try {
+		// STRETCH: Implement
 		throw 'NOT IMPLEMENTED'
-   	}catch(error){
-	   throw error;
-   	}
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -178,13 +230,13 @@ export async function getFAQ(id : Number,  xAuthToken : String) {
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * @returns {Promise<List>}
  **/
-export async function getFAQs(xAuthToken : String) {
-	try{
-	   // STRETCH: Implement
+export async function getFAQs(xAuthToken: String) {
+	try {
+		// STRETCH: Implement
 		throw 'NOT IMPLEMENTED'
-   	}catch(error){
-	   throw error;
-   	}
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -196,11 +248,11 @@ export async function getFAQs(xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IOnboardingTask>}
  **/
-export async function getOnboardingTask(id : Number,  xAuthToken : String) {
-    try{
+export async function getOnboardingTask(id: Number, xAuthToken: String) {
+	try {
 		let res = await Database.getInstance().query('CALL get_onboarding_task(?)', [id], JABCResponse.ONBOARDING)
 		return new OnboardingTask(res[0][0][0])
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -215,17 +267,17 @@ export async function getOnboardingTask(id : Number,  xAuthToken : String) {
  * @returns {Promise<File>}
  **/
 export async function getOnboardingTaskFile(id: Number, xAuthToken: string) {
-	try{
+	try {
 		let onboardingTask = (await Database.getInstance().query('CALL get_onboarding_task(?)', [id], JABCResponse.ONBOARDING))[0][0][0]
-		if(onboardingTask.ACTUAL_FILE == null || onboardingTask.STATUS == 0) 
+		if (onboardingTask.ACTUAL_FILE == null || onboardingTask.STATUS == 0)
 			throw new JABCError(JABCResponse.ONBOARDING, 'The file doesn\'t exists')
 		return {
 			buffer: onboardingTask.ACTUAL_FILE,
 			mimetype: onboardingTask.MIME_TYPE,
 		}
-   	}catch(error){
-	   throw error;
-   	}
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -238,16 +290,16 @@ export async function getOnboardingTaskFile(id: Number, xAuthToken: string) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function updateDocumentType(id : Number, documentType : IDocumentType, xAuthToken : String) {
-    try{
-        let res = await Database.getInstance().query('CALL update_doc_type(?,?,?)', 
-        [
-            id,
-            documentType.name,
-            documentType.description,
-        ], JABCResponse.ONBOARDING)
+export async function updateDocumentType(id: Number, documentType: IDocumentType, xAuthToken: String) {
+	try {
+		let res = await Database.getInstance().query('CALL update_doc_type(?,?,?)',
+			[
+				id,
+				documentType.name,
+				documentType.description,
+			], JABCResponse.ONBOARDING)
 		return new JABCSuccess(JABCResponse.ONBOARDING, `The document template was updated successfuly`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -262,13 +314,13 @@ export async function updateDocumentType(id : Number, documentType : IDocumentTy
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function updateFAQ(id : Number, faq : IFAQ, xAuthToken : String) {
-	try{
-	   // STRETCH: Implement
+export async function updateFAQ(id: Number, faq: IFAQ, xAuthToken: String) {
+	try {
+		// STRETCH: Implement
 		throw 'NOT IMPLEMENTED'
-   	}catch(error){
-	   throw error;
-   	}	
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -281,22 +333,22 @@ export async function updateFAQ(id : Number, faq : IFAQ, xAuthToken : String) {
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function updateOnboardingTask(id : Number, onboardingTask : IOnboardingTask, xAuthToken : String) {
-    try{
+export async function updateOnboardingTask(id: Number, onboardingTask: IOnboardingTask, xAuthToken: String) {
+	try {
 		onboardingTask = OnboardingTask.Prepare(onboardingTask)
-        let res = await Database.getInstance().query('CALL update_onboarding_task(?,?,?,?,?,?,?,?)', 
-        [
-            id,
-            onboardingTask.fkEmployee,
-            onboardingTask.fkDocumentType,
-            onboardingTask.createdDate,
-            onboardingTask.dueDate,
-            onboardingTask.expiryDate,
-			onboardingTask.description,
-			onboardingTask.requireDoc,
-        ], JABCResponse.ONBOARDING)
+		let res = await Database.getInstance().query('CALL update_onboarding_task(?,?,?,?,?,?,?,?)',
+			[
+				id,
+				onboardingTask.fkEmployee,
+				onboardingTask.fkDocumentType,
+				onboardingTask.createdDate,
+				onboardingTask.dueDate,
+				onboardingTask.expiryDate,
+				onboardingTask.description,
+				onboardingTask.requireDoc,
+			], JABCResponse.ONBOARDING)
 		return new JABCSuccess(JABCResponse.ONBOARDING, `The onboarding task was updated successfuly`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }
@@ -311,13 +363,13 @@ export async function updateOnboardingTask(id : Number, onboardingTask : IOnboar
  * @param {any} document File The document file to be used as a template (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function uploadTemplateDocumentType(id : Number, xAuthToken : String,  document : any) {
-	try{
-		if(document){
-			if(document.buffer.length > process.env.MAX_FILE)
+export async function uploadTemplateDocumentType(id: Number, xAuthToken: String, document: any) {
+	try {
+		if (document) {
+			if (document.buffer.length > process.env.MAX_FILE)
 				throw new JABCError(JABCResponse.ONBOARDING, 'The file exceeded the size limit of 16 mb')
-		}else{
-			document = {buffer: null, mimetype: null};
+		} else {
+			document = { buffer: null, mimetype: null };
 		}
 		let res = await Database.getInstance().query('CALL upload_doc_type(?,?,?)', [
 			id,
@@ -325,7 +377,7 @@ export async function uploadTemplateDocumentType(id : Number, xAuthToken : Strin
 			document.mimetype
 		], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The onboarding task was saved successfully`)
-	}catch(error){
+	} catch (error) {
 		throw error;
 	}
 }

@@ -1,19 +1,26 @@
 'use strict';
-import { IComment, IPerformancePlan, IPerformanceReview, IPerformanceSection } from '../model/models'
+import { Comment, IComment, IPerformancePlan, IPerformanceReview, IPerformanceSection, PerformancePlan, PerformanceReview, PerformanceSection } from '../model/models'
+import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
+import Database from '../database/Database';
 
 /**
  * creates a new Comment for the PerformanceReview with [id]
  * Will create a new Comment with the provided data in body, to the PerformanceReview with [id]
  *
- * id Integer id of the PerformanceReview to be commented
- * comment IComment Comment data
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the PerformanceReview to be commented
+ * @param {IComment} comment IComment Comment data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
-exports.createComment = function (id: Number, comment: IComment, xAuthToken: string) {
+export async function createComment(id: Number, comment: IComment, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL create_performance_review_comment(?,?,?,?)', [
+            id,
+            comment.comment,
+            comment.date,
+            comment.fkCommenter,
+        ], JABCResponse.PERFORMANCE)
+		return new JABCSuccess(JABCResponse.PERFORMANCE, `The comment was created successfully`)
     } catch (error) {
         throw error;
     }
@@ -24,15 +31,17 @@ exports.createComment = function (id: Number, comment: IComment, xAuthToken: str
  * deletes Comment
  * Will delete an Comment if the Comment matches the [idComment]
  *
- * id Integer id of the PerformanceReview with comments
- * idComment Integer idComment of the Comment to be deleted
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the PerformanceReview with comments
+ * @param {Number} idComment Integer idComment of the Comment to be deleted
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
-exports.deleteComment = function (id: Number, idComment: Number, xAuthToken: string) {
+export async function deleteComment(id: Number, idComment: Number, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL delete_performance_comment(?)', [
+            idComment
+        ], JABCResponse.PERFORMANCE)
+		return new JABCSuccess(JABCResponse.PERFORMANCE, `The comment was deleted successfully`)
     } catch (error) {
         throw error;
     }
@@ -43,17 +52,17 @@ exports.deleteComment = function (id: Number, idComment: Number, xAuthToken: str
  * deletes PerformancePlan
  * Will delete the PerformancePlan that matches with the provided [id] from  the Employee with [id]
  *
- * id Integer id of the searched PerformancePlan
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the searched PerformancePlan
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
-exports.deletePerformancePlan = function (id: Number, xAuthToken: string) {
+export async function deletePerformancePlan(id: Number, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
-    } catch (error) {
-        throw error;
-    }
+		await Database.getInstance().query('CALL delete_performance_plan(?)', [id], JABCResponse.PERFORMANCE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The performance plan was successfully deleted')
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -61,17 +70,17 @@ exports.deletePerformancePlan = function (id: Number, xAuthToken: string) {
  * deletes PerformanceReview
  * Will delete the PerformanceReview that matches with the provided [id] from  the Employee with [id]
  *
- * id Integer id of the searched PerformanceReview
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the searched PerformanceReview
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
-exports.deletePerformanceReview = function (id: Number, xAuthToken: string) {
+export async function deletePerformanceReview(id: Number, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
-    } catch (error) {
-        throw error;
-    }
+		await Database.getInstance().query('CALL delete_performance_review(?)', [id], JABCResponse.PERFORMANCE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The performance review was successfully deleted')
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -79,15 +88,15 @@ exports.deletePerformanceReview = function (id: Number, xAuthToken: string) {
  * gets an specific Comment
  * Will return the Comment that matches with the provided [idComment]
  *
- * id Integer id of the PerformanceReview with comments
- * idComment Integer idComment of the searched Comment
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IComment
+ * @param {Number} id Integer id of the PerformanceReview with comments
+ * @param {Number} idComment Integer idComment of the searched Comment
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IComment>}
  **/
-exports.getComment = function (id: Number, idComment: Number, xAuthToken: string) {
+export async function getComment(id: Number, idComment: Number, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL get_comment(?)', [idComment], JABCResponse.PERFORMANCE)
+		return new Comment(res[0][0][0])
     } catch (error) {
         throw error;
     }
@@ -98,14 +107,14 @@ exports.getComment = function (id: Number, idComment: Number, xAuthToken: string
  * get all the Comments from a PerformanceReview with [id]
  * This returns all the Comments of the PerformanceReview with [id].
  *
- * id Integer id of the PerformanceReview with comments
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns List
+ * @param {Number} id Integer id of the PerformanceReview with comments
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<Array<IComment>>}
  **/
-exports.getComments = function (id: Number, xAuthToken: string) {
+export async function getComments(id: Number, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL get_performance_review_comments(?)', [id], JABCResponse.PERFORMANCE)
+		return Comment.Comments(res[0][0])
     } catch (error) {
         throw error;
     }
@@ -116,14 +125,17 @@ exports.getComments = function (id: Number, xAuthToken: string) {
  * gets an specific PerformancePlan
  * Will return the PerformancePlan that matches with the provided [id] from  the Employee with [id]
  *
- * id Integer id of the searched PerformancePlan
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IPerformancePlan
+ * @param {Number} id Integer id of the searched PerformancePlan
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IPerformancePlan>}
  **/
-exports.getPerformancePlan = function (id: Number, xAuthToken: string) {
+export async function getPerformancePlan(id: Number, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL get_performance_plan(?)', [id], JABCResponse.PERFORMANCE)
+        let performancePlan = new PerformancePlan(res[0][0][0])
+        performancePlan.sections = PerformanceSection.PerformanceSections(res[0][1])
+        performancePlan.comments = Comment.Comments(res[0][2])
+        return performancePlan
     } catch (error) {
         throw error;
     }
@@ -134,14 +146,17 @@ exports.getPerformancePlan = function (id: Number, xAuthToken: string) {
  * gets an specific PerformanceReview
  * Will return the PerformanceReview that matches with the provided [id] from  the Employee with [id]
  *
- * id Integer id of the searched PerformanceReview
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IPerformanceReview
+ * @param {Number} id Integer id of the searched PerformanceReview
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IPerformanceReview>}
  **/
-exports.getPerformanceReview = function (id: Number, xAuthToken: string) {
+export async function getPerformanceReview(id: Number, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL get_performance_review(?)', [id], JABCResponse.PERFORMANCE)
+        let performanceReview = new PerformanceReview(res[0][0][0])
+        performanceReview.sections = PerformanceSection.PerformanceSections(res[0][1])
+        performanceReview.comments = Comment.Comments(res[0][2])
+        return performanceReview
     } catch (error) {
         throw error;
     }
@@ -152,16 +167,21 @@ exports.getPerformanceReview = function (id: Number, xAuthToken: string) {
  * updates the Comment
  * Will update an Comment with the provided data in body if the Comment matches the [idComment]
  *
- * id Integer id of the PerformanceReview with comments
- * idComment Integer idComment of the Comment to be updated
- * comment IComment Comment data
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the PerformanceReview with comments
+ * @param {Number} idComment Integer idComment of the Comment to be updated
+ * @param {IComment} comment IComment Comment data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
-exports.updateComment = function (id: Number, idComment: Number, comment: IComment, xAuthToken: string) {
+export async function updateComment(id: Number, idComment: Number, comment: IComment, xAuthToken: string) {
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
+        let res = await Database.getInstance().query('CALL update_comment(?,?,?,?)', [
+            idComment,
+            comment.comment,
+            comment.date,
+            comment.fkCommenter,
+        ], JABCResponse.PERFORMANCE)
+		return new JABCSuccess(JABCResponse.PERFORMANCE, `The comment was edited successfully`)
     } catch (error) {
         throw error;
     }
@@ -172,18 +192,37 @@ exports.updateComment = function (id: Number, idComment: Number, comment: IComme
  * updates the PerformancePlan
  * Will update an PerformancePlan with the provided data in body  if the PerformancePlan matches the [id]
  *
- * id Integer id of the searched PerformancePlan
- * performancePlan IPerformancePlan PerformancePlan data
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the searched PerformancePlan
+ * @param {IPerformancePlan} performancePlan IPerformancePlan PerformancePlan data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
-exports.updatePerformancePlan = function (id: Number, performancePlan: IPerformancePlan, xAuthToken: string) {
+export async function updatePerformancePlan(id: Number, performancePlan: IPerformancePlan, xAuthToken: string) {
+    let db = Database.getInstance()
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
-    } catch (error) {
-        throw error;
-    }
+        await db.beginTransaction()
+		let res = await db.rawQuery('CALL update_performance_plan(?,?,?)', [
+			id,
+			performancePlan.date,
+			performancePlan.status
+        ], JABCResponse.PERFORMANCE)
+        for( let section of performancePlan.sections){
+            await db.rawQuery('CALL update_performance_section(?,?,?)', [
+                section.id,
+                section.data,
+                section.sectionName
+            ], JABCResponse.PERFORMANCE)
+        }
+        await db.commit()
+		await db.closeConnection()
+		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance plan was updated successfully`)
+	} catch (error) {
+		try {
+			await db.rollback()
+			await db.closeConnection()
+		} catch (err) { }
+		throw error;
+	}
 }
 
 
@@ -191,17 +230,36 @@ exports.updatePerformancePlan = function (id: Number, performancePlan: IPerforma
  * updates the PerformanceReview
  * Will update an PerformanceReview with the provided data in body  if the PerformanceReview matches the [id]
  *
- * id Integer id of the searched PerformanceReview
- * performanceReview IPerformanceReview PerformanceReview data
- * xAuthToken String Auth Token that grants access to the system (optional)
- * returns IApiResponse
+ * @param {Number} id Integer id of the searched PerformanceReview
+ * @param {IPerformanceReview} performanceReview IPerformanceReview PerformanceReview data
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
  **/
-exports.updatePerformanceReview = function (id: Number, performanceReview: IPerformanceReview, xAuthToken: string) {
+export async function updatePerformanceReview(id: Number, performanceReview: IPerformanceReview, xAuthToken: string) {
+    let db = Database.getInstance()
     try {
-        // TODO: Implement
-		throw 'NOT IMPLEMENTED'
-    } catch (error) {
-        throw error;
-    }
+        await db.beginTransaction()
+		let res = await db.rawQuery('CALL update_performance_review(?,?,?)', [
+			id,
+			performanceReview.date,
+			performanceReview.status
+        ], JABCResponse.PERFORMANCE)
+        for( let section of performanceReview.sections){
+            await db.rawQuery('CALL update_performance_section(?,?,?)', [
+                section.id,
+                section.data,
+                section.sectionName
+            ], JABCResponse.PERFORMANCE)
+        }
+        await db.commit()
+		await db.closeConnection()
+		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance review was updated successfully`)
+	} catch (error) {
+		try {
+			await db.rollback()
+			await db.closeConnection()
+		} catch (err) { }
+		throw error;
+	}
 }
 

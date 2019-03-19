@@ -53,18 +53,42 @@ export default interface IDatabaseClient {
     query(query: any, params: any[], responseType?: JABCResponseType): Promise<any>;
 
     /**
-     * Performs a query from a sql file to the database, for automating testing
+     * Performs a query on an already opened connection without closing it
      *
-     * @param query
-     *
-     * @return any
-     *
-     * Retrieves data which matches the given query
-     *
-     * If a failure occurs, throw DatabaseQueryError
-     *
+     * @param {JABCResponseType} [responseType] JABC service that requested the transaction
+     * @returns {Promise<any>}
+     * @memberof IDatabaseClient
      */
-    querySqlFile(query: any): Promise<any>;
+    rawQuery(query: any, params: any[], responseType?: JABCResponseType): Promise<any>;
+
+    /**
+     * Initializes the connection and begins a transaction
+     * Note: when using transactions after commit or rollback the database 
+     * has to be close manually calling closeConnection
+     *
+     * @param {JABCResponseType} [responseType] JABC service that requested the transaction
+     * @returns {Promise<any>}
+     * @memberof IDatabaseClient
+     */
+    beginTransaction(responseType?: JABCResponseType): Promise<any>;
+
+    /**
+     * Commits the transaction
+     *
+     * @param {JABCResponseType} [responseType] JABC service that requested the transaction
+     * @returns {Promise<any>}
+     * @memberof IDatabaseClient
+     */
+    commit(responseType?: JABCResponseType): Promise<any>;
+
+    /**
+     * Rollback a transaction
+     *
+     * @param {JABCResponseType} [responseType] JABC service that requested the transaction
+     * @returns {Promise<any>}
+     * @memberof IDatabaseClient
+     */
+    rollback(responseType?: JABCResponseType): Promise<any>;
 
     /**
      * Opens a connection to a database service

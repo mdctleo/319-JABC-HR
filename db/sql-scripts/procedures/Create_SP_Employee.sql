@@ -26,7 +26,7 @@ BEGIN
     SELECT COUNT(DOC_TYPE_ID) INTO typeChecker FROM `DOC_TYPE` WHERE `DOC_TYPE`.DOC_TYPE_ID = type_id;
     SELECT COUNT(EMPLOYEE_ID) INTO emplChecker FROM `HR_RECORD` WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
 
-    IF typeChecker = 0 AND type_id != NULL THEN
+    IF typeChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Document type does not exist.';
     ELSEIF emplChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -143,15 +143,15 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
--- procedure create_employee_performance
+-- procedure create_employee_performance_plan
 --    - create a performance record for an employee,
 --    - provided that the employee exists
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS create_employee_performance;
+DROP PROCEDURE IF EXISTS create_employee_performance_plan;
 
 DELIMITER //
 
-CREATE PROCEDURE `create_employee_performance` (IN employee_id INT
+CREATE PROCEDURE `create_employee_performance_plan` (IN employee_id INT
 , IN created_date DATE
 , IN status TINYINT
 )
@@ -167,8 +167,115 @@ BEGIN
     IF checker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
     ELSE
-      INSERT INTO `PERFORMANCE` (`DATE`, STATUS, EMPLOYEE_ID)
+      INSERT INTO `PERFORMANCE_PLAN` (`CREATED_DATE`, STATUS, EMPLOYEE_ID)
       VALUES (created_date, status, employee_id);
+      SELECT LAST_INSERT_ID() AS PERFORMANCE_PLAN_ID;
+    END IF;
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure create_employee_performance_plan_section
+--    - create a performance record for an employee,
+--    - provided that the employee exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS create_employee_performance_plan_section;
+
+DELIMITER //
+
+CREATE PROCEDURE `create_employee_performance_plan_section` (IN performance_plan_id INT
+, IN section_data JSON
+, IN section_name VARCHAR(45)
+)
+BEGIN
+    DECLARE checker INT;
+
+    SET checker = 0;
+
+    SELECT COUNT(PERFORMANCE_PLAN_ID) INTO checker
+    FROM `PERFORMANCE_PLAN`
+    WHERE `PERFORMANCE_PLAN`.PERFORMANCE_PLAN_ID = performance_plan_id;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Performance plan does not exist.';
+    ELSE
+      INSERT INTO `PERFORMANCE_SECTION` (`DATA`, SECTION_NAME, PERFORMANCE_PLAN_ID)
+      VALUES (section_data, section_name, performance_plan_id);
+    END IF;
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure create_employee_performance_review
+--    - create a performance record for an employee,
+--    - provided that the employee exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS create_employee_performance_review;
+
+DELIMITER //
+
+CREATE PROCEDURE `create_employee_performance_review` (IN employee_id INT
+, IN work_plan INT
+, IN created_date DATE
+, IN status TINYINT
+)
+BEGIN
+    DECLARE checker INT;
+    DECLARE work_plan_checker INT;
+
+    SET checker = 0;
+    SET work_plan_checker = 0;
+
+    SELECT COUNT(EMPLOYEE_ID) INTO checker
+    FROM `EMPLOYEE`
+    WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
+
+    SELECT COUNT(PERFORMANCE_PLAN_ID) INTO work_plan_checker
+    FROM `PERFORMANCE_PLAN`
+    WHERE `PERFORMANCE_PLAN`.PERFORMANCE_PLAN_ID = work_plan;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+    ELSEIF work_plan_checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Work plan does not exist.';
+    ELSE
+      INSERT INTO `PERFORMANCE_REVIEW` (`CREATED_DATE`, STATUS, EMPLOYEE_ID, WORK_PLAN_ID)
+      VALUES (created_date, status, employee_id, work_plan);
+      SELECT LAST_INSERT_ID() AS PERFORMANCE_REVIEW_ID;
+    END IF;
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure create_employee_performance_review_section
+--    - create a performance record for an employee,
+--    - provided that the employee exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS create_employee_performance_review_section;
+
+DELIMITER //
+
+CREATE PROCEDURE `create_employee_performance_review_section` (IN performance_review_id INT
+, IN section_data JSON
+, IN section_name VARCHAR(45)
+)
+BEGIN
+    DECLARE checker INT;
+
+    SET checker = 0;
+
+    SELECT COUNT(PERFORMANCE_REVIEW_ID) INTO checker
+    FROM `PERFORMANCE_REVIEW`
+    WHERE `PERFORMANCE_REVIEW`.PERFORMANCE_REVIEW_ID = performance_review_id;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Performance review does not exist.';
+    ELSE
+      INSERT INTO `PERFORMANCE_SECTION` (`DATA`, SECTION_NAME, PERFORMANCE_REVIEW_ID)
+      VALUES (section_data, section_name, performance_review_id);
     END IF;
 END //
 
@@ -409,6 +516,47 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
+-- procedure get_all_employees_with_birthday
+--    - get the latest version of all employees that matches the birthday with start - end
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_employees_with_birthday;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_employees_with_birthday` (IN start_period DATE
+, IN end_period DATE)
+BEGIN
+    SELECT * 
+    FROM `LATEST_HR_RECORDS`
+    WHERE DATE_FORMAT(BIRTHDATE, '%m-%d') >= DATE_FORMAT(start_period, '%m-%d') and DATE_FORMAT(BIRTHDATE, '%m-%d') <= DATE_FORMAT(end_period, '%m-%d');
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- function createDate
+-- -----------------------------------------------------
+DROP FUNCTION IF EXISTS createDate;
+DELIMITER $$
+CREATE FUNCTION `createDate`(YEAR_ INT, MONTH_ INT, DAY_ INT) RETURNS DATE
+BEGIN
+    RETURN DATE(CONCAT(YEAR_,'-',MONTH_,'-', DAY_));
+END $$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- function dateWithYear
+-- -----------------------------------------------------
+DROP FUNCTION IF EXISTS dateWithYear;
+DELIMITER $$
+CREATE FUNCTION `dateWithYear`(ORIGINAL_DATE DATE, YEAR_ INT) RETURNS DATE
+BEGIN
+    RETURN createDate(YEAR_, MONTH(ORIGINAL_DATE), DAY(ORIGINAL_DATE));
+END $$
+DELIMITER ;
+
+
+-- -----------------------------------------------------
 -- procedure get_manager_employees
 --    - get the employees reporting under the given
 --    - manager, provided the manager exists
@@ -444,15 +592,15 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
--- procedure get_employee_performance_reviews
---    - get the performance reviews for a given employee,
---    - provided the employee exists
+-- procedure get_employee_managers
+--    - get the employees reporting under the given
+--    - manager, provided the manager exists
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS get_employee_performance_reviews;
+DROP PROCEDURE IF EXISTS get_employee_managers;
 
 DELIMITER //
 
-CREATE PROCEDURE `get_employee_performance_reviews` (IN employee_id INT)
+CREATE PROCEDURE `get_employee_managers` (IN employee_id INT)
 BEGIN
   DECLARE checker INT;
 
@@ -465,14 +613,91 @@ BEGIN
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
   ELSE
-    SELECT *, p.PERFORMANCE_ID as PERFORMANCE_ID, p.DATE as DATE
-    FROM PERFORMANCE p
-    LEFT JOIN JABC_GOAL jg ON p.PERFORMANCE_ID = jg.PERFORMANCE_ID
-    LEFT JOIN PERSONAL_TARGET pt ON p.PERFORMANCE_ID = pt.PERFORMANCE_ID
-    LEFT JOIN OBJECTIVE o ON p.PERFORMANCE_ID = o.PERFORMANCE_ID
-    LEFT JOIN DEVELOPMENT_GOAL dg ON p.PERFORMANCE_ID = dg.PERFORMANCE_ID
-    LEFT JOIN COMMENT c ON p.PERFORMANCE_ID = c.PERFORMANCE_ID
-    WHERE p.EMPLOYEE_ID = employee_id;
+    SELECT * 
+    FROM LATEST_HR_RECORDS hr1
+    WHERE hr1.EMPLOYEE_ID in (
+      SELECT m.EMPLOYEE_ID
+      FROM MANAGER_EMPLOYEE m
+      WHERE m.EMPLOYEE_ID = employee_id
+    );
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_employee_performance_plans
+--    - get the performance plans for a given employee,
+--    - provided the employee exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_employee_performance_plans;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_employee_performance_plans` (IN employee_id INT)
+BEGIN
+  DECLARE checker INT;
+  DECLARE checker2 INT;
+
+  SET checker = 0;
+  SET checker2 = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO checker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO checker2
+  FROM `PERFORMANCE_PLAN`
+  WHERE `PERFORMANCE_PLAN`.EMPLOYEE_ID = employee_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+  ELSEIF checker2 = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee does not have any performance plan.';
+  ELSE
+    SELECT *
+    FROM `PERFORMANCE_PLAN` 
+    WHERE `PERFORMANCE_PLAN`.EMPLOYEE_ID = employee_id;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_employee_performance_reviews
+--    - get the performance reviews for a given employee,
+--    - provided the employee exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_employee_performance_reviews;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_employee_performance_reviews` (IN employee_id INT)
+BEGIN
+  DECLARE checker INT;
+  DECLARE checker2 INT;
+
+  SET checker = 0;
+  SET checker2 = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO checker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO checker2
+  FROM `PERFORMANCE_REVIEW`
+  WHERE `PERFORMANCE_REVIEW`.EMPLOYEE_ID = employee_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+  ELSEIF checker2 = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee does not have any performance review.';
+  ELSE
+    SELECT *
+    FROM `PERFORMANCE_REVIEW` 
+    WHERE `PERFORMANCE_REVIEW`.EMPLOYEE_ID = employee_id;
   END IF;
 END //
 
@@ -518,15 +743,17 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS link_employee_manager;
 
 DELIMITER //
--- TODO: Manage duplicate entry
+
 CREATE PROCEDURE `link_employee_manager` (IN e_id INT
 , IN m_id INT)
 BEGIN
   DECLARE emplChecker INT;
   DECLARE managChecker INT;
+  DECLARE linkChecker INT;
 
   SET emplChecker = 0;
   SET managChecker = 0;
+  SET linkChecker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
   FROM `EMPLOYEE`
@@ -536,10 +763,16 @@ BEGIN
   FROM `EMPLOYEE`
   WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
 
+  SELECT COUNT(MANAGER_ID) INTO linkChecker
+  FROM `MANAGER_EMPLOYEE`
+  WHERE `MANAGER_EMPLOYEE`.MANAGER_ID = m_id AND `MANAGER_EMPLOYEE`.EMPLOYEE_ID = e_id;
+
   IF emplChecker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
   ELSEIF managChecker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager employee does not exist.';
+  ELSEIF linkChecker > 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is already managed by this Manager.';
   ELSE
     INSERT INTO MANAGER_EMPLOYEE (MANAGER_ID, EMPLOYEE_ID)
     VALUES (m_id, e_id);
