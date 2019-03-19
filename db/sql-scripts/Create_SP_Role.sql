@@ -257,7 +257,7 @@ CREATE PROCEDURE `get_competencies` (IN role_id INT)
 BEGIN
     SELECT *
     FROM COMPETENCY
-    WHERE ROLE_ID = role_id;
+    WHERE COMPETENCY.ROLE_ID = role_id;
 END //
 
 DELIMITER ;
