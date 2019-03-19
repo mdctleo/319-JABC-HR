@@ -61,17 +61,13 @@ class RoleDisplay extends React.PureComponent {
             <TableCell align="left">
               <Typography variant="caption">DESCRIPTION</Typography>
             </TableCell>
-            <TableCell align="right">
-              <Typography variant="caption">RATING</Typography>
-            </TableCell>
           </TableRow>
-          {/* role.competencies.map((competency, index) => (
+          {role.competencies.map((competency) => (
             <TableRow className={classes.row}>
               <TableCell align="left">{competency.name}</TableCell>
               <TableCell align="left">{competency.description}</TableCell>
-              <TableCell align="right">{competency.rating}</TableCell>
             </TableRow>
-          )) */}
+          ))}
         </div>
       );
     }

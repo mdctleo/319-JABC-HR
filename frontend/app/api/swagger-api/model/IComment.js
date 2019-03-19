@@ -32,7 +32,7 @@ export default class IComment {
     * @param id {Number} The unique identifier of the Comment
     * @param fkCommenter {Number} Foreign key of Employee that created the Comment
     * @param comment {String} 
-    * @param _date {Number} The unix timestamp of the date when the Comment was created
+    * @param _date {Date} The date when the Comment was created
     */
 
     constructor(id, fkCommenter, comment, _date) {
@@ -77,7 +77,7 @@ export default class IComment {
                 obj['comment'] = ApiClient.convertToType(data['comment'], 'String');
             }
             if (data.hasOwnProperty('date')) {
-                obj['date'] = ApiClient.convertToType(data['date'], 'Number');
+                obj['date'] = ApiClient.convertToType(data['date'], 'Date');
             }
         }
         return obj;
@@ -108,8 +108,8 @@ export default class IComment {
     */
     comment = undefined;
     /**
-    * The unix timestamp of the date when the Comment was created
-    * @member {Number} date
+    * The date when the Comment was created
+    * @member {Date} date
     */
     date = undefined;
 

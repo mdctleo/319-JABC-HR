@@ -33,7 +33,7 @@ export default class IVacation {
     * @param fkEmployee {Number} The unique identifier of the Employee that requests the vacation
     * @param requestedDays {Number} The number of vacation days the employee requested
     * @param requestedStatus {Number} 
-    * @param _date {Number} The unix timestamp of the date when the employee requested the vacation
+    * @param _date {Date} The date when the employee requested the vacation
     */
 
     constructor(id, fkEmployee, requestedDays, requestedStatus, _date) {
@@ -78,7 +78,7 @@ export default class IVacation {
                 obj['requestedStatus'] = ApiClient.convertToType(data['requestedStatus'], 'Number');
             }
             if (data.hasOwnProperty('date')) {
-                obj['date'] = ApiClient.convertToType(data['date'], 'Number');
+                obj['date'] = ApiClient.convertToType(data['date'], 'Date');
             }
         }
         return obj;
@@ -109,8 +109,8 @@ export default class IVacation {
     */
     requestedStatus = undefined;
     /**
-    * The unix timestamp of the date when the employee requested the vacation
-    * @member {Number} date
+    * The date when the employee requested the vacation
+    * @member {Date} date
     */
     date = undefined;
 
