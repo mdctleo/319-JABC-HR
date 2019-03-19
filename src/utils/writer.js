@@ -38,6 +38,7 @@ var writeJson = exports.writeJson = function(response, arg1, arg2) {
     code = 200;
   }
   if(typeof payload === 'object') {
+    exports.deleteDeepNulls(payload)
     payload = JSON.stringify(payload, null, 2);
   }
   response.writeHead(code, {'Content-Type': 'application/json'});
@@ -47,6 +48,19 @@ var writeJson = exports.writeJson = function(response, arg1, arg2) {
 exports.writeFile = function(response, file, code = 200) {
   response.writeHead(code, {'Content-Type': file.mimetype });
   response.end(file.buffer, 'binary');
+}
+
+exports.deleteDeepNulls  = function(data){
+  if(typeof data === 'object'){
+    Object.keys(data).forEach((key) => {
+        if(data[key] == null){ 
+          delete data[key]
+        }else{
+          exports.deleteDeepNulls(data[key])
+        }
+    });
+  }
+  return data
 }
 
 exports.deleteNulls  = function(data){

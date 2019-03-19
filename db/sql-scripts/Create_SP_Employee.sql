@@ -743,15 +743,17 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS link_employee_manager;
 
 DELIMITER //
--- TODO: Manage duplicate entry
+
 CREATE PROCEDURE `link_employee_manager` (IN e_id INT
 , IN m_id INT)
 BEGIN
   DECLARE emplChecker INT;
   DECLARE managChecker INT;
+  DECLARE linkChecker INT;
 
   SET emplChecker = 0;
   SET managChecker = 0;
+  SET linkChecker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
   FROM `EMPLOYEE`
@@ -761,10 +763,16 @@ BEGIN
   FROM `EMPLOYEE`
   WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
 
+  SELECT COUNT(MANAGER_ID) INTO linkChecker
+  FROM `MANAGER_EMPLOYEE`
+  WHERE `MANAGER_EMPLOYEE`.MANAGER_ID = m_id AND `MANAGER_EMPLOYEE`.EMPLOYEE_ID = e_id;
+
   IF emplChecker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
   ELSEIF managChecker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager employee does not exist.';
+  ELSEIF linkChecker > 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is already managed by this Manager.';
   ELSE
     INSERT INTO MANAGER_EMPLOYEE (MANAGER_ID, EMPLOYEE_ID)
     VALUES (m_id, e_id);
