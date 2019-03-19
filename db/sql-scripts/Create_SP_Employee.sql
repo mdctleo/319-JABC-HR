@@ -26,7 +26,7 @@ BEGIN
     SELECT COUNT(DOC_TYPE_ID) INTO typeChecker FROM `DOC_TYPE` WHERE `DOC_TYPE`.DOC_TYPE_ID = type_id;
     SELECT COUNT(EMPLOYEE_ID) INTO emplChecker FROM `HR_RECORD` WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
 
-    IF typeChecker = 0 AND type_id != NULL THEN
+    IF typeChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Document type does not exist.';
     ELSEIF emplChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
@@ -523,7 +523,8 @@ DROP PROCEDURE IF EXISTS get_all_employees_with_birthday;
 
 DELIMITER //
 
-CREATE PROCEDURE `get_all_employees_with_birthday` (IN start_period DATE, end_period DATE)
+CREATE PROCEDURE `get_all_employees_with_birthday` (IN start_period DATE
+, IN end_period DATE)
 BEGIN
     SELECT * 
     FROM `LATEST_HR_RECORDS`

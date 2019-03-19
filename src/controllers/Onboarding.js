@@ -67,8 +67,9 @@ module.exports.getAllOnboardingTasks = function getAllOnboardingTasks (req, res,
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   var start = req.swagger.params['start'].value;
   var end = req.swagger.params['end'].value;
+  var id = req.swagger.params['id'].value;
   var status = req.swagger.params['status'].value;
-  Onboarding.getAllOnboardingTasks(xAuthToken,start,end,status)
+  Onboarding.getAllOnboardingTasks(xAuthToken,start,end,id,status)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })
