@@ -479,55 +479,6 @@ class EnhancedTable extends React.Component {
     this.setState({ editButtonClicked: 0 });
   }
 
-  handleSubmitButton = (event, value) => {
-    var id = this.state.selectedProfile.id;
-    for (var i = 0; i < this.state.data.length; i++) {
-      if (this.state.data[i].id == id) {
-        this.state.data[i].description = document.getElementById("rf-description").value;
-        this.state.data[i].name = document.getElementById("rf-name").value;
-        var competencies = [];
-        var foundCompetencyCells = document.getElementsByClassName("rf-rows");
-        for (var i = 0; i < foundCompetencyCells.length; i++) {
-          var input = foundCompetencyCells[i].firstChild.firstChild;
-          console.log("made it into inner loop");
-          if (i % 3 == 0) {
-            input.value ? competencies.push({ name: input.value }) : competencies.push({ name: input.defaultValue });
-          } else if (i % 3 == 1) {
-            competencies[Math.floor(i/3)].description = input.value ? input.value : input.defaultValue;
-          } else {
-            competencies[Math.floor(i/3)].rating = input.value ? input.value : input.defaultValue;
-          }
-        }
-        this.state.data[i].competencies = competencies;
-      }
-    }
-    this.setState({ value: 1 });
-    this.setState({ displayedPage: "table" });
-    this.setState({ editButtonClicked: 0 });
-  }
-
-  handleAddSubmitButton = (event, value) => {
-    var description = document.getElementById("rf-description").value;
-    var name = document.getElementById("rf-name").value;
-    var competencies = [];
-    var foundCompetencyCells = document.getElementsByClassName("rf-rows");
-    for (var i = 0; i < foundCompetencyCells.length; i++) {
-      var input = foundCompetencyCells[i].firstChild.firstChild;
-      if (i % 3 == 0) {
-        input.value ? competencies.push({ name: input.value }) : competencies.push({ name: input.defaultValue });
-      } else if (i % 3 == 1) {
-        competencies[Math.floor(i/3)].description = input.value ? input.value : input.defaultValue;
-      } else {
-        competencies[Math.floor(i/3)].rating = input.value ? input.value : input.defaultValue;
-      }
-    }
-    var data = this.state.data;
-    this.setState({ data: data.concat(createData(name, description, competencies ))});
-    this.setState({ value: 1 });
-    this.setState({ displayedPage: "table" });
-    this.setState({ editButtonClicked: 0 });
-  }
-
   handleAddSaveButton = (event, value) => {
     var description = document.getElementById("rf-description").value;
     var name = document.getElementById("rf-name").value;
@@ -573,7 +524,6 @@ class EnhancedTable extends React.Component {
              </AppBar>
                <div className="profile-card">
                 <RoleForm role={this.state.selectedProfile} add={1}/>
-                <Button className={classes.formButtons} onClick={this.handleAddSubmitButton}>Submit</Button>
                 <Button className={classes.formButtons} onClick={this.handleAddSaveButton}>Save</Button>
               </div>
           </Paper>) :
@@ -671,7 +621,6 @@ class EnhancedTable extends React.Component {
           { editButtonClicked == 1 &&
           <div>
             <RoleForm role={this.state.selectedProfile} add={0}/>
-            <Button className={classes.formButtons} onClick={this.handleSubmitButton}>Submit</Button>
             <Button className={classes.formButtons} onClick={this.handleSaveButton}>Save</Button>
           </div>
           }

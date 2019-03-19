@@ -402,26 +402,6 @@ generateDropdown() {
           </Select>)
 }
 
-// prHandleAddButton = (sectionNum) => {
-//   var prCopy = this.state.performanceReviews;
-//   var currPR = prCopy[this.state.currentYears];
-//   var section = currPR["section"+sectionNum];
-//   prCopy["section"+sectionNum].rows = section.rows.concat({column1: "", column2: "", column3: ""});
-//   this.setState({ performanceReviews: prCopy});
-// }
-
-// wpHandleAddButton = (sectionNum) => {
-//   var wpCopy = this.state.workPlans;
-//   var currWP = wpCopy[this.state.currentYears];
-//   var section = currWP["section"+sectionNum];
-//   var currYears = this.state.currentYears;
-//   wpCopy[currYears]["section"+sectionNum].rows = section.rows.concat({column1: "", column2: ""});
-//   console.log(this.state.workPlans[currYears]);
-//   this.setState({ workPlans: wpCopy});
-// }
-
-
-
   render() {
     const { classes } = this.props;
     const { profile, workPlans, performanceReviews, currentYears, value, edit } = this.state;
