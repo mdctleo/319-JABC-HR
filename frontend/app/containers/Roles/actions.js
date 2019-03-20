@@ -4,7 +4,7 @@
  *
  */
 
-import { GET_ALL_ROLES, GET_ROLE, SET_EDITING, SAVE_ROLE } from './constants';
+import { GET_ALL_ROLES, GET_ROLE, SET_EDITING, SAVE_ROLE, DELETE_ROLES } from './constants';
 
 export function getAllRoles() {
   return {
@@ -33,9 +33,17 @@ export function saveRole(role) {
   };
 }
 
+export function deleteRoles(roles) {
+  return {
+    type: DELETE_ROLES,
+    roles,
+  };
+}
+
 export default {
   getAllRoles,
   getRole,
   setEditing,
-  saveRole
+  saveRole,
+  deleteRoles,
 };

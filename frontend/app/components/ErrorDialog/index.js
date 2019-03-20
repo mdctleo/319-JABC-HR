@@ -13,7 +13,7 @@ class ErrorDialog extends React.PureComponent {
     return (
       <Dialog
         open={message !== ''}
-        onClose={this.handleClose}
+        onClose={clearError}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >

@@ -145,7 +145,9 @@ function getSorting(order, orderBy) {
 class RolesTable extends React.PureComponent {
   handleSelectAllClick = event => {
     if (event.target.checked) {
-      this.props.updateTableSettings({ selected: this.props.allRoles.map(n => n.id) });
+      this.props.updateTableSettings({
+        selected: this.props.allRoles.map(n => n.id),
+      });
       return;
     }
     this.props.updateTableSettings({ selected: [] });
@@ -184,7 +186,6 @@ class RolesTable extends React.PureComponent {
         selected.slice(selectedIndex + 1),
       );
     }
-    console.log(selected);
     this.props.updateTableSettings({ selected: newSelected });
   };
 
@@ -201,7 +202,13 @@ class RolesTable extends React.PureComponent {
   };
 
   render() {
-    const { classes, allRoles, tableSettings } = this.props;
+    const {
+      classes,
+      allRoles,
+      tableSettings,
+      handleDeleteSingleButton,
+      handleDeleteButton,
+    } = this.props;
 
     const { order, orderBy, selected, rowsPerPage, page } = tableSettings;
     const emptyRows =
@@ -212,6 +219,7 @@ class RolesTable extends React.PureComponent {
         <EnhancedTableToolbar
           numSelected={selected.length}
           selected={selected}
+          handleDeleteButton={handleDeleteButton}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -257,9 +265,7 @@ class RolesTable extends React.PureComponent {
                         <Tooltip title="Delete">
                           <IconButton
                             aria-label="Delete"
-                            onClick={event =>
-                              this.handleDeleteSingleButton(event, n)
-                            }
+                            onClick={() => handleDeleteSingleButton(n)}
                           >
                             <DeleteIcon className={classes.deleteIcon} />
                           </IconButton>
@@ -302,6 +308,8 @@ RolesTable.propTypes = {
   selectProfile: PropTypes.func.isRequired,
   tableSettings: PropTypes.object.isRequired,
   updateTableSettings: PropTypes.func.isRequired,
+  handleDeleteButton: PropTypes.func.isRequired,
+  handleDeleteSingleButton: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(RolesTable);
