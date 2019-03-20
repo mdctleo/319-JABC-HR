@@ -10,7 +10,6 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import PerformanceSection from "../PerformanceSection/PerformanceSection";
 
-
 const styles = theme => ({
   editButton: {
     float: 'right',
@@ -52,19 +51,20 @@ const styles = theme => ({
 });
 
 class WorkPlanDisplay extends React.PureComponent  {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { classes, sections, year, profile } = this.props;
+    console.log("In Work plan display");
+    let that = this;
 
     return(
       <div>
         <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
         <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {profile.role.name}</Typography>
-        {this.props.sections.map(function(section) {
-          return <PerformanceSection classes = {classes} section = {section}/>
+        {sections.map(function(section) {
+          if (section.sectionId === 1) {
+            console.log("Length of section in WorkPlanDisplay: " + section.data.length);
+          }
+          return <PerformanceSection classes = {classes} section = {section} handleAddRow = {that.props.handleAddRow}/>
         })
         }
         </div>

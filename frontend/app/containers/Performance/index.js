@@ -70,7 +70,7 @@ const styles = theme => ({
   appBar: {
     width: '100%',
   },
-  editButton: {
+  buttonStyle: {
     float: 'right',
     display: 'inline',
     color: 'white',
@@ -127,6 +127,7 @@ class PerformacePage extends React.Component {
     edit: 0,
     sections: [
       {
+        sectionId: 1,
         sectionName: "First Section",
         columns: ["Column 1", "Column 2", "Column 3"],
         data: [
@@ -148,6 +149,7 @@ class PerformacePage extends React.Component {
         ]
       },
       {
+        sectionId: 2,
         sectionName: "Second Section",
         columns: ["Column 1", "Column 2"],
         data: [
@@ -166,6 +168,7 @@ class PerformacePage extends React.Component {
         ]
       },
       {
+        sectionId: 3,
         sectionName: "Third Section",
         columns: ["Column 1"],
         data: [
@@ -405,15 +408,111 @@ generateDropdown() {
           </Select>)
 }
 
+  handleAddRow = (sectionId) => {
+    console.log(sectionId);
+
+    let sections = this.state.sections;
+    for (let section of sections) {
+      if (section.sectionId === sectionId) {
+        section.sectionName = "Blarg";
+        section.data = [...section.data, {"Column 1": "Data for column 1"}];
+      }
+    }
+
+    this.setState( { sections: sections});
+  };
+
   render() {
     const { classes } = this.props;
     const { sections, profile, workPlans, performanceReviews, currentYears, value, edit } = this.state;
 
     console.log("rendering performance");
+    console.log("Number of data for section 1: " + sections[0].data.length);
+    // return (
+    //   <div>
+    //   <h1>Performance</h1>
+    //   <FormControl className={classes.formControl}>
+    //       <InputLabel>
+    //         Year
+    //       </InputLabel>
+    //       {this.generateDropdown()}
+    //     </FormControl>
+    //     <Paper className={classes.root}>
+    //       <div>
+    //       <AppBar position="static" className={classes.appBar}>
+    //       <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
+    //             onChange={this.handleChange}>
+    //         <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+    //              label="Work Plan" />
+    //         <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+    //              label="Performance Review" />
+    //     </Tabs>
+    //      </AppBar>
+    //      <Dialog
+    //       open={this.state.addDialog}
+    //       onClose={this.handleClose}
+    //       aria-labelledby="form-dialog-title"
+    //     >
+    //       <DialogTitle id="form-dialog-title">Enter Year Span</DialogTitle>
+    //       <DialogContent>
+    //         <DialogContentText>
+    //           Enter the span of years for the new performance documents:
+    //         </DialogContentText>
+    //         <TextField
+    //           autoFocus
+    //           margin="dense"
+    //           id="years-dialog"
+    //           label="Year Span"
+    //           fullWidth
+    //         />
+    //       </DialogContent>
+    //       <DialogActions>
+    //         <Button onClick={this.handleClose} color="primary">
+    //           Cancel
+    //         </Button>
+    //         <Button onClick={this.handleYearsDialog} color="primary">
+    //           OK
+    //         </Button>
+    //       </DialogActions>
+    //     </Dialog>
+    //   <div>
+    //   { currentYears == 0 &&
+    //     <div className="profile-card">
+    //       <Typography>You currently have no performance documents. Click on the button below to add your first Performance Documents for a given year: </Typography>
+    //       <Button className={classes.addDocButton} value={0} onClick={this.handleSelect}>Add Year</Button>
+    //     </div> }
+    //   { currentYears !== 0 && value == 0 && edit == 0 &&
+    //   <div className="profile-card">
+    //     <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
+    //     <WorkPlanDisplay sections={sections} year={currentYears} profile={profile} handleAddRow={this.handleAddRow}/>
+    //     </div>}
+    //   { currentYears !== 0 && value == 0 && edit == 1 &&
+    //     <div>
+    //       <WorkPlanForm form={workPlans[currentYears]} years={currentYears} profile={profile}/>
+    //       <Button className={classes.formButton} onClick={this.updatePlan}>Submit</Button>
+    //       <Button className={classes.formButton} onClick={this.handleCancel}>Cancel</Button>
+    //     </div>}
+    //   { currentYears !== 0 && value == 1 && edit == 0 &&
+    //   <div className="profile-card">
+    //     <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
+    //     <PerformanceReviewDisplay form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
+    //   </div>}
+    //   { currentYears !== 0 && value == 1 && edit == 1 &&
+    //     <div>
+    //       <PerformanceReviewForm form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
+    //       <Button className={classes.formButton} onClick={this.updateReview}>Submit</Button>
+    //       <Button className={classes.formButton} onClick={this.handleCancel}>Cancel</Button>
+    //     </div>}
+    //      </div>
+    //      </div>
+    //       </Paper>
+    //   </div>
+    // );
+
     return (
       <div>
-      <h1>Performance</h1>
-      <FormControl className={classes.formControl}>
+        <h1>Performance</h1>
+        <FormControl className={classes.formControl}>
           <InputLabel>
             Year
           </InputLabel>
@@ -421,73 +520,50 @@ generateDropdown() {
         </FormControl>
         <Paper className={classes.root}>
           <div>
-          <AppBar position="static" className={classes.appBar}>
-          <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
-                onChange={this.handleChange}>
-            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                 label="Work Plan" />
-            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                 label="Performance Review" />
-        </Tabs>
-         </AppBar>
-         <Dialog
-          open={this.state.addDialog}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">Enter Year Span</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Enter the span of years for the new performance documents:
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="years-dialog"
-              label="Year Span"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleYearsDialog} color="primary">
-              OK
-            </Button>
-          </DialogActions>
-        </Dialog>
-      <div>
-      { currentYears == 0 &&
-        <div className="profile-card">
-          <Typography>You currently have no performance documents. Click on the button below to add your first Performance Documents for a given year: </Typography>
-          <Button className={classes.addDocButton} value={0} onClick={this.handleSelect}>Add Year</Button>
-        </div> }
-      { currentYears !== 0 && value == 0 && edit == 0 &&
-      <div className="profile-card">
-        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
-        <WorkPlanDisplay sections={sections} year={currentYears} profile={profile}/>
-        </div>}
-      { currentYears !== 0 && value == 0 && edit == 1 &&
-        <div>
-          <WorkPlanForm form={workPlans[currentYears]} years={currentYears} profile={profile}/>
-          <Button className={classes.formButton} onClick={this.updatePlan}>Submit</Button>
-          <Button className={classes.formButton} onClick={this.handleCancel}>Cancel</Button>
-        </div>}
-      { currentYears !== 0 && value == 1 && edit == 0 &&
-      <div className="profile-card">
-        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
-        <PerformanceReviewDisplay form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
-      </div>}
-      { currentYears !== 0 && value == 1 && edit == 1 &&
-        <div>
-          <PerformanceReviewForm form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
-          <Button className={classes.formButton} onClick={this.updateReview}>Submit</Button>
-          <Button className={classes.formButton} onClick={this.handleCancel}>Cancel</Button>
-        </div>}
-         </div>
-         </div>
-          </Paper>
+            <AppBar position="static" className={classes.appBar}>
+              <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
+                    onChange={this.handleChange}>
+                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                     label="Work Plan" />
+                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                     label="Performance Review" />
+              </Tabs>
+            </AppBar>
+            <Dialog
+              open={this.state.addDialog}
+              onClose={this.handleClose}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">Enter Year Span</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Enter the span of years for the new performance documents:
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="years-dialog"
+                  label="Year Span"
+                  fullWidth
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handleClose} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={this.handleYearsDialog} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <div>
+              <div className="profile-card">
+                <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
+                <WorkPlanDisplay sections={sections} year={currentYears} profile={profile} handleAddRow={this.handleAddRow}/>
+              </div>
+            </div>
+          </div>
+        </Paper>
       </div>
     );
   }

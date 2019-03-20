@@ -8,41 +8,33 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+
+const styles = theme => ({
+  buttonStyle: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  }
+});
 
 class PerformanceSection extends React.PureComponent {
   render() {
-    let section = this.props.section;
+    const { classes, handleAddRow, section } = this.props;
 
-    // return(
-    //   <div>
-    //     <h4>{section.sectionName}</h4>
-    //     <table>
-    //       <tbody>
-    //         <tr>
-    //           {section.columns.map(function(column) {
-    //             return <td>{column}</td>
-    //           })}
-    //         </tr>
-    //         {section.data.map(function(item) {
-    //           return (
-    //             <tr>
-    //               {section.columns.map(function(column) {
-    //                   return <td>{item[column]}</td>
-    //                 })
-    //               }
-    //             </tr>
-    //           )
-    //         })}
-    //         </tbody>
-    //     </table>
-    //   </div>
-    // );
-
-    let classes = this.props.classes;
+    console.log("IN PerfSection, Number of data for section: " + section.data.length);
 
     return(
       <div>
         <h4>{section.sectionName}</h4>
+        <Button className={classes.buttonStyle} onClick={handleAddRow.bind(this, section.sectionId)}>Add Row</Button>
         <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableHead>
@@ -76,4 +68,4 @@ PerformanceSection.propTypes = {
   section: PropTypes.object.isRequired
 };
 
-export default PerformanceSection;
+export default withStyles(styles)(PerformanceSection);
