@@ -20,7 +20,7 @@ export interface IEmployee {
      * The unique identifier of the Employee
      */
     id: number;
-    sin: string;
+    sin: number;
     email: string;
     password: string;
     firstname: string;
@@ -83,7 +83,7 @@ export class Employee implements IEmployee{
      * The unique identifier of the Employee
      */
     id: number;
-    sin: string;
+    sin: number;
     email: string;
     password: string;
     firstname: string;
@@ -118,7 +118,7 @@ export class Employee implements IEmployee{
 
     constructor(rawEmployee: any){
         this.id = rawEmployee.EMPLOYEE_ID;
-        this.sin = String(rawEmployee.SIN);
+        this.sin = rawEmployee.SIN;
         this.email = rawEmployee.EMAIL;
         this.password = rawEmployee.PASSWORD;
         this.firstname = rawEmployee.FIRST_NAME;

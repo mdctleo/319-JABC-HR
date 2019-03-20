@@ -4,6 +4,8 @@ ADD app.js /home/
 
 ADD package.json /home/
 
+ADD ./.env /home/.env
+
 ADD ./src/ /home/src
 
 ADD ./util/ /home/util

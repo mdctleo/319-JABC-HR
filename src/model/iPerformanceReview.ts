@@ -9,8 +9,8 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { IComment } from './iComment';
-import { IPerformanceSection } from './iPerformanceSection';
+import { Comment, IComment } from './iComment';
+import { PerformanceSection, IPerformanceSection } from './iPerformanceSection';
 
 
 /**
@@ -77,8 +77,6 @@ export class PerformanceReview implements IPerformanceReview{
         this.fkPerformancePlan = rawPerformanceReview.WORK_PLAN_ID;
         this.date = rawPerformanceReview.CREATED_DATE;
         this.status = rawPerformanceReview.STATUS;
-        this.sections = [];
-        this.comments = [];
     }
 
     static PerformanceReviews(rawPerformanceReviews: any[]){
