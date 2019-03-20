@@ -153,7 +153,7 @@ export function ErrorHandler(err: any, req: any, res: any, next: any) {
                     }
                 }
                 let messages = []
-                if(missingProperties.length>0) messages.push(`${(missingProperties.length==1)? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, are missing`)
+                if(missingProperties.length>0) messages.push(`${(missingProperties.length==1)? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length==1)? 'is' : 'are'} missing`)
                 if(invalidProperties.length>0) messages.push(`${(invalidProperties.length==1)? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`)
                 if(typeProperties.length>0) messages.push(`${(typeProperties.length==1)? 'Property' : 'Properties'}: ${typeProperties.join(", ")}, have an invalid type`)
                 
