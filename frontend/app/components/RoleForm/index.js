@@ -96,9 +96,11 @@ const styles = theme => ({
   },
 });
 
-class RoleForm extends React.PureComponent {
+class RoleForm extends React.Component {
   state = {
-    role: this.props.role || { name: '', description: '', competencies: [] },
+    role: this.props.role
+      ? JSON.parse(JSON.stringify(this.props.role))
+      : { name: '', description: '', competencies: [] },
     adding: !this.props.role,
   };
 
@@ -112,74 +114,58 @@ class RoleForm extends React.PureComponent {
     }));
   };
 
+  updateCompetency = (id, name) => event => {
+    const competencyIndex = this.state.role.competencies.findIndex(
+      c => c.id === id,
+    );
+    if (competencyIndex >= 0) {
+      const { value } = event.target;
+      this.setState(prevState => {
+        const newState = prevState;
+        newState.role.competencies[competencyIndex][name] = value;
+        return newState;
+      });
+    }
+  };
+
+  deleteCompetency = id => () => {
+    const newCompetencies = this.state.role.competencies.filter(
+      c => c.id !== id,
+    );
+    this.setState(prevState => {
+      const newState = prevState;
+      newState.role.competencies = newCompetencies;
+      return newState;
+    });
+  };
+
+  addCompetency = () => {
+    const maxId =
+      this.state.role.competencies.length > 0
+        ? Math.max(...this.state.role.competencies.map(c => parseInt(c.id, 10)))
+        : 0;
+    this.setState(prevState => {
+      const newState = prevState;
+      newState.role.competencies.push({
+        id: maxId + 1,
+        fkRole: prevState.role.id || 0,
+        name: '',
+        description: '',
+      });
+      return newState;
+    });
+  };
+
   render() {
     const { classes, cancelEdit, handleSaveButton } = this.props;
     const { role, adding } = this.state;
 
-    function generate3ColumnTableForm(column1, column2, column3, competencies) {
-      return (
-        <div>
-          <TableRow className={classes.tableHead}>
-            <TableCell id="rf-sec-head-1" align="left">
-              <Typography variant="caption">{column1}</Typography>
-            </TableCell>
-            <TableCell id="rf-sec-head-2" align="left">
-              <Typography variant="caption">{column2}</Typography>
-            </TableCell>
-            <TableCell id="rf-sec-head-3" align="left">
-              <Typography variant="caption">{column3}</Typography>
-            </TableCell>
-            <TableCell id="rf-sec-head-4" align="left" />
-          </TableRow>
-          {competencies.map((competency, index) => (
-            <TableRow className={classes.row}>
-              <TableCell align="left">
-                <TextField
-                  id={`rf-col-1-sec-${index}`}
-                  className="rf-rows"
-                  defaultValue={competency.name}
-                />
-              </TableCell>
-              <TableCell align="left">
-                <TextField
-                  id={`rf-col-2-sec-${index}`}
-                  className="rf-rows"
-                  defaultValue={competency.description}
-                />
-              </TableCell>
-              <TableCell align="left">
-                <TextField
-                  id={`rf-col-3-sec-${index}`}
-                  className="rf-rows"
-                  defaultValue={competency.rating}
-                />
-              </TableCell>
-              <TableCell
-                align="left"
-                id={`rf-col-4-sec-${index}delete`}
-                className="rf-rows-delete"
-              >
-                <IconButton>
-                  <DeleteIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-          <TableRow>
-            <TableCell colspan={4}>
-              <IconButton className={classes.addButton}>
-                <AddIcon />
-              </IconButton>
-            </TableCell>
-          </TableRow>
-        </div>
-      );
-    }
-
     return (
       <div>
         <div className="profile-card">
-          <Typography variant="h5">{adding ? 'Add Role' : 'Edit Role'}</Typography>
+          <Typography variant="h5">
+            {adding ? 'Add Role' : 'Edit Role'}
+          </Typography>
           <div className={classes.topFieldContainer}>
             <TextField
               id="rf-name"
@@ -215,12 +201,59 @@ class RoleForm extends React.PureComponent {
           </Typography>
           <Table className={classes.displayTable}>
             <TableBody id="rf-tbody">
-              {generate3ColumnTableForm(
-                'COMPETENCY',
-                'DESCRIPTION',
-                'RATING',
-                role.competencies,
-              )}
+              <TableRow className={classes.tableHead}>
+                <TableCell id="rf-sec-head-1" align="left">
+                  <Typography variant="caption">COMPETENCY</Typography>
+                </TableCell>
+                <TableCell id="rf-sec-head-2" align="left">
+                  <Typography variant="caption">DESCRIPTION</Typography>
+                </TableCell>
+                <TableCell id="rf-sec-head-4" align="left" />
+              </TableRow>
+              {role.competencies.map((competency, index) => (
+                <TableRow key={competency.id} className={classes.row}>
+                  <TableCell align="left">
+                    <TextField
+                      id={`rf-col-1-sec-${index}`}
+                      className="rf-rows"
+                      value={competency.name}
+                      onChange={this.updateCompetency(competency.id, 'name')}
+                    />
+                  </TableCell>
+                  <TableCell align="left">
+                    <TextField
+                      id={`rf-col-2-sec-${index}`}
+                      className="rf-rows"
+                      value={competency.description}
+                      fullWidth
+                      multiline
+                      onChange={this.updateCompetency(
+                        competency.id,
+                        'description',
+                      )}
+                    />
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    id={`rf-col-4-sec-${index}delete`}
+                    className="rf-rows-delete"
+                  >
+                    <IconButton onClick={this.deleteCompetency(competency.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+              <TableRow>
+                <TableCell colSpan={3}>
+                  <IconButton
+                    className={classes.addButton}
+                    onClick={this.addCompetency}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </div>
