@@ -458,7 +458,6 @@ class EnhancedTable extends React.Component {
     orderBy: 'lastName',
     selected: [],
     displayedPage: "table",
-    pageTitle: "Manage Employees",
     currProfile: {},
     value: 1,
     miniTabValue: 0,
@@ -587,13 +586,11 @@ class EnhancedTable extends React.Component {
   };
 
   handleBackButton = (event, value) => {
-    this.setState({ pageTitle: "Manage Employees"});
     this.setState({ value: 1 });
     this.setState({ displayedPage: "table" });
   };
 
   handleAddButton = (event, value) => {
-    this.setState({ pageTitle: "Add Employee"});
     this.setState({ displayedPage: "add" });
     this.setState({ edit: true });
   };
@@ -689,13 +686,13 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { order, orderBy, selected, displayedPage, pageTitle, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active, addOIDialog, editOIDialog} = this.state;
+    const { order, orderBy, selected, displayedPage, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active, addOIDialog, editOIDialog} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const  blankProfile = { firstname: "", lastname: "", status: "", sin: "", salary: 0, fte: 0, remainingVacationDays: 0, adminLevel: 0, address: "", phoneNumber: ""};
 
     return (
       <div>
-      <h1>{pageTitle}</h1>
+      <h1>Manage Employees</h1>
         { displayedPage == "table" &&
           <Button className={classes.addButton} onClick={this.handleAddButton}>Add Employee</Button>}
        { displayedPage == "add" ?

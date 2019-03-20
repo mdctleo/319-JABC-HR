@@ -125,7 +125,7 @@ class AddEmployeeForm extends React.PureComponent {
         <Grid container spacing={24}>
           <Grid item sm={12}>
             <Typography variant="h5" className={classes.title}>
-              Edit Profile
+              Add Employee
             </Typography>
             <Typography
               className={classes.subHeading}
