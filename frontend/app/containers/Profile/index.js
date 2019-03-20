@@ -10,7 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { selectProfile } from '../App/selectors';
-import { selectRole, selectProfileDomainJS } from './selectors';
+import { selectRole, selectProfileDomainJS, selectAllRoles } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import actions from './actions';
@@ -80,7 +80,7 @@ class Profile extends React.PureComponent {
 
   render() {
     const { activeTab, isAdmin } = this.state;
-    const { classes, role, profile, profileDomain } = this.props;
+    const { classes, role, profile, profileDomain, allRoles } = this.props;
     const { editing } = profileDomain;
 
     if (!profile) return null;
@@ -131,6 +131,7 @@ class Profile extends React.PureComponent {
                   profile={profile}
                   saveProfile={this.saveProfile}
                   cancelEdit={this.cancelEdit}
+                  allRoles={allRoles}
                 />
               )}
             {activeTab === 1 && <RoleDisplay role={role} />}
@@ -149,12 +150,14 @@ Profile.propTypes = {
   saveProfile: PropTypes.func,
   setEditing: PropTypes.func,
   profileDomain: PropTypes.object,
+  allRoles: PropTypes.array,
 };
 
 const mapStateToProps = createStructuredSelector({
   profile: selectProfile,
   role: selectRole,
   profileDomain: selectProfileDomainJS,
+  allRoles: selectAllRoles,
 });
 
 const mapDispatchToProps = {

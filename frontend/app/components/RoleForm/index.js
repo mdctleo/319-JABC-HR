@@ -98,7 +98,7 @@ const styles = theme => ({
 
 class RoleForm extends React.PureComponent {
   state = {
-    role: this.props.role || { id: 0, competencies: [] },
+    role: this.props.role || { competencies: [] },
     adding: !this.props.role,
   };
 

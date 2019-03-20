@@ -1,6 +1,6 @@
 import { takeLatest, select, call, put } from 'redux-saga/effects';
 import { GET_PROFILE_DATA, SAVE_PROFILE } from './constants';
-import { getEmployee, getRole, updateEmployee } from 'api/saga';
+import { getEmployee, getRole, getRoles, updateEmployee } from 'api/saga';
 import { selectProfile, selectUser } from '../App/selectors';
 import { displayError } from 'containers/App/actions';
 import { setEditing } from './actions';
@@ -9,6 +9,7 @@ export function* getProfileData() {
   const user = yield select(selectUser());
   yield call(getEmployee, user.id);
   const profile = yield select(selectProfile);
+  yield call(getRoles);
   if (profile.fkRole) {
     yield call(getRole, profile.fkRole);
   }

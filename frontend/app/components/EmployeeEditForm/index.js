@@ -90,7 +90,7 @@ class EmployeeEditForm extends React.PureComponent {
   };
 
   render() {
-    const { classes, saveProfile, cancelEdit } = this.props;
+    const { classes, saveProfile, cancelEdit, allRoles } = this.props;
     const { profile } = this.state;
 
     return (
@@ -174,12 +174,21 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                label="Position"
+                select
+                value={profile.fkRole}
+                label="Role"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
                 fullWidth
-              />
+                onChange={this.handleChange('fkRole')}
+              >
+                {allRoles.map(role => (
+                  <MenuItem key={role.id} value={role.id}>
+                    {role.name}
+                  </MenuItem>
+                ))}
+              </TextField>
             </div>
             <div className={classes.fieldContainer}>
               <TextField
@@ -192,7 +201,7 @@ class EmployeeEditForm extends React.PureComponent {
                 onChange={this.handleChange('salary')}
               />
             </div>
-            <div className={classes.fieldContainer}>
+            {/* <div className={classes.fieldContainer}>
               <TextField
                 label="Direct Report"
                 className={classes.textField}
@@ -200,7 +209,7 @@ class EmployeeEditForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
               />
-            </div>
+            </div> */}
             <div className={classes.fieldContainer}>
               <TextField
                 select
@@ -284,6 +293,7 @@ EmployeeEditForm.propTypes = {
   profile: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
   cancelEdit: PropTypes.func.isRequired,
+  allRoles: PropTypes.array,
 };
 
 export default withStyles(styles)(EmployeeEditForm);
