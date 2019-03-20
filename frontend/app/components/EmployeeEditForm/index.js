@@ -321,7 +321,7 @@ class EmployeeEditForm extends React.PureComponent {
             Reset Password
           </Button>}
         <SetPasswordDialog profile={profile} open={dialog} handleClose={this.handleClose} add={add}/> 
-        <Button className={classes.cancelButton} onClick={this.cancelEdit}>
+        <Button className={classes.cancelButton} onClick={cancelEdit}>
           Cancel
         </Button>
         <Button
