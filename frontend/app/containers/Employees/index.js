@@ -49,11 +49,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import AddEmployeeForm from '../../components/AddEmployeeForm';
 
 let counter = 0;
-function createData(firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, address, phoneNumber ) {
+function createData(firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, adminLevel, address, phoneNumber ) {
   counter += 1;
-  return { id: counter, firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, address, phoneNumber };
+  return { id: counter, firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, adminLevel, address, phoneNumber };
 }
 
 function desc(a, b, orderBy) {
@@ -462,21 +463,21 @@ class EnhancedTable extends React.Component {
     value: 1,
     miniTabValue: 0,
     data: [
-      createData('Mikayla', 'Preete', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Sara', 'Hill', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('James', 'Yoo', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Mark', 'Green', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Jesse', 'Isaac', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Kim', 'Lee', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Lola', 'Ray', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Jerry', 'Jim', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Arthur', 'Marques', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Abraham', 'Torres', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Anita', 'Tse', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Farah', 'Fawcett', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('True', 'Thompson', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Saint', 'West', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Taneisha', 'Dumas', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Mikayla', 'Preete', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Sara', 'Hill', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('James', 'Yoo', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Admin", '123 ABC Street', '123 4556'),
+      createData('Mark', 'Green', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Jesse', 'Isaac', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('Kim', 'Lee', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('Lola', 'Ray', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Admin", '123 ABC Street', '123 4556'),
+      createData('Jerry', 'Jim', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Arthur', 'Marques', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Abraham', 'Torres', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Anita', 'Tse', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('Farah', 'Fawcett', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('True', 'Thompson', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Saint', 'West', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('Taneisha', 'Dumas', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
     ],
     sampleWorkPlan: { date: "September 16, 2019", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
                                                   section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
@@ -615,15 +616,11 @@ class EnhancedTable extends React.Component {
 
   addProfile = (profile) => {
     // this.props.saveProfile(profile);
-    console.log(profile);
-    var newProfile = createData(profile.firstname, profile.lastname, profile.status, profile.sin, profile.role, profile.salary, profile.manager, profile.fte, profile.remainingVacationDays, profile.address, profile.phoneNumber);
-    console.log(this.state.data);
+    var newProfile = createData(profile.firstname, profile.lastname, profile.status, profile.sin, profile.role, profile.salary, profile.manager, profile.fte, profile.remainingVacationDays, profile.adminLevel, profile.address, profile.phoneNumber);
     var newData = this.state.data.concat(newProfile);
-    console.log(newData);
     this.setState({ data: newData });
-    this.setState({
-      edit: false,
-    });
+    this.setState({ edit: false });
+    console.log("changing view to table");
     this.setState({ displayedPage: "table" });
     this.setState({ value: 1 });
   };
@@ -694,27 +691,11 @@ class EnhancedTable extends React.Component {
     const { classes } = this.props;
     const { order, orderBy, selected, displayedPage, pageTitle, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active, addOIDialog, editOIDialog} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    const  blankProfile = { firstname: "", lastname: "", status: "", sin: "", salary: "", fte: "", remainingVacationDays: "", address: "", phoneNumber: ""};
+    const  blankProfile = { firstname: "", lastname: "", status: "", sin: "", salary: 0, fte: 0, remainingVacationDays: 0, adminLevel: 0, address: "", phoneNumber: ""};
 
     return (
       <div>
       <h1>{pageTitle}</h1>
-        {/* <FormControlLabel
-          className={classes.switch}
-          control={
-            <Switch
-              checked={this.state.active}
-              onChange={this.handleSwitch('active')}
-              value="active"
-              classes={{
-                switchBase: classes.colorSwitchBase,
-                checked: classes.colorChecked,
-                bar: classes.colorBar,
-              }}
-            />
-          }
-          label="Active"
-        /> */}
         { displayedPage == "table" &&
           <Button className={classes.addButton} onClick={this.handleAddButton}>Add Employee</Button>}
        { displayedPage == "add" ?
@@ -728,7 +709,7 @@ class EnhancedTable extends React.Component {
           </Tabs>
          </AppBar>
          <div className="profile-card">
-          <EmployeeEditForm
+          <AddEmployeeForm
                   profile={blankProfile}
                   saveProfile={this.addProfile}
                   cancelEdit={this.handleBackButton}/>
