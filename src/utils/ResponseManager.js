@@ -107,11 +107,11 @@ class JABCSuccess {
     }
 }
 exports.JABCSuccess = JABCSuccess;
-function NullHandler(req, res, next) {
+function PreValidator(req, res, next) {
     req.body = utils.deleteDeepNulls(req.body);
     next();
 }
-exports.NullHandler = NullHandler;
+exports.PreValidator = PreValidator;
 function ErrorHandler(err, req, res, next) {
     if (err) {
         var debugMessage = null;
@@ -136,7 +136,7 @@ function ErrorHandler(err, req, res, next) {
                 }
                 let messages = [];
                 if (missingProperties.length > 0)
-                    messages.push(`${(missingProperties.length == 1) ? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, are missing`);
+                    messages.push(`${(missingProperties.length == 1) ? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length == 1) ? 'is' : 'are'} missing`);
                 if (invalidProperties.length > 0)
                     messages.push(`${(invalidProperties.length == 1) ? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`);
                 if (typeProperties.length > 0)

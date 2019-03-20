@@ -125,7 +125,8 @@ export class JABCSuccess implements IApiResponse {
     }
 }
 
-export function NullHandler(req: any, res: any, next: any){
+export function PreValidator(req: any, res: any, next: any){
+    // Delete any null value
     req.body = utils.deleteDeepNulls(req.body)
     next()
 }
