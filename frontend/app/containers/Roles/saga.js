@@ -1,6 +1,9 @@
-import { takeLatest, call } from 'redux-saga/effects';
-import { GET_ALL_ROLES, GET_ROLE } from './constants';
-import { getRoles, getRole as getRoleApi } from 'api/saga';
+import { takeLatest, call, select, put } from 'redux-saga/effects';
+import { GET_ALL_ROLES, GET_ROLE, SAVE_ROLE } from './constants';
+import { getRoles, getRole as getRoleApi, updateRole } from 'api/saga';
+import { selectSelectedRoleId } from './selectors';
+import { setEditing } from './actions';
+import { displayError } from 'containers/App/actions';
 
 export function* getAllRoles() {
   yield call(getRoles);
@@ -12,7 +15,23 @@ export function* getRole(action) {
   }
 }
 
+export function* saveRole(action) {
+  const selectedRole = yield select(selectSelectedRoleId);
+  try {
+    if (selectedRole) {
+      yield call(updateRole, action.role);
+    } else {
+      // add role
+    }
+    yield put(setEditing(false));
+  } catch (e) {
+    console.log(e);
+    yield put(displayError(e.response.body.message));
+  }
+}
+
 export default function* rolesSaga() {
   yield takeLatest(GET_ALL_ROLES, getAllRoles);
   yield takeLatest(GET_ROLE, getRole);
+  yield takeLatest(SAVE_ROLE, saveRole);
 }

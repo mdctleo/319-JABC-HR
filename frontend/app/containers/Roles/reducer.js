@@ -7,7 +7,7 @@
 import { fromJS } from 'immutable';
 import { GET_ROLE, SET_EDITING } from './constants';
 
-export const initialState = fromJS({});
+export const initialState = fromJS({ editing: false });
 
 function rolesReducer(state = initialState, action) {
   switch (action.type) {

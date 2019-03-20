@@ -28,28 +28,6 @@ const styles = theme => ({
       backgroundColor: '#ff944d',
     },
   },
-  formButtons: {
-    float: 'right',
-    display: 'inline',
-    color: 'white',
-    width: '100px',
-    marginRight: '2.5%',
-    marginTop: '50px',
-    backgroundColor: '#ff6600',
-    borderRadius: '15px',
-    transition: '0.3s',
-    '&:hover': {
-      backgroundColor: '#ff944d',
-    },
-  },
-  cancelButton: {
-    float: 'right',
-    display: 'inline',
-    width: '100px',
-    marginRight: '2.5%',
-    marginTop: '50px',
-    borderRadius: '15px',
-  },
   tabsIndicator: {
     backgroundColor: '#ff5000',
   },
@@ -98,13 +76,12 @@ const ViewRole = props => {
         )}
         {editButtonClicked && (
           <div>
-            <RoleForm role={selectedProfile} add={0} />
-            <Button className={classes.cancelButton} onClick={cancelEdit}>
-              Cancel
-            </Button>
-            <Button className={classes.formButtons} onClick={handleSaveButton}>
-              Save
-            </Button>
+            <RoleForm
+              role={selectedProfile}
+              add={0}
+              cancelEdit={cancelEdit}
+              handleSaveButton={handleSaveButton}
+            />
           </div>
         )}
       </div>

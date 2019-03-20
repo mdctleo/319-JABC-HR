@@ -4,7 +4,7 @@
  *
  */
 
-import { GET_ALL_ROLES, GET_ROLE, SET_EDITING } from './constants';
+import { GET_ALL_ROLES, GET_ROLE, SET_EDITING, SAVE_ROLE } from './constants';
 
 export function getAllRoles() {
   return {
@@ -26,8 +26,16 @@ export function setEditing(editing) {
   };
 }
 
+export function saveRole(role) {
+  return {
+    type: SAVE_ROLE,
+    role,
+  };
+}
+
 export default {
   getAllRoles,
   getRole,
   setEditing,
+  saveRole
 };

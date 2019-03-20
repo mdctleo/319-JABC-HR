@@ -11,7 +11,11 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
 import saga from './saga';
-import { selectAllRoles, selectSelectedRole, selectRoleDomainJS } from './selectors';
+import {
+  selectAllRoles,
+  selectSelectedRole,
+  selectRoleDomainJS,
+} from './selectors';
 import { withStyles } from '@material-ui/core/styles';
 
 import { ViewRole, RolesTable } from 'components/RolePageComponents';
@@ -167,38 +171,8 @@ class Roles extends React.Component {
     this.setState({ data: data.filter(n => n.id != profile.id) });
   };
 
-  handleSaveButton = () => {
-    const id = this.state.selectedProfile.id;
-    for (var i = 0; i < this.state.data.length; i++) {
-      if (this.state.data[i].id == id) {
-        this.state.data[i].description = document.getElementById(
-          'rf-description',
-        ).value;
-        this.state.data[i].name = document.getElementById('rf-name').value;
-        const competencies = [];
-        const foundCompetencyCells = document.getElementsByClassName('rf-rows');
-        for (var i = 0; i < foundCompetencyCells.length; i++) {
-          const input = foundCompetencyCells[i].firstChild.firstChild;
-          if (i % 3 == 0) {
-            input.value
-              ? competencies.push({ name: input.value })
-              : competencies.push({ name: input.defaultValue });
-          } else if (i % 3 == 1) {
-            competencies[Math.floor(i / 3)].description = input.value
-              ? input.value
-              : input.defaultValue;
-          } else {
-            competencies[Math.floor(i / 3)].rating = input.value
-              ? input.value
-              : input.defaultValue;
-          }
-        }
-        this.state.data[i].competencies = competencies;
-      }
-    }
-    this.setState({ value: 1 });
-    this.setState({ displayedPage: 'table' });
-    this.props.setEditing(false);
+  handleSaveButton = role => {
+    this.props.saveRole(role);
   };
 
   handleSubmitButton = (event, value) => {
@@ -343,6 +317,7 @@ Roles.propTypes = {
   getAllRoles: PropTypes.func,
   getRole: PropTypes.func,
   setEditing: PropTypes.func,
+  saveRole: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({

@@ -165,6 +165,14 @@ router.get('/role', (req, res) => {
   ]);
 });
 
-router.use('*', (req, res, next) => res.send());
+router.put('/role/:id', (req, res) => {
+  res.send({
+    message: 'The role was updated successfully',
+    responseCode: 200,
+    type: 'SUCCESS',
+  });
+});
+
+router.use('*', (req, res, next) => res.send('NO ENDPOINT'));
 
 module.exports = router;
