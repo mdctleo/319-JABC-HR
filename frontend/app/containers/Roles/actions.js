@@ -4,7 +4,7 @@
  *
  */
 
-import { GET_ALL_ROLES } from './constants';
+import { GET_ALL_ROLES, GET_ROLE } from './constants';
 
 export function getAllRoles() {
   return {
@@ -12,6 +12,14 @@ export function getAllRoles() {
   };
 }
 
+export function getRole(id) {
+  return {
+    type: GET_ROLE,
+    id,
+  };
+}
+
 export default {
   getAllRoles,
+  getRole,
 };

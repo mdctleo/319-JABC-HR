@@ -31,8 +31,6 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
 import EmployeeEditForm from '../../components/EmployeeEditForm';
 import EmployeeDisplay from '../../components/EmployeeDisplay';
@@ -45,14 +43,18 @@ import WorkPlanForm from '../../components/WorkPlanForm';
 import PerformanceReviewDisplay from '../../components/PerformanceReviewDisplay';
 import PerformanceReviewForm from '../../components/PerformanceReviewForm';
 import orange from '@material-ui/core/colors/orange';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
+import AddEmployeeForm from '../../components/AddEmployeeForm';
 
 let counter = 0;
-function createData(firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, address, phoneNumber ) {
+function createData(firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, adminLevel, address, phoneNumber ) {
   counter += 1;
-  return { id: counter, firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, address, phoneNumber };
+  return { id: counter, firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, adminLevel, address, phoneNumber };
 }
 
 function desc(a, b, orderBy) {
@@ -116,6 +118,7 @@ const DocumentsContainer = (props => {
       </Card>
     </Grid>
   ));
+
   return (
     <Grid container spacing={16} style={{ paddingTop: 25 }}>
       {docs}
@@ -426,6 +429,26 @@ const styles = theme => ({
   switch: {
     float: 'right',
     display: 'inline',
+  },
+  addOIButton: {
+    float: 'right',
+    color: 'white',
+    width: '250px',
+    padding: '0',
+    height: '40px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
+  onBoardingHeader: {
+    height: '50px',
+    width: '100%',
+  },
+  addOIDialogField: {
+    marginBottom: '30px',
   }
 });
 
@@ -435,26 +458,25 @@ class EnhancedTable extends React.Component {
     orderBy: 'lastName',
     selected: [],
     displayedPage: "table",
-    pageTitle: "Manage Employees",
     currProfile: {},
     value: 1,
     miniTabValue: 0,
     data: [
-      createData('Mikayla', 'Preete', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Sara', 'Hill', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('James', 'Yoo', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Mark', 'Green', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Jesse', 'Isaac', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Kim', 'Lee', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Lola', 'Ray', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Jerry', 'Jim', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Arthur', 'Marques', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Abraham', 'Torres', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Anita', 'Tse', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Farah', 'Fawcett', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('True', 'Thompson', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Saint', 'West', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
-      createData('Taneisha', 'Dumas', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, '123 ABC Street', '123 4556'),
+      createData('Mikayla', 'Preete', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Sara', 'Hill', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('James', 'Yoo', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Admin", '123 ABC Street', '123 4556'),
+      createData('Mark', 'Green', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Jesse', 'Isaac', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('Kim', 'Lee', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('Lola', 'Ray', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Admin", '123 ABC Street', '123 4556'),
+      createData('Jerry', 'Jim', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Arthur', 'Marques', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Abraham', 'Torres', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Anita', 'Tse', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('Farah', 'Fawcett', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('True', 'Thompson', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Employee", '123 ABC Street', '123 4556'),
+      createData('Saint', 'West', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
+      createData('Taneisha', 'Dumas', 'Active', '123 543 123', 'Developer', 60000, 'James Yoo', 'Full Time', 12, "Manager", '123 ABC Street', '123 4556'),
     ],
     sampleWorkPlan: { date: "September 16, 2019", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
                                                   section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
@@ -472,6 +494,8 @@ class EnhancedTable extends React.Component {
     rowsPerPage: 25,
     edit: false,
     active: true,
+    addOIDialog: false,
+    editOIDialog: false,
   };
 
   handleRequestSort = (event, property) => {
@@ -498,7 +522,7 @@ class EnhancedTable extends React.Component {
     this.setState({ data: newData });
     this.setState({ displayedPage: "table" });
     this.setState({ value: 1 });
-  }
+  };
 
   handleClick = (event, id) => {
     const { selected } = this.state;
@@ -559,48 +583,67 @@ class EnhancedTable extends React.Component {
   handleMiniTabChange = (event, value) => {
     this.setState({ miniTabValue: value });
     this.setState({ edit: false });
-  }
+  };
 
   handleBackButton = (event, value) => {
-    this.setState({ pageTitle: "Manage Employees"});
     this.setState({ value: 1 });
     this.setState({ displayedPage: "table" });
-  }
+  };
 
   handleAddButton = (event, value) => {
-    this.setState({ pageTitle: "Add Employee"});
     this.setState({ displayedPage: "add" });
     this.setState({ edit: true });
-  }
+  };
 
   handleClickEdit = (event, value) => {
     this.setState({ edit: true });
-  }
+  };
 
   handleSwitch = name => event => {
     this.setState({ [name]: event.target.checked });
   };
 
+  handleAddOI = event => {
+    this.setState({ addOIDialog: true });
+  };
+
+  handleCloseAddOIDialog = event => {
+    this.setState({ addOIDialog: false });
+  };
+
   addProfile = (profile) => {
     // this.props.saveProfile(profile);
-    console.log(profile);
-    var newProfile = createData(profile.firstname, profile.lastname, profile.status, profile.sin, profile.role, profile.salary, profile.manager, profile.fte, profile.remainingVacationDays, profile.address, profile.phoneNumber);
-    console.log(this.state.data);
+    var newProfile = createData(profile.firstname, profile.lastname, profile.status, profile.sin, profile.role, profile.salary, profile.manager, profile.fte, profile.remainingVacationDays, profile.adminLevel, profile.address, profile.phoneNumber);
     var newData = this.state.data.concat(newProfile);
-    console.log(newData);
     this.setState({ data: newData });
-    this.setState({
-      edit: false,
-    });
+    this.setState({ edit: false });
+    console.log("changing view to table");
     this.setState({ displayedPage: "table" });
     this.setState({ value: 1 });
-  }
+  };
 
   cancelEdit = () => {
     this.setState({
       edit: false,
     });
-  }
+  };
+
+  handleAddOIDialog = event => {
+    var id = this.documents.length;
+    var name = document.getElementById("addOI-dialog-name").value;
+    var description = document.getElementById("addOI-dialog-description").value;
+    var date = document.getElementById("addOI-dialog-date").value;
+    var newDoc = {
+      id: id,
+      name: name,
+      description: description,
+      dueDate: date,
+      done: false,
+      fileName: 'None',
+    }
+    this.documents.push(newDoc);
+    this.setState({ addOIDialog: false});
+  };
 
 //   generateDropdown() {
 //     var years = Object.keys(this.state.workPlans);
@@ -643,30 +686,15 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { order, orderBy, selected, displayedPage, pageTitle, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active} = this.state;
+    const { order, orderBy, selected, displayedPage, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active, addOIDialog, editOIDialog} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    const  blankProfile = { firstname: "", lastname: "", status: "", sin: "", salary: "", fte: "", remainingVacationDays: "", address: "", phoneNumber: ""};
+    const  blankProfile = { firstname: "", lastname: "", status: "", sin: "", salary: 0, fte: 0, remainingVacationDays: 0, adminLevel: 0, address: "", phoneNumber: ""};
 
     return (
       <div>
-      <h1>{pageTitle}</h1>
-        {/* <FormControlLabel
-          className={classes.switch}
-          control={
-            <Switch
-              checked={this.state.active}
-              onChange={this.handleSwitch('active')}
-              value="active"
-              classes={{
-                switchBase: classes.colorSwitchBase,
-                checked: classes.colorChecked,
-                bar: classes.colorBar,
-              }}
-            />
-          }
-          label="Active"
-        /> */}
-      <Button className={classes.addButton} onClick={this.handleAddButton}>Add Employee</Button>
+      <h1>Manage Employees</h1>
+        { displayedPage == "table" &&
+          <Button className={classes.addButton} onClick={this.handleAddButton}>Add Employee</Button>}
        { displayedPage == "add" ?
          (<Paper className={classes.root}>
           <div> 
@@ -678,7 +706,7 @@ class EnhancedTable extends React.Component {
           </Tabs>
          </AppBar>
          <div className="profile-card">
-          <EmployeeEditForm
+          <AddEmployeeForm
                   profile={blankProfile}
                   saveProfile={this.addProfile}
                   cancelEdit={this.handleBackButton}/>
@@ -822,7 +850,7 @@ class EnhancedTable extends React.Component {
             { miniTabValue == 0 && edit &&
             <div>
               <WorkPlanForm form={sampleWorkPlan} years="2019-2020" profile={currProfile} />
-              <Button className={classes.cancelButton} onClick={this.handleCancel}>Cancel</Button>
+              <Button className={classes.cancelButton} onClick={this.cancelEdit}>Cancel</Button>
               <Button className={classes.saveButton} onClick={this.updateReview}>Save</Button>
             </div>
             }
@@ -835,23 +863,105 @@ class EnhancedTable extends React.Component {
             { miniTabValue == 1 && edit &&
             <div>
               <PerformanceReviewForm form={samplePR} years="2019-2020" profile={currProfile} />
-              <Button className={classes.cancelButton} onClick={this.handleCancel}>Cancel</Button>
+              <Button className={classes.cancelButton} onClick={this.cancelEdit}>Cancel</Button>
               <Button className={classes.saveButton} onClick={this.updateReview}>Save</Button>
             </div>
             }
           </div>}
         {value === 3 && 
-          <div className={classes.container} style={{position:'relative'}}>
-            <Typography className={classes.employeeName} variant="h5">Onboarding documents</Typography>
+          <div className={classes.container}>
+          <div className={classes.onBoardingHeader}>
+            <Typography className={classes.employeeName} variant="h5">Onboarding Items</Typography>
+            <Button className={classes.addOIButton} onClick={this.handleAddOI}>
+              Add Onboarding Item
+           </Button>
+           </div>
             <DocumentsContainer documents={this.documents} ></DocumentsContainer>
-            <Fab
-              color="primary"
-              component="label"
-              size="medium"
-              style={{position:'absolute',top:0,right:0}}
+            <Dialog
+              open={addOIDialog}
+              onClose={this.handleCloseAddOIDialog}
+              aria-labelledby="addOI-dialog-title"
             >
-            <AddIcon/>
-            </Fab>
+              <DialogTitle id="addOI-dialog-title">Add Onboarding Item</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Enter the information for the new onbording item:
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  className={classes.addOIDialogField}
+                  id="addOI-dialog-name"
+                  label="Name"
+                  fullWidth
+                />
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  className={classes.addOIDialogField}
+                  id="addOI-dialog-description"
+                  label="Description"
+                  fullWidth
+                />
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  className={classes.addOIDialogField}
+                  id="addOI-dialog-date"
+                  label="Due Date"
+                  fullWidth
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handleCloseAddOIDialog} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={this.handleAddOIDialog} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+        </Dialog>
+        <Dialog
+              open={editOIDialog}
+              onClose={this.handleCloseEditOIDialog}
+              aria-labelledby="editOI-dialog-title"
+            >
+              <DialogTitle id="editOI-dialog-title">Edit Onboarding Item</DialogTitle>
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  className={classes.editOIDialogField}
+                  id="editOI-dialog-name"
+                  label="Name"
+                  fullWidth
+                />
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  className={classes.editOIDialogField}
+                  id="editOI-dialog-description"
+                  label="Description"
+                  fullWidth
+                />
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  className={classes.editOIDialogField}
+                  id="editOI-dialog-date"
+                  label="Due Date"
+                  fullWidth
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handleCloseEditOIDialog} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={this.handleEditOIDialog} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+        </Dialog>
           </div>
         }
       </div>
