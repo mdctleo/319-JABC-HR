@@ -1,6 +1,6 @@
 /**
  *
- * EmployeeEditForm
+ * AddEmployeeForm
  *
  */
 
@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button/Button';
-import SetPasswordDialog from '../../components/SetPasswordDialog';
+import NewEmployeeDialog from '../../components/NewEmployeeDialog';
 
 const styles = theme => ({
   title: {
@@ -80,6 +80,7 @@ const styles = theme => ({
     height: '40px',
     width: '200px',
     marginTop: '30px',
+    borderRadius: '15px',
     color: 'black',
     backgroundColor: '#eeeeee',
     borderRadius: '15px',
@@ -90,7 +91,7 @@ const styles = theme => ({
   }
 });
 
-class EmployeeEditForm extends React.PureComponent {
+class AddEmployeeForm extends React.PureComponent {
   state = {
     profile: this.props.profile,
     dialog: false,
@@ -106,8 +107,9 @@ class EmployeeEditForm extends React.PureComponent {
     }));
   };
 
-  handleClose = event => {
+  handleClose = profile => event => {
     this.setState({ dialog: false });
+    this.props.saveProfile(profile)
   }
 
   handleOpen = event => {
@@ -115,7 +117,7 @@ class EmployeeEditForm extends React.PureComponent {
   }
 
   render() {
-    const { classes, saveProfile, cancelEdit, allRoles, add } = this.props;
+    const { classes, saveProfile, cancelEdit } = this.props;
     const { profile, dialog } = this.state;
 
     return (
@@ -123,7 +125,7 @@ class EmployeeEditForm extends React.PureComponent {
         <Grid container spacing={24}>
           <Grid item sm={12}>
             <Typography variant="h5" className={classes.title}>
-              Edit Profile
+              Add Employee
             </Typography>
             <Typography
               className={classes.subHeading}
@@ -199,21 +201,12 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                select
-                value={profile.fkRole}
-                label="Role"
+                label="Position"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
                 fullWidth
-                onChange={this.handleChange('fkRole')}
-              >
-                {allRoles.map(role => (
-                  <MenuItem key={role.id} value={role.id}>
-                    {role.name}
-                  </MenuItem>
-                ))}
-              </TextField>
+              />
             </div>
             <div className={classes.fieldContainer}>
               <TextField
@@ -226,7 +219,7 @@ class EmployeeEditForm extends React.PureComponent {
                 onChange={this.handleChange('salary')}
               />
             </div>
-            {/* <div className={classes.fieldContainer}>
+            <div className={classes.fieldContainer}>
               <TextField
                 label="Direct Report"
                 className={classes.textField}
@@ -234,7 +227,7 @@ class EmployeeEditForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
               />
-            </div> */}
+            </div>
             <div className={classes.fieldContainer}>
               <TextField
                 select
@@ -321,20 +314,13 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
           </Grid>
         </Grid>
-        { !add &&
-          <Button
-            className={classes.resetButton}
-            onClick={this.handleOpen}
-          >
-            Reset Password
-          </Button>}
-        <SetPasswordDialog profile={profile} open={dialog} handleClose={this.handleClose} add={add}/> 
-        <Button className={classes.cancelButton} onClick={cancelEdit}>
+        <NewEmployeeDialog profile={profile} open={dialog} handleClose={this.handleClose(profile)}/> 
+        <Button className={classes.cancelButton} onClick={this.cancelEdit}>
           Cancel
         </Button>
         <Button
           className={classes.formButton}
-          onClick={() => saveProfile(profile)}
+          onClick={this.handleOpen}
         >
           Save
         </Button>
@@ -343,13 +329,11 @@ class EmployeeEditForm extends React.PureComponent {
   }
 }
 
-EmployeeEditForm.propTypes = {
+AddEmployeeForm.propTypes = {
   classes: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
-  cancelEdit: PropTypes.func.isRequired,
-  allRoles: PropTypes.array,
-  add: PropTypes.bool.isRequired,
+  cancelEdit: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(EmployeeEditForm);
+export default withStyles(styles)(AddEmployeeForm);

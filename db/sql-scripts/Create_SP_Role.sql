@@ -185,6 +185,7 @@ END //
 
 DELIMITER ;
 
+
 -- -----------------------------------------------------
 -- procedure delete_competency
 --    - delete competency with given id, if it exists
@@ -209,6 +210,36 @@ BEGIN
   ELSE
     DELETE FROM COMPETENCY
     WHERE COMPETENCY.`COMPETENCY_ID` = competency_id;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure delete_competencies
+--    - delete competencies for a role
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS delete_competencies;
+
+DELIMITER //
+
+CREATE PROCEDURE `delete_competencies` (IN role_id INT)
+
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(*) INTO checker
+  FROM ROLE
+  WHERE ROLE.`ROLE_ID` = role_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Role does not exist.';
+  ELSE
+    DELETE FROM COMPETENCY
+    WHERE COMPETENCY.`ROLE_ID` = role_id;
   END IF;
 END //
 
