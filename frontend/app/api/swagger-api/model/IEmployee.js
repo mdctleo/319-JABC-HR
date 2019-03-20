@@ -71,7 +71,7 @@ export default class IEmployee {
                 obj['id'] = ApiClient.convertToType(data['id'], 'Number');
             }
             if (data.hasOwnProperty('sin')) {
-                obj['sin'] = ApiClient.convertToType(data['sin'], 'String');
+                obj['sin'] = ApiClient.convertToType(data['sin'], 'Number');
             }
             if (data.hasOwnProperty('email')) {
                 obj['email'] = ApiClient.convertToType(data['email'], 'String');

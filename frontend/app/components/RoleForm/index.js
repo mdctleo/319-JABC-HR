@@ -98,7 +98,8 @@ const styles = theme => ({
 
 class RoleForm extends React.PureComponent {
   state = {
-    role: this.props.role,
+    role: this.props.role || { id: 0, competencies: [] },
+    adding: !this.props.role,
   };
 
   handleChange = name => event => {
@@ -112,8 +113,8 @@ class RoleForm extends React.PureComponent {
   };
 
   render() {
-    const { classes, add, cancelEdit, handleSaveButton } = this.props;
-    const { role } = this.state;
+    const { classes, cancelEdit, handleSaveButton } = this.props;
+    const { role, adding } = this.state;
 
     function generate3ColumnTableForm(column1, column2, column3, competencies) {
       return (
@@ -178,7 +179,7 @@ class RoleForm extends React.PureComponent {
     return (
       <div>
         <div className="profile-card">
-          <Typography variant="h5">{add ? 'Add Role' : 'Edit Role'}</Typography>
+          <Typography variant="h5">{adding ? 'Add Role' : 'Edit Role'}</Typography>
           <div className={classes.topFieldContainer}>
             <TextField
               id="rf-name"
@@ -240,7 +241,6 @@ class RoleForm extends React.PureComponent {
 RoleForm.propTypes = {
   classes: PropTypes.object.isRequired,
   role: PropTypes.object.isRequired,
-  add: PropTypes.bool.isRequired,
   cancelEdit: PropTypes.func.isRequired,
   handleSaveButton: PropTypes.func.isRequired,
 };

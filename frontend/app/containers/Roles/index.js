@@ -153,7 +153,6 @@ class Roles extends React.Component {
   };
 
   handleAddButton = () => {
-    this.setState({ displayedPage: 'add' });
     this.props.setEditing(true);
   };
 
@@ -280,10 +279,12 @@ class Roles extends React.Component {
     return (
       <div>
         <h1>Roles</h1>
-        <Button className={classes.addButton} onClick={this.handleAddButton}>
-          Add Role
-        </Button>
-        {!selectedRole ? (
+        {!selectedRole && (
+          <Button className={classes.addButton} onClick={this.handleAddButton}>
+            Add Role
+          </Button>
+        )}
+        {(!selectedRole && !editing) ? (
           <RolesTable
             allRoles={allRoles}
             selectProfile={this.selectProfile}

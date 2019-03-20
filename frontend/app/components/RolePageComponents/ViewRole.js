@@ -96,7 +96,7 @@ ViewRole.propTypes = {
   handleEditButton: PropTypes.func.isRequired,
   cancelEdit: PropTypes.func.isRequired,
   handleSaveButton: PropTypes.func.isRequired,
-  selectedProfile: PropTypes.object.isRequired,
+  selectedProfile: PropTypes.object,
 };
 
 export default withStyles(styles)(ViewRole);

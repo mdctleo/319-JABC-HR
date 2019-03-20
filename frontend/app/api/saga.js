@@ -39,3 +39,8 @@ export function* updateRole(role) {
     yield put(setResource('role', role.id, roleObj));
   }
 }
+
+export function* createRole(role) {
+  const roleObj = IRole.constructFromObject(role);
+  yield rolesApi.createRole(roleObj);
+}
