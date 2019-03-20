@@ -160,13 +160,13 @@ class WorkPlanForm extends React.PureComponent  {
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 4: Objectives</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="wpf-tbody-4">
-              {generate2ColumnTableForm("OBJECTIVES & ACTIITES", "SUPPORT / COLLABORATION", form.section4, "4")}
+              {generate2ColumnTableForm("OBJECTIVES & ACTIVITIES", "SUPPORT / COLLABORATION", form.section4, "4")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 5: Professional Development Goals</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="wpf-tbody-5">
-              {generate2ColumnTableForm("GOAL", "KEY ACTIVITES", form.section5, "5")}
+              {generate2ColumnTableForm("GOAL", "KEY ACTIVITIES", form.section5, "5")}
             </TableBody>
           </Table> 
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 6: Comments</Typography>
