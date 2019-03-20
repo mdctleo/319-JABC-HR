@@ -122,63 +122,66 @@ class PerformacePage extends React.Component {
     profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
     workPlans: {},
     performanceReviews: {},
-  
-    //   workPlans: { "2019-2020": {date: "September 16, 2019", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
-  //                                    section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
-  //                                    section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
-  //                                    section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
-  //                                    section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
-  //                                    section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
-  //           "2018-2019": {date: "September 16, 2018", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
-  //                                    section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
-  //                                    section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
-  //                                    section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
-  //                                    section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
-  //                                    section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}}, 
-  //           "2017-2018": {date: "September 16, 2017", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
-  //                                    section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
-  //                                    section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
-  //                                    section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
-  //                                    section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
-  //                                    section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},  
-  //           "2016-2017": {date: "September 16, 2016", section1: { rows: [{ column1: "Department X", column2: "Goal X"}, {column1: "Department Y", column2: "Goal Y"}]}, 
-  //                                    section2: { rows: [{ column1: "Program X", column2: "Goal X"}, {column1: "Program Y", column2: "Goal Y"}]},
-  //                                    section3: { rows: [{ column1: "Competency X", column2: "Explanation X"}, {column1: "Competency Y", column2: "Explanation Y"}]},
-  //                                    section4: { rows: [{ column1: "Objective X", column2: "Support X"}, {column1: "Objective Y", column2: "Support Y"}]},
-  //                                    section5: { rows: [{ column1: "Goal X", column2: "Activity X"}, {column1: "Goal Y", column2: "Activity Y"}]},
-  //                                    section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
-  // },
-  
-  // performanceReviews: { "2019-2020": {date: "March 16, 2020", section1: { rows: [{ column1: "Department X", column2: "Goal X", column3: "Comment X"}, {column1: "Department Y", column2: "Goal Y", column3: "Comment Y"}]}, 
-  //                                   section2: { rows: [{ column1: "Program X", column2: "Goal X", column3: "Comment X"}, {column1: "Program Y", column2: "Goal Y", column3: "Comment Y"}]},
-  //                                   section3: { rows: [{ column1: "Competency X", column2: "Explanation X", column3: "Comment X"}, {column1: "Competency Y", column2: "Explanation Y", column3: "Comment Y"}]},
-  //                                   section4: { rows: [{ column1: "Objective X", column2: "Support X", column3: "Comment X"}, {column1: "Objective Y", column2: "Support Y", column3: "Comment Y"}]},
-  //                                   section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
-  //                                   section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
-  //                       "2018-2019": {date: "March 16, 2019", section1: { rows: [{ column1: "Department X", column2: "Goal X", column3: "Comment X"}, {column1: "Department Y", column2: "Goal Y", column3: "Comment Y"}]}, 
-  //                                   section2: { rows: [{ column1: "Program X", column2: "Goal X", column3: "Comment X"}, {column1: "Program Y", column2: "Goal Y", column3: "Comment Y"}]},
-  //                                   section3: { rows: [{ column1: "Competency X", column2: "Explanation X", column3: "Comment X"}, {column1: "Competency Y", column2: "Explanation Y", column3: "Comment Y"}]},
-  //                                   section4: { rows: [{ column1: "Objective X", column2: "Support X", column3: "Comment X"}, {column1: "Objective Y", column2: "Support Y", column3: "Comment Y"}]},
-  //                                   section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
-  //                                   section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
-  //                       "2017-2018": {date: "March 16, 2018", section1: { rows: [{ column1: "Department X", column2: "Goal X", column3: "Comment X"}, {column1: "Department Y", column2: "Goal Y", column3: "Comment Y"}]}, 
-  //                                   section2: { rows: [{ column1: "Program X", column2: "Goal X", column3: "Comment X"}, {column1: "Program Y", column2: "Goal Y", column3: "Comment Y"}]},
-  //                                   section3: { rows: [{ column1: "Competency X", column2: "Explanation X", column3: "Comment X"}, {column1: "Competency Y", column2: "Explanation Y", column3: "Comment Y"}]},
-  //                                   section4: { rows: [{ column1: "Objective X", column2: "Support X", column3: "Comment X"}, {column1: "Objective Y", column2: "Support Y", column3: "Comment Y"}]},
-  //                                   section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
-  //                                   section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}}, 
-  //                       "2016-2017": {date: "March 16, 2017", section1: { rows: [{ column1: "Department X", column2: "Goal X", column3: "Comment X"}, {column1: "Department Y", column2: "Goal Y", column3: "Comment Y"}]}, 
-  //                                   section2: { rows: [{ column1: "Program X", column2: "Goal X", column3: "Comment X"}, {column1: "Program Y", column2: "Goal Y", column3: "Comment Y"}]},
-  //                                   section3: { rows: [{ column1: "Competency X", column2: "Explanation X", column3: "Comment X"}, {column1: "Competency Y", column2: "Explanation Y", column3: "Comment Y"}]},
-  //                                   section4: { rows: [{ column1: "Objective X", column2: "Support X", column3: "Comment X"}, {column1: "Objective Y", column2: "Support Y", column3: "Comment Y"}]},
-  //                                   section5: { rows: [{ column1: "Goal X", column2: "Activity X", column3: "Comment X"}, {column1: "Goal Y", column2: "Activity Y", column3: "Comment Y"}]},
-  //                                   section6: { rows: [{ column1: "Date X", column2: "Commenter X", column3: "Comment X"}, {column1: "Date Y", column2: "Commenter Y", column3: "Comment Y"}]}},
-// },
-
-    currentYears: 0,  
+    currentYears: 0,
     value: 0,
     edit: 0,
-  }
+    sections: [
+      {
+        sectionName: "First Section",
+        columns: ["Column 1", "Column 2", "Column 3"],
+        data: [
+          {
+            "Column 1": "Data for column 1",
+            "Column 2": "Data for column 2",
+            "Column 3": "Data for column 3"
+          },
+          {
+            "Column 1": "2 Data for column 1",
+            "Column 2": "2 Data for column 2",
+            "Column 3": "2 Data for column 3"
+          },
+          {
+            "Column 1": "3 Data for column 1",
+            "Column 2": "3 Data for column 2",
+            "Column 3": "3 Data for column 3"
+          }
+        ]
+      },
+      {
+        sectionName: "Second Section",
+        columns: ["Column 1", "Column 2"],
+        data: [
+          {
+            "Column 1": "Data for column 1",
+            "Column 2": "Data for column 2"
+          },
+          {
+            "Column 1": "2 Data for column 1",
+            "Column 2": "2 Data for column 2"
+          },
+          {
+            "Column 1": "3 Data for column 1",
+            "Column 2": "3 Data for column 2"
+          }
+        ]
+      },
+      {
+        sectionName: "Third Section",
+        columns: ["Column 1"],
+        data: [
+          {
+            "Column 1": "Data for column 1"
+          },
+          {
+            "Column 1": "2 Data for column 1"
+          },
+          {
+            "Column 1": "3 Data for column 1"
+          }
+        ]
+      },
+    ]
+  };
 
   handleClickEdit = (event, value) => {
     this.setState({
@@ -404,7 +407,7 @@ generateDropdown() {
 
   render() {
     const { classes } = this.props;
-    const { profile, workPlans, performanceReviews, currentYears, value, edit } = this.state;
+    const { sections, profile, workPlans, performanceReviews, currentYears, value, edit } = this.state;
 
     console.log("rendering performance");
     return (
@@ -417,7 +420,7 @@ generateDropdown() {
           {this.generateDropdown()}
         </FormControl>
         <Paper className={classes.root}>
-          <div> 
+          <div>
           <AppBar position="static" className={classes.appBar}>
           <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
                 onChange={this.handleChange}>
@@ -462,10 +465,10 @@ generateDropdown() {
         </div> }
       { currentYears !== 0 && value == 0 && edit == 0 &&
       <div className="profile-card">
-        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button> 
-        <WorkPlanDisplay form={workPlans[currentYears]} years={currentYears} profile={profile}/>
+        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
+        <WorkPlanDisplay sections={sections} year={currentYears} profile={profile}/>
         </div>}
-      { currentYears !== 0 && value == 0 && edit == 1 && 
+      { currentYears !== 0 && value == 0 && edit == 1 &&
         <div>
           <WorkPlanForm form={workPlans[currentYears]} years={currentYears} profile={profile}/>
           <Button className={classes.formButton} onClick={this.updatePlan}>Submit</Button>
@@ -473,10 +476,10 @@ generateDropdown() {
         </div>}
       { currentYears !== 0 && value == 1 && edit == 0 &&
       <div className="profile-card">
-        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button> 
+        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
         <PerformanceReviewDisplay form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
       </div>}
-      { currentYears !== 0 && value == 1 && edit == 1 && 
+      { currentYears !== 0 && value == 1 && edit == 1 &&
         <div>
           <PerformanceReviewForm form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
           <Button className={classes.formButton} onClick={this.updateReview}>Submit</Button>
@@ -487,7 +490,7 @@ generateDropdown() {
           </Paper>
       </div>
     );
-  }  
+  }
 }
 
 
@@ -495,5 +498,4 @@ PerformacePage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(PerformacePage);  
-
+export default withStyles(styles)(PerformacePage);
