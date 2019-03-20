@@ -1881,7 +1881,7 @@ definitions:
     description: |
       An Employee contains all the current information of a current or onboarding employee
     required:
-    - id
+    # - id
     - sin
     - email
     - password
@@ -1960,7 +1960,7 @@ definitions:
     description: |
       An Employee contains all the current information of a current or onboarding employee
     required:
-    - id
+    # - id
     - sin
     - email
     - password
@@ -2055,7 +2055,7 @@ definitions:
     description: |
       An Role is contains all the current information of a current or onboarding employee
     required:
-    - id
+    # - id
     - name
     properties:
       id:
@@ -2078,7 +2078,7 @@ definitions:
     description: |
       A Competency contains info of competencies and objectives that each role need to fulfill
     required:
-    - id
+    # - id
     - fkRole
     properties:
       id:
@@ -2101,7 +2101,7 @@ definitions:
     description: |
       A Vacation contains info of the employee asking for a vaction period
     required:
-    - id
+    # - id
     - fkEmployee
     - requestedDays
     - requestedStatus
@@ -2144,7 +2144,7 @@ definitions:
       contain the id of the IDocumentType object with the template of the document to be filled by the employee. 
       Otherwise the [fkDocumentType] property will be null.
     required:
-    - id
+    # - id
     - fkEmployee
     - createdDate
     - dueDate
@@ -2201,7 +2201,7 @@ definitions:
     description: |
       A DocumentType contains info of the template support document for the onboarding process
     required:
-    - id
+    # - id
     - name
     properties:
       id:
@@ -2222,7 +2222,7 @@ definitions:
     description: |
       PerformancePlan contains info of the sections of a performance plan of an employee
     required:
-    - id
+    # - id
     - fkEmployee
     - date
     - status
@@ -2261,7 +2261,7 @@ definitions:
     description: |
       PerformanceReview contains info of the sections of a performance plan of an employee
     required:
-    - id
+    # - id
     - fkEmployee
     - fkPerformancePlan
     - date
@@ -2306,7 +2306,7 @@ definitions:
       A JSON object containing all the information of a section in either PerformancePlan or PerformanceReview
     type: object
     required:
-    - id
+    # - id
     - data
     - sectionName
     properties:
@@ -2339,7 +2339,7 @@ definitions:
     description: |
       A Comment contains what another employee thinks about the performance record of another employee
     required:
-    - id
+    # - id
     - fkCommenter
     - comment
     - date
@@ -2376,7 +2376,7 @@ definitions:
     description: |
       A FAQ contains a question and answer, to help the employee while onboarding
     required:
-    - id
+    # - id
     - question
     - answer
     properties:

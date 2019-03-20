@@ -2450,7 +2450,6 @@ definitions:
     - "email"
     - "firstname"
     - "fte"
-    - "id"
     - "lastname"
     - "password"
     - "sin"
@@ -2558,7 +2557,6 @@ definitions:
     - "firstname"
     - "fkCreator"
     - "fte"
-    - "id"
     - "lastname"
     - "password"
     - "sin"
@@ -2678,7 +2676,6 @@ definitions:
   IRole:
     type: "object"
     required:
-    - "id"
     - "name"
     properties:
       id:
@@ -2714,7 +2711,6 @@ definitions:
     type: "object"
     required:
     - "fkRole"
-    - "id"
     properties:
       id:
         type: "integer"
@@ -2742,7 +2738,6 @@ definitions:
     required:
     - "date"
     - "fkEmployee"
-    - "id"
     - "requestedDays"
     - "requestedStatus"
     properties:
@@ -2788,7 +2783,6 @@ definitions:
     - "createdDate"
     - "dueDate"
     - "fkEmployee"
-    - "id"
     - "requireDoc"
     - "status"
     properties:
@@ -2861,7 +2855,6 @@ definitions:
   IDocumentType:
     type: "object"
     required:
-    - "id"
     - "name"
     properties:
       id:
@@ -2889,7 +2882,6 @@ definitions:
     required:
     - "date"
     - "fkEmployee"
-    - "id"
     - "status"
     properties:
       id:
@@ -2959,7 +2951,6 @@ definitions:
     - "date"
     - "fkEmployee"
     - "fkPerformancePlan"
-    - "id"
     - "status"
     properties:
       id:
@@ -3033,7 +3024,6 @@ definitions:
     type: "object"
     required:
     - "data"
-    - "id"
     - "sectionName"
     properties:
       id:
@@ -3072,7 +3062,6 @@ definitions:
     - "comment"
     - "date"
     - "fkCommenter"
-    - "id"
     properties:
       id:
         type: "integer"
@@ -3113,7 +3102,6 @@ definitions:
     type: "object"
     required:
     - "answer"
-    - "id"
     - "question"
     properties:
       id:
