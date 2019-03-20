@@ -433,3 +433,63 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure delete_plan_sections
+--    - delete sections for a given performance plan
+--    - only if the performance plan exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS delete_plan_sections;
+
+DELIMITER //
+
+CREATE PROCEDURE `delete_plan_sections` (IN performance_plan_id INT)
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(*) INTO checker
+  FROM `PERFORMANCE_PLAN`
+  WHERE `PERFORMANCE_PLAN`.PERFORMANCE_PLAN_ID = performance_plan_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Performance plan does not exist.';
+  ELSE
+    DELETE FROM PERFORMANCE_SECTION
+    WHERE PERFORMANCE_SECTION.PERFORMANCE_PLAN_ID = performance_plan_id;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure delete_review_sections
+--    - delete sections for a given performance review
+--    - only if the performance review exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS delete_review_sections;
+
+DELIMITER //
+
+CREATE PROCEDURE `delete_review_sections` (IN performance_review_id INT)
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(*) INTO checker
+  FROM `PERFORMANCE_REVIEW`
+  WHERE `PERFORMANCE_REVIEW`.PERFORMANCE_REVIEW_ID = performance_review_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Performance review does not exist.';
+  ELSE
+    DELETE FROM PERFORMANCE_SECTION
+    WHERE PERFORMANCE_SECTION.PERFORMANCE_REVIEW_ID = performance_review_id;
+  END IF;
+END //
+
+DELIMITER ;
