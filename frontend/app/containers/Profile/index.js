@@ -9,8 +9,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import { selectProfile} from '../App/selectors';
-import { selectRole } from './selectors';
+import { selectProfile } from '../App/selectors';
+import { selectRole, selectProfileDomainJS } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import actions from './actions';
@@ -59,7 +59,6 @@ class Profile extends React.PureComponent {
   state = {
     activeTab: 0,
     isAdmin: true,
-    edit: false,
   };
 
   handleChange = (event, value) => {
@@ -68,27 +67,21 @@ class Profile extends React.PureComponent {
   };
 
   handleClickEdit = (event, value) => {
-    this.setState({
-      edit: true,
-    });
+    this.props.setEditing(true);
   };
 
-  saveProfile = (profile) => {
+  saveProfile = profile => {
     this.props.saveProfile(profile);
-    this.setState({
-      edit: false,
-    });
-  }
+  };
 
   cancelEdit = () => {
-    this.setState({
-      edit: false,
-    });
-  }
+    this.props.setEditing(false);
+  };
 
   render() {
-    const { activeTab, isAdmin, edit } = this.state;
-    const { classes, role, profile } = this.props;
+    const { activeTab, isAdmin } = this.state;
+    const { classes, role, profile, profileDomain } = this.props;
+    const { editing } = profileDomain;
 
     if (!profile) return null;
     return (
@@ -116,7 +109,7 @@ class Profile extends React.PureComponent {
               )}
             {activeTab === 0 &&
               isAdmin &&
-              !edit && (
+              !editing && (
                 <div>
                   <Button
                     className={classes.editButton}
@@ -133,7 +126,7 @@ class Profile extends React.PureComponent {
               )}
             {activeTab === 0 &&
               isAdmin &&
-              edit && (
+              editing && (
                 <EmployeeEditForm
                   profile={profile}
                   saveProfile={this.saveProfile}
@@ -154,11 +147,14 @@ Profile.propTypes = {
   role: PropTypes.object,
   getProfileData: PropTypes.func,
   saveProfile: PropTypes.func,
+  setEditing: PropTypes.func,
+  profileDomain: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
   profile: selectProfile,
   role: selectRole,
+  profileDomain: selectProfileDomainJS,
 });
 
 const mapDispatchToProps = {

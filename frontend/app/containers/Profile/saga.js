@@ -1,7 +1,9 @@
-import { takeLatest, select, call } from 'redux-saga/effects';
+import { takeLatest, select, call, put } from 'redux-saga/effects';
 import { GET_PROFILE_DATA, SAVE_PROFILE } from './constants';
 import { getEmployee, getRole, updateEmployee } from 'api/saga';
 import { selectProfile, selectUser } from '../App/selectors';
+import { displayError } from 'containers/App/actions';
+import { setEditing } from './actions';
 
 export function* getProfileData() {
   const user = yield select(selectUser());
@@ -13,7 +15,12 @@ export function* getProfileData() {
 }
 
 export function* saveProfile(action) {
-  yield updateEmployee(action.payload.profile);
+  try {
+    yield updateEmployee(action.payload.profile);
+    yield put(setEditing(false));
+  } catch (e) {
+    if (e.response) yield put(displayError(e.response.body.message));
+  }
 }
 
 // Individual exports for testing
