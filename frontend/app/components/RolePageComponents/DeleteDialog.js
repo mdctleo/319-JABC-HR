@@ -14,9 +14,7 @@ class DeleteRoleDialog extends React.PureComponent {
     const single = toBeDeleted.length === 1;
     let message = '';
     if (single) {
-      message = `Are you sure you want to delete the ${
-        toBeDeleted[0].name
-      } role?`;
+      message = `Are you sure you want to delete the role?`;
     } else {
       message = `Are you sure you want to delete these ${
         toBeDeleted.length
