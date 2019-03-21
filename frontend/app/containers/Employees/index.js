@@ -688,7 +688,7 @@ class EnhancedTable extends React.Component {
     const { classes } = this.props;
     const { order, orderBy, selected, displayedPage, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active, addOIDialog, editOIDialog} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    const  blankProfile = { firstname: "", lastname: "", status: "", sin: "", salary: 0, fte: 0, remainingVacationDays: 0, adminLevel: 0, address: "", phoneNumber: ""};
+    const  blankProfile = { firstname: "", lastname: "", birthdate: "", id: "", status: "", sin: "", role: {name: ""}, salary: "", fte: "", vacationDays: "", adminLevel: "", address: "", phoneNumber: ""};
 
     return (
       <div>
