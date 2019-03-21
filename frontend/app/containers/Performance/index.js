@@ -17,16 +17,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import WorkPlanDisplay from '../../components/WorkPlanDisplay';
 import PerformanceReviewDisplay from '../../components/PerformanceReviewDisplay';
-import PerformanceReviewForm from '../../components/PerformanceReviewForm';
-import WorkPlanForm from '../../components/WorkPlanForm';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+let uniqid = require('uniqid');
 
 
 const styles = theme => ({
@@ -34,7 +32,7 @@ const styles = theme => ({
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
-    paddingBottom: '100px',
+    paddingBottom: '20px',
   },
   editButton: {
     float: 'right',
@@ -115,71 +113,13 @@ const styles = theme => ({
 
 
 class PerformacePage extends React.Component {
-  state = {
-    profile: {firstname: "Justin", lastname: "Case", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
-    performancePlans: [
-      {
-        year: "2019",
-        sections: [
-          {
-            sectionId: 1,
-            sectionName: "First Section",
-            columns: ["Column 1", "Column 2", "Column 3"],
-            data: [
-              {
-                "Column 1": "Data for column 1",
-                "Column 2": "Data for column 2",
-                "Column 3": "Data for column 3"
-              },
-              {
-                "Column 1": "2 Data for column 1",
-                "Column 2": "2 Data for column 2",
-                "Column 3": "2 Data for column 3"
-              },
-              {
-                "Column 1": "3 Data for column 1",
-                "Column 2": "3 Data for column 2",
-                "Column 3": "3 Data for column 3"
-              }
-            ]
-          },
-          {
-            sectionId: 2,
-            sectionName: "Second Section",
-            columns: ["Column 1", "Column 2"],
-            data: [
-              {
-                "Column 1": "Data for column 1",
-                "Column 2": "Data for column 2"
-              },
-              {
-                "Column 1": "2 Data for column 1",
-                "Column 2": "2 Data for column 2"
-              },
-              {
-                "Column 1": "3 Data for column 1",
-                "Column 2": "3 Data for column 2"
-              }
-            ]
-          },
-          {
-            sectionId: 3,
-            sectionName: "Third Section",
-            columns: ["Column 1"],
-            data: [
-              {
-                "Column 1": "Data for column 1"
-              },
-              {
-                "Column 1": "2 Data for column 1"
-              },
-              {
-                "Column 1": "3 Data for column 1"
-              }
-            ]
-          },
-        ],
-        performanceReview: {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      profile: {firstname: "Justin", lastname: "Case", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
+      performancePlans: [
+        {
           year: "2019",
           sections: [
             {
@@ -188,16 +128,19 @@ class PerformacePage extends React.Component {
               columns: ["Column 1", "Column 2", "Column 3"],
               data: [
                 {
+                  id: uniqid(),
                   "Column 1": "Data for column 1",
                   "Column 2": "Data for column 2",
                   "Column 3": "Data for column 3"
                 },
                 {
+                  id: uniqid(),
                   "Column 1": "2 Data for column 1",
                   "Column 2": "2 Data for column 2",
                   "Column 3": "2 Data for column 3"
                 },
                 {
+                  id: uniqid(),
                   "Column 1": "3 Data for column 1",
                   "Column 2": "3 Data for column 2",
                   "Column 3": "3 Data for column 3"
@@ -210,14 +153,17 @@ class PerformacePage extends React.Component {
               columns: ["Column 1", "Column 2"],
               data: [
                 {
+                  id: uniqid(),
                   "Column 1": "Data for column 1",
                   "Column 2": "Data for column 2"
                 },
                 {
+                  id: uniqid(),
                   "Column 1": "2 Data for column 1",
                   "Column 2": "2 Data for column 2"
                 },
                 {
+                  id: uniqid(),
                   "Column 1": "3 Data for column 1",
                   "Column 2": "3 Data for column 2"
                 }
@@ -229,27 +175,237 @@ class PerformacePage extends React.Component {
               columns: ["Column 1"],
               data: [
                 {
+                  id: uniqid(),
                   "Column 1": "Data for column 1"
                 },
                 {
+                  id: uniqid(),
                   "Column 1": "2 Data for column 1"
                 },
                 {
+                  id: uniqid(),
                   "Column 1": "3 Data for column 1"
                 }
               ]
             },
-          ]
+          ],
+          performanceReview: {
+            year: "2019",
+            sections: [
+              {
+                sectionId: 1,
+                sectionName: "First Section",
+                columns: ["Column 1", "Column 2", "Column 3"],
+                data: [
+                  {
+                    id: uniqid(),
+                    "Column 1": "Data for column 1",
+                    "Column 2": "Data for column 2",
+                    "Column 3": "Data for column 3"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "2 Data for column 1",
+                    "Column 2": "2 Data for column 2",
+                    "Column 3": "2 Data for column 3"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "3 Data for column 1",
+                    "Column 2": "3 Data for column 2",
+                    "Column 3": "3 Data for column 3"
+                  }
+                ]
+              },
+              {
+                sectionId: 2,
+                sectionName: "Second Section",
+                columns: ["Column 1", "Column 2"],
+                data: [
+                  {
+                    id: uniqid(),
+                    "Column 1": "Data for column 1",
+                    "Column 2": "Data for column 2"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "2 Data for column 1",
+                    "Column 2": "2 Data for column 2"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "3 Data for column 1",
+                    "Column 2": "3 Data for column 2"
+                  }
+                ]
+              },
+              {
+                sectionId: 3,
+                sectionName: "Third Section",
+                columns: ["Column 1"],
+                data: [
+                  {
+                    id: uniqid(),
+                    "Column 1": "Data for column 1"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "2 Data for column 1"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "3 Data for column 1"
+                  }
+                ]
+              },
+            ]
+          }
         }
-      }
-    ],
-    selectedYear: "",
-    value: 0,
-    openNewSectionDialog: false,
-    openNewReviewSectionDialog: false,
-    openNewPerformancePlanDialog: false,
-    columnsForNewSection: [0]
-  };
+      ],
+      selectedYear: "",
+      value: 0,
+      openNewSectionDialog: false,
+      openNewReviewSectionDialog: false,
+      openNewPerformancePlanDialog: false,
+      columnsForNewSection: [0]
+    };
+  }
+
+  // state = {
+  //   profile: {firstname: "Justin", lastname: "Case", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
+  //   performancePlans: [
+  //     {
+  //       year: "2019",
+  //       sections: [
+  //         {
+  //           sectionId: 1,
+  //           sectionName: "First Section",
+  //           columns: ["Column 1", "Column 2", "Column 3"],
+  //           data: [
+  //             {
+  //               "Column 1": "Data for column 1",
+  //               "Column 2": "Data for column 2",
+  //               "Column 3": "Data for column 3"
+  //             },
+  //             {
+  //               "Column 1": "2 Data for column 1",
+  //               "Column 2": "2 Data for column 2",
+  //               "Column 3": "2 Data for column 3"
+  //             },
+  //             {
+  //               "Column 1": "3 Data for column 1",
+  //               "Column 2": "3 Data for column 2",
+  //               "Column 3": "3 Data for column 3"
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           sectionId: 2,
+  //           sectionName: "Second Section",
+  //           columns: ["Column 1", "Column 2"],
+  //           data: [
+  //             {
+  //               "Column 1": "Data for column 1",
+  //               "Column 2": "Data for column 2"
+  //             },
+  //             {
+  //               "Column 1": "2 Data for column 1",
+  //               "Column 2": "2 Data for column 2"
+  //             },
+  //             {
+  //               "Column 1": "3 Data for column 1",
+  //               "Column 2": "3 Data for column 2"
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           sectionId: 3,
+  //           sectionName: "Third Section",
+  //           columns: ["Column 1"],
+  //           data: [
+  //             {
+  //               "Column 1": "Data for column 1"
+  //             },
+  //             {
+  //               "Column 1": "2 Data for column 1"
+  //             },
+  //             {
+  //               "Column 1": "3 Data for column 1"
+  //             }
+  //           ]
+  //         },
+  //       ],
+  //       performanceReview: {
+  //         year: "2019",
+  //         sections: [
+  //           {
+  //             sectionId: 1,
+  //             sectionName: "First Section",
+  //             columns: ["Column 1", "Column 2", "Column 3"],
+  //             data: [
+  //               {
+  //                 "Column 1": "Data for column 1",
+  //                 "Column 2": "Data for column 2",
+  //                 "Column 3": "Data for column 3"
+  //               },
+  //               {
+  //                 "Column 1": "2 Data for column 1",
+  //                 "Column 2": "2 Data for column 2",
+  //                 "Column 3": "2 Data for column 3"
+  //               },
+  //               {
+  //                 "Column 1": "3 Data for column 1",
+  //                 "Column 2": "3 Data for column 2",
+  //                 "Column 3": "3 Data for column 3"
+  //               }
+  //             ]
+  //           },
+  //           {
+  //             sectionId: 2,
+  //             sectionName: "Second Section",
+  //             columns: ["Column 1", "Column 2"],
+  //             data: [
+  //               {
+  //                 "Column 1": "Data for column 1",
+  //                 "Column 2": "Data for column 2"
+  //               },
+  //               {
+  //                 "Column 1": "2 Data for column 1",
+  //                 "Column 2": "2 Data for column 2"
+  //               },
+  //               {
+  //                 "Column 1": "3 Data for column 1",
+  //                 "Column 2": "3 Data for column 2"
+  //               }
+  //             ]
+  //           },
+  //           {
+  //             sectionId: 3,
+  //             sectionName: "Third Section",
+  //             columns: ["Column 1"],
+  //             data: [
+  //               {
+  //                 "Column 1": "Data for column 1"
+  //               },
+  //               {
+  //                 "Column 1": "2 Data for column 1"
+  //               },
+  //               {
+  //                 "Column 1": "3 Data for column 1"
+  //               }
+  //             ]
+  //           },
+  //         ]
+  //       }
+  //     }
+  //   ],
+  //   selectedYear: "",
+  //   value: 0,
+  //   openNewSectionDialog: false,
+  //   openNewReviewSectionDialog: false,
+  //   openNewPerformancePlanDialog: false,
+  //   columnsForNewSection: [0]
+  // };
 
   // Add more columns when making a new section
   incNumColumnsForNewSection = () => {
@@ -264,6 +420,58 @@ class PerformacePage extends React.Component {
       }
     }
     return null;
+  };
+
+  // Delete data in the given section for work plan
+  handleDeleteRowsInPlan = (sectionId, ids) => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        for (let section of plan.sections) {
+          if (section.sectionId === sectionId) {
+            for (let id of ids) {
+              for (let i = 0; i < section.data.length; i++) {
+                let data = section.data[i];
+
+                if (data.id === id) {
+                  section.data.splice(i, 1);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    this.setState( { performancePlans: [...performancePlans] } );
+  };
+
+  // Delete data in the given section for review
+  handleDeleteRowsInReview = (sectionId, ids) => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        for (let section of plan.performanceReview.sections) {
+          if (section.sectionId === sectionId) {
+            for (let id of ids) {
+              for (let i = 0; i < section.data.length; i++) {
+                let data = section.data[i];
+
+                if (data.id === id) {
+                  section.data.splice(i, 1);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    this.setState( { performancePlans: [...performancePlans] } );
   };
 
   handleSelect = (event, value) => {
@@ -337,6 +545,7 @@ class PerformacePage extends React.Component {
 
   // Build a Section from the fields filled out in the Dialog Box
   // Then, add it to the collection of Sections
+  // TODO: Validate column names are unique
   saveSection = () => {
     let newCols = this.state.columnsForNewSection;
     let section = {};
@@ -392,6 +601,7 @@ class PerformacePage extends React.Component {
 
   // Build a Performance Review Section from the fields filled out in the Dialog Box
   // Then, add it to the collection of Sections
+  // TODO: Validate column names are unique
   saveReviewSection = () => {
     let newCols = this.state.columnsForNewSection;
     let section = {};
@@ -597,14 +807,22 @@ class PerformacePage extends React.Component {
       <div className="profile-card">
         <Button className={classes.editButton} onClick={this.saveWorkPlan}>Save</Button>
         <Button className={classes.editButton} onClick={this.openNewSectionDialog}>Add Section</Button>
-        <WorkPlanDisplay sections={selectedPerformancePlan.sections} profile={profile} year = {selectedPerformancePlan.year} handleAddRow={this.handleAddRow}/>
+        <WorkPlanDisplay sections={selectedPerformancePlan.sections}
+                         profile={profile}
+                         year = {selectedPerformancePlan.year}
+                         handleAddRow={this.handleAddRow}
+                         handleDeleteRows={this.handleDeleteRowsInPlan}/>
         </div>}
       { selectedPerformancePlan !== null && value === 1 &&
         selectedPerformancePlan.hasOwnProperty("performanceReview") && selectedPerformancePlan["performanceReview"] &&
       <div className="profile-card">
         <Button className={classes.editButton} onClick={this.saveWorkPlan}>Save</Button>
         <Button className={classes.editButton} onClick={this.openNewSectionReviewDialog}>Add Section</Button>
-        <PerformanceReviewDisplay sections={selectedPerformancePlan.performanceReview.sections} year = {selectedPerformancePlan.performanceReview.year} profile={profile} handleAddRow={this.handleAddReviewRow}/>
+        <PerformanceReviewDisplay sections={selectedPerformancePlan.performanceReview.sections}
+                                  year = {selectedPerformancePlan.performanceReview.year}
+                                  profile={profile}
+                                  handleAddRow={this.handleAddReviewRow}
+                                  handleDeleteRows={this.handleDeleteRowsInReview}/>
       </div>}
         { selectedPerformancePlan !== null && value === 1 &&
         !(selectedPerformancePlan.hasOwnProperty("performanceReview") && selectedPerformancePlan["performanceReview"]) &&

@@ -62,7 +62,11 @@ class PerformanceReviewDisplay extends React.Component  {
         <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
         <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {profile.role.name}</Typography>
         {sections.map(function(section) {
-          return <PerformanceSection key = {section.sectionId} classes = {classes} section = {section} handleAddRow = {that.props.handleAddRow}/>
+          return <PerformanceSection key = {section.sectionId}
+                                        classes = {classes}
+                                        section = {section}
+                                        handleAddRow = {that.props.handleAddRow}
+                                        handleDeleteRows = {that.props.handleDeleteRows} />
         })
         }
       </div>
@@ -74,7 +78,8 @@ PerformanceReviewDisplay.propTypes = {
   classes: PropTypes.object.isRequired,
   sections: PropTypes.array.isRequired,
   profile: PropTypes.object.isRequired,
-  year: PropTypes.string.isRequired
+  year: PropTypes.string.isRequired,
+  handleDeleteRows: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(PerformanceReviewDisplay);
