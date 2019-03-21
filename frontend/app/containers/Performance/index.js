@@ -116,7 +116,7 @@ const styles = theme => ({
 
 class PerformacePage extends React.Component {
   state = {
-    profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
+    profile: {firstname: "Justin", lastname: "Case", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
     workPlans: {},
     performanceReviews: {},
     performancePlans: [
@@ -180,7 +180,69 @@ class PerformacePage extends React.Component {
               }
             ]
           },
-        ]
+        ],
+        performanceReview: {
+          year: "2019",
+          sections: [
+            {
+              sectionId: 1,
+              sectionName: "First Section",
+              columns: ["Column 1", "Column 2", "Column 3"],
+              data: [
+                {
+                  "Column 1": "Data for column 1",
+                  "Column 2": "Data for column 2",
+                  "Column 3": "Data for column 3"
+                },
+                {
+                  "Column 1": "2 Data for column 1",
+                  "Column 2": "2 Data for column 2",
+                  "Column 3": "2 Data for column 3"
+                },
+                {
+                  "Column 1": "3 Data for column 1",
+                  "Column 2": "3 Data for column 2",
+                  "Column 3": "3 Data for column 3"
+                }
+              ]
+            },
+            {
+              sectionId: 2,
+              sectionName: "Second Section",
+              columns: ["Column 1", "Column 2"],
+              data: [
+                {
+                  "Column 1": "Data for column 1",
+                  "Column 2": "Data for column 2"
+                },
+                {
+                  "Column 1": "2 Data for column 1",
+                  "Column 2": "2 Data for column 2"
+                },
+                {
+                  "Column 1": "3 Data for column 1",
+                  "Column 2": "3 Data for column 2"
+                }
+              ]
+            },
+            {
+              sectionId: 3,
+              sectionName: "Third Section",
+              columns: ["Column 1"],
+              data: [
+                {
+                  "Column 1": "Data for column 1"
+                },
+                {
+                  "Column 1": "2 Data for column 1"
+                },
+                {
+                  "Column 1": "3 Data for column 1"
+                }
+              ]
+            },
+          ]
+        }
       }
     ],
     selectedYear: "",
@@ -189,7 +251,9 @@ class PerformacePage extends React.Component {
     edit: 0,
     changed: 0,
     openNewSectionDialog: 0,
+    openNewReviewSectionDialog: 0,
     openNewPerformancePlanDialog: 0,
+    openNewPerformanceReviewDialog: 0,
     columnsForNewSection: [0]
   };
 
@@ -218,12 +282,6 @@ class PerformacePage extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ value });
-  };
-
-  handleChange = name => event => {
-    console.log("Name: " + name);
-    console.log("Event: " + event);
-    this.setState({ value: Number(event.target.value) });
   };
 
   // Generate a dropdown list depending on what years of performance plans
@@ -274,7 +332,6 @@ class PerformacePage extends React.Component {
     let performancePlans = this.state.performancePlans;
     for (let plan of performancePlans) {
       if (plan === selectedPlan) {
-        let sections = plan.sections;
         plan.sections = [...plan.sections, section];
         this.setState( { performancePlans: [...performancePlans], openNewSectionDialog: 0, columnsForNewSection: [] });
       }
@@ -300,6 +357,61 @@ class PerformacePage extends React.Component {
     this.handleAddSection(section);
   };
 
+  // ** START PERFORMANCE REVIEW TABLE EDITING
+
+  // Called by child plan components to add a row to a
+  // specific section, of the selected plan's performance review
+  handleAddReviewRow = (sectionId, row) => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        for (let section of plan.performanceReview.sections) {
+          if (section.sectionId === sectionId) {
+            section.data = [...section.data, row];
+          }
+        }
+      }
+    }
+
+    this.setState( { performancePlans: [...performancePlans] } );
+  };
+
+  // Add a Performance Review section to the selected plan's performance review
+  handleAddReviewSection = (section) => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        plan.performanceReview.sections = [...plan.performanceReview.sections, section];
+        this.setState( { performancePlans: [...performancePlans], openNewReviewSectionDialog: 0, columnsForNewSection: [] });
+      }
+    }
+  };
+
+  // Build a Performance Review Section from the fields filled out in the Dialog Box
+  // Then, add it to the collection of Sections
+  saveReviewSection = () => {
+    let newCols = this.state.columnsForNewSection;
+    let section = {};
+    let columns = [];
+
+    for (let newCol of newCols) {
+      columns.push(document.getElementById("col-name".concat(newCol)).value);
+    }
+
+    section.sectionId = -1; // TODO: What should/can this be if its a new Section but yet to exist in db?
+    section.sectionName = document.getElementById("sectionName").value;
+    section.columns = columns;
+    section.data = [];
+
+    this.handleAddReviewSection(section);
+  };
+
+  // ** END PERFORMANCE REVIEW TABLE EDITING
+
   // Make a performance plan with the given plan year
   // TODO: Validate year inputted is valid and does not already exist
   makePlan = () => {
@@ -315,6 +427,20 @@ class PerformacePage extends React.Component {
     this.setState( { performancePlans: [...performancePlans, plan], openNewPerformancePlanDialog: 0, selectedYear: year });
   };
 
+  makeReview = () => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        plan.performanceReview = {};
+        plan.performanceReview.sections = [];
+        plan.performanceReview.year = plan.year;
+        this.setState( { performancePlans: [...performancePlans] });
+      }
+    }
+  };
+
   openNewSectionDialog = () => {
     this.setState({openNewSectionDialog: 1});
   };
@@ -323,12 +449,28 @@ class PerformacePage extends React.Component {
     this.setState({ openNewSectionDialog: 0, columnsForNewSection: [0] });
   };
 
+  openNewSectionReviewDialog = () => {
+    this.setState({openNewReviewSectionDialog: 1});
+  };
+
+  closeNewSectionReviewDialog = () => {
+    this.setState({ openNewReviewSectionDialog: 0, columnsForNewSection: [0] });
+  };
+
   openNewPlanDialog = () => {
     this.setState({openNewPerformancePlanDialog: 1});
   };
 
   closeNewPlanDialog = () => {
     this.setState({ openNewPerformancePlanDialog: 0 });
+  };
+
+  openNewReviewDialog = () => {
+    this.setState({openNewPerformanceReviewDialog: 1});
+  };
+
+  closeNewReviewDialog = () => {
+    this.setState({ openNewPerformanceReviewDialog: 0 });
   };
 
   render() {
@@ -414,6 +556,40 @@ class PerformacePage extends React.Component {
                 </Button>
               </DialogActions>
             </Dialog>
+
+            <Dialog
+              open={this.state.openNewReviewSectionDialog}
+              onClose={this.closeNewSectionReviewDialog}
+              aria-labelledby="form-dialog-title">
+              <DialogTitle id="form-dialog-title">Add new Section</DialogTitle>
+              <DialogContent>
+                <Button className={classes.editButton} onClick={this.incNumColumnsForNewSection}>Add Column</Button>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="sectionName"
+                  label="Section Name"
+                  fullWidth
+                />
+                {columnsForNewSection.map(function(column) {
+                  return <TextField
+                    autoFocus
+                    margin="dense"
+                    id={"col-name".concat(column)}
+                    label="Column Name"
+                    fullWidth
+                  />
+                })}
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.closeNewSectionReviewDialog} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={this.saveReviewSection} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
       <div>
       { selectedPerformancePlan === null && performancePlans.length === 0 &&
         <div className="profile-card">
@@ -429,13 +605,21 @@ class PerformacePage extends React.Component {
       <div className="profile-card">
         <Button className={classes.editButton} onClick={this.saveWorkPlan}>Save</Button>
         <Button className={classes.editButton} onClick={this.openNewSectionDialog}>Add Section</Button>
-        <WorkPlanDisplay sections={selectedPerformancePlan.sections} year={currentYears} profile={profile} handleAddRow={this.handleAddRow}/>
+        <WorkPlanDisplay sections={selectedPerformancePlan.sections} profile={profile} year = {selectedPerformancePlan.year} handleAddRow={this.handleAddRow}/>
         </div>}
       { selectedPerformancePlan !== null && value === 1 &&
+        selectedPerformancePlan.hasOwnProperty("performanceReview") && selectedPerformancePlan["performanceReview"] &&
       <div className="profile-card">
-        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
-        <PerformanceReviewDisplay form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
+        <Button className={classes.editButton} onClick={this.saveWorkPlan}>Save</Button>
+        <Button className={classes.editButton} onClick={this.openNewSectionReviewDialog}>Add Section</Button>
+        <PerformanceReviewDisplay sections={selectedPerformancePlan.performanceReview.sections} year = {selectedPerformancePlan.performanceReview.year} profile={profile} handleAddRow={this.handleAddReviewRow}/>
       </div>}
+        { selectedPerformancePlan !== null && value === 1 &&
+        !(selectedPerformancePlan.hasOwnProperty("performanceReview") && selectedPerformancePlan["performanceReview"]) &&
+        <div className="profile-card">
+          <Typography>You currently have no performance reviews for this work plan. Click on the button below to add your first performance review for this plan: </Typography>
+          <Button className={classes.addDocButton} value={0} onClick={this.makeReview}>Add Review</Button>
+        </div>}
          </div>
          </div>
           </Paper>

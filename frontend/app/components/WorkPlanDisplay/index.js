@@ -52,17 +52,15 @@ const styles = theme => ({
 
 class WorkPlanDisplay extends React.Component  {
   render() {
-    const { classes, sections, year, profile } = this.props;
+    const { classes, sections, profile } = this.props;
     let that = this;
 
     return(
       <div>
+        <h2>{this.props.year} Work Plan</h2>
         <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
         <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {profile.role.name}</Typography>
         {sections.map(function(section) {
-          if (section.sectionId === 1) {
-            console.log("Length of section in WorkPlanDisplay: " + section.data.length);
-          }
           return <PerformanceSection classes = {classes} section = {section} handleAddRow = {that.props.handleAddRow}/>
         })
         }
@@ -74,8 +72,8 @@ class WorkPlanDisplay extends React.Component  {
 WorkPlanDisplay.propTypes = {
   classes: PropTypes.object.isRequired,
   sections: PropTypes.array.isRequired,
-  year: PropTypes.string.isRequired,
   profile: PropTypes.object.isRequired,
+  year: PropTypes.string.isRequired
 };
 
 export default withStyles(styles)(WorkPlanDisplay);
