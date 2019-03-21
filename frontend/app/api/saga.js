@@ -9,6 +9,11 @@ export function* getEmployee(id) {
   yield put(setResource('employee', employee.id, employee));
 }
 
+export function* getEmployees() {
+  const employees = yield employeeApi.getEmployees();
+  yield all(employees.map(e => put(setResource('employee', e.id, e))));
+}
+
 export function* updateEmployee(employee) {
   const employeeObj = IEmployee.constructFromObject(employee);
   const response = yield employeeApi.updateEmployee(employee.id, employeeObj);

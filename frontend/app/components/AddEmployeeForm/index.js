@@ -12,7 +12,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button/Button';
-import NewEmployeeDialog from '../../components/NewEmployeeDialog';
+import NewEmployeeDialog from '../NewEmployeeDialog';
+import { IEmployee } from 'api/swagger-api';
 
 const styles = theme => ({
   title: {
@@ -80,7 +81,6 @@ const styles = theme => ({
     height: '40px',
     width: '200px',
     marginTop: '30px',
-    borderRadius: '15px',
     color: 'black',
     backgroundColor: '#eeeeee',
     borderRadius: '15px',
@@ -88,12 +88,12 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: '##f5f5f5',
     },
-  }
+  },
 });
 
 class AddEmployeeForm extends React.PureComponent {
   state = {
-    profile: this.props.profile,
+    profile: new IEmployee(),
     dialog: false,
   };
 
@@ -109,12 +109,12 @@ class AddEmployeeForm extends React.PureComponent {
 
   handleClose = profile => event => {
     this.setState({ dialog: false });
-    this.props.saveProfile(profile)
-  }
+    this.props.saveProfile(profile);
+  };
 
   handleOpen = event => {
     this.setState({ dialog: true });
-  }
+  };
 
   render() {
     const { classes, saveProfile, cancelEdit } = this.props;
@@ -314,14 +314,15 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
           </Grid>
         </Grid>
-        <NewEmployeeDialog profile={profile} open={dialog} handleClose={this.handleClose(profile)}/> 
+        <NewEmployeeDialog
+          profile={profile}
+          open={dialog}
+          handleClose={this.handleClose(profile)}
+        />
         <Button className={classes.cancelButton} onClick={this.cancelEdit}>
           Cancel
         </Button>
-        <Button
-          className={classes.formButton}
-          onClick={this.handleOpen}
-        >
+        <Button className={classes.formButton} onClick={this.handleOpen}>
           Save
         </Button>
       </div>
@@ -333,7 +334,7 @@ AddEmployeeForm.propTypes = {
   classes: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
-  cancelEdit: PropTypes.func.isRequired
+  cancelEdit: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(AddEmployeeForm);

@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button/Button';
-import SetPasswordDialog from '../../components/SetPasswordDialog';
+import SetPasswordDialog from '../SetPasswordDialog';
 
 const styles = theme => ({
   title: {
@@ -87,7 +87,7 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: '##f5f5f5',
     },
-  }
+  },
 });
 
 class EmployeeEditForm extends React.PureComponent {
@@ -108,11 +108,11 @@ class EmployeeEditForm extends React.PureComponent {
 
   handleClose = event => {
     this.setState({ dialog: false });
-  }
+  };
 
   handleOpen = event => {
     this.setState({ dialog: true });
-  }
+  };
 
   render() {
     const { classes, saveProfile, cancelEdit, allRoles, add } = this.props;
@@ -208,11 +208,12 @@ class EmployeeEditForm extends React.PureComponent {
                 fullWidth
                 onChange={this.handleChange('fkRole')}
               >
-                {allRoles.map(role => (
-                  <MenuItem key={role.id} value={role.id}>
-                    {role.name}
-                  </MenuItem>
-                ))}
+                {allRoles &&
+                  allRoles.map(role => (
+                    <MenuItem key={role.id} value={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
               </TextField>
             </div>
             <div className={classes.fieldContainer}>
@@ -321,14 +322,17 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
           </Grid>
         </Grid>
-        { !add &&
-          <Button
-            className={classes.resetButton}
-            onClick={this.handleOpen}
-          >
+        {!add && (
+          <Button className={classes.resetButton} onClick={this.handleOpen}>
             Reset Password
-          </Button>}
-        <SetPasswordDialog profile={profile} open={dialog} handleClose={this.handleClose} add={add}/> 
+          </Button>
+        )}
+        <SetPasswordDialog
+          profile={profile}
+          open={dialog}
+          handleClose={this.handleClose}
+          add={add}
+        />
         <Button className={classes.cancelButton} onClick={cancelEdit}>
           Cancel
         </Button>

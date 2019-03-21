@@ -35,24 +35,33 @@ const toolbarStyles = theme => ({
 });
 
 const EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props;
+  const { numSelected, classes, showReportButton } = props;
 
   return (
     <Toolbar className={classNames(classes.root, classes.highlight)}>
       <div className={classes.title}>
-        {numSelected > 0 ? (
+        {numSelected > 0 && (
           <Typography color="inherit" variant="subtitle1">
             {numSelected} selected
           </Typography>
-        ) : (
-          <Typography />
         )}
       </div>
+      {numSelected > 0 &&
+        showReportButton && (
+          <div>
+            <button type='button' className="primary-button" id="generate-report-button">
+              Generate Report
+            </button>
+          </div>
+        )}
       <div className={classes.spacer} />
       <div className={classes.actions}>
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton aria-label="Delete" onClick={() => props.handleDeleteButton()}>
+            <IconButton
+              aria-label="Delete"
+              onClick={() => props.handleDeleteButton()}
+            >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -72,6 +81,7 @@ EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   handleDeleteButton: PropTypes.func.isRequired,
+  showReportButton: PropTypes.bool,
 };
 
 export default withStyles(toolbarStyles)(EnhancedTableToolbar);
