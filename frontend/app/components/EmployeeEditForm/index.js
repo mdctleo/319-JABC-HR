@@ -349,7 +349,7 @@ EmployeeEditForm.propTypes = {
   saveProfile: PropTypes.func.isRequired,
   cancelEdit: PropTypes.func.isRequired,
   allRoles: PropTypes.array,
-  add: PropTypes.bool.isRequired,
+  add: PropTypes.bool,
 };
 
 export default withStyles(styles)(EmployeeEditForm);

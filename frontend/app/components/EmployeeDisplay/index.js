@@ -58,6 +58,19 @@ class EmployeeDisplay extends React.PureComponent {
     }
   }
 
+  getAdminLevel() {
+    switch (this.props.profile.adminLevel) {
+      case 0:
+        return 'Employee';
+      case 1:
+        return 'Manager';
+      case 2:
+        return 'Admin';
+      default:
+        return '';
+    }
+  }
+
   render() {
     const { classes, profile, isAdmin, roleName } = this.props;
 
@@ -99,20 +112,25 @@ class EmployeeDisplay extends React.PureComponent {
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">SALARY</Typography>
               </TableCell>
-              <TableCell align="left">{this.salaryFormatter.format(profile.salary)}</TableCell>
-            </TableRow>
-            {isAdmin &&
-            (<TableRow className={classes.row}>
-              <TableCell className={classes.leftCell} align="left">
-                <Typography variant="caption">DIRECT REPORT</Typography>
+              <TableCell align="left">
+                {this.salaryFormatter.format(profile.salary)}
               </TableCell>
-              <TableCell align="left">{profile.manager}</TableCell>
-            </TableRow>)}
+            </TableRow>
+            {/* isAdmin && (
+              <TableRow className={classes.row}>
+                <TableCell className={classes.leftCell} align="left">
+                  <Typography variant="caption">DIRECT REPORT</Typography>
+                </TableCell>
+                <TableCell align="left">{profile.manager}</TableCell>
+              </TableRow>
+            ) */}
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">EMPLOYEE TYPE</Typography>
               </TableCell>
-              <TableCell align="left">{profile.fte === 0 ? 'Part time' : 'Full time'}</TableCell>
+              <TableCell align="left">
+                {profile.fte === 0 ? 'Part time' : 'Full time'}
+              </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
@@ -126,13 +144,9 @@ class EmployeeDisplay extends React.PureComponent {
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
-                <Typography variant="caption">
-                  ADMIN LEVEL
-                </Typography>
+                <Typography variant="caption">ADMIN LEVEL</Typography>
               </TableCell>
-              <TableCell align="left">
-                {profile.adminLevel}
-              </TableCell>
+              <TableCell align="left">{this.getAdminLevel()}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
