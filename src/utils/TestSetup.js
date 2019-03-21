@@ -19,11 +19,11 @@ const fs = require('fs');
 class TestSetup {
     constructor() {
     }
-    static initTestsuite() {
+    static initTestsuite(adminLevel) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.resetDb()
                 .then(() => {
-                return this.login();
+                return this.login(adminLevel);
             })
                 .catch((err) => {
                 console.log(err);
@@ -43,7 +43,7 @@ class TestSetup {
         });
     }
     ;
-    static login() {
+    static login(adminLevel) {
         return __awaiter(this, void 0, void 0, function* () {
             let HEADERS = {
                 'X-APP-ID': 'test-id',
@@ -52,9 +52,21 @@ class TestSetup {
             };
             try {
                 let loginBody = {
-                    email: "tflenderson@jabc.com",
-                    password: "hrtest"
+                    email: "",
+                    password: ""
                 };
+                if (adminLevel === 'admin') {
+                    loginBody.email = "tflenderson@jabc.com";
+                    loginBody.password = "hrtest";
+                }
+                else if (adminLevel === 'manager') {
+                    loginBody.email = "mscott@jabc.com";
+                    loginBody.password = "managertest";
+                }
+                else {
+                    loginBody.email = "jhalpert@jabc.com";
+                    loginBody.password = "employeetest";
+                }
                 let loginResponse = yield chai.request(SERVER)
                     .post(`${BASE_PATH}/token`)
                     .send(loginBody);

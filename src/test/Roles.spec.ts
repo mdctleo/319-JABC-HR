@@ -28,11 +28,11 @@ jsf.extend('faker', () => require('faker'));
 
 describe("RoleService tests", () => {
 
-    describe("/role tests", () => {
+    describe("/role tests with admin credential", () => {
 
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite();
+            HEADERS = await TestSetup.initTestsuite("admin");
             return HEADERS;
         });
 
@@ -141,7 +141,7 @@ describe("RoleService tests", () => {
 
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite();
+            HEADERS = await TestSetup.initTestsuite("admin");
             return HEADERS;
         });
 

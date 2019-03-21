@@ -28,10 +28,10 @@ jsf.extend('faker', () => require('faker'));
 
 describe("EmployeeService tests", () => {
 
-    describe("/employee tests", () => {
+    describe("/employee tests with admin credential", () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite();
+            HEADERS = await TestSetup.initTestsuite("admin");
             return HEADERS;
         });
 
@@ -50,8 +50,6 @@ describe("EmployeeService tests", () => {
                 expect(response.body[0].firstname).to.be.equal("Toby");
                 expect(response.body[0].lastname).to.be.equal("Flenderson");
             }
-
-
         });
 
         it("Should create an Employee with all fields filled", async () => {
@@ -61,6 +59,7 @@ describe("EmployeeService tests", () => {
             });
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
             employeeRecord.id = 6;
+            employeeRecord.sin = "666666666";
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -81,6 +80,7 @@ describe("EmployeeService tests", () => {
             });
             let employeeRecord2 = jsf.generate(schema.definitions.IEmployee);
             employeeRecord2.id = 7;
+            employeeRecord2.sin = "777777777";
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -97,11 +97,13 @@ describe("EmployeeService tests", () => {
 
         it("Should not create an Employee missing required fields", async () => {
             jsf.option({
-                alwaysFakeOptionals: false
+                alwaysFakeOptionals: true,
+                ignoreProperties: ["role"]
             });
             let employeeRecord2 = jsf.generate(schema.definitions.IEmployee);
             employeeRecord2.id = null;
             employeeRecord2.status = null;
+            employeeRecord2.sin = "888888888";
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -111,17 +113,131 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.within(400, 500);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
 
         it("Should not create an Employee required fields with wrong types", async () => {
             jsf.option({
-                alwaysFakeOptionals: false
+                alwaysFakeOptionals: true,
+                ignoreProperties: ["role"]
             });
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
             employeeRecord.id = "333";
+            employeeRecord.sin = "888888888";
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}`)
+                    .set(HEADERS)
+                    .send(employeeRecord);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should not create an Employee, negative salary", async () => {
+            jsf.option({
+                alwaysFakeOptionals: true,
+                ignoreProperties: ["role"]
+            });
+            let employeeRecord = jsf.generate(schema.definitions.IEmployee);
+            employeeRecord.salary = -300.00;
+            employeeRecord.sin = "888888888";
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}`)
+                    .set(HEADERS)
+                    .send(employeeRecord);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        // it("Should not create an Employee, negative sin", async () => {
+        //     jsf.option({
+        //         alwaysFakeOptionals: true,
+        //         ignoreProperties: ["role"]
+        //     });
+        //     let employeeRecord = jsf.generate(schema.definitions.IEmployee);
+        //     employeeRecord.sin = "-333333333";
+        //     let response: any;
+        //     try {
+        //         response = await chai.request(SERVER)
+        //             .post(`${BASE_PATH}`)
+        //             .set(HEADERS)
+        //             .send(employeeRecord);
+        //     } catch (e) {
+        //         console.log(e);
+        //     } finally {
+        //         expect(response.statusCode).to.be.within(400, 500);
+        //         expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+        //     }
+        // });
+
+
+        it("Should not create an Employee, birthdate before joined date", async () => {
+            jsf.option({
+                alwaysFakeOptionals: true,
+                ignoreProperties: ["role"]
+            });
+            let employeeRecord = jsf.generate(schema.definitions.IEmployee);
+            employeeRecord.birthdate = "1998-11-30";
+            employeeRecord.dateJoined = "1997-11-30";
+            employeeRecord.sin = "888888888";
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}`)
+                    .set(HEADERS)
+                    .send(employeeRecord);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+
+        it("Should not create an Employee, remaining vacation date greater than total vacationing dates", async () => {
+            jsf.option({
+                alwaysFakeOptionals: true,
+                ignoreProperties: ["role"]
+            });
+            let employeeRecord = jsf.generate(schema.definitions.IEmployee);
+            employeeRecord.vacationDays = 30;
+            employeeRecord.remainingVacationDays = 50;
+            employeeRecord.sin = "888888888";
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}`)
+                    .set(HEADERS)
+                    .send(employeeRecord);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+        it("Should not create an Employee required fields with wrong types", async () => {
+            jsf.option({
+                alwaysFakeOptionals: true,
+                ignoreProperties: ["role"]
+            });
+            let employeeRecord = jsf.generate(schema.definitions.IEmployee);
+            employeeRecord.id = "333";
+            employeeRecord.sin = "888888888";
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -159,10 +275,99 @@ describe("EmployeeService tests", () => {
     });
 
 
-    describe("/employee/{id} tests", () => {
+    describe("/employee tests with manager credential", () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite();
+            HEADERS = await TestSetup.initTestsuite("manager");
+            return HEADERS;
+        });
+
+        it("Should not get all employees wrong credential", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+
+        it("Should not create employee wrong credential", async () => {
+            jsf.option({
+                alwaysFakeOptionals: true,
+                ignoreProperties: ["role"]
+            });
+            let employeeRecord = jsf.generate(schema.definitions.IEmployee);
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}`)
+                    .set(HEADERS)
+                    .send(employeeRecord);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+    });
+
+    describe("/employee tests with employee credential", () => {
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite("employee");
+            return HEADERS;
+        });
+
+        it("Should not get all employees wrong credential", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+
+            }
+        });
+
+        it("Should not create employee wrong credential", async () => {
+            jsf.option({
+                alwaysFakeOptionals: true,
+                ignoreProperties: ["role"]
+            });
+            let employeeRecord = jsf.generate(schema.definitions.IEmployee);
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}`)
+                    .set(HEADERS)
+                    .send(employeeRecord);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+    });
+
+
+    describe("/employee/{id} tests, admin credential", () => {
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite("admin");
             return HEADERS;
         });
 
@@ -215,7 +420,7 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.within(400, 500);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiresponse);
             }
         });
@@ -234,7 +439,7 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.within(400, 500);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiresponse);
             }
         });
@@ -309,7 +514,7 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.within(400,500);
+                expect(response.statusCode).to.be.within(400, 500);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
@@ -344,8 +549,6 @@ describe("EmployeeService tests", () => {
                 expect(response.body.length).to.be.equal(3);
             }
         });
-
-
     });
 
 
@@ -353,7 +556,7 @@ describe("EmployeeService tests", () => {
 
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite();
+            HEADERS = await TestSetup.initTestsuite("admin");
             return HEADERS;
         });
 
@@ -536,6 +739,21 @@ describe("EmployeeService tests", () => {
             }
         });
 
+        it("Should be able to display employees under HR", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/manager/1`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(1);
+                expect(response.body[0]).to.be.jsonSchema(schema.definitions.IEmployee);
+            }
+        });
+
         it("Should be able to unlink an employee to an HR", async () => {
             let response: any;
             try {
@@ -687,7 +905,7 @@ describe("EmployeeService tests", () => {
 
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite();
+            HEADERS = await TestSetup.initTestsuite("admin");
             return HEADERS;
         });
 
@@ -792,7 +1010,7 @@ describe("EmployeeService tests", () => {
         let HEADERS: any = null;
         let documents: Array<string> = [];
         before(async () => {
-            return Promise.all([TestSetup.initTestsuite(), TestSetup.readDocuments()])
+            return Promise.all([TestSetup.initTestsuite("admin"), TestSetup.readDocuments()])
                 .then((result) => {
                     HEADERS = result[0];
                     return documents = result[1];
@@ -922,7 +1140,7 @@ describe("EmployeeService tests", () => {
     describe("/employee/token tests", () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite();
+            HEADERS = await TestSetup.initTestsuite("admin");
             return HEADERS;
         });
 
@@ -965,15 +1183,216 @@ describe("EmployeeService tests", () => {
         });
     });
 
-    TestSetup.initTestsuite();
+
+    describe("/employee/token tests", () => {
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite("admin");
+            return HEADERS;
+        });
+
+        it("Should be return error for incorrect credential ", async () => {
+            let response: any;
+            let loginBody = {
+                email: "tn@jabc.com",
+                password: "hrtest"
+            };
+
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/token`)
+                    .send(loginBody);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+            }
+        });
+
+        it("Should be return error for malformed credential ", async () => {
+            let response: any;
+            let loginBody = {
+                email: "tflenderson@jabc.com",
+                password: 12345
+            };
+
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/token`)
+                    .send(loginBody);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+            }
+        });
+    });
+
+    describe("/employee/{id}/performance tests with admin credential", async() => {
+        let HEADERS: any = null;
+        before(async () => {
+            HEADERS = await TestSetup.initTestsuite("admin");
+            return HEADERS;
+        });
+
+        it("Should not be able to get performance for non-existent employees ", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/{88}/performance`)
+                    .set(HEADERS);
+
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to get work plan for an employee ", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/{3}/performance/plan`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(2);
+                expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformancePlan);
+                expect(response.body[0].date).to.be.equal('2018-01-01');
+            }
+        });
+
+        it("Should be able to get performance review for an employee ", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/{3}/performance/review`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(2);
+                expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformanceReview);
+                expect(response.body[0].sections.length).to.be.equal(3);
+                expect(response.body[0].fkPerformancePlan).to.be.equal(1);
+            }
+        });
+
+
+
+        it("Should not be able to create workplan for non-existent employees", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+            });
+            let workplan = jsf.generate(schema.definitions.IPerformancePlan);
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/{88}/performance/plan`)
+                    .set(HEADERS)
+                    .send(workplan);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to create workplan for an employee", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+            });
+            let workplan = jsf.generate(schema.definitions.IPerformancePlan);
+            workplan.id = 3;
+            workplan.fkEmployee = 2;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/{2}/performance/plan`)
+                    .set(HEADERS)
+                    .send(workplan);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to create performance for an employee", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+            });
+            let workplan = jsf.generate(schema.definitions.IPerformanceReview);
+            workplan.id = 3;
+            workplan.fkEmployee = 2;
+            workplan.fkPerformancePlan = 3;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/{2}/performance/review`)
+                    .set(HEADERS)
+                    .send(workplan);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to get work plan for an employee ", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/{2}/performance/plan`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(1);
+                expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformancePlan);
+
+            }
+        });
+
+        it("Should be able to get performance review for an employee ", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/{2}/performance/review`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(1);
+                expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformanceReview);
+            }
+        });
+
+    });
+
+    // clears database
+    TestSetup.initTestsuite("admin");
 });
-
-
-// TODO:
-/**
- *  /employee/{id}/performance
- **/
-
 
 
 //TODO:

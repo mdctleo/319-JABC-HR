@@ -12,10 +12,10 @@ export default class TestSetup {
 
     }
 
-    public static async initTestsuite() {
+    public static async initTestsuite(adminLevel: string) {
         return this.resetDb()
             .then(()=> {
-                return this.login();
+                return this.login(adminLevel);
             })
             .catch((err) => {
                 console.log(err);
@@ -32,7 +32,7 @@ export default class TestSetup {
         }
     };
 
-    private static async login(): Promise<any> {
+    private static async login(adminLevel: string): Promise<any> {
         let HEADERS = {
             'X-APP-ID': 'test-id',
             'X-API-Key': 'API-KEY',
@@ -40,10 +40,21 @@ export default class TestSetup {
         };
 
         try {
-            let loginBody = {
-                email: "tflenderson@jabc.com",
-                password: "hrtest"
-            };
+           let loginBody = {
+               email: "",
+               password: ""
+           };
+           if (adminLevel === 'admin') {
+               loginBody.email = "tflenderson@jabc.com";
+               loginBody.password = "hrtest";
+           } else if (adminLevel === 'manager') {
+               loginBody.email = "mscott@jabc.com";
+               loginBody.password = "managertest";
+           } else {
+               loginBody.email = "jhalpert@jabc.com";
+               loginBody.password = "employeetest";
+           }
+
             let loginResponse = await chai.request(SERVER)
                 .post(`${BASE_PATH}/token`)
                 .send(loginBody);
