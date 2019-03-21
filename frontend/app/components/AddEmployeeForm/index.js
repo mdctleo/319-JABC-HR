@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button/Button';
 import NewEmployeeDialog from '../../components/NewEmployeeDialog';
+import Select from 'react-select';
 
 const styles = theme => ({
   title: {
@@ -95,9 +96,19 @@ class AddEmployeeForm extends React.PureComponent {
   state = {
     profile: this.props.profile,
     dialog: false,
+    adminLevel: 0,
   };
 
+  people = [{ value: 'mikayla', label: 'Mikayla Preete' },
+              { value: 'james', label: 'James Yoo' },
+              { value: 'reed', label: 'Reed Esler' },
+              { value: 'anita', label: 'Anita Tse' },
+              { value: 'abraham', label: 'Abraham Torres' },
+              { value: 'leo', label: 'Leo Lin' },
+              { value: 'sam', label: 'Sam Veloso' }];
+
   handleChange = name => event => {
+    if (name == 'adminLevel') this.setState({ adminLevel: event.target.value});
     const { value } = event.target;
     this.setState(prevState => ({
       profile: {
@@ -118,7 +129,7 @@ class AddEmployeeForm extends React.PureComponent {
 
   render() {
     const { classes, saveProfile, cancelEdit } = this.props;
-    const { profile, dialog } = this.state;
+    const { profile, dialog, adminLevel } = this.state;
 
     return (
       <div>
@@ -312,6 +323,60 @@ class AddEmployeeForm extends React.PureComponent {
                 onChange={this.handleChange('phoneNumber')}
               />
             </div>
+            <Typography
+              className={classes.subHeading}
+              variant="subtitle1"
+              color="textSecondary"
+            >
+              Manager(s)
+            </Typography>
+            <div className={classes.fieldContainer}>
+            <Select
+                defaultValue={[]}
+                isMulti
+                name="managers"
+                options={this.people}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                  ...theme.colors,
+                    primary25: 'orange',
+                    primary: 'orange',
+                  },
+                })}
+            />
+            </div>
+            { adminLevel == 1 &&
+                <div>
+                  <Typography
+                    className={classes.subHeading}
+                    variant="subtitle1"
+                    color="textSecondary"
+                  >
+                    Employees
+                  </Typography>
+                  <div className={classes.fieldContainer}>
+                  <Select
+                      defaultValue={[]}
+                      isMulti
+                      name="employees"
+                      options={this.people}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                        ...theme.colors,
+                          primary25: 'orange',
+                          primary: 'orange',
+                        },
+                      })}
+                  />
+                  </div>
+                </div>
+            }
           </Grid>
         </Grid>
         <NewEmployeeDialog profile={profile} open={dialog} handleClose={this.handleClose(profile)}/> 
