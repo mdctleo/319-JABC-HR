@@ -117,8 +117,6 @@ const styles = theme => ({
 class PerformacePage extends React.Component {
   state = {
     profile: {firstname: "Justin", lastname: "Case", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
-    workPlans: {},
-    performanceReviews: {},
     performancePlans: [
       {
         year: "2019",
@@ -246,14 +244,10 @@ class PerformacePage extends React.Component {
       }
     ],
     selectedYear: "",
-    currentYears: 0,
     value: 0,
-    edit: 0,
-    changed: 0,
-    openNewSectionDialog: 0,
-    openNewReviewSectionDialog: 0,
-    openNewPerformancePlanDialog: 0,
-    openNewPerformanceReviewDialog: 0,
+    openNewSectionDialog: false,
+    openNewReviewSectionDialog: false,
+    openNewPerformancePlanDialog: false,
     columnsForNewSection: [0]
   };
 
@@ -295,13 +289,13 @@ class PerformacePage extends React.Component {
     }
 
     return (
-      <Select onChange = {this.handleSelect}>
+      <Select value={0} onChange = {this.handleSelect}>
         {
           years.map(function(yearSpan, index) {
-            return <MenuItem value={yearSpan}>{yearSpan}</MenuItem>
+            return <MenuItem key={index} value={yearSpan}>{yearSpan}</MenuItem>
           })
         }
-        <MenuItem value={0}>Add Year</MenuItem>
+        <MenuItem key={-1} value={0}>Add Year</MenuItem>
       </Select>
     );
   }
@@ -332,8 +326,11 @@ class PerformacePage extends React.Component {
     let performancePlans = this.state.performancePlans;
     for (let plan of performancePlans) {
       if (plan === selectedPlan) {
+        const maxId = plan.sections.length > 0 ? Math.max(...plan.sections.map(s => parseInt(s.sectionId, 10))) : 0;
+        section.sectionId = maxId + 1;
+
         plan.sections = [...plan.sections, section];
-        this.setState( { performancePlans: [...performancePlans], openNewSectionDialog: 0, columnsForNewSection: [] });
+        this.setState( { performancePlans: [...performancePlans], openNewSectionDialog: false, columnsForNewSection: [0] });
       }
     }
   };
@@ -349,7 +346,6 @@ class PerformacePage extends React.Component {
       columns.push(document.getElementById("col-name".concat(newCol)).value);
     }
 
-    section.sectionId = -1; // TODO: What should/can this be if its a new Section but yet to exist in db?
     section.sectionName = document.getElementById("sectionName").value;
     section.columns = columns;
     section.data = [];
@@ -385,8 +381,11 @@ class PerformacePage extends React.Component {
     let performancePlans = this.state.performancePlans;
     for (let plan of performancePlans) {
       if (plan === selectedPlan) {
+        const maxId = plan.performanceReview.sections.length > 0 ? Math.max(...plan.performanceReview.sections.map(s => parseInt(s.sectionId, 10))) : 0;
+        section.sectionId = maxId + 1;
+
         plan.performanceReview.sections = [...plan.performanceReview.sections, section];
-        this.setState( { performancePlans: [...performancePlans], openNewReviewSectionDialog: 0, columnsForNewSection: [] });
+        this.setState( { performancePlans: [...performancePlans], openNewReviewSectionDialog: false, columnsForNewSection: [0] });
       }
     }
   };
@@ -402,7 +401,6 @@ class PerformacePage extends React.Component {
       columns.push(document.getElementById("col-name".concat(newCol)).value);
     }
 
-    section.sectionId = -1; // TODO: What should/can this be if its a new Section but yet to exist in db?
     section.sectionName = document.getElementById("sectionName").value;
     section.columns = columns;
     section.data = [];
@@ -424,7 +422,7 @@ class PerformacePage extends React.Component {
 
     let performancePlans = this.state.performancePlans;
 
-    this.setState( { performancePlans: [...performancePlans, plan], openNewPerformancePlanDialog: 0, selectedYear: year });
+    this.setState( { performancePlans: [...performancePlans, plan], openNewPerformancePlanDialog: false, selectedYear: year, value: 0 });
   };
 
   makeReview = () => {
@@ -436,46 +434,38 @@ class PerformacePage extends React.Component {
         plan.performanceReview = {};
         plan.performanceReview.sections = [];
         plan.performanceReview.year = plan.year;
-        this.setState( { performancePlans: [...performancePlans] });
+        this.setState( { performancePlans: [...performancePlans], value: 1 });
       }
     }
   };
 
   openNewSectionDialog = () => {
-    this.setState({openNewSectionDialog: 1});
+    this.setState({openNewSectionDialog: true});
   };
 
   closeNewSectionDialog = () => {
-    this.setState({ openNewSectionDialog: 0, columnsForNewSection: [0] });
+    this.setState({ openNewSectionDialog: false, columnsForNewSection: [0] });
   };
 
   openNewSectionReviewDialog = () => {
-    this.setState({openNewReviewSectionDialog: 1});
+    this.setState({openNewReviewSectionDialog: true});
   };
 
   closeNewSectionReviewDialog = () => {
-    this.setState({ openNewReviewSectionDialog: 0, columnsForNewSection: [0] });
+    this.setState({ openNewReviewSectionDialog: false, columnsForNewSection: [0] });
   };
 
   openNewPlanDialog = () => {
-    this.setState({openNewPerformancePlanDialog: 1});
+    this.setState({openNewPerformancePlanDialog: true});
   };
 
   closeNewPlanDialog = () => {
-    this.setState({ openNewPerformancePlanDialog: 0 });
-  };
-
-  openNewReviewDialog = () => {
-    this.setState({openNewPerformanceReviewDialog: 1});
-  };
-
-  closeNewReviewDialog = () => {
-    this.setState({ openNewPerformanceReviewDialog: 0 });
+    this.setState({ openNewPerformancePlanDialog: false });
   };
 
   render() {
     const { classes } = this.props;
-    const { selectedYear, performancePlans, columnsForNewSection, sections, profile, workPlans, performanceReviews, currentYears, value, edit } = this.state;
+    const { selectedYear, performancePlans, columnsForNewSection, profile, value } = this.state;
 
     let selectedPerformancePlan = this.getPerformancePlanOfSelectedYear(selectedYear);
 
@@ -537,9 +527,10 @@ class PerformacePage extends React.Component {
                   label="Section Name"
                   fullWidth
                 />
-                {columnsForNewSection.map(function(column) {
+                {columnsForNewSection.map(function(column, i) {
                   return <TextField
                     autoFocus
+                    key={i}
                     margin="dense"
                     id={"col-name".concat(column)}
                     label="Column Name"
@@ -571,9 +562,10 @@ class PerformacePage extends React.Component {
                   label="Section Name"
                   fullWidth
                 />
-                {columnsForNewSection.map(function(column) {
+                {columnsForNewSection.map(function(column, i) {
                   return <TextField
                     autoFocus
+                    key={i}
                     margin="dense"
                     id={"col-name".concat(column)}
                     label="Column Name"
@@ -617,7 +609,7 @@ class PerformacePage extends React.Component {
         { selectedPerformancePlan !== null && value === 1 &&
         !(selectedPerformancePlan.hasOwnProperty("performanceReview") && selectedPerformancePlan["performanceReview"]) &&
         <div className="profile-card">
-          <Typography>You currently have no performance reviews for this work plan. Click on the button below to add your first performance review for this plan: </Typography>
+          <Typography>You currently have no performance review for this work plan. Click on the button below to add a performance review for this plan: </Typography>
           <Button className={classes.addDocButton} value={0} onClick={this.makeReview}>Add Review</Button>
         </div>}
          </div>

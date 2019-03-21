@@ -18,6 +18,18 @@ import TextField from '@material-ui/core/TextField';
 
 
 const styles = theme => ({
+  editButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    }
+  },
   buttonStyle: {
     float: 'right',
     display: 'inline',
@@ -29,12 +41,37 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: '#ff944d',
     }
+  },
+  subHeading: {
+    marginTop: '40px'
+  },
+  firstTopHeading: {
+    marginTop: '40px'
+  },
+  topHeading: {
+    marginTop: '20px'
+  },
+  displayTable: {
+    width: '100%',
+    marginTop: '20px',
+  },
+  description: {
+    marginTop: '20px',
+  },
+  row: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default,
+    },
+  },
+  tableHead: {
+    backgroundColor: '#e0e0e0',
+    width: '100%',
   }
 });
 
 class PerformanceSection extends React.Component {
   state = {
-    openAddRowDialog: 0
+    openAddRowDialog: false
   };
 
   // Build data from the fields filled out in the Dialog Box
@@ -52,11 +89,11 @@ class PerformanceSection extends React.Component {
   };
 
   openNewRowDialog = () => {
-    this.setState({openAddRowDialog: 1});
+    this.setState({openAddRowDialog: true});
   };
 
   closeNewRowDialog = () => {
-    this.setState({openAddRowDialog: 0});
+    this.setState({openAddRowDialog: false});
   };
 
   render() {
@@ -74,6 +111,7 @@ class PerformanceSection extends React.Component {
           <DialogContent>
             {section.columns.map(function(column) {
               return <TextField
+                key={column.concat(section.sectionId)}
                 autoFocus
                 margin="dense"
                 id={column.concat(section.sectionId)}
@@ -97,16 +135,16 @@ class PerformanceSection extends React.Component {
             <TableHead>
               <TableRow>
                 {section.columns.map(function(column) {
-                  return <TableCell>{column}</TableCell>
+                  return <TableCell key={column.concat(-1)}>{column}</TableCell>
                 })}
               </TableRow>
             </TableHead>
             <TableBody>
-              {section.data.map(function(item) {
+              {section.data.map(function(item, index) {
                 return (
-                  <TableRow>
+                  <TableRow key={index}>
                     {section.columns.map(function(column) {
-                      return <TableCell>{item[column]}</TableCell>
+                      return <TableCell key={column.concat(index)}>{item[column]}</TableCell>
                     })
                     }
                   </TableRow>
