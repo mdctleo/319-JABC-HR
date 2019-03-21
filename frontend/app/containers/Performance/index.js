@@ -115,404 +115,232 @@ const styles = theme => ({
 
 
 class PerformacePage extends React.Component {
-
-
   state = {
-    addDialog: false,
     profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
     workPlans: {},
     performanceReviews: {},
+    performancePlans: [
+      {
+        year: "2019",
+        sections: [
+          {
+            sectionId: 1,
+            sectionName: "First Section",
+            columns: ["Column 1", "Column 2", "Column 3"],
+            data: [
+              {
+                "Column 1": "Data for column 1",
+                "Column 2": "Data for column 2",
+                "Column 3": "Data for column 3"
+              },
+              {
+                "Column 1": "2 Data for column 1",
+                "Column 2": "2 Data for column 2",
+                "Column 3": "2 Data for column 3"
+              },
+              {
+                "Column 1": "3 Data for column 1",
+                "Column 2": "3 Data for column 2",
+                "Column 3": "3 Data for column 3"
+              }
+            ]
+          },
+          {
+            sectionId: 2,
+            sectionName: "Second Section",
+            columns: ["Column 1", "Column 2"],
+            data: [
+              {
+                "Column 1": "Data for column 1",
+                "Column 2": "Data for column 2"
+              },
+              {
+                "Column 1": "2 Data for column 1",
+                "Column 2": "2 Data for column 2"
+              },
+              {
+                "Column 1": "3 Data for column 1",
+                "Column 2": "3 Data for column 2"
+              }
+            ]
+          },
+          {
+            sectionId: 3,
+            sectionName: "Third Section",
+            columns: ["Column 1"],
+            data: [
+              {
+                "Column 1": "Data for column 1"
+              },
+              {
+                "Column 1": "2 Data for column 1"
+              },
+              {
+                "Column 1": "3 Data for column 1"
+              }
+            ]
+          },
+        ]
+      }
+    ],
+    selectedYear: "",
     currentYears: 0,
     value: 0,
     edit: 0,
-    sections: [
-      {
-        sectionId: 1,
-        sectionName: "First Section",
-        columns: ["Column 1", "Column 2", "Column 3"],
-        data: [
-          {
-            "Column 1": "Data for column 1",
-            "Column 2": "Data for column 2",
-            "Column 3": "Data for column 3"
-          },
-          {
-            "Column 1": "2 Data for column 1",
-            "Column 2": "2 Data for column 2",
-            "Column 3": "2 Data for column 3"
-          },
-          {
-            "Column 1": "3 Data for column 1",
-            "Column 2": "3 Data for column 2",
-            "Column 3": "3 Data for column 3"
-          }
-        ]
-      },
-      {
-        sectionId: 2,
-        sectionName: "Second Section",
-        columns: ["Column 1", "Column 2"],
-        data: [
-          {
-            "Column 1": "Data for column 1",
-            "Column 2": "Data for column 2"
-          },
-          {
-            "Column 1": "2 Data for column 1",
-            "Column 2": "2 Data for column 2"
-          },
-          {
-            "Column 1": "3 Data for column 1",
-            "Column 2": "3 Data for column 2"
-          }
-        ]
-      },
-      {
-        sectionId: 3,
-        sectionName: "Third Section",
-        columns: ["Column 1"],
-        data: [
-          {
-            "Column 1": "Data for column 1"
-          },
-          {
-            "Column 1": "2 Data for column 1"
-          },
-          {
-            "Column 1": "3 Data for column 1"
-          }
-        ]
-      },
-    ]
+    changed: 0,
+    openNewSectionDialog: 0,
+    openNewPerformancePlanDialog: 0,
+    columnsForNewSection: [0]
   };
 
-  handleClickEdit = (event, value) => {
-    this.setState({
-      edit: 1,
-    });
+  // Add more columns when making a new section
+  incNumColumnsForNewSection = () => {
+    let colsForNewSection = this.state.columnsForNewSection;
+    this.setState({ columnsForNewSection: [...colsForNewSection, colsForNewSection.length] });
   };
 
-  handleCancel = (event, value) => {
-    this.setState({ edit: 0});
-  }
+  getPerformancePlanOfSelectedYear = () => {
+    for (let performancePlan of this.state.performancePlans) {
+      if (performancePlan.year === this.state.selectedYear) {
+        return performancePlan;
+      }
+    }
+    return null;
+  };
 
   handleSelect = (event, value) => {
-    if (event.target.value == 0) {
-      this.setState({ addDialog: true });
+    if (event.target.value === 0) {
+      this.openNewPlanDialog();
     } else {
-      this.setState({ currentYears: event.target.value });
+      this.setState({ selectedYear: event.target.value });
     }
-  }
+  };
 
-  handleClose = (event, value) => {
-    this.setState({ addDialog: false });
-    this.setState({ edit: 1 });
-  }
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
 
-  handleYearsDialog = (event, value) => {
-    var newYears = document.getElementById("years-dialog").value;
-    this.setState({ currentYears: newYears});
-    var newWP = { date: "", section1: { rows: [{ column1: "", column2: ""}]}, section2: { rows: [{ column1: "", column2: ""}]}, section3: { rows: [{ column1: "", column2: ""}]}, section4: { rows: [{ column1: "", column2: ""}]}, section5: { rows: [{ column1: "", column2: ""}]}, section6: { rows: [{ column1: "", column2: "", column3: ""}]}};
-    var newPR = { date: "", section1: { rows: [{ column1: "", column2: "", column3: ""}]}, section2: { rows: [{ column1: "", column2: "", column3: ""}]}, section3: { rows: [{ column1: "", column2: "", column3: ""}]}, section4: { rows: [{ column1: "", column2: "", column3: ""}]}, section5: { rows: [{ column1: "", column2: "", column3: ""}]}, section6: { rows: [{ column1: "", column2: "", column3: ""}]}};
-    var prCopy = this.state.performanceReviews;
-    prCopy[newYears] = newPR;
-    var wpCopy = this.state.workPlans;
-    wpCopy[newYears] = newWP;
-    this.setState({ workPlans: wpCopy });
-    this.setState({ performanceReviews: prCopy });
-    this.setState({ addDialog: false});
-    this.setState({ edit: 1 });
+  handleChange = name => event => {
+    console.log("Name: " + name);
+    console.log("Event: " + event);
+    this.setState({ value: Number(event.target.value) });
+  };
 
-  }
-
-  updatePlan = (event, value) => {
-    var date = document.getElementById("wpf-date").value ? document.getElementById("wpf-date").value : document.getElementById("wpf-date").defaultValue;
-    var section1 = { rows: []};
-    var section1s = document.getElementsByClassName("wpf-rows-1");
-    console.log(section1s[1].firstChild.firstChild);
-    for (var i = 0; i < section1s.length; i++) {
-      var input = section1s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value ? section1.rows.push({ column1: input.value }) : section1.rows.push({ column1: input.defaultValue });
-        console.log(input.value);
-        console.log(section1.rows);
-      } else {
-        console.log(Math.floor(i/2));
-        section1.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+  // Generate a dropdown list depending on what years of performance plans
+  // are available.
+  generateDropdown() {
+    let years = [];
+    for (let performancePlan of this.state.performancePlans) {
+      if (performancePlan.hasOwnProperty('year') && performancePlan.year) {
+        years.push(performancePlan.year);
       }
     }
 
-    var section2 = { rows: []};
-    var section2s = document.getElementsByClassName("wpf-rows-2");
-    for (var i = 0; i < section2s.length; i++) {
-      var input = section2s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value ? section2.rows.push({ column1: input.value }) : section2.rows.push({ column1: input.defaultValue });
-      } else {
-        section2.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+    return (
+      <Select onChange = {this.handleSelect}>
+        {
+          years.map(function(yearSpan, index) {
+            return <MenuItem value={yearSpan}>{yearSpan}</MenuItem>
+          })
+        }
+        <MenuItem value={0}>Add Year</MenuItem>
+      </Select>
+    );
+  }
+
+  // Called by child plan components to add a row to a
+  // specific section, of the selected plan
+  handleAddRow = (sectionId, row) => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        for (let section of plan.sections) {
+          if (section.sectionId === sectionId) {
+            section.data = [...section.data, row];
+          }
+        }
       }
     }
 
-    var section3 = { rows: []};
-    var section3s = document.getElementsByClassName("wpf-rows-3");
-    for (var i = 0; i < section3s.length; i++) {
-      var input = section3s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value ? section3.rows.push({ column1: input.value }) : section3.rows.push({ column1: input.defaualue });
-      } else {
-        section3.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+    this.setState( { performancePlans: [...performancePlans] } );
+  };
+
+  // Add a section to the selected plan
+  handleAddSection = (section) => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        let sections = plan.sections;
+        plan.sections = [...plan.sections, section];
+        this.setState( { performancePlans: [...performancePlans], openNewSectionDialog: 0, columnsForNewSection: [] });
       }
     }
+  };
 
-    var section4 = { rows: []};
-    var section4s = document.getElementsByClassName("wpf-rows-4");
-    for (var i = 0; i < section4s.length; i++) {
-      var input = section4s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value  ? section4.rows.push({ column1: input.value }) : section4.rows.push({ column1: input.defaultValue });
-      } else {
-        section4.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-      }
+  // Build a Section from the fields filled out in the Dialog Box
+  // Then, add it to the collection of Sections
+  saveSection = () => {
+    let newCols = this.state.columnsForNewSection;
+    let section = {};
+    let columns = [];
+
+    for (let newCol of newCols) {
+      columns.push(document.getElementById("col-name".concat(newCol)).value);
     }
 
-    var section5 = { rows: []};
-    var section5s = document.getElementsByClassName("wpf-rows-5");
-    for (var i = 0; i < section5s.length; i++) {
-      var input = section5s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value ? section5.rows.push({ column1: input.value }) : section5.rows.push({ column1: input.defaultValue });
-      } else {
-        section5.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-      }
-    }
+    section.sectionId = -1; // TODO: What should/can this be if its a new Section but yet to exist in db?
+    section.sectionName = document.getElementById("sectionName").value;
+    section.columns = columns;
+    section.data = [];
 
-    var section6 = { rows: []};
-    var section6s = document.getElementsByClassName("wpf-rows-6");
-    for (var i = 0; i < section6s.length; i++) {
-      var input = section6s[i].firstChild.firstChild;
-      if (i % 3 == 0) {
-        input.value ? section6.rows.push({ column1: input.value }) : section6.rows.push({ column1: input.defaultValue });
-      } else if (i % 3 == 1) {
-        section6.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-      } else {
-        section6.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-      }
-    }
-    var workPlansCopy = this.state.workPlans;
-    workPlansCopy[this.state.currentYears] = { date: date, section1: section1, section2: section2, section3: section3, section4: section4, section5: section5, section6: section6};
-    this.setState({ workPlans: workPlansCopy });
-    var prCopy = this.state.performanceReviews;
-    prCopy[this.state.currentYears] = { date: prCopy[this.state.currentYears].date, section1: workPlansCopy[this.state.currentYears].section1, section2: workPlansCopy[this.state.currentYears].section2, section3: workPlansCopy[this.state.currentYears].section3, section4: workPlansCopy[this.state.currentYears].section4, section5: workPlansCopy[this.state.currentYears].section5, section6: workPlansCopy[this.state.currentYears].section6};
-    this.setState({ performanceReviews: prCopy });
-    this.setState({ edit: 0 });
-}
+    this.handleAddSection(section);
+  };
 
-updateReview = (event, value) => {
-  var date = document.getElementById("prf-date").value ? document.getElementById("prf-date").value : document.getElementById("prf-date").defaultValue;
-  var section1 = { rows: []};
-  var section1s = document.getElementsByClassName("prf-rows-1");
-  console.log(section1s[1].firstChild.firstChild);
-  for (var i = 0; i < section1s.length; i++) {
-    var input = section1s[i].firstChild.firstChild;
-    if (i % 2 == 0) {
-      input.value ? section1.rows.push({ column1: input.value }) : section1.rows.push({ column1: input.defaultValue });
-      console.log(input.value);
-      console.log(section1.rows);
-    } else {
-      console.log(Math.floor(i/2));
-      section1.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-    }
-  }
+  // Make a performance plan with the given plan year
+  // TODO: Validate year inputted is valid and does not already exist
+  makePlan = () => {
+    let year = document.getElementById("planYear").value;
 
-  var section2 = { rows: []};
-  var section2s = document.getElementsByClassName("wpf-rows-2");
-  for (var i = 0; i < section2s.length; i++) {
-    var input = section2s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section2.rows.push({ column1: input.value }) : section2.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section2.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section2.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
+    let plan = {
+      year: year,
+      sections: []
+    };
 
-  var section3 = { rows: []};
-  var section3s = document.getElementsByClassName("wpf-rows-3");
-  for (var i = 0; i < section3s.length; i++) {
-    var input = section3s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section3.rows.push({ column1: input.value }) : section3.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section3.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section3.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
+    let performancePlans = this.state.performancePlans;
 
-  var section4 = { rows: []};
-  var section4s = document.getElementsByClassName("wpf-rows-4");
-  for (var i = 0; i < section4s.length; i++) {
-    var input = section4s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section4.rows.push({ column1: input.value }) : section4.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section4.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section4.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
+    this.setState( { performancePlans: [...performancePlans, plan], openNewPerformancePlanDialog: 0, selectedYear: year });
+  };
 
-  var section5 = { rows: []};
-  var section5s = document.getElementsByClassName("wpf-rows-5");
-  for (var i = 0; i < section5s.length; i++) {
-    var input = section5s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section5.rows.push({ column1: input.value }) : section5.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section5.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section5.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
+  openNewSectionDialog = () => {
+    this.setState({openNewSectionDialog: 1});
+  };
 
-  var section6 = { rows: []};
-  var section6s = document.getElementsByClassName("wpf-rows-6");
-  for (var i = 0; i < section6s.length; i++) {
-    var input = section6s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section6.rows.push({ column1: input.value }) : section6.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section6.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section6.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
-  var prCopy = this.state.performanceReviews;
-  prCopy[this.state.currentYears] = { date: date, section1: section1, section2: section2, section3: section3, section4: section4, section5: section5, section6: section6};
-  this.setState({ performanceReviews: prCopy });
-  this.setState({ edit: 0 });
-}
+  closeNewSectionDialog = () => {
+    this.setState({ openNewSectionDialog: 0, columnsForNewSection: [0] });
+  };
 
-handleChange = (event, value) => {
-  this.setState({ value });
-};
+  openNewPlanDialog = () => {
+    this.setState({openNewPerformancePlanDialog: 1});
+  };
 
-generateDropdown() {
-    var years = Object.keys(this.state.workPlans);
-    return (<Select
-              onChange={this.handleSelect}>
-              {years.map(function(yearSpan, index){
-                return <MenuItem value={yearSpan}>{yearSpan}</MenuItem>})}
-              <MenuItem value={0}>Add Year</MenuItem>
-          </Select>)
-}
-
-  handleAddRow = (sectionId) => {
-    console.log(sectionId);
-
-    let sections = this.state.sections;
-    for (let section of sections) {
-      if (section.sectionId === sectionId) {
-        section.sectionName = "Blarg";
-        section.data = [...section.data, {"Column 1": "Data for column 1"}];
-      }
-    }
-
-    this.setState( { sections: sections});
+  closeNewPlanDialog = () => {
+    this.setState({ openNewPerformancePlanDialog: 0 });
   };
 
   render() {
     const { classes } = this.props;
-    const { sections, profile, workPlans, performanceReviews, currentYears, value, edit } = this.state;
+    const { selectedYear, performancePlans, columnsForNewSection, sections, profile, workPlans, performanceReviews, currentYears, value, edit } = this.state;
 
-    console.log("rendering performance");
-    console.log("Number of data for section 1: " + sections[0].data.length);
-    // return (
-    //   <div>
-    //   <h1>Performance</h1>
-    //   <FormControl className={classes.formControl}>
-    //       <InputLabel>
-    //         Year
-    //       </InputLabel>
-    //       {this.generateDropdown()}
-    //     </FormControl>
-    //     <Paper className={classes.root}>
-    //       <div>
-    //       <AppBar position="static" className={classes.appBar}>
-    //       <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
-    //             onChange={this.handleChange}>
-    //         <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-    //              label="Work Plan" />
-    //         <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-    //              label="Performance Review" />
-    //     </Tabs>
-    //      </AppBar>
-    //      <Dialog
-    //       open={this.state.addDialog}
-    //       onClose={this.handleClose}
-    //       aria-labelledby="form-dialog-title"
-    //     >
-    //       <DialogTitle id="form-dialog-title">Enter Year Span</DialogTitle>
-    //       <DialogContent>
-    //         <DialogContentText>
-    //           Enter the span of years for the new performance documents:
-    //         </DialogContentText>
-    //         <TextField
-    //           autoFocus
-    //           margin="dense"
-    //           id="years-dialog"
-    //           label="Year Span"
-    //           fullWidth
-    //         />
-    //       </DialogContent>
-    //       <DialogActions>
-    //         <Button onClick={this.handleClose} color="primary">
-    //           Cancel
-    //         </Button>
-    //         <Button onClick={this.handleYearsDialog} color="primary">
-    //           OK
-    //         </Button>
-    //       </DialogActions>
-    //     </Dialog>
-    //   <div>
-    //   { currentYears == 0 &&
-    //     <div className="profile-card">
-    //       <Typography>You currently have no performance documents. Click on the button below to add your first Performance Documents for a given year: </Typography>
-    //       <Button className={classes.addDocButton} value={0} onClick={this.handleSelect}>Add Year</Button>
-    //     </div> }
-    //   { currentYears !== 0 && value == 0 && edit == 0 &&
-    //   <div className="profile-card">
-    //     <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
-    //     <WorkPlanDisplay sections={sections} year={currentYears} profile={profile} handleAddRow={this.handleAddRow}/>
-    //     </div>}
-    //   { currentYears !== 0 && value == 0 && edit == 1 &&
-    //     <div>
-    //       <WorkPlanForm form={workPlans[currentYears]} years={currentYears} profile={profile}/>
-    //       <Button className={classes.formButton} onClick={this.updatePlan}>Submit</Button>
-    //       <Button className={classes.formButton} onClick={this.handleCancel}>Cancel</Button>
-    //     </div>}
-    //   { currentYears !== 0 && value == 1 && edit == 0 &&
-    //   <div className="profile-card">
-    //     <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
-    //     <PerformanceReviewDisplay form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
-    //   </div>}
-    //   { currentYears !== 0 && value == 1 && edit == 1 &&
-    //     <div>
-    //       <PerformanceReviewForm form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
-    //       <Button className={classes.formButton} onClick={this.updateReview}>Submit</Button>
-    //       <Button className={classes.formButton} onClick={this.handleCancel}>Cancel</Button>
-    //     </div>}
-    //      </div>
-    //      </div>
-    //       </Paper>
-    //   </div>
-    // );
+    let selectedPerformancePlan = this.getPerformancePlanOfSelectedYear(selectedYear);
 
     return (
       <div>
-        <h1>Performance</h1>
-        <FormControl className={classes.formControl}>
+      <h1>Performance</h1>
+      <FormControl className={classes.formControl}>
           <InputLabel>
             Year
           </InputLabel>
@@ -520,50 +348,97 @@ generateDropdown() {
         </FormControl>
         <Paper className={classes.root}>
           <div>
-            <AppBar position="static" className={classes.appBar}>
-              <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
-                    onChange={this.handleChange}>
-                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                     label="Work Plan" />
-                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                     label="Performance Review" />
-              </Tabs>
-            </AppBar>
+          <AppBar position="static" className={classes.appBar}>
+          <Tabs value={value} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
+                onChange={this.handleChange}>
+            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                 label="Work Plan" />
+            <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                 label="Performance Review" />
+        </Tabs>
+         </AppBar>
             <Dialog
-              open={this.state.addDialog}
-              onClose={this.handleClose}
-              aria-labelledby="form-dialog-title"
-            >
-              <DialogTitle id="form-dialog-title">Enter Year Span</DialogTitle>
+              open={this.state.openNewPerformancePlanDialog}
+              onClose={this.closeNewPlanDialog}
+              aria-labelledby="form-dialog-title">
+              <DialogTitle id="form-dialog-title">Enter year of your work plan</DialogTitle>
               <DialogContent>
-                <DialogContentText>
-                  Enter the span of years for the new performance documents:
-                </DialogContentText>
                 <TextField
                   autoFocus
                   margin="dense"
-                  id="years-dialog"
-                  label="Year Span"
+                  id="planYear"
+                  label="Year"
                   fullWidth
                 />
               </DialogContent>
               <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
+                <Button onClick={this.closeNewPlanDialog} color="primary">
                   Cancel
                 </Button>
-                <Button onClick={this.handleYearsDialog} color="primary">
+                <Button onClick={this.makePlan} color="primary">
                   OK
                 </Button>
               </DialogActions>
             </Dialog>
-            <div>
-              <div className="profile-card">
-                <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
-                <WorkPlanDisplay sections={sections} year={currentYears} profile={profile} handleAddRow={this.handleAddRow}/>
-              </div>
-            </div>
-          </div>
-        </Paper>
+
+            <Dialog
+              open={this.state.openNewSectionDialog}
+              onClose={this.closeNewSectionDialog}
+              aria-labelledby="form-dialog-title">
+              <DialogTitle id="form-dialog-title">Add new Section</DialogTitle>
+              <DialogContent>
+                <Button className={classes.editButton} onClick={this.incNumColumnsForNewSection}>Add Column</Button>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="sectionName"
+                  label="Section Name"
+                  fullWidth
+                />
+                {columnsForNewSection.map(function(column) {
+                  return <TextField
+                    autoFocus
+                    margin="dense"
+                    id={"col-name".concat(column)}
+                    label="Column Name"
+                    fullWidth
+                  />
+                })}
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.closeNewSectionDialog} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={this.saveSection} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+      <div>
+      { selectedPerformancePlan === null && performancePlans.length === 0 &&
+        <div className="profile-card">
+          <Typography>You currently have no performance documents. Click on the button below to add your first Performance Documents for a given year: </Typography>
+          <Button className={classes.addDocButton} value={0} onClick={this.openNewPlanDialog}>Add Year</Button>
+        </div> }
+        { selectedPerformancePlan === null && performancePlans.length !== 0 &&
+        <div className="profile-card">
+          <Typography>Click on the button below to add a Performance Document for a given year or select a year in the drop down above. </Typography>
+          <Button className={classes.addDocButton} value={0} onClick={this.openNewPlanDialog}>Add Year</Button>
+        </div> }
+      { selectedPerformancePlan !== null && value === 0 &&
+      <div className="profile-card">
+        <Button className={classes.editButton} onClick={this.saveWorkPlan}>Save</Button>
+        <Button className={classes.editButton} onClick={this.openNewSectionDialog}>Add Section</Button>
+        <WorkPlanDisplay sections={selectedPerformancePlan.sections} year={currentYears} profile={profile} handleAddRow={this.handleAddRow}/>
+        </div>}
+      { selectedPerformancePlan !== null && value === 1 &&
+      <div className="profile-card">
+        <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
+        <PerformanceReviewDisplay form={performanceReviews[currentYears]} years={currentYears} profile={profile}/>
+      </div>}
+         </div>
+         </div>
+          </Paper>
       </div>
     );
   }

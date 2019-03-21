@@ -50,10 +50,9 @@ const styles = theme => ({
   }
 });
 
-class WorkPlanDisplay extends React.PureComponent  {
+class WorkPlanDisplay extends React.Component  {
   render() {
     const { classes, sections, year, profile } = this.props;
-    console.log("In Work plan display");
     let that = this;
 
     return(
