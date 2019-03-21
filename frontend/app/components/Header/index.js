@@ -25,9 +25,13 @@ class Header extends React.PureComponent {
           <Link className="nav-link" to="/performance">
             Performance
           </Link>
-          {this.props.onboarding && (
+          {this.props.onboarding ? (
             <Link className="nav-link" to="/onboarding">
               Onboarding
+            </Link>
+          ) : (
+            <Link className="nav-link" to="/documents">
+              Documents
             </Link>
           )}
           {this.props.adminLevel >= 1 && (
