@@ -58,8 +58,10 @@ describe("EmployeeService tests", () => {
                 ignoreProperties: ["role"]
             });
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
+            employeeRecord.birthdate = "1997-11-30";
+            employeeRecord.dateJoined = "2012-01-01";
             employeeRecord.id = 6;
-            employeeRecord.sin = "666666666";
+            employeeRecord.sin = 666666666;
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -80,7 +82,7 @@ describe("EmployeeService tests", () => {
             });
             let employeeRecord2 = jsf.generate(schema.definitions.IEmployee);
             employeeRecord2.id = 7;
-            employeeRecord2.sin = "777777777";
+            employeeRecord2.sin = 777777777;
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -103,7 +105,7 @@ describe("EmployeeService tests", () => {
             let employeeRecord2 = jsf.generate(schema.definitions.IEmployee);
             employeeRecord2.id = null;
             employeeRecord2.status = null;
-            employeeRecord2.sin = "888888888";
+            employeeRecord2.sin = 888888888;
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -125,7 +127,7 @@ describe("EmployeeService tests", () => {
             });
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
             employeeRecord.id = "333";
-            employeeRecord.sin = "888888888";
+            employeeRecord.sin = 888888888;
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -147,7 +149,7 @@ describe("EmployeeService tests", () => {
             });
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
             employeeRecord.salary = -300.00;
-            employeeRecord.sin = "888888888";
+            employeeRecord.sin = 888888888;
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -192,7 +194,7 @@ describe("EmployeeService tests", () => {
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
             employeeRecord.birthdate = "1998-11-30";
             employeeRecord.dateJoined = "1997-11-30";
-            employeeRecord.sin = "888888888";
+            employeeRecord.sin = 888888888;
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -216,7 +218,7 @@ describe("EmployeeService tests", () => {
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
             employeeRecord.vacationDays = 30;
             employeeRecord.remainingVacationDays = 50;
-            employeeRecord.sin = "888888888";
+            employeeRecord.sin = 888888888;
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -237,7 +239,7 @@ describe("EmployeeService tests", () => {
             });
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
             employeeRecord.id = "333";
-            employeeRecord.sin = "888888888";
+            employeeRecord.sin = 888888888;
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -269,7 +271,7 @@ describe("EmployeeService tests", () => {
                 expect(response.body[0].id).to.be.equal(1);
                 expect(response.body[1].id).to.be.equal(2);
                 expect(response.body[2].id).to.be.equal(3);
-                expect(response.body[2].salary).to.be.instanceof(undefined);
+                expect(response.body[2].salary).to.be(undefined);
             }
         });
     });
@@ -383,9 +385,9 @@ describe("EmployeeService tests", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IEmployee);
                 expect(response.body.salary).to.be.equal(200.00);
-                expect(response.body.sin).to.be.equal('11111111');
+                expect(response.body.sin).to.be.equal(11111111);
                 // we shouldnt pass the password?
-                expect(response.body.password).to.be.instanceof(undefined);
+                expect(response.body.password).to.be.undefined;
             }
         });
 
@@ -413,7 +415,7 @@ describe("EmployeeService tests", () => {
             employeeRecord.salary = 3000.00;
             employeeRecord.firstname = "Big Tuna";
             try {
-                response = await chai.request(SERVER)
+                    response = await chai.request(SERVER)
                     .put(`${BASE_PATH}/3`)
                     .set(HEADERS)
                     .send(employeeRecord);
@@ -421,7 +423,7 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.within(400, 500);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiresponse);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
 
@@ -440,7 +442,7 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.within(400, 500);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiresponse);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
 
@@ -461,7 +463,7 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.within(400, 500);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiresponse);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
 
@@ -483,7 +485,7 @@ describe("EmployeeService tests", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiresponse);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
 
