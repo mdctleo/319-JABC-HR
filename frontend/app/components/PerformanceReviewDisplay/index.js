@@ -65,6 +65,7 @@ class PerformanceReviewDisplay extends React.Component  {
           return <PerformanceSection key = {section.sectionId}
                                         classes = {classes}
                                         section = {section}
+                                        handleDeleteSection={that.props.handleDeleteSection}
                                         handleAddRow = {that.props.handleAddRow}
                                         handleDeleteRows = {that.props.handleDeleteRows} />
         })
@@ -79,6 +80,7 @@ PerformanceReviewDisplay.propTypes = {
   sections: PropTypes.array.isRequired,
   profile: PropTypes.object.isRequired,
   year: PropTypes.string.isRequired,
+  handleDeleteSection:PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired
 };
 

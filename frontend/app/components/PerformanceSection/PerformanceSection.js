@@ -191,6 +191,10 @@ class PerformanceSection extends React.Component {
     this.setState( {selected: []} );
   };
 
+  handleDeleteSection = () => {
+    this.props.handleDeleteSection(this.props.section.sectionId);
+  };
+
   handleSelectAllClick = event => {
 
     if (event.target.checked) {
@@ -281,6 +285,7 @@ class PerformanceSection extends React.Component {
           </DialogActions>
         </Dialog>
 
+        <Button className={classes.buttonStyle} onClick={this.handleDeleteSection}>Delete Section</Button>
         <Button className={classes.buttonStyle} onClick={this.openNewRowDialog}>Add Row</Button>
         <Paper className={classes.root}>
           <EnhancedTableToolbar sectionName={section.sectionName} selected={selected} numSelected={selected.length} handleDeleteRows={that.handleDeleteRows} />
@@ -320,6 +325,7 @@ class PerformanceSection extends React.Component {
 PerformanceSection.propTypes = {
   classes: PropTypes.object.isRequired,
   section: PropTypes.object.isRequired,
+  handleDeleteSection:PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired
 };
 

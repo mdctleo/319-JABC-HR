@@ -423,6 +423,7 @@ class PerformacePage extends React.Component {
   };
 
   // Delete data in the given section for work plan
+  // TODO: There's probably a better way of doing this
   handleDeleteRowsInPlan = (sectionId, ids) => {
     let selectedPlan = this.getPerformancePlanOfSelectedYear();
 
@@ -449,6 +450,7 @@ class PerformacePage extends React.Component {
   };
 
   // Delete data in the given section for review
+  // TODO: There's probably a better way of doing this
   handleDeleteRowsInReview = (sectionId, ids) => {
     let selectedPlan = this.getPerformancePlanOfSelectedYear();
 
@@ -673,6 +675,72 @@ class PerformacePage extends React.Component {
     this.setState({ openNewPerformancePlanDialog: false });
   };
 
+  handleDeletePlanSection = (sectionId) => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        for (let i = 0; i < plan.sections.length; i++) {
+          let section = plan.sections[i];
+
+          if (section.sectionId === sectionId) {
+            plan.sections.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    this.setState( { performancePlans: [...performancePlans] } );
+  };
+
+  handleDeleteReviewSection = (sectionId) => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let plan of performancePlans) {
+      if (plan === selectedPlan) {
+        for (let i = 0; i < plan.performanceReview.sections.length; i++) {
+          let section = plan.performanceReview.sections[i];
+
+          if (section.sectionId === sectionId) {
+            plan.performanceReview.sections.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    this.setState( { performancePlans: [...performancePlans] } );
+  };
+
+  handleDeletePlan = () => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let i = 0; i < performancePlans.length; i++) {
+      let plan = performancePlans[i];
+      if (plan === selectedPlan) {
+        performancePlans.splice(i, 1);
+      }
+    }
+
+    this.setState( { performancePlans: [...performancePlans], selectedYear: "" } );
+  };
+
+  handleDeleteReview = () => {
+    let selectedPlan = this.getPerformancePlanOfSelectedYear();
+
+    let performancePlans = this.state.performancePlans;
+    for (let i = 0; i < performancePlans.length; i++) {
+      let plan = performancePlans[i];
+      if (plan === selectedPlan) {
+        performancePlans[i].performanceReview = null;
+      }
+    }
+
+    this.setState( { performancePlans: [...performancePlans] } );
+  };
+
   render() {
     const { classes } = this.props;
     const { selectedYear, performancePlans, columnsForNewSection, profile, value } = this.state;
@@ -807,9 +875,11 @@ class PerformacePage extends React.Component {
       <div className="profile-card">
         <Button className={classes.editButton} onClick={this.saveWorkPlan}>Save</Button>
         <Button className={classes.editButton} onClick={this.openNewSectionDialog}>Add Section</Button>
+        <Button className={classes.editButton} onClick={this.handleDeletePlan}>Delete Work Plan</Button>
         <WorkPlanDisplay sections={selectedPerformancePlan.sections}
                          profile={profile}
                          year = {selectedPerformancePlan.year}
+                         handleDeleteSection={this.handleDeletePlanSection}
                          handleAddRow={this.handleAddRow}
                          handleDeleteRows={this.handleDeleteRowsInPlan}/>
         </div>}
@@ -818,9 +888,11 @@ class PerformacePage extends React.Component {
       <div className="profile-card">
         <Button className={classes.editButton} onClick={this.saveWorkPlan}>Save</Button>
         <Button className={classes.editButton} onClick={this.openNewSectionReviewDialog}>Add Section</Button>
+        <Button className={classes.editButton} onClick={this.handleDeleteReview}>Delete Performance Review</Button>
         <PerformanceReviewDisplay sections={selectedPerformancePlan.performanceReview.sections}
                                   year = {selectedPerformancePlan.performanceReview.year}
                                   profile={profile}
+                                  handleDeleteSection={this.handleDeleteReviewSection}
                                   handleAddRow={this.handleAddReviewRow}
                                   handleDeleteRows={this.handleDeleteRowsInReview}/>
       </div>}

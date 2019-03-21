@@ -52,10 +52,6 @@ const styles = theme => ({
 });
 
 class WorkPlanDisplay extends React.Component  {
-  componentDidMount() {
-    console.log('exampleComponent mounted');
-  }
-
   render() {
     const { classes, sections, profile } = this.props;
     let that = this;
@@ -69,6 +65,7 @@ class WorkPlanDisplay extends React.Component  {
           return <PerformanceSection key={section.sectionId}
                                         classes = {classes}
                                         section = {section}
+                                        handleDeleteSection={that.props.handleDeleteSection}
                                         handleAddRow = {that.props.handleAddRow}
                                         handleDeleteRows = {that.props.handleDeleteRows} />
         })
@@ -83,6 +80,7 @@ WorkPlanDisplay.propTypes = {
   sections: PropTypes.array.isRequired,
   profile: PropTypes.object.isRequired,
   year: PropTypes.string.isRequired,
+  handleDeleteSection:PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired
 };
 
