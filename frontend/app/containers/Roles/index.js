@@ -136,6 +136,17 @@ class Roles extends React.Component {
     this.props.getAllRoles();
   }
 
+  componentWillMount() {
+    this.unlisten = this.props.history.listen(() => {
+      this.props.getRole(null);
+      this.props.setEditing(false);
+    });
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
+  }
+
   state = {
     toBeDeleted: [],
     tableSettings: {
@@ -241,6 +252,7 @@ Roles.propTypes = {
   setEditing: PropTypes.func,
   saveRole: PropTypes.func,
   deleteRoles: PropTypes.func,
+  history: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({

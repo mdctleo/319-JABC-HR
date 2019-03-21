@@ -72,6 +72,16 @@ class Profile extends React.PureComponent {
     this.props.getProfileData();
   }
 
+  componentWillMount() {
+    this.unlisten = this.props.history.listen(() => {
+      this.props.setEditing(false);
+    });
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
+  }
+
   state = {
     activeTab: 0,
     isAdmin: true,
@@ -195,6 +205,7 @@ Profile.propTypes = {
   setEditing: PropTypes.func,
   profileDomain: PropTypes.object,
   allRoles: PropTypes.array,
+  history: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
