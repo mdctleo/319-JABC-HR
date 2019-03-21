@@ -3,8 +3,6 @@ var utils = require('./writer')
 
 const DEBUG = process.env.DEBUG;
 
-
-
 export interface JABCResponseType {
     error?: number,
     success?: number,
@@ -58,6 +56,15 @@ export class JABCResponse {
         message: 'We can\'t process the sent data, please check the format.'
     }
 }
+export namespace JABCResponse{
+    export type ValidatorCodes = 'SCHEMA_VALIDATION_FAILED' |'OBJECT_MISSING_REQUIRED_PROPERTY' |'INVALID_TYPE' |'INVALID_FORMAT'  ;
+    export const ValidatorCodes = {
+        SCHEMA: 'SCHEMA_VALIDATION_FAILED',
+        MISSING: 'OBJECT_MISSING_REQUIRED_PROPERTY',
+        TYPE: 'INVALID_TYPE',
+        FORMAT: 'INVALID_FORMAT',
+    };
+}
 
 export class JABCError extends Error implements IApiResponse {
 
@@ -76,7 +83,7 @@ export class JABCError extends Error implements IApiResponse {
         this.debugMessage = this.stack;
         this.type = IApiResponse.TypeEnum.ERROR;
         Error.captureStackTrace(this, JABCError)
-        if (this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error) {
+        if ((this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error) && this.responseCode != JABCResponse.BAD_REQUEST.error) {
             this.message = (this.message === undefined) ? response.message : this.message
             this.debugMessage = `Error: ${this.message}, \n\n Stack: ${this.stack}`;
             this.message = response.message;
@@ -118,32 +125,55 @@ export class JABCSuccess implements IApiResponse {
     }
 }
 
-export async function ErrorHandler(err: any, req: any, res: any, next: any) {
+export function PreValidator(req: any, res: any, next: any){
+    // Delete any null value
+    req.body = utils.deleteDeepNulls(req.body)
+    next()
+}
+
+export function ErrorHandler(err: any, req: any, res: any, next: any) {
     if (err) {
         var debugMessage = null;
+        var message = JABCResponse.BAD_REQUEST.message;
         if (err.failedValidation) {
             if(err.results !== undefined){
-                debugMessage = JSON.stringify({
-                    code: err.code,
-                    errors: err.results.errors,
-                    path: err.path,
-                    paramName: err.paramName
-                });
+                let missingProperties = []
+                let invalidProperties = []
+                let typeProperties = []
+                for(let error of err.results.errors){
+                    switch(error.code){
+                        case JABCResponse.ValidatorCodes.MISSING:
+                            missingProperties.push(error.message.split(":")[1].trim())
+                        break;
+                        case JABCResponse.ValidatorCodes.FORMAT:
+                            invalidProperties.push(error.path[0])
+                        break;
+                        case JABCResponse.ValidatorCodes.TYPE:
+                            typeProperties.push(error.path[0])
+                        break;
+                    }
+                }
+                let messages = []
+                if(missingProperties.length>0) messages.push(`${(missingProperties.length==1)? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length==1)? 'is' : 'are'} missing`)
+                if(invalidProperties.length>0) messages.push(`${(invalidProperties.length==1)? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`)
+                if(typeProperties.length>0) messages.push(`${(typeProperties.length==1)? 'Property' : 'Properties'}: ${typeProperties.join(", ")}, have an invalid type`)
+                
+                message = `${messages.join('; ')}.`;
             }else{
-                debugMessage = debugMessage = JSON.stringify({
+                debugMessage = {
                     code: err.code,
                     path: err.path,
                     paramName: err.paramName
-                });
+                };
             }
+        }else if(err.type == 'entity.parse.failed'){
+            message = 'Please send the data in a correct JSON format'
         }else{
-            debugMessage = debugMessage = JSON.stringify({
-                code: err.code
-            });
+            debugMessage = err;
         }
-        let error = new JABCError(JABCResponse.BAD_REQUEST)
+        let error = new JABCError(JABCResponse.BAD_REQUEST, message)
         if (DEBUG)
-            error.debugMessage = debugMessage;
+            error.debugMessage = JSON.stringify(debugMessage);
         utils.writeJson(res, error, error.responseCode)
     } else {
         next()

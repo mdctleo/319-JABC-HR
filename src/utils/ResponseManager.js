@@ -1,12 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../model/models");
 var utils = require('./writer');
@@ -58,6 +50,14 @@ JABCResponse.BAD_REQUEST = {
     message: 'We can\'t process the sent data, please check the format.'
 };
 exports.JABCResponse = JABCResponse;
+(function (JABCResponse) {
+    JABCResponse.ValidatorCodes = {
+        SCHEMA: 'SCHEMA_VALIDATION_FAILED',
+        MISSING: 'OBJECT_MISSING_REQUIRED_PROPERTY',
+        TYPE: 'INVALID_TYPE',
+        FORMAT: 'INVALID_FORMAT',
+    };
+})(JABCResponse = exports.JABCResponse || (exports.JABCResponse = {}));
 class JABCError extends Error {
     constructor(response, ...args) {
         response = (response == undefined) ? JABCResponse.UNHANDLED_ERROR : response;
@@ -68,7 +68,7 @@ class JABCError extends Error {
         this.debugMessage = this.stack;
         this.type = models_1.IApiResponse.TypeEnum.ERROR;
         Error.captureStackTrace(this, JABCError);
-        if (this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error) {
+        if ((this.responseCode < JABCResponse.NOT_FOUND.error || this.responseCode == JABCResponse.UNHANDLED_ERROR.error) && this.responseCode != JABCResponse.BAD_REQUEST.error) {
             this.message = (this.message === undefined) ? response.message : this.message;
             this.debugMessage = `Error: ${this.message}, \n\n Stack: ${this.stack}`;
             this.message = response.message;
@@ -107,41 +107,64 @@ class JABCSuccess {
     }
 }
 exports.JABCSuccess = JABCSuccess;
+function PreValidator(req, res, next) {
+    req.body = utils.deleteDeepNulls(req.body);
+    next();
+}
+exports.PreValidator = PreValidator;
 function ErrorHandler(err, req, res, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (err) {
-            var debugMessage = null;
-            if (err.failedValidation) {
-                if (err.results !== undefined) {
-                    debugMessage = JSON.stringify({
-                        code: err.code,
-                        errors: err.results.errors,
-                        path: err.path,
-                        paramName: err.paramName
-                    });
+    if (err) {
+        var debugMessage = null;
+        var message = JABCResponse.BAD_REQUEST.message;
+        if (err.failedValidation) {
+            if (err.results !== undefined) {
+                let missingProperties = [];
+                let invalidProperties = [];
+                let typeProperties = [];
+                for (let error of err.results.errors) {
+                    switch (error.code) {
+                        case JABCResponse.ValidatorCodes.MISSING:
+                            missingProperties.push(error.message.split(":")[1].trim());
+                            break;
+                        case JABCResponse.ValidatorCodes.FORMAT:
+                            invalidProperties.push(error.path[0]);
+                            break;
+                        case JABCResponse.ValidatorCodes.TYPE:
+                            typeProperties.push(error.path[0]);
+                            break;
+                    }
                 }
-                else {
-                    debugMessage = debugMessage = JSON.stringify({
-                        code: err.code,
-                        path: err.path,
-                        paramName: err.paramName
-                    });
-                }
+                let messages = [];
+                if (missingProperties.length > 0)
+                    messages.push(`${(missingProperties.length == 1) ? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length == 1) ? 'is' : 'are'} missing`);
+                if (invalidProperties.length > 0)
+                    messages.push(`${(invalidProperties.length == 1) ? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`);
+                if (typeProperties.length > 0)
+                    messages.push(`${(typeProperties.length == 1) ? 'Property' : 'Properties'}: ${typeProperties.join(", ")}, have an invalid type`);
+                message = `${messages.join('; ')}.`;
             }
             else {
-                debugMessage = debugMessage = JSON.stringify({
-                    code: err.code
-                });
+                debugMessage = {
+                    code: err.code,
+                    path: err.path,
+                    paramName: err.paramName
+                };
             }
-            let error = new JABCError(JABCResponse.BAD_REQUEST);
-            if (DEBUG)
-                error.debugMessage = debugMessage;
-            utils.writeJson(res, error, error.responseCode);
+        }
+        else if (err.type == 'entity.parse.failed') {
+            message = 'Please send the data in a correct JSON format';
         }
         else {
-            next();
+            debugMessage = err;
         }
-    });
+        let error = new JABCError(JABCResponse.BAD_REQUEST, message);
+        if (DEBUG)
+            error.debugMessage = JSON.stringify(debugMessage);
+        utils.writeJson(res, error, error.responseCode);
+    }
+    else {
+        next();
+    }
 }
 exports.ErrorHandler = ErrorHandler;
 //# sourceMappingURL=ResponseManager.js.map

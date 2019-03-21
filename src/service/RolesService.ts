@@ -199,15 +199,38 @@ export async function updateCompetency(id: Number, competency: ICompetency, idRo
  * @returns {Promise<IApiResponse>}
  **/
 export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
+    let db = Database.getInstance();
     try {
+        await db.beginTransaction();
+
         role = Role.Prepare(role);
-        let res = await Database.getInstance().query('CALL update_role(?,?,?)', [
+        let res = await db.rawQuery('CALL update_role(?,?,?)', [
             id,
             role.name,
             role.description
         ], JABCResponse.ROLE);
+
+        await db.rawQuery('CALL delete_competencies(?)', [id], JABCResponse.COMPETENCY);
+
+        for (let competency of role.competencies) {
+            competency = Competency.Prepare(competency);
+
+            await db.rawQuery('CALL create_competency(?,?,?)', [
+                id,
+                competency.name,
+                competency.description
+            ], JABCResponse.COMPETENCY);
+        }
+
+        await db.commit();
+        await db.closeConnection();
+
         return new JABCSuccess(JABCResponse.ROLE, `The role, ${role.name}, was updated successfully`);
     } catch (error) {
+        try {
+            await db.rollback();
+            await db.closeConnection();
+        } catch (err) { }
         throw error;
     }
 }

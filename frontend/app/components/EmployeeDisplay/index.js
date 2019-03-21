@@ -101,12 +101,13 @@ class EmployeeDisplay extends React.PureComponent {
               </TableCell>
               <TableCell align="left">{this.salaryFormatter.format(profile.salary)}</TableCell>
             </TableRow>
-            <TableRow className={classes.row}>
+            {isAdmin &&
+            (<TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">DIRECT REPORT</Typography>
               </TableCell>
               <TableCell align="left">{profile.manager}</TableCell>
-            </TableRow>
+            </TableRow>)}
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">EMPLOYEE TYPE</Typography>
@@ -121,6 +122,16 @@ class EmployeeDisplay extends React.PureComponent {
               </TableCell>
               <TableCell align="left">
                 {profile.remainingVacationDays}
+              </TableCell>
+            </TableRow>
+            <TableRow className={classes.row}>
+              <TableCell className={classes.leftCell} align="left">
+                <Typography variant="caption">
+                  ADMIN LEVEL
+                </Typography>
+              </TableCell>
+              <TableCell align="left">
+                {profile.adminLevel}
               </TableCell>
             </TableRow>
           </TableBody>

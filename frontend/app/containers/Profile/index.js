@@ -25,6 +25,7 @@ import EmployeeDisplay from '../../components/EmployeeDisplay';
 import RoleDisplay from '../../components/RoleDisplay';
 import EmployeeEditForm from '../../components/EmployeeEditForm';
 import Button from '@material-ui/core/Button';
+import ChangePasswordDialog from '../../components/ChangePasswordDialog';
 
 const styles = theme => ({
   root: {
@@ -49,6 +50,22 @@ const styles = theme => ({
       backgroundColor: '#ff944d',
     },
   },
+  resetButton: {
+    float: 'left',
+    display: 'block',
+    height: '40px',
+    width: '200px',
+    marginTop: '50px',
+    marginLeft: '30px',
+    borderRadius: '15px',
+    color: 'black',
+    backgroundColor: '#eeeeee',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '##f5f5f5',
+    },
+  }
 });
 
 class Profile extends React.PureComponent {
@@ -60,6 +77,7 @@ class Profile extends React.PureComponent {
     activeTab: 0,
     isAdmin: true,
     edit: false,
+    open: false,
   };
 
   handleChange = (event, value) => {
@@ -86,8 +104,16 @@ class Profile extends React.PureComponent {
     });
   }
 
+  handleClose = event => {
+    this.setState({ open: false });
+  }
+
+  handleOpen = event => {
+    this.setState({ open: true });
+  }
+
   render() {
-    const { activeTab, isAdmin, edit } = this.state;
+    const { activeTab, isAdmin, edit, open } = this.state;
     const { classes, role, profile } = this.props;
 
     if (!profile) return null;
@@ -106,13 +132,21 @@ class Profile extends React.PureComponent {
             </Tabs>
           </AppBar>
           <div className="profile-card">
+          <ChangePasswordDialog open={open} profile={profile} handleClose={this.handleClose} />
             {activeTab === 0 &&
               !isAdmin && (
-                <EmployeeDisplay
-                  profile={profile}
-                  roleName={role && role.name}
-                  isAdmin={isAdmin}
-                />
+                <div>
+                  <EmployeeDisplay
+                    profile={profile}
+                    roleName={role && role.name}
+                    isAdmin={isAdmin}
+                  />
+                  <Button
+                    className={classes.resetButton}
+                    onClick={this.handleOpen}>
+                    Change Password
+                  </Button>
+                  </div>
               )}
             {activeTab === 0 &&
               isAdmin &&
@@ -129,6 +163,11 @@ class Profile extends React.PureComponent {
                     roleName={role && role.name}
                     isAdmin={isAdmin}
                   />
+                  <Button
+                    className={classes.resetButton}
+                    onClick={this.handleOpen}>
+                    Change Password
+                  </Button>
                 </div>
               )}
             {activeTab === 0 &&
