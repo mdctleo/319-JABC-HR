@@ -8,16 +8,26 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 class DeleteRoleDialog extends React.PureComponent {
+  state = { list: [] };
+
+  static getDerivedStateFromProps(props) {
+    if (props.toBeDeleted.length > 0) {
+      return { list: props.toBeDeleted };
+    }
+    return null;
+  }
+
   render() {
     const { toBeDeleted, cancelDelete, confirmDelete } = this.props;
+    const { list } = this.state;
 
-    const single = toBeDeleted.length === 1;
+    const single = list.length === 1;
     let message = '';
     if (single) {
       message = `Are you sure you want to delete this role?`;
     } else {
       message = `Are you sure you want to delete these ${
-        toBeDeleted.length
+        list.length
       } roles?`;
     }
 
