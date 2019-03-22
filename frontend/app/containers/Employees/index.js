@@ -50,6 +50,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import AddEmployeeForm from '../../components/AddEmployeeForm';
+import GenerateReport from '../../components/GenerateReport';
 
 let counter = 0;
 function createData(firstname, lastname, status, sin, role, salary, manager, fte, remainingVacationDays, adminLevel, address, phoneNumber ) {
@@ -218,7 +219,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props;
+  const { numSelected, generateReport, classes } = props;
 
   return (
     <Toolbar
@@ -234,7 +235,7 @@ let EnhancedTableToolbar = props => {
       </div>
      <div>
         {numSelected > 0 ? (
-          <button class="primary-button" id="generate-report-button">
+          <button className="primary-button" id="generate-report-button" onClick={generateReport}>
             Generate Report
           </button>
         ) : (
@@ -263,6 +264,7 @@ let EnhancedTableToolbar = props => {
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
+  generateReport: PropTypes.func.isRequired,
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
@@ -496,6 +498,7 @@ class EnhancedTable extends React.Component {
     active: true,
     addOIDialog: false,
     editOIDialog: false,
+    selectedEmployees: []
   };
 
   handleRequestSort = (event, property) => {
@@ -645,6 +648,15 @@ class EnhancedTable extends React.Component {
     this.setState({ addOIDialog: false});
   };
 
+  generateReport = event => {
+    this.setState({
+      selectedEmployees: this.state.data.filter((val, index)=>{
+        return this.state.selected.includes(val.id)
+      })
+    }) 
+    this.setState({ displayedPage: "report" });
+  }
+
 //   generateDropdown() {
 //     var years = Object.keys(this.state.workPlans);
 //     return (<Select
@@ -686,7 +698,7 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { order, orderBy, selected, displayedPage, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active, addOIDialog, editOIDialog} = this.state;
+    const { order, orderBy, selected, displayedPage, currProfile, value, miniTabValue, data, sampleWorkPlan, samplePR, page, rowsPerPage, edit, active, addOIDialog, editOIDialog, selectedEmployees} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const  blankProfile = { firstname: "", lastname: "", status: "", sin: "", salary: 0, fte: 0, remainingVacationDays: 0, adminLevel: 0, address: "", phoneNumber: ""};
 
@@ -695,7 +707,18 @@ class EnhancedTable extends React.Component {
       <h1>Manage Employees</h1>
         { displayedPage == "table" &&
           <Button className={classes.addButton} onClick={this.handleAddButton}>Add Employee</Button>}
-       { displayedPage == "add" ?
+        { displayedPage == "report" ?
+          (<Paper className={classes.root}>
+            <AppBar position="static" width="100%">
+              <Tabs value={0} classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }} 
+                    onChange={this.handleChange}>
+                <Tab disableRipple classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                    onClick={this.handleBackButton} label="<  Back" />
+              </Tabs>
+            </AppBar>
+            <GenerateReport employees={selectedEmployees} classes={classes} />
+          </Paper>) :
+          (displayedPage == "add" ?
          (<Paper className={classes.root}>
           <div> 
           <AppBar position="static" width="100%">
@@ -715,7 +738,7 @@ class EnhancedTable extends React.Component {
           </Paper>) :
        ( displayedPage == "table" ? 
        (<Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} generateReport={this.generateReport}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -965,7 +988,7 @@ class EnhancedTable extends React.Component {
           </div>
         }
       </div>
-      </Paper>))}
+      </Paper>)))}
       </div>
     );
   }

@@ -1,11 +1,11 @@
 'use strict';
-import { Employee, PerformancePlan, PerformanceReview, OnboardingTask, Vacation, IEmployee, IPerformancePlan, IPerformanceReview, IPerformanceSection, IVacation, EmployeeHistory, IOnboardingTask } from '../model/models'
+import { Employee, PerformancePlan, PerformanceReview, OnboardingTask, Vacation, IEmployee, IPerformancePlan, IPerformanceReview, IPerformanceSection, IVacation, EmployeeHistory, IOnboardingTask, Role } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import * as jwt from 'jsonwebtoken';
 import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
-
+import * as RoleService from './RolesService'
 const KEY = process.env.JWT_KEY;
 
 
@@ -252,7 +252,9 @@ export async function deleteEmployee(id: Number, xAuthToken: String, idAdmin: Nu
 export async function getEmployee(id: Number, xAuthToken: String) {
 	try {
 		let res = await Database.getInstance().query('CALL get_employee(?)', [id], JABCResponse.EMPLOYEE)
-		return new Employee(res[0][0][0])
+		let employee = new Employee(res[0][0][0])
+		employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+		return employee
 	} catch (error) {
 		throw error;
 	}
@@ -296,7 +298,12 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
 			res = await Database.getInstance().query('CALL get_all_employees_with_birthday(?,?)', [start, end], JABCResponse.EMPLOYEE)
 		else
 			res = await Database.getInstance().query('CALL get_all_employees()', [], JABCResponse.EMPLOYEE)
-		return Employee.Employees(res[0][0])
+		let employees = Employee.Employees(res[0][0])
+		for(let employee of employees){
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+			delete employee.role.competencies
+		}
+		return employees
 	} catch (error) {
 		throw error;
 	}
@@ -314,7 +321,12 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
 export async function getEmployeesByManager(idManager: Number, xAuthToken: String) {
 	try {
 		let res = await Database.getInstance().query('CALL get_manager_employees(?)', [idManager], JABCResponse.EMPLOYEE)
-		return Employee.Employees(res[0][0])
+		let employees = Employee.Employees(res[0][0])
+		for(let employee of employees){
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+			delete employee.role.competencies
+		}
+		return employees
 	} catch (error) {
 		throw error;
 	}
@@ -351,7 +363,12 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
 export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 	try {
 		let res = await Database.getInstance().query('CALL get_employee_managers(?)', [id], JABCResponse.EMPLOYEE)
-		return Employee.Employees(res[0][0])
+		let employees = Employee.Employees(res[0][0])
+		for(let employee of employees){
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+			delete employee.role.competencies
+		}
+		return employees
 	} catch (error) {
 		throw error;
 	}
