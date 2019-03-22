@@ -367,4 +367,7 @@ describe("test related to /employee and performance", () => {
 
     });
 
+    after( () => {
+        TestSetup.resetDb();
+    });
 });

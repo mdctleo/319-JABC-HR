@@ -1091,8 +1091,9 @@ describe("EmployeeService tests", () => {
         });
     });
 
-    // clears database
-    TestSetup.resetDb();
+    after( () => {
+        TestSetup.resetDb();
+    });
 });
 
 
