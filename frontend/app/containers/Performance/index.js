@@ -122,7 +122,7 @@ class PerformacePage extends React.Component {
     profile: {firstname: "firstname", lastname: "lastname", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
     workPlans: {},
     performanceReviews: {},
-    currentYears: 0,
+    currentYears: "",
     value: 0,
     edit: 0,
     sections: [
@@ -225,174 +225,174 @@ class PerformacePage extends React.Component {
 
   }
 
-  updatePlan = (event, value) => {
-    var date = document.getElementById("wpf-date").value ? document.getElementById("wpf-date").value : document.getElementById("wpf-date").defaultValue;
-    var section1 = { rows: []};
-    var section1s = document.getElementsByClassName("wpf-rows-1");
-    console.log(section1s[1].firstChild.firstChild);
-    for (var i = 0; i < section1s.length; i++) {
-      var input = section1s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value ? section1.rows.push({ column1: input.value }) : section1.rows.push({ column1: input.defaultValue });
-        console.log(input.value);
-        console.log(section1.rows);
-      } else {
-        console.log(Math.floor(i/2));
-        section1.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-      }
-    }
+//   updatePlan = (event, value) => {
+//     var date = document.getElementById("wpf-date").value ? document.getElementById("wpf-date").value : document.getElementById("wpf-date").defaultValue;
+//     var section1 = { rows: []};
+//     var section1s = document.getElementsByClassName("wpf-rows-1");
+//     console.log(section1s[1].firstChild.firstChild);
+//     for (var i = 0; i < section1s.length; i++) {
+//       var input = section1s[i].firstChild.firstChild;
+//       if (i % 2 == 0) {
+//         input.value ? section1.rows.push({ column1: input.value }) : section1.rows.push({ column1: input.defaultValue });
+//         console.log(input.value);
+//         console.log(section1.rows);
+//       } else {
+//         console.log(Math.floor(i/2));
+//         section1.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+//       }
+//     }
 
-    var section2 = { rows: []};
-    var section2s = document.getElementsByClassName("wpf-rows-2");
-    for (var i = 0; i < section2s.length; i++) {
-      var input = section2s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value ? section2.rows.push({ column1: input.value }) : section2.rows.push({ column1: input.defaultValue });
-      } else {
-        section2.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-      }
-    }
+//     var section2 = { rows: []};
+//     var section2s = document.getElementsByClassName("wpf-rows-2");
+//     for (var i = 0; i < section2s.length; i++) {
+//       var input = section2s[i].firstChild.firstChild;
+//       if (i % 2 == 0) {
+//         input.value ? section2.rows.push({ column1: input.value }) : section2.rows.push({ column1: input.defaultValue });
+//       } else {
+//         section2.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+//       }
+//     }
 
-    var section3 = { rows: []};
-    var section3s = document.getElementsByClassName("wpf-rows-3");
-    for (var i = 0; i < section3s.length; i++) {
-      var input = section3s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value ? section3.rows.push({ column1: input.value }) : section3.rows.push({ column1: input.defaualue });
-      } else {
-        section3.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-      }
-    }
+//     var section3 = { rows: []};
+//     var section3s = document.getElementsByClassName("wpf-rows-3");
+//     for (var i = 0; i < section3s.length; i++) {
+//       var input = section3s[i].firstChild.firstChild;
+//       if (i % 2 == 0) {
+//         input.value ? section3.rows.push({ column1: input.value }) : section3.rows.push({ column1: input.defaualue });
+//       } else {
+//         section3.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+//       }
+//     }
 
-    var section4 = { rows: []};
-    var section4s = document.getElementsByClassName("wpf-rows-4");
-    for (var i = 0; i < section4s.length; i++) {
-      var input = section4s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value  ? section4.rows.push({ column1: input.value }) : section4.rows.push({ column1: input.defaultValue });
-      } else {
-        section4.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-      }
-    }
+//     var section4 = { rows: []};
+//     var section4s = document.getElementsByClassName("wpf-rows-4");
+//     for (var i = 0; i < section4s.length; i++) {
+//       var input = section4s[i].firstChild.firstChild;
+//       if (i % 2 == 0) {
+//         input.value  ? section4.rows.push({ column1: input.value }) : section4.rows.push({ column1: input.defaultValue });
+//       } else {
+//         section4.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+//       }
+//     }
 
-    var section5 = { rows: []};
-    var section5s = document.getElementsByClassName("wpf-rows-5");
-    for (var i = 0; i < section5s.length; i++) {
-      var input = section5s[i].firstChild.firstChild;
-      if (i % 2 == 0) {
-        input.value ? section5.rows.push({ column1: input.value }) : section5.rows.push({ column1: input.defaultValue });
-      } else {
-        section5.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-      }
-    }
+//     var section5 = { rows: []};
+//     var section5s = document.getElementsByClassName("wpf-rows-5");
+//     for (var i = 0; i < section5s.length; i++) {
+//       var input = section5s[i].firstChild.firstChild;
+//       if (i % 2 == 0) {
+//         input.value ? section5.rows.push({ column1: input.value }) : section5.rows.push({ column1: input.defaultValue });
+//       } else {
+//         section5.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+//       }
+//     }
 
-    var section6 = { rows: []};
-    var section6s = document.getElementsByClassName("wpf-rows-6");
-    for (var i = 0; i < section6s.length; i++) {
-      var input = section6s[i].firstChild.firstChild;
-      if (i % 3 == 0) {
-        input.value ? section6.rows.push({ column1: input.value }) : section6.rows.push({ column1: input.defaultValue });
-      } else if (i % 3 == 1) {
-        section6.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-      } else {
-        section6.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-      }
-    }
-    var workPlansCopy = this.state.workPlans;
-    workPlansCopy[this.state.currentYears] = { date: date, section1: section1, section2: section2, section3: section3, section4: section4, section5: section5, section6: section6};
-    this.setState({ workPlans: workPlansCopy });
-    var prCopy = this.state.performanceReviews;
-    prCopy[this.state.currentYears] = { date: prCopy[this.state.currentYears].date, section1: workPlansCopy[this.state.currentYears].section1, section2: workPlansCopy[this.state.currentYears].section2, section3: workPlansCopy[this.state.currentYears].section3, section4: workPlansCopy[this.state.currentYears].section4, section5: workPlansCopy[this.state.currentYears].section5, section6: workPlansCopy[this.state.currentYears].section6};
-    this.setState({ performanceReviews: prCopy });
-    this.setState({ edit: 0 });
-}
+//     var section6 = { rows: []};
+//     var section6s = document.getElementsByClassName("wpf-rows-6");
+//     for (var i = 0; i < section6s.length; i++) {
+//       var input = section6s[i].firstChild.firstChild;
+//       if (i % 3 == 0) {
+//         input.value ? section6.rows.push({ column1: input.value }) : section6.rows.push({ column1: input.defaultValue });
+//       } else if (i % 3 == 1) {
+//         section6.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+//       } else {
+//         section6.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+//       }
+//     }
+//     var workPlansCopy = this.state.workPlans;
+//     workPlansCopy[this.state.currentYears] = { date: date, section1: section1, section2: section2, section3: section3, section4: section4, section5: section5, section6: section6};
+//     this.setState({ workPlans: workPlansCopy });
+//     var prCopy = this.state.performanceReviews;
+//     prCopy[this.state.currentYears] = { date: prCopy[this.state.currentYears].date, section1: workPlansCopy[this.state.currentYears].section1, section2: workPlansCopy[this.state.currentYears].section2, section3: workPlansCopy[this.state.currentYears].section3, section4: workPlansCopy[this.state.currentYears].section4, section5: workPlansCopy[this.state.currentYears].section5, section6: workPlansCopy[this.state.currentYears].section6};
+//     this.setState({ performanceReviews: prCopy });
+//     this.setState({ edit: 0 });
+// }
 
-updateReview = (event, value) => {
-  var date = document.getElementById("prf-date").value ? document.getElementById("prf-date").value : document.getElementById("prf-date").defaultValue;
-  var section1 = { rows: []};
-  var section1s = document.getElementsByClassName("prf-rows-1");
-  console.log(section1s[1].firstChild.firstChild);
-  for (var i = 0; i < section1s.length; i++) {
-    var input = section1s[i].firstChild.firstChild;
-    if (i % 2 == 0) {
-      input.value ? section1.rows.push({ column1: input.value }) : section1.rows.push({ column1: input.defaultValue });
-      console.log(input.value);
-      console.log(section1.rows);
-    } else {
-      console.log(Math.floor(i/2));
-      section1.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
-    }
-  }
+// updateReview = (event, value) => {
+//   var date = document.getElementById("prf-date").value ? document.getElementById("prf-date").value : document.getElementById("prf-date").defaultValue;
+//   var section1 = { rows: []};
+//   var section1s = document.getElementsByClassName("prf-rows-1");
+//   console.log(section1s[1].firstChild.firstChild);
+//   for (var i = 0; i < section1s.length; i++) {
+//     var input = section1s[i].firstChild.firstChild;
+//     if (i % 2 == 0) {
+//       input.value ? section1.rows.push({ column1: input.value }) : section1.rows.push({ column1: input.defaultValue });
+//       console.log(input.value);
+//       console.log(section1.rows);
+//     } else {
+//       console.log(Math.floor(i/2));
+//       section1.rows[Math.floor(i/2)].column2 = input.value ? input.value : input.defaultValue;
+//     }
+//   }
 
-  var section2 = { rows: []};
-  var section2s = document.getElementsByClassName("wpf-rows-2");
-  for (var i = 0; i < section2s.length; i++) {
-    var input = section2s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section2.rows.push({ column1: input.value }) : section2.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section2.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section2.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
+//   var section2 = { rows: []};
+//   var section2s = document.getElementsByClassName("wpf-rows-2");
+//   for (var i = 0; i < section2s.length; i++) {
+//     var input = section2s[i].firstChild.firstChild;
+//     if (i % 3 == 0) {
+//       input.value ? section2.rows.push({ column1: input.value }) : section2.rows.push({ column1: input.defaultValue });
+//     } else if (i % 3 == 1) {
+//       section2.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+//     } else {
+//       section2.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+//     }
+//   }
 
-  var section3 = { rows: []};
-  var section3s = document.getElementsByClassName("wpf-rows-3");
-  for (var i = 0; i < section3s.length; i++) {
-    var input = section3s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section3.rows.push({ column1: input.value }) : section3.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section3.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section3.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
+//   var section3 = { rows: []};
+//   var section3s = document.getElementsByClassName("wpf-rows-3");
+//   for (var i = 0; i < section3s.length; i++) {
+//     var input = section3s[i].firstChild.firstChild;
+//     if (i % 3 == 0) {
+//       input.value ? section3.rows.push({ column1: input.value }) : section3.rows.push({ column1: input.defaultValue });
+//     } else if (i % 3 == 1) {
+//       section3.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+//     } else {
+//       section3.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+//     }
+//   }
 
-  var section4 = { rows: []};
-  var section4s = document.getElementsByClassName("wpf-rows-4");
-  for (var i = 0; i < section4s.length; i++) {
-    var input = section4s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section4.rows.push({ column1: input.value }) : section4.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section4.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section4.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
+//   var section4 = { rows: []};
+//   var section4s = document.getElementsByClassName("wpf-rows-4");
+//   for (var i = 0; i < section4s.length; i++) {
+//     var input = section4s[i].firstChild.firstChild;
+//     if (i % 3 == 0) {
+//       input.value ? section4.rows.push({ column1: input.value }) : section4.rows.push({ column1: input.defaultValue });
+//     } else if (i % 3 == 1) {
+//       section4.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+//     } else {
+//       section4.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+//     }
+//   }
 
-  var section5 = { rows: []};
-  var section5s = document.getElementsByClassName("wpf-rows-5");
-  for (var i = 0; i < section5s.length; i++) {
-    var input = section5s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section5.rows.push({ column1: input.value }) : section5.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section5.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section5.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
+//   var section5 = { rows: []};
+//   var section5s = document.getElementsByClassName("wpf-rows-5");
+//   for (var i = 0; i < section5s.length; i++) {
+//     var input = section5s[i].firstChild.firstChild;
+//     if (i % 3 == 0) {
+//       input.value ? section5.rows.push({ column1: input.value }) : section5.rows.push({ column1: input.defaultValue });
+//     } else if (i % 3 == 1) {
+//       section5.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+//     } else {
+//       section5.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+//     }
+//   }
 
-  var section6 = { rows: []};
-  var section6s = document.getElementsByClassName("wpf-rows-6");
-  for (var i = 0; i < section6s.length; i++) {
-    var input = section6s[i].firstChild.firstChild;
-    if (i % 3 == 0) {
-      input.value ? section6.rows.push({ column1: input.value }) : section6.rows.push({ column1: input.defaultValue });
-    } else if (i % 3 == 1) {
-      section6.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
-    } else {
-      section6.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
-    }
-  }
-  var prCopy = this.state.performanceReviews;
-  prCopy[this.state.currentYears] = { date: date, section1: section1, section2: section2, section3: section3, section4: section4, section5: section5, section6: section6};
-  this.setState({ performanceReviews: prCopy });
-  this.setState({ edit: 0 });
-}
+//   var section6 = { rows: []};
+//   var section6s = document.getElementsByClassName("wpf-rows-6");
+//   for (var i = 0; i < section6s.length; i++) {
+//     var input = section6s[i].firstChild.firstChild;
+//     if (i % 3 == 0) {
+//       input.value ? section6.rows.push({ column1: input.value }) : section6.rows.push({ column1: input.defaultValue });
+//     } else if (i % 3 == 1) {
+//       section6.rows[Math.floor(i/3)].column2 = input.value ? input.value : input.defaultValue;
+//     } else {
+//       section6.rows[Math.floor(i/3)].column3 = input.value ? input.value  : input.defaultValue;
+//     }
+//   }
+//   var prCopy = this.state.performanceReviews;
+//   prCopy[this.state.currentYears] = { date: date, section1: section1, section2: section2, section3: section3, section4: section4, section5: section5, section6: section6};
+//   this.setState({ performanceReviews: prCopy });
+//   this.setState({ edit: 0 });
+// }
 
 handleChange = (event, value) => {
   this.setState({ value });
@@ -411,15 +411,15 @@ generateDropdown() {
   handleAddRow = (sectionId) => {
     console.log(sectionId);
 
-    let sections = this.state.sections;
-    for (let section of sections) {
+    let newSections = this.state.sections;
+    for (let section of newSections) {
       if (section.sectionId === sectionId) {
         section.sectionName = "Blarg";
         section.data = [...section.data, {"Column 1": "Data for column 1"}];
       }
     }
 
-    this.setState( { sections: sections});
+    this.setState( { sections: newSections});
   };
 
   render() {
@@ -557,10 +557,16 @@ generateDropdown() {
               </DialogActions>
             </Dialog>
             <div>
-              <div className="profile-card">
-                <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
-                <WorkPlanDisplay sections={sections} year={currentYears} profile={profile} handleAddRow={this.handleAddRow}/>
-              </div>
+              { value == 0 ?
+                (<div className="profile-card">
+                  <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
+                  <WorkPlanDisplay sections={sections} years="2019-2020" profile={profile} handleAddRow={this.handleAddRow} workPlan={true}/>
+                </div>) :
+                (<div className="profile-card">
+                  <Button className={classes.editButton} onClick={this.handleClickEdit}>Edit</Button>
+                  <WorkPlanDisplay sections={sections} years="2019-2020" profile={profile} handleAddRow={this.handleAddRow} workPlan={false}/>
+                </div>)
+              }
             </div>
           </div>
         </Paper>

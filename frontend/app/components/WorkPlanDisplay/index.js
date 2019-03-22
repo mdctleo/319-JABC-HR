@@ -30,7 +30,7 @@ const styles = theme => ({
     marginTop: '40px'
   },
   topHeading: {
-    marginTop: '20px'
+    marginTop: '10px'
   },
   displayTable: {
     width: '100%',
@@ -52,19 +52,19 @@ const styles = theme => ({
 
 class WorkPlanDisplay extends React.PureComponent  {
   render() {
-    const { classes, sections, year, profile } = this.props;
+    const { classes, sections, handleAddRow, profile, years, workPlan } = this.props;
     console.log("In Work plan display");
-    let that = this;
 
     return(
       <div>
+        <Typography className={classes.docTitle} variant='h5'> {workPlan ? "Individual Work Plan " + years : "Individual Performance Review " + years }</Typography>
         <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
         <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {profile.role.name}</Typography>
         {sections.map(function(section) {
           if (section.sectionId === 1) {
             console.log("Length of section in WorkPlanDisplay: " + section.data.length);
           }
-          return <PerformanceSection classes = {classes} section = {section} handleAddRow = {that.props.handleAddRow}/>
+          return <PerformanceSection classes = {classes} section = {section} handleAddRow = {handleAddRow}/>
         })
         }
         </div>
@@ -75,8 +75,10 @@ class WorkPlanDisplay extends React.PureComponent  {
 WorkPlanDisplay.propTypes = {
   classes: PropTypes.object.isRequired,
   sections: PropTypes.array.isRequired,
-  year: PropTypes.string.isRequired,
+  handleAddRow: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
+  years: PropTypes.string.isRequired,
+  workPlan: PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(WorkPlanDisplay);
