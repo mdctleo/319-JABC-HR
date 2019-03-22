@@ -529,7 +529,7 @@ describe("EmployeeService tests", () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/4`)
+                    .delete(`${BASE_PATH}/3`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
@@ -552,7 +552,7 @@ describe("EmployeeService tests", () => {
                 response.body.forEach((employee: any) => {
                     expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
                 });
-                expect(response.body.length).to.be.equal(3);
+                expect(response.body.length).to.be.equal(4);
             }
         });
     });
@@ -631,7 +631,7 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
@@ -645,7 +645,7 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
@@ -702,7 +702,7 @@ describe("EmployeeService tests", () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/manager/2`)
+                    .get(`${BASE_PATH}/manager/5`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
@@ -778,7 +778,7 @@ describe("EmployeeService tests", () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/1/manager/1`)
+                    .post(`${BASE_PATH}/1/manager/1`)
                     .set(HEADERS);
             } catch (e) {
                 console.log(e);
@@ -859,6 +859,20 @@ describe("EmployeeService tests", () => {
             }
         });
 
+        it("Should be able to unlink an someone linked to itself", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/2/manager/2`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
         it("Should be able to display no employee under manager michael", async () => {
             let response: any;
             try {
@@ -870,7 +884,7 @@ describe("EmployeeService tests", () => {
             } finally {
                 expect(response.statusCode).to.be.equal(200);
                 response.body.forEach((employee: any) => {
-                    expect(employee).to.be.jsonSchema(schema.definitions.IApiResponse);
+                    expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
                 });
                 expect(response.body.length).to.be.equal(0);
             }
