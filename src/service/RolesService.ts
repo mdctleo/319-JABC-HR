@@ -38,14 +38,36 @@ export async function createCompetency(competency: ICompetency, idRole: number, 
  * @returns {Promise<IApiResponse>}
  **/
 export async function createRole(role: IRole, xAuthToken: String) {
+    let db = Database.getInstance();
     try {
-        let res = await Database.getInstance().query('CALL create_role(?,?)', [
+        await db.beginTransaction();
+
+        await Database.getInstance().rawQuery('CALL create_role(?,?)', [
             role.name,
             role.description
         ], JABCResponse.ROLE);
 
-        return new JABCSuccess(JABCResponse.ROLE, `The role was created successfully.`)
+        let res = await Database.getInstance().rawQuery('CALL get_role_with_name(?)', [role.name], JABCResponse.ROLE);
+
+        for (let competency of role.competencies) {
+            competency = Competency.Prepare(competency);
+
+            await db.rawQuery('CALL create_competency(?,?,?)', [
+                res[0][0][0].ROLE_ID,
+                competency.name,
+                competency.description
+            ], JABCResponse.COMPETENCY);
+        }
+
+        await db.commit();
+        await db.closeConnection();
+
+        return new JABCSuccess(JABCResponse.ROLE, `The role was created successfully.`);
     } catch (error) {
+        try {
+            await db.rollback();
+            await db.closeConnection();
+        } catch (err) { }
         throw error;
     }
 }

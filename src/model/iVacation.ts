@@ -77,4 +77,9 @@ export class Vacation implements IVacation{
         }
         return vacations
     }
+
+    static Prepare(rawVacation: IVacation){
+        rawVacation.fkApprover = (rawVacation.fkApprover) ? rawVacation.fkApprover : null;
+        return rawVacation
+    }
 }

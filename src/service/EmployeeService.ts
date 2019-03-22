@@ -88,7 +88,7 @@ export async function createEmployee(employee: IEmployee, xAuthToken: String) {
 			employee.address,
 			employee.birthdate,
 			employee.vacationDays,
-			employee.remainingVacationDays,
+			employee.vacationDays,
 			employee.fte,
 			employee.status,
 			employee.password,
@@ -204,9 +204,9 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
  **/
 export async function createVacation(id: Number, vacation: IVacation, xAuthToken: String) {
 	try {
-		let res = await Database.getInstance().query('CALL create_employee_vacation(?,?,?,?,?)', [
+		vacation = Vacation.Prepare(vacation)
+		let res = await Database.getInstance().query('CALL create_employee_vacation(?,?,?,?)', [
 			id,
-			vacation.fkApprover,
 			vacation.requestedDays,
 			vacation.requestedStatus,
 			vacation.date
@@ -512,7 +512,7 @@ export async function unlinkEmployeeManager(id: Number, idManager: Number, xAuth
 export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken: String, idAdmin: Number) {
 	try {
 		employee = Employee.Prepare(employee)
-		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
+		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			id,
 			(idAdmin) ? idAdmin : null,
 			employee.fkRole,
@@ -526,7 +526,6 @@ export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken
 			employee.remainingVacationDays,
 			employee.fte,
 			employee.status,
-			employee.password,
 			employee.salary,
 			employee.dateJoined,
 			employee.adminLevel,
@@ -537,6 +536,30 @@ export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken
 		throw error;
 	}
 }
+
+
+/**
+ * updates the password of an employee
+ * Will update the password provided in the body
+ *
+ * @param {Number} id Integer id of the Employee to change password
+ * @param {IEmployee} employee IEmployee Employee with new password
+ * @param {String} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
+ **/
+export async function updateEmployeePassword(id: Number, employee: IEmployee, xAuthToken: String) {
+	try {
+		employee = Employee.Prepare(employee)
+		let res = await Database.getInstance().query('CALL update_employee_password(?,?)', [
+			id,
+			employee.password
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The password has been updated`)
+	} catch (error) {
+		throw error;
+	}
+}
+  
 
 /**
  * Authorizes the employee with a jwt [token] string

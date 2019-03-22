@@ -344,6 +344,7 @@ class EmployeePerformance extends React.PureComponent {
                 Edit
               </Button>
               <WorkPlanDisplay
+                sections={[]}
                 form={sampleWorkPlan}
                 years="2019-2020"
                 profile={selectedEmployee}
@@ -384,6 +385,7 @@ class EmployeePerformance extends React.PureComponent {
                 Edit
               </Button>
               <PerformanceReviewDisplay
+                sections={[]}
                 form={samplePR}
                 years="2019-2020"
                 profile={selectedEmployee}
