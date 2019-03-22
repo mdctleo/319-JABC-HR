@@ -30,7 +30,8 @@ describe("test related to /employee and performance", () => {
     describe("/employee/{id}/performance tests with admin credential", async () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
             return HEADERS;
         });
 
@@ -187,11 +188,12 @@ describe("test related to /employee and performance", () => {
     describe("/employee/{id}/performance tests with manager credential", async () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("manager");
-            let HRHEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            let HRHEADERS = await TestSetup.login("admin");
             let response = await chai.request(SERVER)
                 .post(`${BASE_PATH}/3/manager/2`)
                 .set(HRHEADERS);
+            HEADERS = TestSetup.login("manager");
             return HEADERS;
         });
 

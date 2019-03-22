@@ -31,7 +31,8 @@ describe("EmployeeService tests", () => {
     describe("/employee tests with admin credential", () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
             return HEADERS;
         });
 
@@ -280,7 +281,8 @@ describe("EmployeeService tests", () => {
     describe("/employee tests with manager credential", () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("manager");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("manager");
             return HEADERS;
         });
 
@@ -324,7 +326,8 @@ describe("EmployeeService tests", () => {
     describe("/employee tests with employee credential", () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("employee");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("employee");
             return HEADERS;
         });
 
@@ -369,7 +372,8 @@ describe("EmployeeService tests", () => {
     describe("/employee/{id} tests, admin credential", () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
             return HEADERS;
         });
 
@@ -562,7 +566,8 @@ describe("EmployeeService tests", () => {
 
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
             return HEADERS;
         });
 
@@ -944,7 +949,8 @@ describe("EmployeeService tests", () => {
 
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
             return HEADERS;
         });
 
@@ -1041,7 +1047,8 @@ describe("EmployeeService tests", () => {
     describe("/employee/token tests", () => {
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
             return HEADERS;
         });
 
@@ -1085,7 +1092,7 @@ describe("EmployeeService tests", () => {
     });
 
     // clears database
-    TestSetup.initTestsuite("admin");
+    TestSetup.resetDb();
 });
 
 

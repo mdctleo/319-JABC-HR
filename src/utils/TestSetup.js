@@ -19,28 +19,15 @@ const fs = require('fs');
 class TestSetup {
     constructor() {
     }
-    static initTestsuite(adminLevel) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.resetDb()
-                .then(() => {
-                return this.login(adminLevel);
-            })
-                .catch((err) => {
-                console.log(err);
-            });
-        });
-    }
     static resetDb() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                shell.cd('db');
-                shell.exec('./resetdb.sh');
-                shell.cd('..');
-            }
-            catch (e) {
-                console.log(e);
-            }
-        });
+        try {
+            shell.cd('db');
+            shell.exec('./resetdb.sh');
+            shell.cd('..');
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
     ;
     static login(adminLevel) {

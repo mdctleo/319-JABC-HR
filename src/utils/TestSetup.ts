@@ -12,17 +12,8 @@ export default class TestSetup {
 
     }
 
-    public static async initTestsuite(adminLevel: string) {
-        return this.resetDb()
-            .then(()=> {
-                return this.login(adminLevel);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
 
-   private static async resetDb() {
+   public static resetDb() {
         try {
             shell.cd('db');
             shell.exec('./resetdb.sh');
@@ -32,7 +23,7 @@ export default class TestSetup {
         }
     };
 
-    private static async login(adminLevel: string): Promise<any> {
+    public static async login(adminLevel: string): Promise<any> {
         let HEADERS = {
             'X-APP-ID': 'test-id',
             'X-API-Key': 'API-KEY',
