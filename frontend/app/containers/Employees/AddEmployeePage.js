@@ -20,7 +20,7 @@ const styles = theme => ({
 });
 
 const AddEmployeePage = props => {
-  const { classes, handleBackButton, addProfile } = props;
+  const { classes, handleBackButton, addProfile, allRoles } = props;
   return (
     <Paper className={classes.root}>
       <div>
@@ -45,6 +45,7 @@ const AddEmployeePage = props => {
           <AddEmployeeForm
             saveProfile={addProfile}
             cancelEdit={handleBackButton}
+            allRoles={allRoles}
           />
         </div>
       </div>
@@ -56,6 +57,7 @@ AddEmployeePage.propTypes = {
   classes: PropTypes.object.isRequired,
   handleBackButton: PropTypes.func.isRequired,
   addProfile: PropTypes.func.isRequired,
+  allRoles: PropTypes.object,
 };
 
 export default withStyles(styles)(AddEmployeePage);

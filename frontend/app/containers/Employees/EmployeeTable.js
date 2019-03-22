@@ -293,7 +293,7 @@ class EmployeeTable extends React.PureComponent {
   isSelected = id => this.props.tableSettings.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, allEmployees, tableSettings } = this.props;
+    const { classes, allEmployees, tableSettings, allRoles } = this.props;
 
     const { order, orderBy, selected, rowsPerPage, page } = tableSettings;
     const emptyRows =
@@ -302,11 +302,7 @@ class EmployeeTable extends React.PureComponent {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          showReportButton
-          handleDeleteButton={() => console.log('DELETE')}
-        />
+        <EnhancedTableToolbar numSelected={selected.length} showReportButton />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -323,6 +319,8 @@ class EmployeeTable extends React.PureComponent {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.id);
+                  const roleName =
+                    allRoles && allRoles[n.fkRole] && allRoles[n.fkRole].name;
                   return (
                     <TableRow
                       hover
@@ -357,7 +355,7 @@ class EmployeeTable extends React.PureComponent {
                         align="left"
                         onClick={event => this.handleClickProfile(event, n)}
                       >
-                        {n.role}
+                        {roleName}
                       </TableCell>
                     </TableRow>
                   );
@@ -393,6 +391,7 @@ class EmployeeTable extends React.PureComponent {
 EmployeeTable.propTypes = {
   classes: PropTypes.object.isRequired,
   allEmployees: PropTypes.array,
+  allRoles: PropTypes.object,
   selectProfile: PropTypes.func.isRequired,
   tableSettings: PropTypes.object.isRequired,
   updateTableSettings: PropTypes.func.isRequired,

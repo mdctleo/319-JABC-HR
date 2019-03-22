@@ -49,14 +49,18 @@ const EnhancedTableToolbar = props => {
       {numSelected > 0 &&
         showReportButton && (
           <div>
-            <button type='button' className="primary-button" id="generate-report-button">
+            <button
+              type="button"
+              className="primary-button"
+              id="generate-report-button"
+            >
               Generate Report
             </button>
           </div>
         )}
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        {numSelected > 0 ? (
+        {numSelected > 0 && !showReportButton ? (
           <Tooltip title="Delete">
             <IconButton
               aria-label="Delete"
@@ -80,7 +84,7 @@ const EnhancedTableToolbar = props => {
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
-  handleDeleteButton: PropTypes.func.isRequired,
+  handleDeleteButton: PropTypes.func,
   showReportButton: PropTypes.bool,
 };
 

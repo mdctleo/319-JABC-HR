@@ -25,6 +25,7 @@ import {
   selectAllEmployees,
   selectSelectedEmployee,
   selectEmployeeDomainJS,
+  selectAllRoles,
 } from './selectors';
 
 const styles = theme => ({
@@ -305,9 +306,20 @@ class EnhancedTable extends React.Component {
       classes,
       employeeDomain,
       allEmployees,
+      allRoles,
       selectedEmployee,
     } = this.props;
     const { tableSettings, editing } = employeeDomain;
+
+    let role;
+    if (
+      selectedEmployee &&
+      selectedEmployee.fkRole &&
+      allRoles &&
+      allRoles[selectedEmployee.fkRole]
+    ) {
+      role = allRoles[selectedEmployee.fkRole].name;
+    }
 
     return (
       <div>
@@ -322,21 +334,25 @@ class EnhancedTable extends React.Component {
             <AddEmployeePage
               handleBackButton={this.handleBackButton}
               addProfile={this.addProfile}
+              allRoles={allRoles}
             />
           )}
-        {!selectedEmployee && !editing && (
-          <EmployeeTable
-            allEmployees={allEmployees}
-            selectProfile={this.selectProfile}
-            tableSettings={tableSettings}
-            updateTableSettings={this.props.updateTableSettings}
-            handleDeleteButton={this.handleDeleteButton}
-            handleDeleteSingleButton={this.handleDeleteSingleButton}
-          />
-        )}
+        {!selectedEmployee &&
+          !editing && (
+            <EmployeeTable
+              allEmployees={allEmployees}
+              allRoles={allRoles}
+              selectProfile={this.selectProfile}
+              tableSettings={tableSettings}
+              updateTableSettings={this.props.updateTableSettings}
+              handleDeleteButton={this.handleDeleteButton}
+              handleDeleteSingleButton={this.handleDeleteSingleButton}
+            />
+          )}
         {selectedEmployee && (
           <EmployeeViewPage
             selectedEmployee={selectedEmployee}
+            role={role}
             handleBackButton={this.handleBackButton}
             editing={editing}
             setEditing={this.props.setEditing}
@@ -350,6 +366,7 @@ class EnhancedTable extends React.Component {
 EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
   allEmployees: PropTypes.array,
+  allRoles: PropTypes.object,
   employeeDomain: PropTypes.object.isRequired,
   updateTableSettings: PropTypes.func.isRequired,
   getAllEmployees: PropTypes.func.isRequired,
@@ -361,6 +378,7 @@ EnhancedTable.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   allEmployees: selectAllEmployees,
+  allRoles: selectAllRoles,
   selectedEmployee: selectSelectedEmployee,
   employeeDomain: selectEmployeeDomainJS,
 });

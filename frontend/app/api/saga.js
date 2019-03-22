@@ -41,6 +41,11 @@ export function* getRoles() {
   yield put(setCollection('roles', roles));
 }
 
+export function* getRolesAsResource() {
+  const roles = yield rolesApi.getRoles();
+  yield all(roles.map(r => put(setResource('role', r.id, r))));
+}
+
 export function* updateRole(role) {
   const roleObj = IRole.constructFromObject(role);
   const response = yield rolesApi.updateRole(role.id, roleObj);

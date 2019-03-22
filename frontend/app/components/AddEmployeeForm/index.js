@@ -102,6 +102,7 @@ class AddEmployeeForm extends React.PureComponent {
     blankProfile.password = Math.random()
       .toString(36)
       .slice(-8);
+    blankProfile.fkRole = '';
 
     this.state = {
       profile: blankProfile,
@@ -129,8 +130,21 @@ class AddEmployeeForm extends React.PureComponent {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, allRoles } = this.props;
     const { profile, dialog } = this.state;
+    const sortedRoles =
+      allRoles &&
+      Object.keys(allRoles)
+        .map(key => allRoles[key])
+        .sort((a, b) => {
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        });
 
     return (
       <div>
@@ -224,12 +238,25 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                label="Position"
+                select
+                value={profile.fkRole}
+                label="Role"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
                 fullWidth
-              />
+                onChange={this.handleChange('fkRole')}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {sortedRoles &&
+                  sortedRoles.map(role => (
+                    <MenuItem key={role.id} value={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
+              </TextField>
             </div>
             <div className={classes.fieldContainer}>
               <TextField
@@ -240,15 +267,6 @@ class AddEmployeeForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('salary')}
-              />
-            </div>
-            <div className={classes.fieldContainer}>
-              <TextField
-                label="Direct Report"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
               />
             </div>
             <div className={classes.fieldContainer}>
@@ -361,6 +379,7 @@ AddEmployeeForm.propTypes = {
   classes: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
   cancelEdit: PropTypes.func.isRequired,
+  allRoles: PropTypes.object,
 };
 
 export default withStyles(styles)(AddEmployeeForm);

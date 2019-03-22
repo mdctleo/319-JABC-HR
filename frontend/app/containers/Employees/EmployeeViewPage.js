@@ -218,7 +218,7 @@ class EmployeeViewPage extends React.PureComponent {
   };
 
   render() {
-    const { classes, editing, selectedEmployee, handleBackButton } = this.props;
+    const { classes, editing, selectedEmployee, handleBackButton, role } = this.props;
     const { currentTab } = this.state;
     return (
       <Paper className={classes.root}>
@@ -274,7 +274,7 @@ class EmployeeViewPage extends React.PureComponent {
                 <EmployeeDisplay
                   isAdmin
                   profile={selectedEmployee}
-                  roleName="TODO get role"
+                  roleName={role}
                 />
               </div>
             )}
@@ -409,6 +409,7 @@ EmployeeViewPage.propTypes = {
   editing: PropTypes.bool.isRequired,
   selectedEmployee: PropTypes.object.isRequired,
   handleBackButton: PropTypes.func.isRequired,
+  role: PropTypes.object,
 };
 
 export default withStyles(styles)(EmployeeViewPage);

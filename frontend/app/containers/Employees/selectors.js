@@ -4,10 +4,14 @@ import { initialState } from './reducer';
 
 const selectEmployeeDomain = state => state.get('employees', initialState);
 
-export const selectEmployeeDomainJS = createSelector([selectEmployeeDomain], employeeDomain => employeeDomain.toJS());
+export const selectEmployeeDomainJS = createSelector(
+  [selectEmployeeDomain],
+  employeeDomain => employeeDomain.toJS(),
+);
 
-export const selectSelectedEmployeeId = createSelector([selectEmployeeDomain], employeeDomain =>
-  employeeDomain.get('selectedEmployeeId'),
+export const selectSelectedEmployeeId = createSelector(
+  [selectEmployeeDomain],
+  employeeDomain => employeeDomain.get('selectedEmployeeId'),
 );
 
 export const selectAllEmployees = createSelector(
@@ -19,6 +23,11 @@ export const selectAllEmployees = createSelector(
     }
     return [];
   },
+);
+
+export const selectAllRoles = createSelector(
+  [selectResource('role')],
+  roles => roles && roles.toJS(),
 );
 
 export const selectSelectedEmployee = createSelector(
