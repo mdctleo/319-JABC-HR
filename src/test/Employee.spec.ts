@@ -408,9 +408,10 @@ describe("EmployeeService tests", () => {
 
         it("Should not update an employee, wrong format", async () => {
             let response: any;
-            let employeeRecord = await chai.request(SERVER)
+            let employeeRecordResponse = await chai.request(SERVER)
                 .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
+            let employeeRecord = employeeRecordResponse.body;
             employeeRecord.fkRole = "3";
             employeeRecord.salary = 3000.00;
             employeeRecord.firstname = "Big Tuna";
@@ -418,7 +419,7 @@ describe("EmployeeService tests", () => {
                     response = await chai.request(SERVER)
                     .put(`${BASE_PATH}/3`)
                     .set(HEADERS)
-                    .send(employeeRecord);
+                    .send(JSON.stringify(employeeRecord));
             } catch (e) {
                 console.log(e);
             } finally {
@@ -429,15 +430,16 @@ describe("EmployeeService tests", () => {
 
         it("Should not update an employee, setting required fields to null", async () => {
             let response: any;
-            let employeeRecord = await chai.request(SERVER)
+            let employeeRecordResponse = await chai.request(SERVER)
                 .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
+            let employeeRecord = employeeRecordResponse.body;
             employeeRecord.id = null;
             try {
                 response = await chai.request(SERVER)
                     .put(`${BASE_PATH}/3`)
                     .set(HEADERS)
-                    .send(employeeRecord);
+                    .send(JSON.stringify(employeeRecord));
             } catch (e) {
                 console.log(e);
             } finally {
@@ -448,9 +450,10 @@ describe("EmployeeService tests", () => {
 
         it("Should not update a non-existing employee", async () => {
             let response: any;
-            let employeeRecord = await chai.request(SERVER)
+            let employeeRecordResponse = await chai.request(SERVER)
                 .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
+            let employeeRecord = employeeRecordResponse.body;
             employeeRecord.fkRole = 3;
             employeeRecord.salary = 3000.00;
             employeeRecord.firstname = "Big Tuna";
@@ -458,7 +461,7 @@ describe("EmployeeService tests", () => {
                 response = await chai.request(SERVER)
                     .put(`${BASE_PATH}/66`)
                     .set(HEADERS)
-                    .send(employeeRecord);
+                    .send(JSON.stringify(employeeRecord));
             } catch (e) {
                 console.log(e);
             } finally {
@@ -470,9 +473,10 @@ describe("EmployeeService tests", () => {
 
         it("Should update an employee", async () => {
             let response: any;
-            let employeeRecord = await chai.request(SERVER)
+            let employeeRecordResponse = await chai.request(SERVER)
                 .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
+            let employeeRecord = employeeRecordResponse.body;
             employeeRecord.fkRole = 3;
             employeeRecord.salary = 3000.00;
             employeeRecord.firstname = "Big Tuna";
