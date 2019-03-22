@@ -186,7 +186,7 @@ describe("EmployeeService tests", () => {
         // });
 
 
-        it("Should not create an Employee, birthdate before joined date", async () => {
+        it("Should not create an Employee, birthdate after joined date", async () => {
             jsf.option({
                 alwaysFakeOptionals: true,
                 ignoreProperties: ["role"]
