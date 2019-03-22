@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button/Button';
 import NewEmployeeDialog from '../NewEmployeeDialog';
 import { IEmployee } from 'api/swagger-api';
+import Select from 'react-select';
 
 const styles = theme => ({
   title: {
@@ -108,6 +109,16 @@ class AddEmployeeForm extends React.PureComponent {
       profile: blankProfile,
       dialog: false,
     };
+
+    this.people = [
+      { value: 'mikayla', label: 'Mikayla Preete' },
+      { value: 'james', label: 'James Yoo' },
+      { value: 'reed', label: 'Reed Esler' },
+      { value: 'anita', label: 'Anita Tse' },
+      { value: 'abraham', label: 'Abraham Torres' },
+      { value: 'leo', label: 'Leo Lin' },
+      { value: 'sam', label: 'Sam Veloso' },
+    ];
   }
 
   handleChange = name => event => {
@@ -158,7 +169,7 @@ class AddEmployeeForm extends React.PureComponent {
               variant="subtitle1"
               color="textSecondary"
             >
-              Name
+              Personal Information
             </Typography>
             <div className={classes.fieldContainer}>
               <TextField
@@ -184,13 +195,49 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                value={profile.email}
-                label="Email"
+                value={profile.sin}
+                label="SIN"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
                 fullWidth
-                onChange={this.handleChange('email')}
+                onChange={this.handleChange('sin')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.birthdate}
+                label="Birth Date"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('birthdate')}
+                placeholder="2019-01-31"
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.address}
+                multiline
+                rows="4"
+                label="Address"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('address')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                defaultValue={profile.phoneNumber}
+                label="Phone Number"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('phoneNumber')}
               />
             </div>
             <Typography
@@ -200,6 +247,18 @@ class AddEmployeeForm extends React.PureComponent {
             >
               Employee Information
             </Typography>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.dateJoined}
+                label="Date Joined"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('dateJoined')}
+                placeholder="2019-01-31"
+              />
+            </div>
             <div className={classes.fieldContainer}>
               <TextField
                 select
@@ -224,17 +283,6 @@ class AddEmployeeForm extends React.PureComponent {
                   Probation
                 </MenuItem>
               </TextField>
-            </div>
-            <div className={classes.fieldContainer}>
-              <TextField
-                value={profile.sin}
-                label="SIN"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                onChange={this.handleChange('sin')}
-              />
             </div>
             <div className={classes.fieldContainer}>
               <TextField
@@ -290,14 +338,14 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                value={profile.remainingVacationDays}
-                label="Vacation Days Remaining"
+                value={profile.vacationDays}
+                label="Annual Number of Vacation Days"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
                 fullWidth
                 type="number"
-                onChange={this.handleChange('remainingVacationDays')}
+                onChange={this.handleChange('vacationDays')}
               />
             </div>
             <div className={classes.fieldContainer}>
@@ -327,32 +375,55 @@ class AddEmployeeForm extends React.PureComponent {
               variant="subtitle1"
               color="textSecondary"
             >
-              Contact Information
+              Manager(s)
             </Typography>
             <div className={classes.fieldContainer}>
-              <TextField
-                value={profile.address}
-                multiline
-                rows="4"
-                label="Address"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                onChange={this.handleChange('address')}
+              <Select
+                defaultValue={[]}
+                isMulti
+                name="managers"
+                options={this.people}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                theme={theme => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: 'orange',
+                    primary: 'orange',
+                  },
+                })}
               />
             </div>
-            <div className={classes.fieldContainer}>
-              <TextField
-                defaultValue={profile.phoneNumber}
-                label="Phone Number"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                onChange={this.handleChange('phoneNumber')}
-              />
-            </div>
+            {profile.adminLevel >= 1 && (
+              <div>
+                <Typography
+                  className={classes.subHeading}
+                  variant="subtitle1"
+                  color="textSecondary"
+                >
+                  Employees
+                </Typography>
+                <div className={classes.fieldContainer}>
+                  <Select
+                    defaultValue={[]}
+                    isMulti
+                    name="employees"
+                    options={this.people}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    theme={theme => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: 'orange',
+                        primary: 'orange',
+                      },
+                    })}
+                  />
+                </div>
+              </div>
+            )}
           </Grid>
         </Grid>
         <NewEmployeeDialog

@@ -15,6 +15,8 @@ export function* getEmployees() {
 }
 
 export function* updateEmployee(employee) {
+  if (employee.birthdate === '') employee.birthdate = null;
+  if (employee.dateJoined === '') employee.dateJoined = null;
   const employeeObj = IEmployee.constructFromObject(employee);
   const response = yield employeeApi.updateEmployee(employee.id, employeeObj);
   if (response.type === 'SUCCESS') {
