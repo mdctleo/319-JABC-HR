@@ -253,7 +253,8 @@ export async function getEmployee(id: Number, xAuthToken: String) {
 	try {
 		let res = await Database.getInstance().query('CALL get_employee(?)', [id], JABCResponse.EMPLOYEE)
 		let employee = new Employee(res[0][0][0])
-		employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+		if(employee.fkRole != null)
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken)
 		return employee
 	} catch (error) {
 		throw error;
@@ -300,6 +301,7 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
 			res = await Database.getInstance().query('CALL get_all_employees()', [], JABCResponse.EMPLOYEE)
 		let employees = Employee.Employees(res[0][0])
 		for(let employee of employees){
+			if(employee.fkRole == null) continue;
 			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
 			delete employee.role.competencies
 		}
@@ -323,6 +325,7 @@ export async function getEmployeesByManager(idManager: Number, xAuthToken: Strin
 		let res = await Database.getInstance().query('CALL get_manager_employees(?)', [idManager], JABCResponse.EMPLOYEE)
 		let employees = Employee.Employees(res[0][0])
 		for(let employee of employees){
+			if(employee.fkRole == null) continue;
 			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
 			delete employee.role.competencies
 		}
@@ -365,6 +368,7 @@ export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 		let res = await Database.getInstance().query('CALL get_employee_managers(?)', [id], JABCResponse.EMPLOYEE)
 		let employees = Employee.Employees(res[0][0])
 		for(let employee of employees){
+			if(employee.fkRole == null) continue;
 			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
 			delete employee.role.competencies
 		}
