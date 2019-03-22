@@ -724,7 +724,7 @@ class PerformacePage extends React.Component {
               open={this.state.openNewPerformancePlanDialog}
               onClose={this.closeNewPlanDialog}
               aria-labelledby="form-dialog-title">
-              <DialogTitle id="form-dialog-title">Enter the year of your { value == 0 ? "work plan" : "performance review" }</DialogTitle>
+              <DialogTitle id="form-dialog-title">Enter the year of your new performance documents:</DialogTitle>
               <DialogContent>
                 <TextField
                   autoFocus
@@ -842,7 +842,6 @@ class PerformacePage extends React.Component {
               aria-labelledby="form-dialog-title">
               <DialogTitle id="form-dialog-title">Add new Section</DialogTitle>
               <DialogContent>
-                <Button className={classes.editButton} onClick={this.incNumColumnsForNewSection}>Add Column</Button>
                 <TextField
                   autoFocus
                   margin="dense"
@@ -860,6 +859,7 @@ class PerformacePage extends React.Component {
                     fullWidth
                   />
                 })}
+              <Button className={classes.addColButton} onClick={this.incNumColumnsForNewSection}>Add Column</Button>
               </DialogContent>
               <DialogActions>
                 <Button onClick={this.closeNewSectionReviewDialog} color="primary">
@@ -904,7 +904,7 @@ class PerformacePage extends React.Component {
                                   handleDeleteSection={this.openDeleteSectionDialog}
                                   handleAddRow={this.handleAddReviewRow}
                                   handleDeleteRows={this.openDeleteRowsDialog}/>
-        <Button className={classes.editButton} onClick={this.openNewSectionReviewDialog}>Add Section</Button>
+        <Button className={classes.sectionButton} onClick={this.openNewSectionReviewDialog}>Add Section</Button>
       </div>}
         { selectedPerformancePlan !== null && value === 1 &&
         !(selectedPerformancePlan.hasOwnProperty("performanceReview") && selectedPerformancePlan["performanceReview"]) &&
