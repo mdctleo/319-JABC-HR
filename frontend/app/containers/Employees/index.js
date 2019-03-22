@@ -223,6 +223,8 @@ class EnhancedTable extends React.Component {
 
   handleBackButton = () => {
     this.props.selectEmployee(null);
+    this.props.setEditing(false);
+    window.scrollTo(0, 0);
   };
 
   handleAddButton = (event, value) => {
@@ -246,11 +248,7 @@ class EnhancedTable extends React.Component {
   };
 
   addProfile = profile => {
-    const newData = this.state.data.concat(newProfile);
-    this.setState({ data: newData });
-    this.props.setEditing(false);
-    console.log('changing view to table');
-    this.setState({ currentTab: 1 });
+    this.props.addEmployee(profile);
   };
 
   cancelEdit = () => {
@@ -326,7 +324,7 @@ class EnhancedTable extends React.Component {
               addProfile={this.addProfile}
             />
           )}
-        {!selectedEmployee && (
+        {!selectedEmployee && !editing && (
           <EmployeeTable
             allEmployees={allEmployees}
             selectProfile={this.selectProfile}
@@ -341,7 +339,8 @@ class EnhancedTable extends React.Component {
             selectedEmployee={selectedEmployee}
             handleBackButton={this.handleBackButton}
             editing={editing}
-            setEditing={this.props.setEditing} />
+            setEditing={this.props.setEditing}
+          />
         )}
       </div>
     );
@@ -357,6 +356,7 @@ EnhancedTable.propTypes = {
   selectEmployee: PropTypes.func.isRequired,
   setEditing: PropTypes.func.isRequired,
   selectedEmployee: PropTypes.object,
+  addEmployee: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({

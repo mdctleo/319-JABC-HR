@@ -11,6 +11,7 @@ import {
   SAVE_EMPLOYEE,
   DELETE_EMPLOYEES,
   UPDATE_TABLE_SETTINGS,
+  ADD_EMPLOYEE,
 } from './constants';
 
 export function getAllEmployees() {
@@ -30,6 +31,13 @@ export function setEditing(editing) {
   return {
     type: SET_EDITING,
     editing,
+  };
+}
+
+export function addEmployee(employee) {
+  return {
+    type: ADD_EMPLOYEE,
+    employee,
   };
 }
 
@@ -61,4 +69,5 @@ export default {
   saveEmployee,
   deleteEmployees,
   updateTableSettings,
+  addEmployee,
 };

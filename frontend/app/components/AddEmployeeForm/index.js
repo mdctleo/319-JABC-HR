@@ -92,10 +92,22 @@ const styles = theme => ({
 });
 
 class AddEmployeeForm extends React.PureComponent {
-  state = {
-    profile: new IEmployee(),
-    dialog: false,
-  };
+  constructor(props) {
+    super(props);
+
+    const blankProfile = new IEmployee();
+    blankProfile.status = 2;
+    blankProfile.fte = 1;
+    blankProfile.adminLevel = 0;
+    blankProfile.password = Math.random()
+      .toString(36)
+      .slice(-8);
+
+    this.state = {
+      profile: blankProfile,
+      dialog: false,
+    };
+  }
 
   handleChange = name => event => {
     const { value } = event.target;
@@ -112,12 +124,12 @@ class AddEmployeeForm extends React.PureComponent {
     this.props.saveProfile(profile);
   };
 
-  handleOpen = event => {
+  handleOpen = () => {
     this.setState({ dialog: true });
   };
 
   render() {
-    const { classes, saveProfile, cancelEdit } = this.props;
+    const { classes } = this.props;
     const { profile, dialog } = this.state;
 
     return (
@@ -154,6 +166,17 @@ class AddEmployeeForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('lastname')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.email}
+                label="Email"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('email')}
               />
             </div>
             <Typography
@@ -318,8 +341,12 @@ class AddEmployeeForm extends React.PureComponent {
           profile={profile}
           open={dialog}
           handleClose={this.handleClose(profile)}
+          newPwd={profile.password}
         />
-        <Button className={classes.cancelButton} onClick={this.cancelEdit}>
+        <Button
+          className={classes.cancelButton}
+          onClick={this.props.cancelEdit}
+        >
           Cancel
         </Button>
         <Button className={classes.formButton} onClick={this.handleOpen}>
@@ -332,7 +359,6 @@ class AddEmployeeForm extends React.PureComponent {
 
 AddEmployeeForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
   cancelEdit: PropTypes.func.isRequired,
 };

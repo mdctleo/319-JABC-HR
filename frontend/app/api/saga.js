@@ -22,6 +22,11 @@ export function* updateEmployee(employee) {
   }
 }
 
+export function* createEmployee(employee) {
+  const employeeObj = IEmployee.constructFromObject(employee);
+  yield employeeApi.createEmployee(employeeObj);
+}
+
 export function* getRole(id) {
   const role = yield rolesApi.getRole(id);
   yield put(setResource('role', role.id, role));
