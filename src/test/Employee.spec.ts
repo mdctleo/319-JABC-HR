@@ -558,7 +558,7 @@ describe("EmployeeService tests", () => {
     });
 
 
-    describe("/employee/{id}/manager/{idManager} and /employee/manager/{idManager} tests", () => {
+    describe("/employee/{id}/manager/{idManager} and /employee/manager/{idManager} tests and /employee/{id}/manager tests", () => {
 
         let HEADERS: any = null;
         before(async () => {
@@ -716,20 +716,6 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("should be able to unlink a manager under manager karen", async () => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .delete(`${BASE_PATH}/2/manager/5`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
 
         it("Should be able to link an employee to an HR", async () => {
             let response: any;
@@ -745,6 +731,25 @@ describe("EmployeeService tests", () => {
             }
         });
 
+        it("Should display two managers for that employee, Michael and HR", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/3/manager`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(2);
+                response.body.forEach((employee: any) => {
+                    expect(employee).to.be.jsonSchema(schema.definitions.IEmployee);
+                });
+                expect(response.body[0].firstname).to.be.equal("Michael");
+                expect(response.body[1].firstname).to.be.equal("Toby");
+            }
+        });
+
         it("Should be able to display employees under HR", async () => {
             let response: any;
             try {
@@ -757,6 +762,20 @@ describe("EmployeeService tests", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body.length).to.be.equal(1);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IEmployee);
+            }
+        });
+
+        it("should be able to unlink a manager under manager karen", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/2/manager/5`)
+                    .set(HEADERS);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
 
@@ -943,7 +962,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        it("Should display no history, since no change", async () => {
+        it("Should display one history (the current record), since no change", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -956,20 +975,20 @@ describe("EmployeeService tests", () => {
                 response.body.forEach((employee: any) => {
                     expect(employee).to.be.jsonSchema(schema.definitions.IEmployeeHistory);
                 });
-                expect(response.body.length).to.be.equal(0);
+                expect(response.body.length).to.be.equal(1);
             }
         });
 
-        it("Should display one history record after one change", async () => {
-            let employeeRecord = await chai.request(SERVER)
+        it("Should display 2 history record after one change", async () => {
+            let employeeRecordResponse = await chai.request(SERVER)
                 .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
+            let employeeRecord = employeeRecordResponse.body;
             employeeRecord.firstname = "Big Tuna";
-            let updateResponse = await chai.request(SERVER)
+            await chai.request(SERVER)
                 .put(`${BASE_PATH}/3`)
                 .set(HEADERS)
                 .send(employeeRecord);
-            updateResponse.then(async () => {
                 let response: any;
                 try {
                     response = await chai.request(SERVER)
@@ -983,24 +1002,21 @@ describe("EmployeeService tests", () => {
                     response.body.forEach((employee: any) => {
                         expect(employee).to.be.jsonSchema(schema.definitions.IEmployeeHistory);
                     });
-                    expect(response.body[0].firstname).to.be.equal("Jim");
-                    expect(response.body[1].firstname).to.be.equal("Big Tuna");
+                    expect(response.body[1].firstname).to.be.equal("Jim");
+                    expect(response.body[0].firstname).to.be.equal("Big Tuna");
                 }
-            }).catch((err: any) => {
-                console.log(err);
-            })
         });
 
-        it("Should display two history records after two change", async () => {
-            let employeeRecord = await chai.request(SERVER)
+        it("Should display 3 history records after two change", async () => {
+            let employeeRecordResponse = await chai.request(SERVER)
                 .get(`${BASE_PATH}/3`)
                 .set(HEADERS);
+            let employeeRecord = employeeRecordResponse.body;
             employeeRecord.firstname = "Jim";
             let updateResponse = await chai.request(SERVER)
                 .put(`${BASE_PATH}/3`)
                 .set(HEADERS)
                 .send(employeeRecord);
-            updateResponse.then(async () => {
                 let response: any;
                 try {
                     response = await chai.request(SERVER)
@@ -1014,147 +1030,12 @@ describe("EmployeeService tests", () => {
                     response.body.forEach((employee: any) => {
                         expect(employee).to.be.jsonSchema(schema.definitions.IEmployeeHistory);
                     });
-                    expect(response.body[0].firstname).to.be.equal("Jim");
-                    expect(response.body[1].firstname).to.be.equal("Big Tuna");
                     expect(response.body[2].firstname).to.be.equal("Jim");
+                    expect(response.body[1].firstname).to.be.equal("Big Tuna");
+                    expect(response.body[0].firstname).to.be.equal("Jim");
                 }
-            }).catch((err: any) => {
-                console.log(err);
-            })
         });
 
-
-    });
-
-    describe("/employee/{id}/document", () => {
-        let HEADERS: any = null;
-        let documents: Array<string> = [];
-        before(async () => {
-            return Promise.all([TestSetup.initTestsuite("admin"), TestSetup.readDocuments()])
-                .then((result) => {
-                    HEADERS = result[0];
-                    return documents = result[1];
-                }).catch((err) => {
-                    console.log(err);
-                })
-
-        });
-
-        it("Should throw an error, non-existent employee", async () => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/88/document`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.within(400, 500);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        it("Should not display anything, no documents added for this employee", async () => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/2/document`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body.length).to.be.equal(0);
-            }
-        });
-
-        it("Should throw an error, adding a malformed document", async () => {
-            jsf.option({
-                alwaysFakeOptionals: true,
-            });
-            let document = jsf.generate(schema.definitions.IDocument);
-            document.fkEmployee = 888;
-            document.fkDocumentType = 88;
-            document.createdDate = 19;
-            document.dueDate = null;
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .post(`${BASE_PATH}/3/document`)
-                    .set(HEADERS)
-                    .send();
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(400);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        it("Should be able to add a document ", async () => {
-            let response: any;
-            try {
-                // young obiwan
-                let document64 = documents[0];
-
-                let sendDocument = jsf.generate(schema.definitions.IDocument);
-                sendDocument.fkDocumentType = 1;
-                sendDocument.fkEmployee = 3;
-                sendDocument.path = document64;
-
-                response = await chai.request(SERVER)
-                    .post(`${BASE_PATH}/3/document`)
-                    .set(HEADERS)
-                    .send(sendDocument);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-
-            }
-        });
-
-        it("Should be able to add a document ", async () => {
-            let response: any;
-            try {
-                // adult obiwan
-                let document64 = documents[1];
-
-                let sendDocument = jsf.generate(schema.definitions.IDocument);
-                sendDocument.fkDocumentType = 1;
-                sendDocument.fkEmployee = 3;
-                sendDocument.path = document64;
-
-                response = await chai.request(SERVER)
-                    .post(`${BASE_PATH}/3/document`)
-                    .set(HEADERS)
-                    .send(sendDocument);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        it("Should be able to display two documents under an employee ", async () => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/3/document`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                response.body.forEach((document: any) => {
-                    expect(document).to.be.jsonSchema(schema.definitions.IDocument);
-                });
-                expect(response.body[0].path).to.be.equal(documents[0]);
-                expect(response.body[1].path).to.be.equal(documents[1]);
-            }
-        });
     });
 
     describe("/employee/token tests", () => {

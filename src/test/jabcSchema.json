@@ -2443,12 +2443,16 @@
       "properties" : {
         "id" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker" : {
+            "random.number": {
+              "min": 0
+            }
+          },
           "description" : "The unique identifier of the Employee",
           "example" : 1
         },
         "sin" : {
-          "type" : "string"
+          "type" : "integer"
         },
         "email" : {
           "type" : "string",
