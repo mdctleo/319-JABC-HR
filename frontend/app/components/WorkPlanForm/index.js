@@ -144,37 +144,37 @@ class WorkPlanForm extends React.PureComponent  {
             <TableBody id="wpf-tbody-1">
               {generate2ColumnTableForm("DEPARTMENT", "GOAL", form.section1, "1")}
             </TableBody>
-          </Table> 
+          </Table>
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 2: Personal Targets</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="wpf-tbody-2">
               {generate2ColumnTableForm("PROGRAM", "GOAL", form.section2, "2")}
             </TableBody>
-          </Table> 
+          </Table>
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 3: Core competencies</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="wpf-tbody-3">
               {generate2ColumnTableForm("COMPETENCY", "HOW IT RELATES", form.section3, "3")}
             </TableBody>
-          </Table> 
+          </Table>
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 4: Objectives</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="wpf-tbody-4">
               {generate2ColumnTableForm("OBJECTIVES & ACTIVITIES", "SUPPORT / COLLABORATION", form.section4, "4")}
             </TableBody>
-          </Table> 
+          </Table>
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 5: Professional Development Goals</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="wpf-tbody-5">
               {generate2ColumnTableForm("GOAL", "KEY ACTIVITIES", form.section5, "5")}
             </TableBody>
-          </Table> 
+          </Table>
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 6: Comments</Typography>
           <Table className={classes.displayTable} fullWidth>
             <TableBody id="wpf-tbody-6">
               {generate3ColumnTableForm("DATE", "COMMENTER", "COMMENT", form.section6, "6")}
             </TableBody>
-          </Table> 
+          </Table>
         </div>
     );
   }
