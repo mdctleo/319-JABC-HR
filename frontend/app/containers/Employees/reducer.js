@@ -5,7 +5,11 @@
  */
 
 import { fromJS } from 'immutable';
-import { UPDATE_TABLE_SETTINGS, SET_EDITING, SELECT_PROFILE } from './constants';
+import {
+  UPDATE_TABLE_SETTINGS,
+  SET_EDITING,
+  SELECT_PROFILE,
+} from './constants';
 
 export const initialState = fromJS({
   editing: false,
@@ -15,6 +19,8 @@ export const initialState = fromJS({
     page: 0,
     rowsPerPage: 25,
     selected: [],
+    showInactive: false,
+    search: '',
   },
 });
 

@@ -6,10 +6,8 @@ import TableCell from '@material-ui/core/TableCell/TableCell';
 import Checkbox from '@material-ui/core/Checkbox/Checkbox';
 import TablePagination from '@material-ui/core/TablePagination/TablePagination';
 import React from 'react';
-import {
-  EnhancedTableHead,
-  EnhancedTableToolbar,
-} from 'components/RolePageComponents';
+import { EnhancedTableHead } from 'components/RolePageComponents';
+import EnhancedTableToolbar from './EnhancedTableToolbar';
 import { withStyles } from '@material-ui/core';
 import orange from '@material-ui/core/colors/orange';
 import PropTypes from 'prop-types';
@@ -209,32 +207,6 @@ const columns = [
   { id: 'position', numeric: false, disablePadding: false, label: 'Position' },
 ];
 
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => desc(a, b, orderBy)
-    : (a, b) => -desc(a, b, orderBy);
-}
-
 class EmployeeTable extends React.PureComponent {
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -302,7 +274,12 @@ class EmployeeTable extends React.PureComponent {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} showReportButton />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          showReportButton
+          tableSettings={tableSettings}
+          updateTableSettings={this.props.updateTableSettings}
+        />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -315,7 +292,7 @@ class EmployeeTable extends React.PureComponent {
               rowCount={allEmployees.length}
             />
             <TableBody>
-              {stableSort(allEmployees, getSorting(order, orderBy))
+              {allEmployees
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.id);
