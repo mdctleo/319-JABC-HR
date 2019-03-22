@@ -14,7 +14,7 @@ import injectReducer from 'utils/injectReducer';
 
 import AddEmployeePage from './AddEmployeePage';
 import EmployeeTable from './EmployeeTable';
-import EmployeeViewPage from './EmployeeViewPage';
+import EmployeeViewPage from './EmployeeView/EmployeeViewPage';
 import actions from './actions';
 import connect from 'react-redux/es/connect/connect';
 import reducer from './reducer';
@@ -232,10 +232,6 @@ class EnhancedTable extends React.Component {
     this.props.setEditing(true);
   };
 
-  handleAddOI = event => {
-    this.setState({ addOIDialog: true });
-  };
-
   handleCloseAddOIDialog = event => {
     this.setState({ addOIDialog: false });
   };
@@ -251,51 +247,6 @@ class EnhancedTable extends React.Component {
   cancelEdit = () => {
     this.props.setEditing(false);
   };
-
-  handleAddOIDialog = event => {
-    const id = this.documents.length;
-    const name = document.getElementById('addOI-dialog-name').value;
-    const description = document.getElementById('addOI-dialog-description')
-      .value;
-    const date = document.getElementById('addOI-dialog-date').value;
-    const newDoc = {
-      id,
-      name,
-      description,
-      dueDate: date,
-      done: false,
-      fileName: 'None',
-    };
-    this.documents.push(newDoc);
-    this.setState({ addOIDialog: false });
-  };
-
-  documents = [
-    {
-      id: 1,
-      name: 'Criminal record',
-      description: 'Please upload your criminal record.',
-      dueDate: '20/02/2019',
-      done: false,
-      fileName: 'None',
-    },
-    {
-      id: 2,
-      name: 'Visa',
-      description: 'Please upload your visa.',
-      dueDate: '20/02/2019',
-      done: false,
-      fileName: 'None',
-    },
-    {
-      id: 3,
-      name: 'Insurance form',
-      description: 'Please upload your insurance form.',
-      dueDate: '20/02/2019',
-      done: true,
-      fileName: 'None',
-    },
-  ];
 
   render() {
     const {

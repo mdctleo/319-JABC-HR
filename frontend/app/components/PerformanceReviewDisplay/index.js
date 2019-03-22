@@ -60,7 +60,7 @@ class PerformanceReviewDisplay extends React.PureComponent  {
   }
 
   render() {
-    const { classes, form, years, profile } = this.props;
+    const { classes, form, years, profile, role } = this.props;
 
     function generate3ColumnTable(column1, column2, column3, section, sectionNum) {
         return (
@@ -83,7 +83,7 @@ class PerformanceReviewDisplay extends React.PureComponent  {
         <div>
           <Typography variant="h5">JABC Performance Review {years}</Typography>
           <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
-          <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {profile.role.name}</Typography>
+          <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {role && role.name}</Typography>
           <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Date: {form.date}</Typography>
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 1: JABC Goals</Typography>
           <Table className={classes.displayTable} fullWidth>
@@ -131,6 +131,7 @@ PerformanceReviewDisplay.propTypes = {
   form: PropTypes.object.isRequired,
   years: PropTypes.string.isRequired,
   profile: PropTypes.object.isRequired,
+  role: PropTypes.object,
 };
 
 export default withStyles(styles)(PerformanceReviewDisplay);

@@ -7,10 +7,10 @@ import AppBar from '@material-ui/core/AppBar/AppBar';
 import Tabs from '@material-ui/core/Tabs/Tabs';
 import Tab from '@material-ui/core/Tab/Tab';
 import Button from '@material-ui/core/Button/Button';
-import WorkPlanDisplay from '../../components/WorkPlanDisplay';
-import WorkPlanForm from '../../components/WorkPlanForm';
-import PerformanceReviewDisplay from '../../components/PerformanceReviewDisplay';
-import PerformanceReviewForm from '../../components/PerformanceReviewForm';
+import WorkPlanDisplay from 'components/WorkPlanDisplay/index';
+import WorkPlanForm from 'components/WorkPlanForm/index';
+import PerformanceReviewDisplay from 'components/PerformanceReviewDisplay/index';
+import PerformanceReviewForm from 'components/PerformanceReviewForm/index';
 import orange from '@material-ui/core/colors/orange';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -289,7 +289,7 @@ class EmployeePerformance extends React.PureComponent {
   };
 
   render() {
-    const { classes, selectedEmployee, editing } = this.props;
+    const { classes, selectedEmployee, editing, role } = this.props;
     const { miniTabValue, samplePR, sampleWorkPlan } = this.state;
 
     return (
@@ -347,6 +347,7 @@ class EmployeePerformance extends React.PureComponent {
                 form={sampleWorkPlan}
                 years="2019-2020"
                 profile={selectedEmployee}
+                role={role}
               />
             </div>
           )}
@@ -357,6 +358,7 @@ class EmployeePerformance extends React.PureComponent {
                 form={sampleWorkPlan}
                 years="2019-2020"
                 profile={selectedEmployee}
+                role={role}
               />
               <Button
                 className={classes.cancelButton}
@@ -395,6 +397,7 @@ class EmployeePerformance extends React.PureComponent {
                 form={samplePR}
                 years="2019-2020"
                 profile={selectedEmployee}
+                role={role}
               />
               <Button
                 className={classes.cancelButton}
@@ -420,6 +423,7 @@ EmployeePerformance.propTypes = {
   setEditing: PropTypes.func.isRequired,
   editing: PropTypes.bool.isRequired,
   selectedEmployee: PropTypes.object.isRequired,
+  role: PropTypes.object,
 };
 
 export default withStyles(styles)(EmployeePerformance);

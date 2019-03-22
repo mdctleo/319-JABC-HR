@@ -74,7 +74,7 @@ class PerformanceReviewForm extends React.PureComponent  {
   };
 
   render() {
-    const { classes, form, years, profile } = this.props;
+    const { classes, form, years, profile, role } = this.props;
     const { formState } = this.state;
 
     function generate3ColumnTableForm(column1, column2, column3, section, sectionNum) {
@@ -103,7 +103,7 @@ class PerformanceReviewForm extends React.PureComponent  {
         <div className="profile-card">
           <Typography variant="h5">JABC Individual Performance Review {years}</Typography>
           <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
-          <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {profile.role.name}</Typography>
+          <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {role && role.name}</Typography>
           <TextField id="prf-date" className={classes.topHeading} label="Date" defaultValue={form.date} />
           <Typography className={classes.subHeading} variant="subtitle1" color="textSecondary">Section 1: JABC Goals</Typography>
           <Table className={classes.displayTable}>
@@ -150,7 +150,8 @@ PerformanceReviewForm.propTypes = {
   classes: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
   years: PropTypes.string.isRequired,
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object.isRequired,
+  role: PropTypes.object,
 };
 
 export default withStyles(styles)(PerformanceReviewForm);
