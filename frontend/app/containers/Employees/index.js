@@ -11,10 +11,15 @@ import Button from '@material-ui/core/Button';
 import orange from '@material-ui/core/colors/orange';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import Paper from '@material-ui/core/Paper/Paper';
+import AppBar from '@material-ui/core/AppBar/AppBar';
+import Tabs from '@material-ui/core/Tabs/Tabs';
+import Tab from '@material-ui/core/Tab/Tab';
 
 import AddEmployeePage from './AddEmployeePage';
 import EmployeeTable from './EmployeeTable';
 import EmployeeViewPage from './EmployeeView/EmployeeViewPage';
+import GenerateReport from 'components/GenerateReport';
 import actions from './actions';
 import connect from 'react-redux/es/connect/connect';
 import reducer from './reducer';
@@ -26,6 +31,7 @@ import {
   selectSelectedEmployee,
   selectEmployeeDomainJS,
   selectAllRoles,
+  selectSelectedEmployees,
 } from './selectors';
 
 const styles = theme => ({
@@ -225,6 +231,7 @@ class EnhancedTable extends React.Component {
   handleBackButton = () => {
     this.props.selectEmployee(null);
     this.props.setEditing(false);
+    this.props.setGeneratingReport(false);
     window.scrollTo(0, 0);
   };
 
@@ -248,6 +255,10 @@ class EnhancedTable extends React.Component {
     this.props.setEditing(false);
   };
 
+  generateReport = () => {
+    this.props.setGeneratingReport(true);
+  };
+
   render() {
     const {
       classes,
@@ -255,12 +266,31 @@ class EnhancedTable extends React.Component {
       allEmployees,
       allRoles,
       selectedEmployee,
+      selectedEmployeeList,
     } = this.props;
-    const { tableSettings, editing } = employeeDomain;
+    const { tableSettings, editing, generatingReport } = employeeDomain;
 
-    return (
-      <div>
-        <h1>Manage Employees</h1>
+    const body = generatingReport ? (
+      <Paper className={classes.root}>
+        <AppBar position="static" width="100%">
+          <Tabs
+            value={0}
+            classes={{
+              indicator: classes.tabsIndicator,
+            }}
+          >
+            <Tab
+              disableRipple
+              classes={{ selected: classes.tabSelected }}
+              onClick={this.handleBackButton}
+              label="<  Back"
+            />
+          </Tabs>
+        </AppBar>
+        <GenerateReport employees={selectedEmployeeList} classes={classes} />
+      </Paper>
+    ) : (
+      <React.Fragment>
         {!selectedEmployee && (
           <Button className={classes.addButton} onClick={this.handleAddButton}>
             Add Employee
@@ -282,8 +312,7 @@ class EnhancedTable extends React.Component {
               selectProfile={this.selectProfile}
               tableSettings={tableSettings}
               updateTableSettings={this.props.updateTableSettings}
-              handleDeleteButton={this.handleDeleteButton}
-              handleDeleteSingleButton={this.handleDeleteSingleButton}
+              generateReport={this.generateReport}
             />
           )}
         {selectedEmployee && (
@@ -296,6 +325,13 @@ class EnhancedTable extends React.Component {
             saveProfile={profile => this.props.saveEmployee(profile)}
           />
         )}
+      </React.Fragment>
+    );
+
+    return (
+      <div>
+        <h1>Manage Employees</h1>
+        {body}
       </div>
     );
   }
@@ -313,6 +349,8 @@ EnhancedTable.propTypes = {
   selectedEmployee: PropTypes.object,
   addEmployee: PropTypes.func.isRequired,
   saveEmployee: PropTypes.func.isRequired,
+  setGeneratingReport: PropTypes.func.isRequired,
+  selectedEmployeeList: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -320,6 +358,7 @@ const mapStateToProps = createStructuredSelector({
   allRoles: selectAllRoles,
   selectedEmployee: selectSelectedEmployee,
   employeeDomain: selectEmployeeDomainJS,
+  selectedEmployeeList: selectSelectedEmployees,
 });
 
 const mapDispatchToProps = {

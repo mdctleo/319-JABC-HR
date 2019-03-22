@@ -82,3 +82,16 @@ export const selectSelectedEmployee = createSelector(
     return null;
   },
 );
+
+export const selectSelectedEmployees = createSelector(
+  [selectResource('employee'), selectEmployeeDomain],
+  (employees, employeeDomain) => {
+    if (employees) {
+      const selected = employeeDomain
+        .getIn(['tableSettings', 'selected'], [])
+        .toJS();
+      return selected.map(id => employees.get(`${id}`));
+    }
+    return null;
+  },
+);

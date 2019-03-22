@@ -195,6 +195,17 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                value={profile.email}
+                label="Email"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('email')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
                 value={profile.sin}
                 label="SIN"
                 className={classes.textField}

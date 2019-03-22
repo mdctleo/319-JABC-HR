@@ -11,3 +11,4 @@ export const SAVE_EMPLOYEE = 'app/Employees/SAVE_EMPLOYEE';
 export const ADD_EMPLOYEE = 'app/Employees/ADD_EMPLOYEE';
 export const DELETE_EMPLOYEES = 'app/Employees/DELETE_EMPLOYEES';
 export const UPDATE_TABLE_SETTINGS = 'app/Employees/UPDATE_TABLE_SETTINGS';
+export const SET_GENERATING_REPORT = 'app/Employees/SET_GENERATING_REPORT';

@@ -12,6 +12,7 @@ import {
   DELETE_EMPLOYEES,
   UPDATE_TABLE_SETTINGS,
   ADD_EMPLOYEE,
+  SET_GENERATING_REPORT
 } from './constants';
 
 export function getAllEmployees() {
@@ -31,6 +32,13 @@ export function setEditing(editing) {
   return {
     type: SET_EDITING,
     editing,
+  };
+}
+
+export function setGeneratingReport(generatingReport) {
+  return {
+    type: SET_GENERATING_REPORT,
+    generatingReport,
   };
 }
 
@@ -70,4 +78,5 @@ export default {
   deleteEmployees,
   updateTableSettings,
   addEmployee,
+  setGeneratingReport,
 };

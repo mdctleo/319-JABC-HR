@@ -9,6 +9,7 @@ import {
   UPDATE_TABLE_SETTINGS,
   SET_EDITING,
   SELECT_PROFILE,
+  SET_GENERATING_REPORT,
 } from './constants';
 
 export const initialState = fromJS({
@@ -35,6 +36,8 @@ function rolesReducer(state = initialState, action) {
       return state.set('editing', action.editing);
     case SELECT_PROFILE:
       return state.set('selectedEmployeeId', action.id);
+    case SET_GENERATING_REPORT:
+      return state.set('generatingReport', action.generatingReport);
     default:
       return state;
   }

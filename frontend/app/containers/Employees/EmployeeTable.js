@@ -279,6 +279,7 @@ class EmployeeTable extends React.PureComponent {
           showReportButton
           tableSettings={tableSettings}
           updateTableSettings={this.props.updateTableSettings}
+          generateReport={this.props.generateReport}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -372,6 +373,7 @@ EmployeeTable.propTypes = {
   selectProfile: PropTypes.func.isRequired,
   tableSettings: PropTypes.object.isRequired,
   updateTableSettings: PropTypes.func.isRequired,
+  generateReport: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(EmployeeTable);

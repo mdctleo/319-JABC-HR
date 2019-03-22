@@ -78,7 +78,7 @@ const toolbarStyles = theme => ({
 });
 
 const EnhancedTableToolbar = props => {
-  const { numSelected, classes, tableSettings } = props;
+  const { numSelected, classes, tableSettings, generateReport } = props;
 
   return (
     <Toolbar className={classNames(classes.root, classes.highlight)}>
@@ -95,6 +95,7 @@ const EnhancedTableToolbar = props => {
             type="button"
             className="primary-button"
             id="generate-report-button"
+            onClick={generateReport}
           >
             Generate Report
           </button>
@@ -141,6 +142,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   tableSettings: PropTypes.object.isRequired,
   updateTableSettings: PropTypes.func.isRequired,
+  generateReport: PropTypes.func.isRequired,
 };
 
 export default withStyles(toolbarStyles)(EnhancedTableToolbar);
