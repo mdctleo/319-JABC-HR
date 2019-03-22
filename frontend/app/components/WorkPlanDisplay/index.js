@@ -10,6 +10,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import PerformanceSection from "../PerformanceSection/PerformanceSection";
 
+
 const styles = theme => ({
   editButton: {
     float: 'right',
@@ -50,21 +51,23 @@ const styles = theme => ({
   }
 });
 
-class WorkPlanDisplay extends React.PureComponent  {
+class WorkPlanDisplay extends React.Component  {
   render() {
-    const { classes, sections, handleAddRow, profile, years, workPlan } = this.props;
-    console.log("In Work plan display");
+    const { classes, sections, profile } = this.props;
+    let that = this;
 
     return(
       <div>
-        <Typography className={classes.docTitle} variant='h5'> {workPlan ? "Individual Work Plan " + years : "Individual Performance Review " + years }</Typography>
+        <h4>Individual Work Plan {this.props.year}</h4>
         <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
         <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {profile.role.name}</Typography>
         {sections.map(function(section) {
-          if (section.sectionId === 1) {
-            console.log("Length of section in WorkPlanDisplay: " + section.data.length);
-          }
-          return <PerformanceSection classes = {classes} section = {section} handleAddRow = {handleAddRow}/>
+          return <PerformanceSection key={section.sectionId}
+                                        classes = {classes}
+                                        section = {section}
+                                        handleDeleteSection={that.props.handleDeleteSection}
+                                        handleAddRow = {that.props.handleAddRow}
+                                        handleDeleteRows = {that.props.handleDeleteRows} />
         })
         }
         </div>
@@ -75,10 +78,10 @@ class WorkPlanDisplay extends React.PureComponent  {
 WorkPlanDisplay.propTypes = {
   classes: PropTypes.object.isRequired,
   sections: PropTypes.array.isRequired,
-  handleAddRow: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
-  years: PropTypes.string.isRequired,
-  workPlan: PropTypes.bool.isRequired,
+  year: PropTypes.string.isRequired,
+  handleDeleteSection:PropTypes.func.isRequired,
+  handleDeleteRows: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(WorkPlanDisplay);
