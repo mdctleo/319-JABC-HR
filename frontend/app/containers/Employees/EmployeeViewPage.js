@@ -218,8 +218,39 @@ class EmployeeViewPage extends React.PureComponent {
   };
 
   render() {
-    const { classes, editing, selectedEmployee, handleBackButton, role } = this.props;
+    const {
+      classes,
+      editing,
+      selectedEmployee,
+      handleBackButton,
+      allRoles,
+    } = this.props;
     const { currentTab } = this.state;
+
+    let role;
+    if (
+      selectedEmployee &&
+      selectedEmployee.fkRole &&
+      allRoles &&
+      allRoles[selectedEmployee.fkRole]
+    ) {
+      role = allRoles[selectedEmployee.fkRole].name;
+    }
+
+    const sortedRoles =
+      allRoles &&
+      Object.keys(allRoles)
+        .map(key => allRoles[key])
+        .sort((a, b) => {
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        });
+
     return (
       <Paper className={classes.root}>
         <div>
@@ -267,7 +298,7 @@ class EmployeeViewPage extends React.PureComponent {
               <div>
                 <Button
                   className={classes.editButton}
-                  onClick={this.handleClickEdit}
+                  onClick={() => this.props.setEditing(true)}
                 >
                   Edit
                 </Button>
@@ -283,12 +314,19 @@ class EmployeeViewPage extends React.PureComponent {
               <div className="profile-card">
                 <EmployeeEditForm
                   profile={selectedEmployee}
-                  saveProfile={this.saveProfile}
-                  cancelEdit={this.cancelEdit}
+                  saveProfile={this.props.saveProfile}
+                  cancelEdit={() => this.props.setEditing(false)}
+                  allRoles={sortedRoles}
                 />
               </div>
             )}
-          {currentTab === 2 && <EmployeePerformance />}
+          {currentTab === 2 && (
+            <EmployeePerformance
+              setEditing={this.props.setEditing}
+              editing={editing}
+              selectedEmployee={selectedEmployee}
+            />
+          )}
           {currentTab === 3 && (
             <div className={classes.container}>
               <div className={classes.onBoardingHeader}>
@@ -409,7 +447,8 @@ EmployeeViewPage.propTypes = {
   editing: PropTypes.bool.isRequired,
   selectedEmployee: PropTypes.object.isRequired,
   handleBackButton: PropTypes.func.isRequired,
-  role: PropTypes.object,
+  allRoles: PropTypes.object,
+  saveProfile: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(EmployeeViewPage);

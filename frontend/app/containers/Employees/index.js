@@ -232,10 +232,6 @@ class EnhancedTable extends React.Component {
     this.props.setEditing(true);
   };
 
-  handleClickEdit = (event, value) => {
-    this.props.setEditing(true);
-  };
-
   handleAddOI = event => {
     this.setState({ addOIDialog: true });
   };
@@ -311,16 +307,6 @@ class EnhancedTable extends React.Component {
     } = this.props;
     const { tableSettings, editing } = employeeDomain;
 
-    let role;
-    if (
-      selectedEmployee &&
-      selectedEmployee.fkRole &&
-      allRoles &&
-      allRoles[selectedEmployee.fkRole]
-    ) {
-      role = allRoles[selectedEmployee.fkRole].name;
-    }
-
     return (
       <div>
         <h1>Manage Employees</h1>
@@ -352,10 +338,11 @@ class EnhancedTable extends React.Component {
         {selectedEmployee && (
           <EmployeeViewPage
             selectedEmployee={selectedEmployee}
-            role={role}
+            allRoles={allRoles}
             handleBackButton={this.handleBackButton}
             editing={editing}
             setEditing={this.props.setEditing}
+            saveProfile={profile => this.props.saveEmployee(profile)}
           />
         )}
       </div>
@@ -374,6 +361,7 @@ EnhancedTable.propTypes = {
   setEditing: PropTypes.func.isRequired,
   selectedEmployee: PropTypes.object,
   addEmployee: PropTypes.func.isRequired,
+  saveEmployee: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({

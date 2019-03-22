@@ -91,10 +91,14 @@ const styles = theme => ({
 });
 
 class EmployeeEditForm extends React.PureComponent {
-  state = {
-    profile: this.props.profile,
-    dialog: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      profile: { ...props.profile, fkRole: props.profile.fkRole || '' },
+      dialog: false,
+    };
+  }
 
   handleChange = name => event => {
     const { value } = event.target;
@@ -208,6 +212,9 @@ class EmployeeEditForm extends React.PureComponent {
                 fullWidth
                 onChange={this.handleChange('fkRole')}
               >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
                 {allRoles &&
                   allRoles.map(role => (
                     <MenuItem key={role.id} value={role.id}>
