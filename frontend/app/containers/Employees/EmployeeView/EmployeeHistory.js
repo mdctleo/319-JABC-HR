@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography/Typography';
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import DialogContent from '@material-ui/core/DialogContent/DialogContent';
 import EmployeeModalContent from '../../../components/EmployeeModalContent';
+import TablePagination from '@material-ui/core/TablePagination';
 
 const styles = theme => ({
   root: {
@@ -25,7 +26,7 @@ const styles = theme => ({
     marginBottom: '30px',
     }, 
   tableWrapper: {
-    marginTop: '30px',
+    marginTop: '40px',
     },
   row: {
     width: '60%',
@@ -51,6 +52,9 @@ const styles = theme => ({
       backgroundColor: '#ff944d',
     },
     }, 
+    leftCell: {
+        width: '15px',
+    }
 });
 
 class EmployeeHistory extends React.PureComponent {
@@ -58,6 +62,8 @@ class EmployeeHistory extends React.PureComponent {
 state = {
     openDialog: false,
     selectedVersion: 0,
+    rowsPerPage: 25,
+    page: 0,
 };  
 
 versions = [
@@ -86,11 +92,19 @@ handleCloseDialog = (event) => {
     this.setState({ openDialog: false});
 };
 
+handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
+  handleChangeRowsPerPage = event => {
+    this.setState({ rowsPerPage: event.target.value });
+  };
+
 generateTableBody = () => {
     return (<TableBody>
             {this.versions.map((version) => {
                 return (<TableRow className={this.props.classes.row} hover>
-                          <TableCell onClick={this.handleClickVersion}>{version.id}</TableCell>
+                          <TableCell className={this.props.classes.leftCell} onClick={this.handleClickVersion}>{version.id}</TableCell>
                           <TableCell onClick={this.handleClickVersion}>{version.date}</TableCell>
                           <TableCell onClick={this.handleClickVersion}>{version.editor}</TableCell>
                           <TableCell onClick={this.handleClickVersion}>{version.changedFields.map((field) => { return version.changedFields.indexOf(field) == version.changedFields.length-1 ? field : field + ", "})}</TableCell>
@@ -107,6 +121,8 @@ generateTableBody = () => {
     const {
         openDialog,
         selectedVersion,
+        rowsPerPage,
+        page
     } = this.state;
 
     return (
@@ -136,6 +152,21 @@ generateTableBody = () => {
             </TableHead>
               {this.generateTableBody()}
             </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={this.versions.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                'aria-label': 'Previous Page',
+              }}
+              nextIconButtonProps={{
+                'aria-label': 'Next Page',
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
           </div>
         </div>
       </div>
