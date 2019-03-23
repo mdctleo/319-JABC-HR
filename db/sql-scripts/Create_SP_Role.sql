@@ -93,6 +93,36 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
+-- procedure get_role_with_name
+--    - get role with the name, if it exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_role_with_name;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_role_with_name` (IN role_name VARCHAR(48))
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(`ROLE_ID`) INTO checker
+  FROM ROLE
+  WHERE ROLE.`ROLE_NAME` LIKE role_name;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Role does not exist.';
+  ELSE
+    SELECT *
+    FROM ROLE
+    WHERE ROLE.`ROLE_NAME` LIKE role_name;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
 -- procedure get_roles
 --    - get all roles
 -- -----------------------------------------------------

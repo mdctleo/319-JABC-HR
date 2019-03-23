@@ -4,9 +4,9 @@ const models_1 = require("../model/models");
 class Priviledges {
 }
 Priviledges.operations = {
-    'getEmployees': models_1.IEmployee.adminLevelEnum.STAFF,
-    'createEmployee': models_1.IEmployee.adminLevelEnum.STAFF,
-    'getEmployee': models_1.IEmployee.adminLevelEnum.STAFF,
+    'getEmployees': models_1.IEmployee.adminLevelEnum.HR_ADMIN,
+    'createEmployee': models_1.IEmployee.adminLevelEnum.HR_ADMIN,
+    'getEmployee': models_1.IEmployee.adminLevelEnum.MANAGER,
     'updateEmployee': models_1.IEmployee.adminLevelEnum.STAFF,
     'deleteEmployee': models_1.IEmployee.adminLevelEnum.MANAGER,
     'linkEmployeeManager': models_1.IEmployee.adminLevelEnum.HR_ADMIN,

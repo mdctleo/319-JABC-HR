@@ -231,6 +231,36 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
+  /employee/{id}/password:
+    post:
+      tags:
+      - Employee
+      summary: updates the password of an employee
+      description: Will update the password provided in the body
+      operationId: updateEmployeePassword
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Employee to change password
+        required: true
+        type: integer
+        format: uint64
+      - name: employee
+        in: body
+        description: Employee with new password
+        required: true
+        schema:
+          $ref: '#/definitions/IEmployee'
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
   /employee/{id}/manager:
     get:
       tags:

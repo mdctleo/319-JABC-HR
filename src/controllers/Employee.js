@@ -259,3 +259,16 @@ module.exports.updateEmployee = function updateEmployee(req, res, next) {
       utils.writeJson(res, response, response.responseCode);
     });
 };
+
+module.exports.updateEmployeePassword = function updateEmployeePassword (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var employee = req.swagger.params['employee'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Employee.updateEmployeePassword(id,employee,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
