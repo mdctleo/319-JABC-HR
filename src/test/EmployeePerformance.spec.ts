@@ -89,7 +89,7 @@ describe("test related to /employee and performance", () => {
         it("Should not be able to create workplan for non-existent employees", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             try {
@@ -109,11 +109,14 @@ describe("test related to /employee and performance", () => {
         it("Should be able to create workplan for an employee", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.id = 3;
-            workplan.fkEmployee = 2;
+            workplan.createdDate = "9999-01-01";
+            let section1 = jsf.generate(schema.definitions.IPerformanceSection);
+            let section2 = jsf.generate(schema.definitions.IPerformanceSection);
+
             try {
                 response = await chai.request(SERVER)
                     .post(`${BASE_PATH}/2/performance/plan`)
@@ -131,12 +134,13 @@ describe("test related to /employee and performance", () => {
         it("Should be able to create performance for an employee", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             let performance = jsf.generate(schema.definitions.IPerformanceReview);
             performance.id = 3;
             performance.fkEmployee = 2;
             performance.fkPerformancePlan = 2;
+            performance.createdDate = "9999-01-01";
             try {
                 response = await chai.request(SERVER)
                     .post(`${BASE_PATH}/2/performance/review`)
@@ -165,6 +169,8 @@ describe("test related to /employee and performance", () => {
                 expect(response.body.length).to.be.equal(1);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformancePlan);
 
+                expect(response.body.createdDate).to.not.equal("9999-01-01");
+
             }
         });
 
@@ -181,6 +187,9 @@ describe("test related to /employee and performance", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body.length).to.be.equal(1);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformanceReview);
+
+                expect(response.body.createdDate).to.not.equal("9999-01-01");
+
             }
         });
     });
@@ -215,7 +224,6 @@ describe("test related to /employee and performance", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body.length).to.be.equal(2);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformancePlan);
-                expect(response.body[0].date).to.be.equal('2018-01-01');
             }
         });
 
@@ -272,7 +280,7 @@ describe("test related to /employee and performance", () => {
         it("Should be able to create workplan for an employee under this manager", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             await chai.request(SERVER)
                 .post(`${BASE_PATH}/3/manager/2`)
@@ -297,7 +305,7 @@ describe("test related to /employee and performance", () => {
         it("Should be able to create performance for an employee under this manager", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             await chai.request(SERVER)
                 .post(`${BASE_PATH}/3/manager/2`)
@@ -323,7 +331,7 @@ describe("test related to /employee and performance", () => {
         it("Should not be able to create workplan for an employee not under this manager", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.id = 3;
@@ -345,7 +353,7 @@ describe("test related to /employee and performance", () => {
         it("Should not be able to create performance for an employee not under this manager", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             let performance = jsf.generate(schema.definitions.IPerformanceReview);
             performance.id = 3;

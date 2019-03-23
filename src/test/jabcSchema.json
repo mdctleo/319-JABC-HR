@@ -2547,7 +2547,11 @@
       "properties" : {
         "id" : {
           "type" : "integer",
-          "format" : "uint64",
+          "faker" : {
+            "random.number": {
+              "min": 0
+            }
+          },
           "description" : "The unique identifier of the Role",
           "example" : 1
         },
@@ -2555,7 +2559,8 @@
           "type" : "string"
         },
         "description" : {
-          "type" : "string"
+          "type" : "string",
+          "faker": "lorem.words"
         },
         "competencies" : {
           "description" : "Contains all the competencies of this role",
@@ -2810,7 +2815,40 @@
     },
     "IPerformanceSection" : {
       "description" : "A JSON object containing all the information of a section in either PerformancePlan or PerformanceReview\n",
-      "type" : "object"
+      "type" : "object",
+      "required" : [ "data", "sectionName" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "uint64",
+          "description" : "The unique identifier of the Performance",
+          "example" : 1
+        },
+        "data" : {
+          "type" : "object",
+          "description" : "The object that represents all the data of this performance section",
+          "properties" : {
+            "value" : {
+              "type" : "string"
+            }
+          }
+        },
+        "sectionName" : {
+          "type" : "string"
+        },
+        "fkPerformancePlan" : {
+          "type" : "integer",
+          "format" : "uint64",
+          "description" : "The unique identifier of the Performance Plan that owns this section",
+          "example" : 1
+        },
+        "fkPerformanceReview" : {
+          "type" : "integer",
+          "format" : "uint64",
+          "description" : "The unique identifier of the Performance Review that owns this section",
+          "example" : 1
+        }
+      }
     },
     "IComment" : {
       "type" : "object",

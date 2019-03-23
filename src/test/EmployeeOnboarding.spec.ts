@@ -62,9 +62,7 @@ describe("test related to /employee and onboarding", () => {
 
         it("Should be able to display no onboarding task for this employee", async () => {
             let response: any;
-            jsf.option({
-                alwaysFakeOptionals: true,
-            });
+
             try {
                 response = await chai.request(SERVER)
                     .get(`${BASE_PATH}/6/task`)
@@ -82,11 +80,13 @@ describe("test related to /employee and onboarding", () => {
             let response: any;
             jsf.option({
                 alwaysFakeOptionals: true,
+                ignoreProperties: ["type"]
             });
             let task = jsf.generate(schema.definitions.IOnboardingTask);
             task.dueDate = "1997-11-30";
-            task.fkEmployee = 9;
+            task.fkEmployee = 6;
             task.createdDate = "2019-02-02";
+            task.fkDocumentType = 1;
             try {
                 response = await chai.request(SERVER)
                     .post(`${BASE_PATH}/6/task`)

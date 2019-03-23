@@ -16,6 +16,7 @@ import Log from "../../util/Log";
  **/
 export async function createCompetency(competency: ICompetency, idRole: number, xAuthToken: string) {
     try {
+        competency = Competency.Prepare(competency);
         let res = await Database.getInstance().query('CALL create_competency(?,?,?)', [
             competency.fkRole,
             competency.name,
@@ -42,6 +43,7 @@ export async function createRole(role: IRole, xAuthToken: String) {
     try {
         await db.beginTransaction();
 
+        role = Role.Prepare(role);
         await Database.getInstance().rawQuery('CALL create_role(?,?)', [
             role.name,
             role.description

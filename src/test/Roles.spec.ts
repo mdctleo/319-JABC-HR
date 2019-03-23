@@ -7,6 +7,7 @@ const chai = require('chai');
 const chaiJsonEqual = require('chai-json-equal');
 import chaiExclude = require("chai-exclude");
 import chaiHttp = require("chai-http");
+import {ICompetency} from "../model/iCompetency";
 
 const jsf = require('json-schema-faker');
 
@@ -32,7 +33,8 @@ describe("RoleService tests", () => {
 
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
             return HEADERS;
         });
 
@@ -58,7 +60,7 @@ describe("RoleService tests", () => {
         it("Should not be able to create a new role, malformed data", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             let role = jsf.generate(schema.definitions.IRole);
             role.name = null;
@@ -77,8 +79,11 @@ describe("RoleService tests", () => {
             }
         });
 
-        it("Should be create a new role  only required data generated", async () => {
+        it("Should be create a new role with no competency", async () => {
             let response: any;
+            jsf.option({
+                optionalsProbability: 1.0,
+            });
             let role = jsf.generate(schema.definitions.IRole);
             role.name = "CEO";
             try {
@@ -95,29 +100,8 @@ describe("RoleService tests", () => {
             }
         });
 
-        it("Should be create a new role all data generated", async () => {
-            let response: any;
-            jsf.option({
-                alwaysFakeOptionals: true,
-            });
-            let role = jsf.generate(schema.definitions.IRole);
-            role.name = "CFO";
-            try {
-                response = await chai.request(SERVER)
-                    .post(`${BASE_PATH}`)
-                    .set(HEADERS)
-                    .send(role);
-            }
-            catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
 
-
-        it("Should be able to return 5 roles", async () => {
+        it("Should be able to return 4 roles", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -131,7 +115,7 @@ describe("RoleService tests", () => {
                 response.body.forEach((role: any) => {
                     expect(role).to.be.jsonSchema(schema.definitions.IRole);
                 });
-                expect(response.body.length).to.be.equal(5);
+                expect(response.body.length).to.be.equal(4);
                 expect(response.body[3].name).to.be.equal("CEO");
             }
         });
@@ -141,7 +125,8 @@ describe("RoleService tests", () => {
 
         let HEADERS: any = null;
         before(async () => {
-            HEADERS = await TestSetup.initTestsuite("admin");
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
             return HEADERS;
         });
 
@@ -194,7 +179,7 @@ describe("RoleService tests", () => {
         it("Should not update a role with malformed data ", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0
             });
             let role = jsf.generate(schema.definitions.IRole);
             role.description = 3333;
@@ -214,7 +199,7 @@ describe("RoleService tests", () => {
         it("Should update a role ", async () => {
             let response: any;
             jsf.option({
-                alwaysFakeOptionals: true,
+                optionalsProbability: 1.0,
             });
             let role = jsf.generate(schema.definitions.IRole);
             role.name = "Updated role name";
@@ -272,7 +257,7 @@ describe("RoleService tests", () => {
             catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.within(200);
+                expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
@@ -295,6 +280,178 @@ describe("RoleService tests", () => {
                expect(response.body[1].name).equal('Marketing');
             }
         });
+    });
+
+
+    describe("/role/{idRole}/competency tests with admin", () => {
+
+        let HEADERS: any = null;
+        before(async () => {
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
+            return HEADERS;
+        });
+
+        it("Should display no competency", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/1/competency`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(0);
+            }
+        });
+
+        it("Should create one competency for role 1", async () => {
+            let response: any;
+            jsf.option({
+                optionalsProbability: 1.0,
+            });
+            let competency = jsf.generate(schema.definitions.ICompetency);
+            competency.fkRole = 1;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/1/competency`)
+                    .set(HEADERS)
+                    .send(competency);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should create one competency for role 1", async () => {
+            let response: any;
+            jsf.option({
+                optionalsProbability: 1.0,
+            });
+            let competency = jsf.generate(schema.definitions.ICompetency);
+            competency.name = "communications";
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/1/competency`)
+                    .set(HEADERS)
+                    .send(competency);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should display two competencies under role 1", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/1/competency`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(2);
+                response.body.forEach((competency: any) => {
+                    expect(competency).to.be.jsonSchema(schema.definitions.ICompetency);
+                });
+                expect(response.body[1].name).to.be.equal("communications");
+            }
+        });
+
+        it("Should be able to see one specific competency", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/1/competency/2`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.ICompetency);
+                expect(response.body.name).to.be.equal("communications");
+            }
+        });
+
+        it("Should create able to update that competency", async () => {
+            let response: any;
+            jsf.option({
+                optionalsProbability: 1.0,
+            });
+            let competency = jsf.generate(schema.definitions.ICompetency);
+            competency.name = "excel";
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/1/comptetency/2`)
+                    .set(HEADERS)
+                    .send(competency);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to see the update for that competency", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/1/competency/2`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.ICompetency);
+                expect(response.body.name).to.be.equal("excel");
+            }
+        });
+
+        it("Should be able to delete a competency", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/1/competency/2`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to see the delete", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/1/competency`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(1);
+                expect(response.body[0]).to.be.jsonSchema(schema.definitions.ICompetency);
+            }
+        });
+
     });
 
 });
