@@ -22,8 +22,10 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 import orange from '@material-ui/core/colors/orange';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
   root: {
@@ -47,7 +49,8 @@ const styles = theme => ({
     },
   },
   generateButton: {
-    display: 'block',
+    display: 'inline',
+    float: 'right',
     margin: 'auto',
     color: 'white',
     backgroundColor: '#ff6600',
@@ -75,6 +78,7 @@ const styles = theme => ({
   },
   tableWrapper: {
     overflowX: 'auto',
+    marginTop: '30px',
   },
   tabsIndicator: {
     backgroundColor: '#ff5000',
@@ -103,6 +107,8 @@ const styles = theme => ({
   textField: {
     width: '100%',
     display: 'block',
+    marginBottom: '20px',
+    backgroundColor: 'white',
   },
   fieldContainer: {
     width: '100%',
@@ -219,8 +225,28 @@ const styles = theme => ({
   addOIDialogField: {
     marginBottom: '30px',
   },
-  section: {
-    paddingLeft: '10px',
+  section1: {
+    paddingLeft: '30px',
+  },
+  section2: {
+    paddingRight: '40px',
+  },
+  card: {
+    padding: '20px',
+    backgroundColor: '#fafafa',
+  },
+  subTitle: {
+    marginTop: '30px',
+    marginBottom: '40px',
+    paddingLeft: '20px',
+    width: '100%',
+    display: 'block',
+  },
+  reportName: {
+    display: 'inline',
+  },
+  reportNameDiv: {
+    marginBottom: '20x',
   },
 });
 
@@ -420,18 +446,20 @@ class GenerateReport extends React.PureComponent {
   render() {
     return (
       <Grid container>
-        <Grid item md={4} className={this.props.classes.section}>
-          <div className={this.props.classes.section}>
-            <h1>Generate Report</h1>
+        <Typography variant="h5" className={this.props.classes.subTitle}>Generate Report</Typography>
+        <Grid item md={4} className={this.props.classes.section1}>
+          <Card className={this.props.classes.card}>
+          <FormControl>
+          <FormLabel component="legend">Report Title</FormLabel>
             <TextField
               value={this.state.reportName}
-              label="Report type"
               className={this.props.classes.textField}
               margin="normal"
               variant="outlined"
               onChange={this.handleNameChange}
               fullWidth
             />
+            </FormControl>
             <FormControl component="fieldset">
               <FormLabel component="legend">Columns</FormLabel>
               <FormGroup>
@@ -441,6 +469,7 @@ class GenerateReport extends React.PureComponent {
                     control={
                       <Checkbox
                         key={colId}
+                        className={this.props.classes.checkbox}
                         checked={this.state.columnsSelection[colId]}
                         value={colId}
                         onChange={this.handleColumnChange(colId)}
@@ -451,16 +480,19 @@ class GenerateReport extends React.PureComponent {
                 ))}
               </FormGroup>
             </FormControl>
-            <Button
+            </Card>
+        </Grid>
+        <Grid item xs={12} md={8} className={this.props.classes.section2}>
+        <div className={this.props.classes.reportNameDiv}>
+        <Typography variant="h6" color="textSecondary" className={this.props.classes.reportName}> {this.state.reportName} </Typography>
+        <Button
               className={this.props.classes.generateButton}
               onClick={this.handleGenerate}
             >
-              Generate Report
+              Export Report
             </Button>
-          </div>
-        </Grid>
-        <Grid item xs={12} md={8} className={this.props.classes.section}>
-          <div className={this.props.classes.tableWrapper}>
+        </div>
+        <div className={this.props.classes.tableWrapper}>
             <Table
               className={this.props.classes.table}
               aria-labelledby="tableTitle"

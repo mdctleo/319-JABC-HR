@@ -109,13 +109,13 @@ const GlobalStyle = createGlobalStyle`
 
   .primary-button {
     color: white;
-    background-color: #77BC43;
+    background-color: #ff5000;
     border-radius: 15px;
     transition: 0.3s;
   }
 
   .primary-button:hover {
-    background-color: #6ca93d;
+    backgroundColor: '#ff944d';
   }
 
   #generate-report-button {

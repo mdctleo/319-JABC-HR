@@ -6,7 +6,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core';
+import { withStyles, Button } from '@material-ui/core';
 import React from 'react';
 import classNames from 'classnames';
 
@@ -81,6 +81,17 @@ const toolbarStyles = theme => ({
     width: '200px',
     color: 'white',
     margin: '0',
+  },
+  generateReport: {
+    display: 'inline',
+    color: 'white',
+    width: '700px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    },
   }
 });
 
@@ -98,14 +109,14 @@ const EnhancedTableToolbar = props => {
       </div>
       {numSelected > 0 && (
         <div>
-          <button
-            type="button"
-            className="primary-button"
+          <Button
+            className={classes.generateReport}
             id="generate-report-button"
             onClick={generateReport}
+            size='small'
           >
             Generate Report
-          </button>
+          </Button>
         </div>
       )}
       <div className={classes.spacer} />

@@ -48,11 +48,11 @@ class DeleteRoleDialog extends React.PureComponent {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={confirmDelete} variant="contained" color="secondary">
-            Delete
+        <Button onClick={cancelDelete} color="primary">
+            No
           </Button>
-          <Button onClick={cancelDelete} color="primary">
-            Cancel
+          <Button onClick={confirmDelete} color="primary">
+            Yes
           </Button>
         </DialogActions>
       </Dialog>
