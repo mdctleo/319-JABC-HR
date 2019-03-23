@@ -81,6 +81,12 @@ const GlobalStyle = createGlobalStyle`
     width: 300px;
   }
 
+    #jabc-logo-login {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 300px;
+  }
+
   #jabc-nav-colour-bar {
     width: 100%;
     height: 10px;
