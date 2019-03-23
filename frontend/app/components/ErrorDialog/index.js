@@ -8,19 +8,29 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 class ErrorDialog extends React.PureComponent {
+  state = {};
+
+  static getDerivedStateFromProps(props) {
+    if (props.message !== '') {
+      return { m: props.message };
+    }
+    return null;
+  }
+
   render() {
     const { message, clearError } = this.props;
+    const { m } = this.state;
     return (
       <Dialog
         open={message !== ''}
-        onClose={this.handleClose}
+        onClose={clearError}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">Error</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {message}
+            {m}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

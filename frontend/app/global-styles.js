@@ -81,6 +81,12 @@ const GlobalStyle = createGlobalStyle`
     width: 300px;
   }
 
+    #jabc-logo-login {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 300px;
+  }
+
   #jabc-nav-colour-bar {
     width: 100%;
     height: 10px;
@@ -109,13 +115,13 @@ const GlobalStyle = createGlobalStyle`
 
   .primary-button {
     color: white;
-    background-color: #77BC43;
+    background-color: #ff5000;
     border-radius: 15px;
     transition: 0.3s;
   }
 
   .primary-button:hover {
-    background-color: #6ca93d;
+    backgroundColor: '#ff944d';
   }
 
   #generate-report-button {

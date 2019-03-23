@@ -65,7 +65,7 @@ export class App extends React.PureComponent {
             <Route exact path="/" component={HomePage} />
             <Route path="/profile" component={Profile} />
             <Route path="/performance" component={Performance} />
-            <Route path="/onboarding" component={Onboarding} />
+            <Route path="/(onboarding|documents)" component={Onboarding} />
             <Route path="/employees" component={Employees} />
             <Route path="/roles" component={Roles} />
             <Route component={NotFoundPage} />

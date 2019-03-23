@@ -4,7 +4,7 @@
  *
  */
 
-import { GET_PROFILE_DATA, SAVE_PROFILE } from './constants';
+import { GET_PROFILE_DATA, SAVE_PROFILE, SET_EDITING } from './constants';
 
 export function getProfileData() {
   return {
@@ -21,7 +21,15 @@ export function saveProfile(profile) {
   };
 }
 
+export function setEditing(editing) {
+  return {
+    type: SET_EDITING,
+    editing,
+  };
+}
+
 export default {
   getProfileData,
   saveProfile,
+  setEditing,
 };

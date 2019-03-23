@@ -15,6 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import logo from '../Header/images/jabc-wide-logo.png';
 
 const styles = theme => ({
   main: {
@@ -77,11 +78,7 @@ class LoginForm extends React.PureComponent {
     return (
       <div className={classes.main}>
         <Paper className={classes.paper}>
-          <Avatar className={classes.avatar}>
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Log in
-          </Typography>
+          <img src={logo} id="jabc-logo-login" />
           <form className={classes.form} onSubmit={this.submit}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>

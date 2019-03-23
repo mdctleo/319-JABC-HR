@@ -11,10 +11,18 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
 import saga from './saga';
-import { selectAllRoles, selectSelectedRole} from './selectors';
+import {
+  selectAllRoles,
+  selectSelectedRole,
+  selectRoleDomainJS,
+} from './selectors';
 import { withStyles } from '@material-ui/core/styles';
 
-import { ViewRole, RolesTable } from 'components/RolePageComponents';
+import {
+  ViewRole,
+  RolesTable,
+  DeleteRoleDialog,
+} from 'components/RolePageComponents';
 
 import Button from '@material-ui/core/Button';
 import grey from '@material-ui/core/colors/grey';
@@ -128,8 +136,19 @@ class Roles extends React.Component {
     this.props.getAllRoles();
   }
 
+  componentWillMount() {
+    this.unlisten = this.props.history.listen(() => {
+      this.props.getRole(null);
+      this.props.setEditing(false);
+    });
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
+  }
+
   state = {
-    editButtonClicked: false,
+    toBeDeleted: [],
     tableSettings: {
       order: 'asc',
       orderBy: 'position',
@@ -139,180 +158,63 @@ class Roles extends React.Component {
     },
   };
 
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-
   handleBackButton = () => {
     this.props.getRole(null);
-    this.setState({ editButtonClicked: false });
+    this.props.setEditing(false);
   };
 
   handleAddButton = () => {
-    this.setState({ displayedPage: 'add' });
-    this.setState({ editButtonClicked: true });
+    this.props.setEditing(true);
   };
 
   handleEditButton = () => {
-    this.setState({ editButtonClicked: true });
+    this.props.setEditing(true);
   };
 
   handleDeleteButton = () => {
-    const profiles = this.state.selected;
-    this.state.data.filter(n => !profiles.includes(n.id));
+    this.setState(prevState => ({
+      toBeDeleted: prevState.tableSettings.selected,
+    }));
   };
 
-  handleDeleteSingleButton = (event, profile) => {
-    const data = this.state.data;
-    this.setState({ data: data.filter(n => n.id != profile.id) });
-  };
-
-  handleClickTextField = event => {
-    if (this.state.editButtonClicked) event.readOnly = false;
-  };
-
-  handleSaveButton = () => {
-    const id = this.state.selectedProfile.id;
-    for (var i = 0; i < this.state.data.length; i++) {
-      if (this.state.data[i].id == id) {
-        this.state.data[i].description = document.getElementById(
-          'rf-description',
-        ).value;
-        this.state.data[i].name = document.getElementById('rf-name').value;
-        const competencies = [];
-        const foundCompetencyCells = document.getElementsByClassName('rf-rows');
-        for (var i = 0; i < foundCompetencyCells.length; i++) {
-          const input = foundCompetencyCells[i].firstChild.firstChild;
-          if (i % 3 == 0) {
-            input.value
-              ? competencies.push({ name: input.value })
-              : competencies.push({ name: input.defaultValue });
-          } else if (i % 3 == 1) {
-            competencies[Math.floor(i / 3)].description = input.value
-              ? input.value
-              : input.defaultValue;
-          } else {
-            competencies[Math.floor(i / 3)].rating = input.value
-              ? input.value
-              : input.defaultValue;
-          }
-        }
-        this.state.data[i].competencies = competencies;
-      }
-    }
-    this.setState({ value: 1 });
-    this.setState({ displayedPage: 'table' });
-    this.setState({ editButtonClicked: false });
-  };
-
-  handleSubmitButton = (event, value) => {
-    const id = this.state.selectedProfile.id;
-    for (var i = 0; i < this.state.data.length; i++) {
-      if (this.state.data[i].id == id) {
-        this.state.data[i].description = document.getElementById(
-          'rf-description',
-        ).value;
-        this.state.data[i].name = document.getElementById('rf-name').value;
-        const competencies = [];
-        const foundCompetencyCells = document.getElementsByClassName('rf-rows');
-        for (var i = 0; i < foundCompetencyCells.length; i++) {
-          const input = foundCompetencyCells[i].firstChild.firstChild;
-          console.log('made it into inner loop');
-          if (i % 3 == 0) {
-            input.value
-              ? competencies.push({ name: input.value })
-              : competencies.push({ name: input.defaultValue });
-          } else if (i % 3 == 1) {
-            competencies[Math.floor(i / 3)].description = input.value
-              ? input.value
-              : input.defaultValue;
-          } else {
-            competencies[Math.floor(i / 3)].rating = input.value
-              ? input.value
-              : input.defaultValue;
-          }
-        }
-        this.state.data[i].competencies = competencies;
-      }
-    }
-    this.setState({ value: 1 });
-    this.setState({ displayedPage: 'table' });
-    this.setState({ editButtonClicked: false });
-  };
-
-  handleAddSubmitButton = (event, value) => {
-    const description = document.getElementById('rf-description').value;
-    const name = document.getElementById('rf-name').value;
-    const competencies = [];
-    const foundCompetencyCells = document.getElementsByClassName('rf-rows');
-    for (let i = 0; i < foundCompetencyCells.length; i++) {
-      const input = foundCompetencyCells[i].firstChild.firstChild;
-      if (i % 3 == 0) {
-        input.value
-          ? competencies.push({ name: input.value })
-          : competencies.push({ name: input.defaultValue });
-      } else if (i % 3 == 1) {
-        competencies[Math.floor(i / 3)].description = input.value
-          ? input.value
-          : input.defaultValue;
-      } else {
-        competencies[Math.floor(i / 3)].rating = input.value
-          ? input.value
-          : input.defaultValue;
-      }
-    }
-    const data = this.state.data;
+  handleDeleteSingleButton = profile => {
     this.setState({
-      data: data.concat(createData(name, description, competencies)),
+      toBeDeleted: [profile.id],
     });
-    this.setState({ value: 1 });
-    this.setState({ editButtonClicked: false });
   };
 
-  handleAddSaveButton = (event, value) => {
-    const description = document.getElementById('rf-description').value;
-    const name = document.getElementById('rf-name').value;
-    const competencies = [];
-    const foundCompetencyCells = document.getElementsByClassName('rf-rows');
-    for (let i = 0; i < foundCompetencyCells.length; i++) {
-      const input = foundCompetencyCells[i].firstChild.firstChild;
-      if (i % 3 == 0) {
-        input.value
-          ? competencies.push({ name: input.value })
-          : competencies.push({ name: input.defaultValue });
-      } else if (i % 3 == 1) {
-        competencies[Math.floor(i / 3)].description = input.value
-          ? input.value
-          : input.defaultValue;
-      } else {
-        competencies[Math.floor(i / 3)].rating = input.value
-          ? input.value
-          : input.defaultValue;
-      }
-    }
-    const data = this.state.data;
-    this.setState({
-      data: data.concat(createData(name, description, competencies)),
-    });
-    this.setState({ value: 1 });
-    this.setState({ editButtonClicked: false });
+  handleSaveButton = role => {
+    this.props.saveRole(role);
   };
 
   selectProfile = profile => {
     this.props.getRole(profile.id);
   };
 
+  confirmDelete = () => {
+    this.props.deleteRoles(this.state.toBeDeleted);
+    this.setState({ toBeDeleted: [] });
+  };
+
   render() {
-    const { classes, allRoles, selectedRole } = this.props;
-    const { editButtonClicked, tableSettings } = this.state;
+    const { classes, allRoles, selectedRole, roleDomain } = this.props;
+    const { editing } = roleDomain;
+    const { tableSettings, toBeDeleted } = this.state;
 
     return (
       <div>
+        <DeleteRoleDialog
+          toBeDeleted={toBeDeleted}
+          cancelDelete={() => this.setState({ toBeDeleted: [] })}
+          confirmDelete={this.confirmDelete}
+        />
         <h1>Roles</h1>
-        <Button className={classes.addButton} onClick={this.handleAddButton}>
-          Add Role
-        </Button>
-        {!selectedRole ? (
+        {!selectedRole && (
+          <Button className={classes.addButton} onClick={this.handleAddButton}>
+            Add Role
+          </Button>
+        )}
+        {!selectedRole && !editing ? (
           <RolesTable
             allRoles={allRoles}
             selectProfile={this.selectProfile}
@@ -322,13 +224,15 @@ class Roles extends React.Component {
                 tableSettings: { ...state.tableSettings, ...settings },
               }))
             }
+            handleDeleteButton={this.handleDeleteButton}
+            handleDeleteSingleButton={this.handleDeleteSingleButton}
           />
         ) : (
           <ViewRole
-            editButtonClicked={editButtonClicked}
+            editButtonClicked={editing}
             handleBackButton={this.handleBackButton}
             handleEditButton={this.handleEditButton}
-            handleSubmitButton={this.handleSubmitButton}
+            cancelEdit={() => this.props.setEditing(false)}
             handleSaveButton={this.handleSaveButton}
             selectedProfile={selectedRole}
           />
@@ -340,14 +244,21 @@ class Roles extends React.Component {
 
 Roles.propTypes = {
   classes: PropTypes.object.isRequired,
+  selectedRole: PropTypes.object,
+  roleDomain: PropTypes.object,
   allRoles: PropTypes.array,
   getAllRoles: PropTypes.func,
   getRole: PropTypes.func,
+  setEditing: PropTypes.func,
+  saveRole: PropTypes.func,
+  deleteRoles: PropTypes.func,
+  history: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
   allRoles: selectAllRoles,
   selectedRole: selectSelectedRole,
+  roleDomain: selectRoleDomainJS,
 });
 
 const mapDispatchToProps = {

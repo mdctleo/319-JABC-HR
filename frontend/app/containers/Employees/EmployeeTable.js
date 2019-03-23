@@ -4,16 +4,13 @@ import TableBody from '@material-ui/core/TableBody/TableBody';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import TableCell from '@material-ui/core/TableCell/TableCell';
 import Checkbox from '@material-ui/core/Checkbox/Checkbox';
-import Tooltip from '@material-ui/core/Tooltip/Tooltip';
-import IconButton from '@material-ui/core/IconButton/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 import TablePagination from '@material-ui/core/TablePagination/TablePagination';
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core';
-import grey from '@material-ui/core/colors/grey';
-import EnhancedTableHead from './EnhancedTableHead';
+import { EnhancedTableHead } from 'components/RolePageComponents';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
+import { withStyles } from '@material-ui/core';
+import orange from '@material-ui/core/colors/orange';
+import PropTypes from 'prop-types';
 
 const styles = theme => ({
   root: {
@@ -23,24 +20,12 @@ const styles = theme => ({
     paddingBottom: '100px',
   },
   addButton: {
-    float: 'right',
     display: 'inline',
+    float: 'right',
     marginTop: '50px',
     marginRight: '2.5%',
     color: 'white',
-    width: '125px',
-    backgroundColor: '#ff6600',
-    borderRadius: '15px',
-    transition: '0.3s',
-    '&:hover': {
-      backgroundColor: '#ff944d',
-    },
-  },
-  editButton: {
-    float: 'right',
-    display: 'inline',
-    color: 'white',
-    width: '100px',
+    width: '150px',
     backgroundColor: '#ff6600',
     borderRadius: '15px',
     transition: '0.3s',
@@ -54,7 +39,6 @@ const styles = theme => ({
     color: 'white',
     width: '100px',
     marginRight: '2.5%',
-    marginTop: '50px',
     backgroundColor: '#ff6600',
     borderRadius: '15px',
     transition: '0.3s',
@@ -71,34 +55,39 @@ const styles = theme => ({
   tabsIndicator: {
     backgroundColor: '#ff5000',
   },
-  tabSelected: {},
+  miniTabs: {
+    backgroundColor: 'white',
+  },
   typography: {
     padding: theme.spacing.unit * 3,
   },
   container: {
-    width: '95%',
-    marginLeft: '2.5%',
+    width: '75%',
+    marginTop: '50px',
+    marginLeft: '5%',
     display: 'flex',
     flexWrap: 'wrap',
   },
+  employeeName: {
+    display: 'inline',
+    marginTop: '30px',
+    marginBottom: '30px',
+  },
+  topFieldContainer: {
+    marginTop: '30px',
+  },
   textField: {
-    width: '75%',
+    width: '90%',
   },
   fieldContainer: {
     width: '100%',
     marginBottom: '15px',
   },
   positionName: {
-    display: 'inline',
     marginTop: '30px',
   },
   formSubheading: {
-    display: 'inline',
-  },
-  topFieldContainer: {
-    width: '100%',
-    marginBottom: '15px',
-    marginTop: '50px',
+    marginTop: '30px',
   },
   card: {
     width: '75%',
@@ -111,67 +100,135 @@ const styles = theme => ({
     backgroundColor: ' #00954D',
     color: 'white',
   },
-  deleteIcon: {
-    color: grey[300],
+  formControl: {
+    float: 'right',
+    marginRight: '2.5%',
+    marginBottom: '30px',
+    width: '200px',
+  },
+  editButton: {
+    marginRight: '25%',
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    },
+  },
+  editWPButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    width: '100px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    },
+  },
+  docDisplay: {
+    marginTop: '30px',
+    marginLeft: '30px',
+  },
+  saveButton: {
+    float: 'right',
+    display: 'inline',
+    color: 'white',
+    height: '40px',
+    width: '100px',
+    marginTop: '30px',
+    marginRight: '20px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    },
+  },
+  cancelButton: {
+    float: 'right',
+    display: 'inline',
+    height: '40px',
+    width: '100px',
+    marginTop: '30px',
+    marginLeft: '20px',
+    borderRadius: '15px',
+  },
+  colorSwitchBase: {
+    color: orange[300],
+    '&$colorChecked': {
+      color: orange[500],
+      '& + $colorBar': {
+        backgroundColor: orange[500],
+      },
+    },
+  },
+  colorBar: {},
+  colorChecked: {},
+  switch: {
+    float: 'right',
+    display: 'inline',
+  },
+  addOIButton: {
+    float: 'right',
+    color: 'white',
+    width: '250px',
+    padding: '0',
+    height: '40px',
+    backgroundColor: '#ff6600',
+    borderRadius: '15px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: '#ff944d',
+    },
+  },
+  onBoardingHeader: {
+    height: '50px',
+    width: '100%',
+  },
+  addOIDialogField: {
+    marginBottom: '30px',
   },
 });
 
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => desc(a, b, orderBy)
-    : (a, b) => -desc(a, b, orderBy);
-}
 const columns = [
-  { id: 'position', numeric: false, disablePadding: true, label: 'Position' },
-  { id: 'delete', numeric: false, disablePadding: true, label: '' },
+  {
+    id: 'firstname',
+    numeric: false,
+    disablePadding: true,
+    label: 'First Name',
+  },
+  { id: 'lastname', numeric: false, disablePadding: false, label: 'Last Name' },
+  { id: 'position', numeric: false, disablePadding: false, label: 'Position' },
 ];
 
-class RolesTable extends React.PureComponent {
-  handleSelectAllClick = event => {
-    if (event.target.checked) {
-      this.props.updateTableSettings({
-        selected: this.props.allRoles.map(n => n.id),
-      });
-      return;
-    }
-    this.props.updateTableSettings({ selected: [] });
-  };
-
+class EmployeeTable extends React.PureComponent {
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
+    const { tableSettings } = this.props;
 
-    if (
-      this.props.tableSettings.orderBy === property &&
-      this.props.tableSettings.order === 'desc'
-    ) {
+    if (tableSettings.orderBy === property && tableSettings.order === 'desc') {
       order = 'asc';
     }
 
     this.props.updateTableSettings({ order, orderBy });
   };
 
-  isSelected = id => this.props.tableSettings.selected.indexOf(id) !== -1;
+  handleSelectAllClick = event => {
+    if (event.target.checked) {
+      this.props.updateTableSettings({
+        selected: this.props.allEmployees.map(n => n.id),
+      });
+      return;
+    }
+    this.props.updateTableSettings({ selected: [] });
+  };
 
   handleClick = (event, id) => {
     const { selected } = this.props.tableSettings;
@@ -205,25 +262,24 @@ class RolesTable extends React.PureComponent {
     this.props.updateTableSettings({ rowsPerPage: event.target.value });
   };
 
+  isSelected = id => this.props.tableSettings.selected.indexOf(id) !== -1;
+
   render() {
-    const {
-      classes,
-      allRoles,
-      tableSettings,
-      handleDeleteSingleButton,
-      handleDeleteButton,
-    } = this.props;
+    const { classes, allEmployees, tableSettings, allRoles } = this.props;
 
     const { order, orderBy, selected, rowsPerPage, page } = tableSettings;
     const emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, allRoles.length - page * rowsPerPage);
+      rowsPerPage -
+      Math.min(rowsPerPage, allEmployees.length - page * rowsPerPage);
 
     return (
       <Paper className={classes.root}>
         <EnhancedTableToolbar
           numSelected={selected.length}
-          selected={selected}
-          handleDeleteButton={handleDeleteButton}
+          showReportButton
+          tableSettings={tableSettings}
+          updateTableSettings={this.props.updateTableSettings}
+          generateReport={this.props.generateReport}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -234,13 +290,15 @@ class RolesTable extends React.PureComponent {
               orderBy={orderBy}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
-              rowCount={allRoles.length}
+              rowCount={allEmployees.length}
             />
             <TableBody>
-              {stableSort(allRoles, getSorting(order, orderBy))
+              {allEmployees
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.id);
+                  const roleName =
+                    allRoles && allRoles[n.fkRole] && allRoles[n.fkRole].name;
                   return (
                     <TableRow
                       hover
@@ -258,23 +316,24 @@ class RolesTable extends React.PureComponent {
                         />
                       </TableCell>
                       <TableCell
-                        align="left"
                         component="th"
                         scope="row"
                         padding="none"
                         onClick={event => this.handleClickProfile(event, n)}
                       >
-                        {n.name}
+                        {n.firstname}
                       </TableCell>
-                      <TableCell align="right">
-                        <Tooltip title="Delete">
-                          <IconButton
-                            aria-label="Delete"
-                            onClick={() => handleDeleteSingleButton(n)}
-                          >
-                            <DeleteIcon className={classes.deleteIcon} />
-                          </IconButton>
-                        </Tooltip>
+                      <TableCell
+                        align="left"
+                        onClick={event => this.handleClickProfile(event, n)}
+                      >
+                        {n.lastname}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        onClick={event => this.handleClickProfile(event, n)}
+                      >
+                        {roleName}
                       </TableCell>
                     </TableRow>
                   );
@@ -290,7 +349,7 @@ class RolesTable extends React.PureComponent {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={allRoles.length}
+          count={allEmployees.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
@@ -307,14 +366,14 @@ class RolesTable extends React.PureComponent {
   }
 }
 
-RolesTable.propTypes = {
+EmployeeTable.propTypes = {
   classes: PropTypes.object.isRequired,
-  allRoles: PropTypes.array,
+  allEmployees: PropTypes.array,
+  allRoles: PropTypes.object,
   selectProfile: PropTypes.func.isRequired,
   tableSettings: PropTypes.object.isRequired,
   updateTableSettings: PropTypes.func.isRequired,
-  handleDeleteButton: PropTypes.func.isRequired,
-  handleDeleteSingleButton: PropTypes.func.isRequired,
+  generateReport: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(RolesTable);
+export default withStyles(styles)(EmployeeTable);

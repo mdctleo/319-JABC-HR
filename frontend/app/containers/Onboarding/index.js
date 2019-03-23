@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
@@ -21,10 +20,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import UploadIcon from '@material-ui/icons/FileCopy';
 import CallIcon from '@material-ui/icons/Call';
 import DraftIcon from '@material-ui/icons/Drafts';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -32,9 +27,7 @@ import Fab from '@material-ui/core/Fab';
 import Snackbar from '@material-ui/core/Snackbar';
 import TextField from '@material-ui/core/TextField';
 
-import onboardingImg from 'images/onboarding.png';
-
-const DocumentsContainer = (props => {
+const DocumentsContainer = props => {
   const docs = props.documents.map((document, index) => (
     <Grid key={document.id} item xs={12} sm={6}>
       <Card className="document-card">
@@ -43,19 +36,21 @@ const DocumentsContainer = (props => {
             {document.name}
           </Typography>
           <Typography component="p">{document.description}</Typography>
-          <Typography component="p"><b>Due: </b> {document.dueDate}</Typography>
+          <Typography component="p">
+            <b>Due: </b> {document.dueDate}
+          </Typography>
           {!document.done && (
             <div>
               <Fab
                 color="primary"
                 component="label"
                 size="medium"
-                style={{marginRight:15,marginTop:15}}
+                style={{ marginRight: 15, marginTop: 15 }}
               >
-                <UploadIcon/>
+                <UploadIcon />
                 <input
                   type="file"
-                  style={{ display: "none" }}
+                  style={{ display: 'none' }}
                   onChange={e => props.onFileLoad(e, props.documents, index)}
                   data-document-id={document.id}
                 />
@@ -65,20 +60,30 @@ const DocumentsContainer = (props => {
                 id="standard-disabled"
                 value={document.fileName}
                 margin="normal"
-                style={{width:'calc(100% - 80px)'}}
+                style={{ width: 'calc(100% - 80px)' }}
               />
             </div>
           )}
         </CardContent>
         {!document.done && (
           <CardActions>
-            <Button size="small" color="primary" onClick={ () => props.onUpload(document, index)}>Upload</Button>
-            <Button size="small" color="secondary">Download template</Button>
+            <Button
+              size="small"
+              color="primary"
+              onClick={() => props.onUpload(document, index)}
+            >
+              Upload
+            </Button>
+            <Button size="small" color="secondary">
+              Download template
+            </Button>
           </CardActions>
         )}
         {document.done && (
           <CardActions>
-            <Button size="small" color="primary">Download</Button>
+            <Button size="small" color="primary">
+              Download
+            </Button>
           </CardActions>
         )}
       </Card>
@@ -89,7 +94,7 @@ const DocumentsContainer = (props => {
       {docs}
     </Grid>
   );
-});
+};
 
 DocumentsContainer.propTypes = {
   documents: PropTypes.array.isRequired,
@@ -153,12 +158,14 @@ export default class Onboarding extends React.PureComponent {
     this.forceUpdate();
   }
 
-  componentDidMount(){
-    const newDocumentsActive = this.documents.filter( document => !document.done );
+  componentDidMount() {
+    const newDocumentsActive = this.documents.filter(
+      document => !document.done,
+    );
     this.setState({
       documentsActive: newDocumentsActive,
     });
-    const newDocumentsDone = this.documents.filter( document => document.done );
+    const newDocumentsDone = this.documents.filter(document => document.done);
     this.setState({
       documentsDone: newDocumentsDone,
     });
@@ -183,61 +190,76 @@ export default class Onboarding extends React.PureComponent {
 
   render() {
     return (
-	<div>
-	  <h1>Welcome, Jane!</h1>
-          <div className="onboarding-content">
-              <Modal
-                aria-labelledby="onboarding-modal-title"
-                aria-describedby="onboarding-modal-description"
-                open={this.state.openHelp}
-                onClose={this.handleCloseHelp}
-              >
-                <div className="onboarding-modal">
-                  <Typography variant="h5">Questions or Problems?</Typography>
-                  <Typography variant="subtitle1">
-                    <List
-                      component="nav"
-                      subheader={<ListSubheader component="div">Contact us </ListSubheader>}
-                    >
-                      <ListItem>
-                        <ListItemIcon>
-                          <DraftIcon />
-                        </ListItemIcon>
-                        <a href="mailto:help@jabc.com">help@jabc.com</a>
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <CallIcon />
-                        </ListItemIcon>
-                        <a href="tel:7771234567">7771234567</a>
-                      </ListItem>
-                    </List>
-                  </Typography>
-                </div>
-              </Modal>
-        <div className="documents">
-          <AppBar position="static">
-            <Tabs value={this.state.tabValue} onChange={this.handleChangeTab}>
-              <Tab label={`Active (${this.state.documentsActive.length})`} />
-              <Tab label={`Done (${this.state.documentsDone.length})`} />
-              <Tab label="Get Help" onClick={this.handleOpenHelp}/>
-            </Tabs>
-          </AppBar>
-          {this.state.tabValue === 0 && <DocumentsContainer documents={this.state.documentsActive} onFileLoad={ (e,docs,i) => this.fileLoad(e,docs,i)} onUpload={ (doc,i) => this.documentUpload(doc,i)}></DocumentsContainer>}
-          {this.state.tabValue === 1 && <DocumentsContainer documents={this.state.documentsDone} onFileLoad={this.fileLoad}></DocumentsContainer>}
+      <div>
+        <h1>Welcome, Jane!</h1>
+        <div className="onboarding-content">
+          <Modal
+            aria-labelledby="onboarding-modal-title"
+            aria-describedby="onboarding-modal-description"
+            open={this.state.openHelp}
+            onClose={this.handleCloseHelp}
+          >
+            <div className="onboarding-modal">
+              <Typography variant="h5">Questions or Problems?</Typography>
+              <Typography variant="subtitle1">
+                <List
+                  component="nav"
+                  subheader={
+                    <ListSubheader component="div">Contact us </ListSubheader>
+                  }
+                >
+                  <ListItem>
+                    <ListItemIcon>
+                      <DraftIcon />
+                    </ListItemIcon>
+                    <a href="mailto:help@jabc.com">help@jabc.com</a>
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CallIcon />
+                    </ListItemIcon>
+                    <a href="tel:7771234567">7771234567</a>
+                  </ListItem>
+                </List>
+              </Typography>
+            </div>
+          </Modal>
+          <div className="documents">
+            <AppBar position="static">
+              <Tabs value={this.state.tabValue} onChange={this.handleChangeTab}>
+                <Tab label={`Active (${this.state.documentsActive.length})`} />
+                <Tab label={`Done (${this.state.documentsDone.length})`} />
+                <Tab label="Get Help" onClick={this.handleOpenHelp} />
+              </Tabs>
+            </AppBar>
+            {this.state.tabValue === 0 && (
+              <DocumentsContainer
+                documents={this.state.documentsActive}
+                onFileLoad={(e, docs, i) => this.fileLoad(e, docs, i)}
+                onUpload={(doc, i) => this.documentUpload(doc, i)}
+              />
+            )}
+            {this.state.tabValue === 1 && (
+              <DocumentsContainer
+                documents={this.state.documentsDone}
+                onFileLoad={this.fileLoad}
+              />
+            )}
+          </div>
+          <Snackbar
+            open={this.state.openSnack}
+            autoHideDuration={3000}
+            onClose={() => this.setState({ openSnack: false })}
+            ContentProps={{
+              'aria-describedby': 'snackbar-fab-message-id',
+              className: 'success-snack',
+            }}
+            message={
+              <span id="snackbar-fab-message-id">Document completed</span>
+            }
+          />
         </div>
-        <Snackbar
-          open={this.state.openSnack}
-          autoHideDuration={3000}
-          onClose={()=>this.setState({ openSnack: false })}
-          ContentProps={{
-            'aria-describedby': 'snackbar-fab-message-id',
-            className:"success-snack",
-          }}
-          message={<span id="snackbar-fab-message-id">Document completed</span>}
-        />
       </div>
-     </div>
     );
   }
 }
