@@ -28,8 +28,10 @@ const toolbarStyles = theme => ({
     flex: '1 1 100%',
   },
   actions: {
-    color: theme.palette.text.secondary,
+    color: 'theme.palette.text.primary',
     padding: '10px',
+    marginRight: '0px',
+    marginLeft: '20px',
   },
   title: {
     flex: '0 0 auto',
@@ -75,6 +77,11 @@ const toolbarStyles = theme => ({
       },
     },
   },
+  formLabel: {
+    width: '200px',
+    color: 'white',
+    margin: '0',
+  }
 });
 
 const EnhancedTableToolbar = props => {
@@ -120,6 +127,7 @@ const EnhancedTableToolbar = props => {
       </div>
       <div className={classes.actions}>
         <FormControlLabel
+        className={classes.formLabel}
           control={
             <Switch
               checked={tableSettings.showInactive}
