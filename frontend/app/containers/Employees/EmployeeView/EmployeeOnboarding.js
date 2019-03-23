@@ -255,7 +255,7 @@ class EmployeeOnboarding extends React.PureComponent {
     const { classes } = this.props;
     const { addOIDialog, editOIDialog } = this.state;
     return (
-      <div className={classes.container}>
+      <div className="profile-card">
         <div className={classes.onBoardingHeader}>
           <Typography className={classes.employeeName} variant="h5">
             Onboarding Items

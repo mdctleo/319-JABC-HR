@@ -11,6 +11,7 @@ import { withStyles } from '@material-ui/core';
 
 import EmployeePerformance from './EmployeePerformance';
 import EmployeeOnboarding from './EmployeeOnboarding';
+import EmployeeHistory from './EmployeeHistory';
 
 const styles = theme => ({
   root: {
@@ -121,6 +122,13 @@ class EmployeeViewPage extends React.PureComponent {
                 }}
                 label="Onboarding"
               />
+              <Tab
+                disableRipple
+                classes={{
+                  selected: classes.tabSelected,
+                }}
+                label="History"
+              />
             </Tabs>
           </AppBar>
           {currentTab === 1 &&
@@ -159,6 +167,7 @@ class EmployeeViewPage extends React.PureComponent {
             />
           )}
           {currentTab === 3 && <EmployeeOnboarding />}
+          {currentTab === 4 && <EmployeeHistory selectedEmployee={selectedEmployee}/>}
         </div>
       </Paper>
     );
