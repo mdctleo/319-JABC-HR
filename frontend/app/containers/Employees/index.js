@@ -223,6 +223,16 @@ class EnhancedTable extends React.Component {
     this.props.getAllEmployees();
   }
 
+  componentWillMount() {
+    this.unlisten = this.props.history.listen(() => {
+      this.handleBackButton();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
+  }
+
   saveProfile = profile => {
     const newData = this.state.data.concat(profile);
     this.setState({ data: newData });
@@ -351,6 +361,7 @@ EnhancedTable.propTypes = {
   saveEmployee: PropTypes.func.isRequired,
   setGeneratingReport: PropTypes.func.isRequired,
   selectedEmployeeList: PropTypes.array.isRequired,
+  history: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
