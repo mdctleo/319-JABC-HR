@@ -514,9 +514,11 @@ class GenerateReport extends React.PureComponent {
                   )
                   .map(n => (
                     <TableRow key={n.id} hover tabIndex={-1} selected={false}>
-                      {this.state.columns.map(column => (
-                        <TableCell key={column.id} align="left">{n[column.id]}</TableCell>
-                      ))}
+                      {this.state.columns.map(column => {
+                        const value = column.id === 'role' ? (n.role && n.role.name) : n[column.id];
+                        return (
+                        <TableCell key={column.id} align="left">{value}</TableCell>
+                      )})}
                     </TableRow>
                   ))}
               </TableBody>
