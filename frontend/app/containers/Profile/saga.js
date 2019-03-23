@@ -17,7 +17,7 @@ export function* getProfileData() {
 
 export function* saveProfile(action) {
   try {
-    yield updateEmployee(action.payload.profile);
+    yield call(updateEmployee, action.payload.profile);
     yield put(setEditing(false));
     yield call(getProfileData);
   } catch (e) {

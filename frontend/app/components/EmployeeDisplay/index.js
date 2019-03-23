@@ -87,14 +87,14 @@ class EmployeeDisplay extends React.PureComponent {
           Personal Information
         </Typography>
         <Table className={classes.displayTable}>
-          <TableBody>            
+          <TableBody>
             <TableRow className={classes.row}>
               <TableCell align="left">
                 <Typography variant="caption">SIN</Typography>
               </TableCell>
               <TableCell align="left">{profile.sin}</TableCell>
             </TableRow>
-          <TableRow className={classes.row}>
+            <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">BIRTH DATE</Typography>
               </TableCell>
@@ -123,12 +123,6 @@ class EmployeeDisplay extends React.PureComponent {
         </Typography>
         <Table className={classes.displayTable}>
           <TableBody>
-          <TableRow className={classes.row}>
-                <TableCell className={classes.leftCell} align="left">
-                  <Typography variant="caption">EMPLOYEE ID</Typography>
-                </TableCell>
-                <TableCell align="left">{profile.id}</TableCell>
-              </TableRow>
             {isAdmin && (
               <TableRow className={classes.row}>
                 <TableCell className={classes.leftCell} align="left">
@@ -169,13 +163,9 @@ class EmployeeDisplay extends React.PureComponent {
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
-                <Typography variant="caption">
-                  ANNUAL VACATION DAYS
-                </Typography>
+                <Typography variant="caption">ANNUAL VACATION DAYS</Typography>
               </TableCell>
-              <TableCell align="left">
-                {profile.vacationDays}
-              </TableCell>
+              <TableCell align="left">{profile.vacationDays}</TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
@@ -197,7 +187,7 @@ class EmployeeDisplay extends React.PureComponent {
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">MANAGER(S)</Typography>
               </TableCell>
-              <TableCell align="left"></TableCell>
+              <TableCell align="left" />
             </TableRow>
           </TableBody>
         </Table>

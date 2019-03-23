@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button/Button';
-import SetPasswordDialog from '../../components/SetPasswordDialog';
+import SetPasswordDialog from '../SetPasswordDialog';
 import Select from 'react-select';
 
 const styles = theme => ({
@@ -88,26 +88,30 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: '##f5f5f5',
     },
-  }
+  },
 });
 
 class EmployeeEditForm extends React.PureComponent {
-  state = {
-    profile: this.props.profile,
-    dialog: false,
-    adminLevel: 0,
-  };
+  constructor(props) {
+    super(props);
 
-  managers = [{ value: 'mikayla', label: 'Mikayla Preete' },
-             { value: 'james', label: 'James Yoo' },
-             { value: 'reed', label: 'Reed Esler' },
-             { value: 'anita', label: 'Anita Tse' },
-             { value: 'abraham', label: 'Abraham Torres' },
-             { value: 'leo', label: 'Leo Lin' },
-             { value: 'sam', label: 'Sam Veloso' }];
+    this.state = {
+      profile: { ...props.profile, fkRole: props.profile.fkRole || '' },
+      dialog: false,
+    };
+
+    this.managers = [
+      { value: 'mikayla', label: 'Mikayla Preete' },
+      { value: 'james', label: 'James Yoo' },
+      { value: 'reed', label: 'Reed Esler' },
+      { value: 'anita', label: 'Anita Tse' },
+      { value: 'abraham', label: 'Abraham Torres' },
+      { value: 'leo', label: 'Leo Lin' },
+      { value: 'sam', label: 'Sam Veloso' },
+    ];
+  }
 
   handleChange = name => event => {
-    if (name == 'adminLevel') this.setState({ adminLevel: event.target.value });
     const { value } = event.target;
     this.setState(prevState => ({
       profile: {
@@ -119,22 +123,22 @@ class EmployeeEditForm extends React.PureComponent {
 
   handleClose = event => {
     this.setState({ dialog: false });
-  }
+  };
 
   handleOpen = event => {
     this.setState({ dialog: true });
-  }
+  };
 
   render() {
     const { classes, saveProfile, cancelEdit, allRoles, add } = this.props;
-    const { profile, dialog, adminLevel } = this.state;
+    const { profile, dialog } = this.state;
 
     return (
       <div>
         <Grid container spacing={24}>
           <Grid item sm={12}>
             <Typography variant="h5" className={classes.title}>
-              Add Employee
+              Edit Profile
             </Typography>
             <Typography
               className={classes.subHeading}
@@ -185,6 +189,7 @@ class EmployeeEditForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('birthdate')}
+                placeholder="2019-01-31"
               />
             </div>
             <div className={classes.fieldContainer}>
@@ -220,17 +225,6 @@ class EmployeeEditForm extends React.PureComponent {
             </Typography>
             <div className={classes.fieldContainer}>
               <TextField
-                value={profile.id}
-                label="Employee ID"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                onChange={this.handleChange('id')}
-              />
-            </div>
-            <div className={classes.fieldContainer}>
-              <TextField
                 value={profile.dateJoined}
                 label="Date Joined"
                 className={classes.textField}
@@ -238,6 +232,7 @@ class EmployeeEditForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('dateJoined')}
+                placeholder="2019-01-31"
               />
             </div>
             <div className={classes.fieldContainer}>
@@ -267,14 +262,25 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                // value={profile.role.name}
-                label="Position"
+                select
+                value={profile.fkRole}
+                label="Role"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
                 fullWidth
-                onChange={this.handleChange('role.name')}
-              />
+                onChange={this.handleChange('fkRole')}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {allRoles &&
+                  allRoles.map(role => (
+                    <MenuItem key={role.id} value={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
+              </TextField>
             </div>
             <div className={classes.fieldContainer}>
               <TextField
@@ -360,62 +366,65 @@ class EmployeeEditForm extends React.PureComponent {
               Manager(s)
             </Typography>
             <div className={classes.fieldContainer}>
-            <Select
+              <Select
                 defaultValue={[]}
                 isMulti
                 name="managers"
                 options={this.people}
                 className="basic-multi-select"
                 classNamePrefix="select"
-                theme={(theme) => ({
+                theme={theme => ({
                   ...theme,
                   colors: {
-                  ...theme.colors,
+                    ...theme.colors,
                     primary25: 'orange',
                     primary: 'orange',
                   },
                 })}
-            />
+              />
             </div>
-            { adminLevel == 1 &&
-                <div>
-                  <Typography
-                    className={classes.subHeading}
-                    variant="subtitle1"
-                    color="textSecondary"
-                  >
-                    Employees
-                  </Typography>
-                  <div className={classes.fieldContainer}>
+            {profile.adminLevel >= 1 && (
+              <div>
+                <Typography
+                  className={classes.subHeading}
+                  variant="subtitle1"
+                  color="textSecondary"
+                >
+                  Employees
+                </Typography>
+                <div className={classes.fieldContainer}>
                   <Select
-                      defaultValue={[]}
-                      isMulti
-                      name="employees"
-                      options={this.people}
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      theme={(theme) => ({
-                        ...theme,
-                        colors: {
+                    defaultValue={[]}
+                    isMulti
+                    name="employees"
+                    options={this.people}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    theme={theme => ({
+                      ...theme,
+                      colors: {
                         ...theme.colors,
-                          primary25: 'orange',
-                          primary: 'orange',
-                        },
-                      })}
+                        primary25: 'orange',
+                        primary: 'orange',
+                      },
+                    })}
                   />
-                  </div>
                 </div>
-            }
+              </div>
+            )}
           </Grid>
         </Grid>
-        { !add &&
-          <Button
-            className={classes.resetButton}
-            onClick={this.handleOpen}
-          >
+        {!add && (
+          <Button className={classes.resetButton} onClick={this.handleOpen}>
             Reset Password
-          </Button>}
-        <SetPasswordDialog profile={profile} open={dialog} handleClose={this.handleClose} add={add}/> 
+          </Button>
+        )}
+        <SetPasswordDialog
+          profile={profile}
+          open={dialog}
+          handleClose={this.handleClose}
+          add={add}
+        />
         <Button className={classes.cancelButton} onClick={cancelEdit}>
           Cancel
         </Button>

@@ -53,14 +53,14 @@ const styles = theme => ({
 
 class PerformanceReviewDisplay extends React.Component  {
   render() {
-    const { classes, sections, profile } = this.props;
+    const { classes, sections, profile, role } = this.props;
     let that = this;
 
     return(
       <div>
         <h4>Individual Performance Review {this.props.year}</h4>
         <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
-        <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {profile.role.name}</Typography>
+        <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {role && role.name}</Typography>
         {sections.map(function(section) {
           return <PerformanceSection key = {section.sectionId}
                                         classes = {classes}
@@ -80,8 +80,7 @@ PerformanceReviewDisplay.propTypes = {
   sections: PropTypes.array.isRequired,
   profile: PropTypes.object.isRequired,
   year: PropTypes.string.isRequired,
-  handleDeleteSection:PropTypes.func.isRequired,
-  handleDeleteRows: PropTypes.func.isRequired
+  role: PropTypes.object,
 };
 
 export default withStyles(styles)(PerformanceReviewDisplay);

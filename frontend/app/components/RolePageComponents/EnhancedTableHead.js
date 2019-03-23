@@ -7,10 +7,6 @@ import Tooltip from '@material-ui/core/Tooltip/Tooltip';
 import TableSortLabel from '@material-ui/core/TableSortLabel/TableSortLabel';
 import PropTypes from 'prop-types';
 
-const columns = [
-  { id: 'position', numeric: false, disablePadding: true, label: 'Position' },
-  { id: 'delete', numeric: false, disablePadding: true, label: '' },
-];
 
 class EnhancedTableHead extends React.PureComponent {
   createSortHandler = property => event => {
@@ -19,6 +15,7 @@ class EnhancedTableHead extends React.PureComponent {
 
   render() {
     const {
+      columns,
       onSelectAllClick,
       order,
       orderBy,
@@ -37,31 +34,28 @@ class EnhancedTableHead extends React.PureComponent {
               style={{ color: 'grey' }}
             />
           </TableCell>
-          {columns.map(
-            column => (
-              <TableCell
-                key={column.id}
-                align={column.numeric ? 'right' : 'left'}
-                padding={column.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === column.id ? order : false}
+          {columns.map(column => (
+            <TableCell
+              key={column.id}
+              align={column.numeric ? 'right' : 'left'}
+              padding={column.disablePadding ? 'none' : 'default'}
+              sortDirection={orderBy === column.id ? order : false}
+            >
+              <Tooltip
+                title="Sort"
+                placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+                enterDelay={300}
               >
-                <Tooltip
-                  title="Sort"
-                  placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
+                <TableSortLabel
+                  active={orderBy === column.id}
+                  direction={order}
+                  onClick={this.createSortHandler(column.id)}
                 >
-                  <TableSortLabel
-                    active={orderBy === column.id}
-                    direction={order}
-                    onClick={this.createSortHandler(column.id)}
-                  >
-                    {column.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            ),
-            this,
-          )}
+                  {column.label}
+                </TableSortLabel>
+              </Tooltip>
+            </TableCell>
+          ))}
         </TableRow>
       </TableHead>
     );
@@ -75,6 +69,7 @@ EnhancedTableHead.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
+  columns: PropTypes.array.isRequired,
 };
 
 export default EnhancedTableHead;
