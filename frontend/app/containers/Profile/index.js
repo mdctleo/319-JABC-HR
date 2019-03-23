@@ -9,8 +9,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import { selectProfile} from '../App/selectors';
-import { selectRole } from './selectors';
+import { selectProfile } from '../App/selectors';
+import { selectRole, selectProfileDomainJS, selectAllRoles } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import actions from './actions';
@@ -57,7 +57,6 @@ const styles = theme => ({
     width: '200px',
     marginTop: '50px',
     marginLeft: '30px',
-    borderRadius: '15px',
     color: 'black',
     backgroundColor: '#eeeeee',
     borderRadius: '15px',
@@ -65,7 +64,7 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: '##f5f5f5',
     },
-  }
+  },
 });
 
 class Profile extends React.PureComponent {
@@ -73,10 +72,19 @@ class Profile extends React.PureComponent {
     this.props.getProfileData();
   }
 
+  componentWillMount() {
+    this.unlisten = this.props.history.listen(() => {
+      this.props.setEditing(false);
+    });
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
+  }
+
   state = {
     activeTab: 0,
     isAdmin: true,
-    edit: false,
     open: false,
   };
 
@@ -85,36 +93,30 @@ class Profile extends React.PureComponent {
     this.setState({ edit: false });
   };
 
-  handleClickEdit = (event, value) => {
-    this.setState({
-      edit: true,
-    });
+  handleClickEdit = () => {
+    this.props.setEditing(true);
   };
 
-  saveProfile = (profile) => {
+  saveProfile = profile => {
     this.props.saveProfile(profile);
-    this.setState({
-      edit: false,
-    });
-  }
+  };
 
   cancelEdit = () => {
-    this.setState({
-      edit: false,
-    });
-  }
+    this.props.setEditing(false);
+  };
 
-  handleClose = event => {
+  handleClose = () => {
     this.setState({ open: false });
-  }
+  };
 
-  handleOpen = event => {
+  handleOpen = () => {
     this.setState({ open: true });
-  }
+  };
 
   render() {
-    const { activeTab, isAdmin, edit, open } = this.state;
-    const { classes, role, profile } = this.props;
+    const { activeTab, isAdmin, open } = this.state;
+    const { classes, role, profile, profileDomain, allRoles } = this.props;
+    const { editing } = profileDomain;
 
     if (!profile) return null;
     return (
@@ -132,7 +134,11 @@ class Profile extends React.PureComponent {
             </Tabs>
           </AppBar>
           <div className="profile-card">
-          <ChangePasswordDialog open={open} profile={profile} handleClose={this.handleClose} />
+            <ChangePasswordDialog
+              open={open}
+              profile={profile}
+              handleClose={this.handleClose}
+            />
             {activeTab === 0 &&
               !isAdmin && (
                 <div>
@@ -143,14 +149,15 @@ class Profile extends React.PureComponent {
                   />
                   <Button
                     className={classes.resetButton}
-                    onClick={this.handleOpen}>
+                    onClick={this.handleOpen}
+                  >
                     Change Password
                   </Button>
-                  </div>
+                </div>
               )}
             {activeTab === 0 &&
               isAdmin &&
-              !edit && (
+              !editing && (
                 <div>
                   <Button
                     className={classes.editButton}
@@ -165,18 +172,20 @@ class Profile extends React.PureComponent {
                   />
                   <Button
                     className={classes.resetButton}
-                    onClick={this.handleOpen}>
+                    onClick={this.handleOpen}
+                  >
                     Change Password
                   </Button>
                 </div>
               )}
             {activeTab === 0 &&
               isAdmin &&
-              edit && (
+              editing && (
                 <EmployeeEditForm
                   profile={profile}
                   saveProfile={this.saveProfile}
                   cancelEdit={this.cancelEdit}
+                  allRoles={allRoles}
                 />
               )}
             {activeTab === 1 && <RoleDisplay role={role} />}
@@ -193,11 +202,17 @@ Profile.propTypes = {
   role: PropTypes.object,
   getProfileData: PropTypes.func,
   saveProfile: PropTypes.func,
+  setEditing: PropTypes.func,
+  profileDomain: PropTypes.object,
+  allRoles: PropTypes.array,
+  history: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
   profile: selectProfile,
   role: selectRole,
+  profileDomain: selectProfileDomainJS,
+  allRoles: selectAllRoles,
 });
 
 const mapDispatchToProps = {

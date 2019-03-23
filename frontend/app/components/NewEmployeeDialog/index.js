@@ -15,61 +15,47 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 
 const styles = theme => ({
-    pwd: {
-        marginTop: '20px',
-    }
+  pwd: {
+    marginTop: '20px',
+  },
 });
 
 class NewEmployeeDialog extends React.PureComponent {
-  state = {
-    newPwd: this.generateRandomPassword(),
-  };
-
-  generateRandomPassword() {
-    // set profile's password to this random string
-    var newPassword = Math.random().toString(36).slice(-8);
-    return newPassword;
-  }
-
-  handleClose = event => {
-    this.props.handleClose();
-  }
-
   render() {
-    const { window, newPwd } = this.state;
-    const { classes, profile, open } = this.props;
+    const { classes, open, newPwd } = this.props;
 
     return (
-        <div>
-         <Dialog
-            open={open}
-            onClose={this.handleClose}
-            >
-            <DialogTitle id="alert-dialog-title">Employee password</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description1">
-                  This employee has been given the temporary password below: 
-                </DialogContentText>
-                <DialogContentText className={classes.pwd} id="alert-dialog-pwd">
-                {newPwd}
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={this.handleClose} color="primary" autoFocus>
-                OK
-                </Button>
-            </DialogActions>
-            </Dialog>
-        </div>
+      <div>
+        <Dialog open={open} onClose={this.handleClose}>
+          <DialogTitle id="alert-dialog-title">Employee password</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description1">
+              This employee has been given the temporary password below:
+            </DialogContentText>
+            <DialogContentText className={classes.pwd} id="alert-dialog-pwd">
+              {newPwd}
+            </DialogContentText>
+            <DialogContentText className={classes.pwd}>
+              Make sure to give this password to the employee and have them
+              change it.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.props.handleClose} color="primary" autoFocus>
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     );
   }
 }
 
 NewEmployeeDialog.propTypes = {
   classes: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  newPwd: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(NewEmployeeDialog);

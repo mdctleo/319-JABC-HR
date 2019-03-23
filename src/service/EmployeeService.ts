@@ -1,11 +1,11 @@
 'use strict';
-import { Employee, PerformancePlan, PerformanceReview, OnboardingTask, Vacation, IEmployee, IPerformancePlan, IPerformanceReview, IPerformanceSection, IVacation, EmployeeHistory, IOnboardingTask } from '../model/models'
+import { Employee, PerformancePlan, PerformanceReview, OnboardingTask, Vacation, IEmployee, IPerformancePlan, IPerformanceReview, IPerformanceSection, IVacation, EmployeeHistory, IOnboardingTask, Role } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import * as jwt from 'jsonwebtoken';
 import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
-
+import * as RoleService from './RolesService'
 const KEY = process.env.JWT_KEY;
 
 
@@ -88,7 +88,7 @@ export async function createEmployee(employee: IEmployee, xAuthToken: String) {
 			employee.address,
 			employee.birthdate,
 			employee.vacationDays,
-			employee.remainingVacationDays,
+			employee.vacationDays,
 			employee.fte,
 			employee.status,
 			employee.password,
@@ -204,9 +204,9 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
  **/
 export async function createVacation(id: Number, vacation: IVacation, xAuthToken: String) {
 	try {
-		let res = await Database.getInstance().query('CALL create_employee_vacation(?,?,?,?,?)', [
+		vacation = Vacation.Prepare(vacation)
+		let res = await Database.getInstance().query('CALL create_employee_vacation(?,?,?,?)', [
 			id,
-			vacation.fkApprover,
 			vacation.requestedDays,
 			vacation.requestedStatus,
 			vacation.date
@@ -252,7 +252,10 @@ export async function deleteEmployee(id: Number, xAuthToken: String, idAdmin: Nu
 export async function getEmployee(id: Number, xAuthToken: String) {
 	try {
 		let res = await Database.getInstance().query('CALL get_employee(?)', [id], JABCResponse.EMPLOYEE)
-		return new Employee(res[0][0][0])
+		let employee = new Employee(res[0][0][0])
+		if(employee.fkRole != null)
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken)
+		return employee
 	} catch (error) {
 		throw error;
 	}
@@ -296,7 +299,13 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
 			res = await Database.getInstance().query('CALL get_all_employees_with_birthday(?,?)', [start, end], JABCResponse.EMPLOYEE)
 		else
 			res = await Database.getInstance().query('CALL get_all_employees()', [], JABCResponse.EMPLOYEE)
-		return Employee.Employees(res[0][0])
+		let employees = Employee.Employees(res[0][0])
+		for(let employee of employees){
+			if(employee.fkRole == null) continue;
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+			delete employee.role.competencies
+		}
+		return employees
 	} catch (error) {
 		throw error;
 	}
@@ -314,7 +323,13 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
 export async function getEmployeesByManager(idManager: Number, xAuthToken: String) {
 	try {
 		let res = await Database.getInstance().query('CALL get_manager_employees(?)', [idManager], JABCResponse.EMPLOYEE)
-		return Employee.Employees(res[0][0])
+		let employees = Employee.Employees(res[0][0])
+		for(let employee of employees){
+			if(employee.fkRole == null) continue;
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+			delete employee.role.competencies
+		}
+		return employees
 	} catch (error) {
 		throw error;
 	}
@@ -351,7 +366,13 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
 export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 	try {
 		let res = await Database.getInstance().query('CALL get_employee_managers(?)', [id], JABCResponse.EMPLOYEE)
-		return Employee.Employees(res[0][0])
+		let employees = Employee.Employees(res[0][0])
+		for(let employee of employees){
+			if(employee.fkRole == null) continue;
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+			delete employee.role.competencies
+		}
+		return employees
 	} catch (error) {
 		throw error;
 	}
@@ -495,7 +516,7 @@ export async function unlinkEmployeeManager(id: Number, idManager: Number, xAuth
 export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken: String, idAdmin: Number) {
 	try {
 		employee = Employee.Prepare(employee)
-		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
+		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			id,
 			(idAdmin) ? idAdmin : null,
 			employee.fkRole,
@@ -509,7 +530,6 @@ export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken
 			employee.remainingVacationDays,
 			employee.fte,
 			employee.status,
-			employee.password,
 			employee.salary,
 			employee.dateJoined,
 			employee.adminLevel,
@@ -520,6 +540,30 @@ export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken
 		throw error;
 	}
 }
+
+
+/**
+ * updates the password of an employee
+ * Will update the password provided in the body
+ *
+ * @param {Number} id Integer id of the Employee to change password
+ * @param {IEmployee} employee IEmployee Employee with new password
+ * @param {String} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>}
+ **/
+export async function updateEmployeePassword(id: Number, employee: IEmployee, xAuthToken: String) {
+	try {
+		employee = Employee.Prepare(employee)
+		let res = await Database.getInstance().query('CALL update_employee_password(?,?)', [
+			id,
+			employee.password
+		], JABCResponse.EMPLOYEE)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The password has been updated`)
+	} catch (error) {
+		throw error;
+	}
+}
+  
 
 /**
  * Authorizes the employee with a jwt [token] string

@@ -1,10 +1,21 @@
 import { createSelector } from 'reselect';
 import { selectProfile } from '../App/selectors';
-import { selectResource } from 'api/selector';
+import { selectResource, selectCollection } from 'api/selector';
+import { initialState } from './reducer';
 
-/**
- * Default selector used by Login
- */
+const selectProfileDomain = state => state.get('profile', initialState);
+
+export const selectProfileDomainJS = createSelector([selectProfileDomain], rolesDomain => rolesDomain.toJS());
+
+export const selectAllRoles = createSelector(
+  [selectCollection('roles')],
+  roles => {
+    if (roles) {
+      return Object.keys(roles).map(key => roles[key]);
+    }
+    return [];
+  },
+);
 
 export const selectRole = createSelector(
   [selectProfile, selectResource('role')],

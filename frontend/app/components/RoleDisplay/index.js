@@ -53,7 +53,7 @@ class RoleDisplay extends React.PureComponent {
 
     function generateCompetencies() {
       return (
-        <div>
+        <React.Fragment>
           <TableRow className={classes.tableHead}>
             <TableCell align="left">
               <Typography variant="caption">NAME</Typography>
@@ -62,13 +62,13 @@ class RoleDisplay extends React.PureComponent {
               <Typography variant="caption">DESCRIPTION</Typography>
             </TableCell>
           </TableRow>
-          {role.competencies.map((competency) => (
-            <TableRow className={classes.row}>
+          {role.competencies.map(competency => (
+            <TableRow key={competency.id} className={classes.row}>
               <TableCell align="left">{competency.name}</TableCell>
               <TableCell align="left">{competency.description}</TableCell>
             </TableRow>
           ))}
-        </div>
+        </React.Fragment>
       );
     }
 
@@ -92,7 +92,7 @@ class RoleDisplay extends React.PureComponent {
         >
           Competencies
         </Typography>
-        <Table className={classes.displayTable} fullWidth>
+        <Table className={classes.displayTable}>
           <TableBody>{generateCompetencies()}</TableBody>
         </Table>
       </div>

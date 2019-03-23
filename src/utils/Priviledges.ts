@@ -3,9 +3,9 @@ import {IEmployee} from '../model/models'
 export class Priviledges{
     // Employee service
     static operations: any = {
-        'getEmployees': IEmployee.adminLevelEnum.STAFF,
-        'createEmployee': IEmployee.adminLevelEnum.STAFF,
-        'getEmployee': IEmployee.adminLevelEnum.STAFF,
+        'getEmployees': IEmployee.adminLevelEnum.HR_ADMIN,
+        'createEmployee': IEmployee.adminLevelEnum.HR_ADMIN,
+        'getEmployee': IEmployee.adminLevelEnum.MANAGER,
         'updateEmployee': IEmployee.adminLevelEnum.STAFF,
         'deleteEmployee': IEmployee.adminLevelEnum.MANAGER,
         'linkEmployeeManager': IEmployee.adminLevelEnum.HR_ADMIN,

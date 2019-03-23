@@ -12,7 +12,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button/Button';
-import NewEmployeeDialog from '../../components/NewEmployeeDialog';
+import NewEmployeeDialog from '../NewEmployeeDialog';
+import { IEmployee } from 'api/swagger-api';
+import Select from 'react-select';
 
 const styles = theme => ({
   title: {
@@ -80,7 +82,6 @@ const styles = theme => ({
     height: '40px',
     width: '200px',
     marginTop: '30px',
-    borderRadius: '15px',
     color: 'black',
     backgroundColor: '#eeeeee',
     borderRadius: '15px',
@@ -88,14 +89,37 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: '##f5f5f5',
     },
-  }
+  },
 });
 
 class AddEmployeeForm extends React.PureComponent {
-  state = {
-    profile: this.props.profile,
-    dialog: false,
-  };
+  constructor(props) {
+    super(props);
+
+    const blankProfile = new IEmployee();
+    blankProfile.status = 2;
+    blankProfile.fte = 1;
+    blankProfile.adminLevel = 0;
+    blankProfile.password = Math.random()
+      .toString(36)
+      .slice(-8);
+    blankProfile.fkRole = '';
+
+    this.state = {
+      profile: blankProfile,
+      dialog: false,
+    };
+
+    this.people = [
+      { value: 'mikayla', label: 'Mikayla Preete' },
+      { value: 'james', label: 'James Yoo' },
+      { value: 'reed', label: 'Reed Esler' },
+      { value: 'anita', label: 'Anita Tse' },
+      { value: 'abraham', label: 'Abraham Torres' },
+      { value: 'leo', label: 'Leo Lin' },
+      { value: 'sam', label: 'Sam Veloso' },
+    ];
+  }
 
   handleChange = name => event => {
     const { value } = event.target;
@@ -109,16 +133,29 @@ class AddEmployeeForm extends React.PureComponent {
 
   handleClose = profile => event => {
     this.setState({ dialog: false });
-    this.props.saveProfile(profile)
-  }
+    this.props.saveProfile(profile);
+  };
 
-  handleOpen = event => {
+  handleOpen = () => {
     this.setState({ dialog: true });
-  }
+  };
 
   render() {
-    const { classes, saveProfile, cancelEdit } = this.props;
+    const { classes, allRoles } = this.props;
     const { profile, dialog } = this.state;
+    const sortedRoles =
+      allRoles &&
+      Object.keys(allRoles)
+        .map(key => allRoles[key])
+        .sort((a, b) => {
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        });
 
     return (
       <div>
@@ -132,7 +169,7 @@ class AddEmployeeForm extends React.PureComponent {
               variant="subtitle1"
               color="textSecondary"
             >
-              Name
+              Personal Information
             </Typography>
             <div className={classes.fieldContainer}>
               <TextField
@@ -156,6 +193,64 @@ class AddEmployeeForm extends React.PureComponent {
                 onChange={this.handleChange('lastname')}
               />
             </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.email}
+                label="Email"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('email')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.sin}
+                label="SIN"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('sin')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.birthdate}
+                label="Birth Date"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('birthdate')}
+                placeholder="2019-01-31"
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.address}
+                multiline
+                rows="4"
+                label="Address"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('address')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                defaultValue={profile.phoneNumber}
+                label="Phone Number"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('phoneNumber')}
+              />
+            </div>
             <Typography
               className={classes.subHeading}
               variant="subtitle1"
@@ -163,6 +258,18 @@ class AddEmployeeForm extends React.PureComponent {
             >
               Employee Information
             </Typography>
+            <div className={classes.fieldContainer}>
+              <TextField
+                value={profile.dateJoined}
+                label="Date Joined"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('dateJoined')}
+                placeholder="2019-01-31"
+              />
+            </div>
             <div className={classes.fieldContainer}>
               <TextField
                 select
@@ -190,23 +297,25 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                value={profile.sin}
-                label="SIN"
+                select
+                value={profile.fkRole}
+                label="Role"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
                 fullWidth
-                onChange={this.handleChange('sin')}
-              />
-            </div>
-            <div className={classes.fieldContainer}>
-              <TextField
-                label="Position"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-              />
+                onChange={this.handleChange('fkRole')}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {sortedRoles &&
+                  sortedRoles.map(role => (
+                    <MenuItem key={role.id} value={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
+              </TextField>
             </div>
             <div className={classes.fieldContainer}>
               <TextField
@@ -217,15 +326,6 @@ class AddEmployeeForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('salary')}
-              />
-            </div>
-            <div className={classes.fieldContainer}>
-              <TextField
-                label="Direct Report"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
               />
             </div>
             <div className={classes.fieldContainer}>
@@ -249,14 +349,14 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                value={profile.remainingVacationDays}
-                label="Vacation Days Remaining"
+                value={profile.vacationDays}
+                label="Annual Number of Vacation Days"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
                 fullWidth
                 type="number"
-                onChange={this.handleChange('remainingVacationDays')}
+                onChange={this.handleChange('vacationDays')}
               />
             </div>
             <div className={classes.fieldContainer}>
@@ -286,42 +386,70 @@ class AddEmployeeForm extends React.PureComponent {
               variant="subtitle1"
               color="textSecondary"
             >
-              Contact Information
+              Manager(s)
             </Typography>
             <div className={classes.fieldContainer}>
-              <TextField
-                value={profile.address}
-                multiline
-                rows="4"
-                label="Address"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                onChange={this.handleChange('address')}
+              <Select
+                defaultValue={[]}
+                isMulti
+                name="managers"
+                options={this.people}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                theme={theme => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: 'orange',
+                    primary: 'orange',
+                  },
+                })}
               />
             </div>
-            <div className={classes.fieldContainer}>
-              <TextField
-                defaultValue={profile.phoneNumber}
-                label="Phone Number"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                onChange={this.handleChange('phoneNumber')}
-              />
-            </div>
+            {profile.adminLevel >= 1 && (
+              <div>
+                <Typography
+                  className={classes.subHeading}
+                  variant="subtitle1"
+                  color="textSecondary"
+                >
+                  Employees
+                </Typography>
+                <div className={classes.fieldContainer}>
+                  <Select
+                    defaultValue={[]}
+                    isMulti
+                    name="employees"
+                    options={this.people}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    theme={theme => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: 'orange',
+                        primary: 'orange',
+                      },
+                    })}
+                  />
+                </div>
+              </div>
+            )}
           </Grid>
         </Grid>
-        <NewEmployeeDialog profile={profile} open={dialog} handleClose={this.handleClose(profile)}/> 
-        <Button className={classes.cancelButton} onClick={this.cancelEdit}>
+        <NewEmployeeDialog
+          profile={profile}
+          open={dialog}
+          handleClose={this.handleClose(profile)}
+          newPwd={profile.password}
+        />
+        <Button
+          className={classes.cancelButton}
+          onClick={this.props.cancelEdit}
+        >
           Cancel
         </Button>
-        <Button
-          className={classes.formButton}
-          onClick={this.handleOpen}
-        >
+        <Button className={classes.formButton} onClick={this.handleOpen}>
           Save
         </Button>
       </div>
@@ -331,9 +459,9 @@ class AddEmployeeForm extends React.PureComponent {
 
 AddEmployeeForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
-  cancelEdit: PropTypes.func.isRequired
+  cancelEdit: PropTypes.func.isRequired,
+  allRoles: PropTypes.object,
 };
 
 export default withStyles(styles)(AddEmployeeForm);

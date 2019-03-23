@@ -1,3 +1,6 @@
+
+DROP VIEW IF EXISTS LATEST_HR_RECORDS;
+CREATE VIEW LATEST_HR_RECORDS AS SELECT HR_RECORD.* FROM HR_RECORD WHERE (EMPLOYEE_ID, HR_RECORD.VERSION) IN (SELECT EMPLOYEE_ID, MAX(HR_RECORD.VERSION) AS LATEST_VERSION FROM `HR_RECORD` GROUP BY EMPLOYEE_ID);
 -- STORED PROCEDURES FOR EmployeeService
 
 
@@ -293,33 +296,24 @@ DROP PROCEDURE IF EXISTS create_employee_vacation;
 DELIMITER //
 
 CREATE PROCEDURE `create_employee_vacation` (IN employee_id INT
-, IN approver_id INT
 , IN requested_days INT
 , IN request_status TINYINT
 , IN created_date DATE
 )
 BEGIN
     DECLARE emplChecker INT;
-    DECLARE approvChecker INT;
 
     SET emplChecker = 0;
-    SET approvChecker = 0;
 
     SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
     FROM `EMPLOYEE`
     WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
-    SELECT COUNT(EMPLOYEE_ID) INTO approvChecker
-    FROM `EMPLOYEE`
-    WHERE `EMPLOYEE`.EMPLOYEE_ID = approver_id;
-
     IF emplChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
-    ELSEIF approvChecker = 0 THEN
-      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Approver employee does not exist.';
     ELSE
-      INSERT INTO `VACATION_REQUEST` (EMPLOYEE_ID, APPROVER_ID, REQUESTED_DAYS, REQUEST_STATUS, `DATE`)
-      VALUES (employee_id, approver_id, requested_days, request_status, created_date);
+      INSERT INTO `VACATION_REQUEST` (EMPLOYEE_ID, REQUESTED_DAYS, REQUEST_STATUS, `DATE`)
+      VALUES (employee_id, requested_days, request_status, created_date);
     END IF;
 END //
 
@@ -349,7 +343,6 @@ CREATE PROCEDURE `update_employee`(IN employee_id INT
 , IN remaining_vacation_days INT
 , IN FTE TINYINT
 , IN status TINYINT
-, IN password VARCHAR(64)
 , IN salary DECIMAL(10, 2)
 , IN date_joined DATE
 , IN admin_level TINYINT
@@ -361,6 +354,7 @@ BEGIN
     DECLARE emplChecker INT;
     DECLARE version INT;
     DECLARE created_date DATE;
+    DECLARE password VARCHAR(64);
     
     SET sinChecker = 0;
     SET emailChecker = 0;
@@ -386,13 +380,51 @@ BEGIN
     ELSEIF emplChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist';
     ELSE
-      SELECT (HR_RECORD.VERSION + 1) INTO version FROM HR_RECORD WHERE HR_RECORD.EMPLOYEE_ID = employee_id ORDER BY HR_RECORD.VERSION DESC LIMIT 1; 
+      SELECT (`LATEST_HR_RECORDS`.VERSION + 1) INTO version FROM `LATEST_HR_RECORDS` WHERE `LATEST_HR_RECORDS`.EMPLOYEE_ID = employee_id LIMIT 1;
+      SELECT `LATEST_HR_RECORDS`.PASSWORD INTO password FROM `LATEST_HR_RECORDS` WHERE `LATEST_HR_RECORDS`.EMPLOYEE_ID = employee_id LIMIT 1;
       INSERT INTO HR_RECORD (
       EMPLOYEE_ID, VERSION, CREATED_BY, ROLE, SIN, EMAIL, FIRST_NAME, LAST_NAME, ADDRESS, BIRTHDATE, VACATION_DAYS,
       REMAINING_VACATION_DAYS, FTE, STATUS, PASSWORD, SALARY, DATE_JOINED, ADMIN_LEVEL, CREATED_DATE, PHONE_NUMBER)
       VALUES (
       employee_id, version, created_by_id, role, SIN, email, first_name, last_name, address, birthdate, vacation_days,
       remaining_vacation_days, FTE, status, password, salary, date_joined, admin_level, created_date, phone_number);
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure update_employee_password
+--    - update an employee, provided that employee exists
+--    - also validate that the new SIN and EMAIL are not
+--    - used by other employees
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS update_employee_password;
+
+DELIMITER //
+
+CREATE PROCEDURE `update_employee_password`(IN employee_id INT
+, IN password VARCHAR(64)
+)
+BEGIN
+    DECLARE emplChecker INT;
+    DECLARE version INT;
+    
+    SET version = 0;
+    SET emplChecker = 0;
+
+    SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
+    FROM `EMPLOYEE`
+    WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
+
+    IF emplChecker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist';
+    ELSE
+      SELECT `LATEST_HR_RECORDS`.VERSION INTO version FROM `LATEST_HR_RECORDS` WHERE `LATEST_HR_RECORDS`.EMPLOYEE_ID = employee_id LIMIT 1;
+      UPDATE HR_RECORD
+      SET HR_RECORD.PASSWORD = password
+      WHERE HR_RECORD.EMPLOYEE_ID = employee_id AND HR_RECORD.VERSION = version;
     END IF;
 END //
 
@@ -773,9 +805,19 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager employee does not exist.';
   ELSEIF linkChecker > 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is already managed by this Manager.';
+  ELSEIF e_id = m_id THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An employee can not be managed by himself.';
   ELSE
-    INSERT INTO MANAGER_EMPLOYEE (MANAGER_ID, EMPLOYEE_ID)
-    VALUES (m_id, e_id);
+    SET managChecker = 0;
+    SELECT ADMIN_LEVEL INTO managChecker
+    FROM `LATEST_HR_RECORDS`
+    WHERE `LATEST_HR_RECORDS`.EMPLOYEE_ID = m_id;
+    IF managChecker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An employee with STAFF admin level can not manage any other employee.';
+    ELSE 
+      INSERT INTO MANAGER_EMPLOYEE (MANAGER_ID, EMPLOYEE_ID)
+      VALUES (m_id, e_id);
+    END IF;
   END IF;
 END //
 
@@ -852,7 +894,3 @@ BEGIN
     SELECT * FROM LATEST_HR_RECORDS WHERE LATEST_HR_RECORDS.EMAIL = EMAIL AND LATEST_HR_RECORDS.PASSWORD = PASSWORD;
 END$$
 DELIMITER ;
-
-
-DROP VIEW IF EXISTS LATEST_HR_RECORDS;
-CREATE VIEW LATEST_HR_RECORDS AS SELECT HR_RECORD.* FROM HR_RECORD WHERE (EMPLOYEE_ID, HR_RECORD.VERSION) IN (SELECT EMPLOYEE_ID, MAX(HR_RECORD.VERSION) AS LATEST_VERSION FROM `HR_RECORD` GROUP BY EMPLOYEE_ID);

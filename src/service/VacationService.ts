@@ -51,6 +51,7 @@ export async function getVacation(id: Number, xAuthToken: String) {
  **/
 export async function updateVacation(id: Number, vacation: IVacation, xAuthToken: String) {
     try{
+		vacation = Vacation.Prepare(vacation)
         let res = await Database.getInstance().query('CALL update_vacation_request(?,?,?,?,?)', 
         [
             id,

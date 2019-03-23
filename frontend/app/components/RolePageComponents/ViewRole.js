@@ -28,20 +28,6 @@ const styles = theme => ({
       backgroundColor: '#ff944d',
     },
   },
-  formButtons: {
-    float: 'right',
-    display: 'inline',
-    color: 'white',
-    width: '100px',
-    marginRight: '2.5%',
-    marginTop: '50px',
-    backgroundColor: '#ff6600',
-    borderRadius: '15px',
-    transition: '0.3s',
-    '&:hover': {
-      backgroundColor: '#ff944d',
-    },
-  },
   tabsIndicator: {
     backgroundColor: '#ff5000',
   },
@@ -54,7 +40,7 @@ const ViewRole = props => {
     editButtonClicked,
     handleBackButton,
     handleEditButton,
-    handleSubmitButton,
+    cancelEdit,
     handleSaveButton,
     selectedProfile,
   } = props;
@@ -90,16 +76,12 @@ const ViewRole = props => {
         )}
         {editButtonClicked && (
           <div>
-            <RoleForm role={selectedProfile} add={0} />
-            <Button
-              className={classes.formButtons}
-              onClick={handleSubmitButton}
-            >
-              Submit
-            </Button>
-            <Button className={classes.formButtons} onClick={handleSaveButton}>
-              Save
-            </Button>
+            <RoleForm
+              role={selectedProfile}
+              add={0}
+              cancelEdit={cancelEdit}
+              handleSaveButton={handleSaveButton}
+            />
           </div>
         )}
       </div>
@@ -112,9 +94,9 @@ ViewRole.propTypes = {
   editButtonClicked: PropTypes.bool.isRequired,
   handleBackButton: PropTypes.func.isRequired,
   handleEditButton: PropTypes.func.isRequired,
-  handleSubmitButton: PropTypes.func.isRequired,
+  cancelEdit: PropTypes.func.isRequired,
   handleSaveButton: PropTypes.func.isRequired,
-  selectedProfile: PropTypes.object.isRequired,
+  selectedProfile: PropTypes.object,
 };
 
 export default withStyles(styles)(ViewRole);

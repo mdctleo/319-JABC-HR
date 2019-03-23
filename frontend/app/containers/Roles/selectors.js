@@ -1,19 +1,20 @@
 import { createSelector } from 'reselect';
-import { selectResource } from 'api/selector';
+import { selectResource, selectCollection } from 'api/selector';
 import { initialState } from './reducer';
 
 const selectRoleDomain = state => state.get('roles', initialState);
 
-const selectSelectedRoleId = createSelector([selectRoleDomain], rolesDomain =>
+export const selectRoleDomainJS = createSelector([selectRoleDomain], rolesDomain => rolesDomain.toJS());
+
+export const selectSelectedRoleId = createSelector([selectRoleDomain], rolesDomain =>
   rolesDomain.get('selectedRoleId'),
 );
 
 export const selectAllRoles = createSelector(
-  [selectResource('role')],
+  [selectCollection('roles')],
   roles => {
     if (roles) {
-      const rolesJS = roles.toJS();
-      return Object.keys(rolesJS).map(key => rolesJS[key]);
+      return Object.keys(roles).map(key => roles[key]);
     }
     return [];
   },
