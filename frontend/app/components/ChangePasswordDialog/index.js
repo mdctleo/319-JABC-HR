@@ -14,107 +14,127 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography/Typography';
 
 const styles = theme => ({
-    pwd: {
-        marginTop: '20px',
-    },
-    dialogWindow: {
-        width: '80%',
-    }
+  pwd: {
+    marginTop: '20px',
+  },
+  dialogWindow: {
+    width: '80%',
+  },
 });
 
 class ChangePasswordDialog extends React.PureComponent {
   state = {
     window: 0,
-    newPwd: this.generateRandomPassword(),
+    password1: '',
+    password2: '',
   };
 
   nextWindow = event => {
-      this.setState({ window: 1 });
-  }
-
-  generateRandomPassword() {
-    // set profile's password to this random string
-    var newPassword = Math.random().toString(36).slice(-8);
-    return newPassword;
-  }
+    this.setState({ window: 1 });
+  };
 
   handleClose = event => {
     this.props.handleClose();
     this.setState({ window: 0 });
-  }
+  };
+
+  handleChange = name => event => {
+    const { value } = event.target;
+    this.setState({ [name]: value });
+  };
+
+  updatePassword = () => {
+    this.props.updatePassword(this.state.password1);
+    this.handleClose();
+  };
 
   render() {
-    const { window, newPwd } = this.state;
-    const { classes, profile, open } = this.props;
+    const { window, password1, password2 } = this.state;
+    const { open } = this.props;
+    const verified = password1 === password2;
 
     return (
-        <div>
-        { window == 0 ?
-            (<Dialog
-            open={open}
-            onClose={this.handleClose}
-            fullWidth
-            >
-            <DialogTitle id="alert-dialog-title">{"Change password"}</DialogTitle>
+      <div>
+        {window === 0 ? (
+          <Dialog open={open} onClose={this.handleClose} fullWidth>
+            <DialogTitle id="alert-dialog-title">
+              {'Change password'}
+            </DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                Are you sure you want to change your password? 
-                </DialogContentText>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to change your password?
+              </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
+              <Button onClick={this.handleClose} color="primary">
                 No
-                </Button>
-                <Button onClick={this.nextWindow} color="primary" autoFocus>
+              </Button>
+              <Button onClick={this.nextWindow} color="primary" autoFocus>
                 Yes
-                </Button>
+              </Button>
             </DialogActions>
-            </Dialog>) : 
-            (<Dialog
-            open={open}
-            onClose={this.handleClose}
-            fullWidth
-            >
+          </Dialog>
+        ) : (
+          <Dialog open={open} onClose={this.handleClose} fullWidth>
             <DialogTitle id="alert-dialog-title">Change password</DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description1">
-                  New Password:
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="changePwd-dialog-pwd"
-                  fullWidth
-                />
-                <DialogContentText id="alert-dialog-description1">
-                  Confirm Password:
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="changePwd-dialog-confirm"
-                  fullWidth
-                />
+              <DialogContentText id="alert-dialog-description1">
+                New Password:
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="changePwd-dialog-pwd"
+                fullWidth
+                value={password1}
+                onChange={this.handleChange('password1')}
+                type="password"
+              />
+              <DialogContentText id="alert-dialog-description1">
+                Confirm Password:
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="changePwd-dialog-confirm"
+                fullWidth
+                value={password2}
+                onChange={this.handleChange('password2')}
+                type="password"
+              />
+              {!verified && (
+                <Typography
+                  color="error"
+                  variant="body2"
+                >
+                  Passwords must match
+                </Typography>
+              )}
             </DialogContent>
             <DialogActions>
-                <Button onClick={this.handleClose} color="primary" autoFocus>
+              <Button
+                onClick={this.updatePassword}
+                color="primary"
+                autoFocus
+                disabled={!verified || password1 === ''}
+              >
                 OK
-                </Button>
+              </Button>
             </DialogActions>
-            </Dialog>)
-        }
-        </div>
+          </Dialog>
+        )}
+      </div>
     );
   }
 }
 
 ChangePasswordDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  updatePassword: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(ChangePasswordDialog);

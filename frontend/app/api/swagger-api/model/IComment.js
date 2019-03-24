@@ -29,19 +29,18 @@ export default class IComment {
     * A Comment contains what another employee thinks about the performance record of another employee 
     * @alias module:model/IComment
     * @class
-    * @param id {Number} The unique identifier of the Comment
     * @param fkCommenter {Number} Foreign key of Employee that created the Comment
     * @param comment {String} 
     * @param _date {Date} The date when the Comment was created
     */
 
-    constructor(id, fkCommenter, comment, _date) {
+    constructor(fkCommenter, comment, _date) {
         
 
         
         
 
-        this['id'] = id;this['fkCommenter'] = fkCommenter;this['comment'] = comment;this['date'] = _date;
+        this['fkCommenter'] = fkCommenter;this['comment'] = comment;this['date'] = _date;
 
         
     }

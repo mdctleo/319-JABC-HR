@@ -31,19 +31,18 @@ export default class IPerformancePlan {
     * PerformancePlan contains info of the sections of a performance plan of an employee 
     * @alias module:model/IPerformancePlan
     * @class
-    * @param id {Number} The unique identifier of the Performance
     * @param fkEmployee {Number} Foreign key of the employee with this performance review
     * @param _date {Date} The date the performance review was created
     * @param status {Number} 
     */
 
-    constructor(id, fkEmployee, _date, status) {
+    constructor(fkEmployee, _date, status) {
         
 
         
         
 
-        this['id'] = id;this['fkEmployee'] = fkEmployee;this['date'] = _date;this['status'] = status;
+        this['fkEmployee'] = fkEmployee;this['date'] = _date;this['status'] = status;
 
         
     }

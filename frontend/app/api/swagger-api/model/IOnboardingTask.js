@@ -30,7 +30,6 @@ export default class IOnboardingTask {
     * An onboarding task required for the onbarding proccess of a new Employee, if the property [requireDoc] is set to 1, then the OnboardingTask require the employee to upload a document, and the fkDocumentType will  contain the id of the IDocumentType object with the template of the document to be filled by the employee.  Otherwise the [fkDocumentType] property will be null. 
     * @alias module:model/IOnboardingTask
     * @class
-    * @param id {Number} The unique identifier of the Role
     * @param fkEmployee {Number} The foreign key  of the Employee that needs to upload this Document
     * @param createdDate {Date} The created date of this Document
     * @param dueDate {Date} The due date of this Document
@@ -38,13 +37,13 @@ export default class IOnboardingTask {
     * @param status {Number} Wether the Onboarding task is done or not
     */
 
-    constructor(id, fkEmployee, createdDate, dueDate, requireDoc, status) {
+    constructor(fkEmployee, createdDate, dueDate, requireDoc, status) {
         
 
         
         
 
-        this['id'] = id;this['fkEmployee'] = fkEmployee;this['createdDate'] = createdDate;this['dueDate'] = dueDate;this['requireDoc'] = requireDoc;this['status'] = status;
+        this['fkEmployee'] = fkEmployee;this['createdDate'] = createdDate;this['dueDate'] = dueDate;this['requireDoc'] = requireDoc;this['status'] = status;
 
         
     }
