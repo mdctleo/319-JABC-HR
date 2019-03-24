@@ -121,7 +121,7 @@ describe("RoleService tests", () => {
         });
     });
 
-    describe("/role/{id} tests", () => {
+    describe("/role/{id} tests with admin credential", () => {
 
         let HEADERS: any = null;
         before(async () => {
@@ -283,7 +283,7 @@ describe("RoleService tests", () => {
     });
 
 
-    describe("/role/{idRole}/competency tests with admin", () => {
+    describe("/role/{idRole}/competency tests with admin credentials", () => {
 
         let HEADERS: any = null;
         before(async () => {
