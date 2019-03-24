@@ -10,6 +10,7 @@ import {
 import { selectProfile, selectUser } from '../App/selectors';
 import { displayError } from 'containers/App/actions';
 import { setEditing } from './actions';
+import {login} from '../Login/actions';
 
 export function* getProfileData() {
   const user = yield select(selectUser());
@@ -33,7 +34,9 @@ export function* saveProfile(action) {
 
 export function* updatePassword(action) {
   try {
-    yield call(updateEmployeePassword, action.payload.profile);
+    const { profile } = action.payload;
+    yield call(updateEmployeePassword, profile);
+    yield put(login(profile.email, profile.password));
   } catch (e) {
     console.log(e);
     if (e.response) yield put(displayError(e.response.body.message));
