@@ -1,20 +1,9 @@
-import Typography from '@material-ui/core/Typography/Typography';
-import FormControl from '@material-ui/core/FormControl/FormControl';
-import InputLabel from '@material-ui/core/InputLabel/InputLabel';
-import Select from '@material-ui/core/Select/Select';
-import MenuItem from '@material-ui/core/MenuItem/MenuItem';
-import AppBar from '@material-ui/core/AppBar/AppBar';
-import Tabs from '@material-ui/core/Tabs/Tabs';
-import Tab from '@material-ui/core/Tab/Tab';
-import Button from '@material-ui/core/Button/Button';
-import WorkPlanDisplay from 'components/WorkPlanDisplay/index';
-import WorkPlanForm from 'components/WorkPlanForm/index';
-import PerformanceReviewDisplay from 'components/PerformanceReviewDisplay/index';
-import PerformanceReviewForm from 'components/PerformanceReviewForm/index';
 import orange from '@material-ui/core/colors/orange';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
+import PerformanceModule from '../../../components/PerformanceModule';
+let uniqid = require('uniqid');
 
 const styles = theme => ({
   root: {
@@ -200,232 +189,172 @@ const styles = theme => ({
   },
 });
 
-class EmployeePerformance extends React.PureComponent {
-  state = {
-    miniTabValue: 0,
-    sampleWorkPlan: {
-      date: 'September 16, 2019',
-      section1: {
-        rows: [
-          { column1: 'Department X', column2: 'Goal X' },
-          { column1: 'Department Y', column2: 'Goal Y' },
-        ],
-      },
-      section2: {
-        rows: [
-          { column1: 'Program X', column2: 'Goal X' },
-          { column1: 'Program Y', column2: 'Goal Y' },
-        ],
-      },
-      section3: {
-        rows: [
-          { column1: 'Competency X', column2: 'Explanation X' },
-          { column1: 'Competency Y', column2: 'Explanation Y' },
-        ],
-      },
-      section4: {
-        rows: [
-          { column1: 'Objective X', column2: 'Support X' },
-          { column1: 'Objective Y', column2: 'Support Y' },
-        ],
-      },
-      section5: {
-        rows: [
-          { column1: 'Goal X', column2: 'Activity X' },
-          { column1: 'Goal Y', column2: 'Activity Y' },
-        ],
-      },
-      section6: {
-        rows: [
-          { column1: 'Goal X', column2: 'Activity X', column3: 'Comment X' },
-          { column1: 'Goal Y', column2: 'Activity Y', column3: 'Comment Y' },
-        ],
-      },
-    },
-    samplePR: {
-      date: 'September 16, 2019',
-      section1: {
-        rows: [
-          { column1: 'Goal X', column2: 'Activity X', column3: 'Comment X' },
-          { column1: 'Goal Y', column2: 'Activity Y', column3: 'Comment Y' },
-        ],
-      },
-      section2: {
-        rows: [
-          { column1: 'Goal X', column2: 'Activity X', column3: 'Comment X' },
-          { column1: 'Goal Y', column2: 'Activity Y', column3: 'Comment Y' },
-        ],
-      },
-      section3: {
-        rows: [
-          { column1: 'Goal X', column2: 'Activity X', column3: 'Comment X' },
-          { column1: 'Goal Y', column2: 'Activity Y', column3: 'Comment Y' },
-        ],
-      },
-      section4: {
-        rows: [
-          { column1: 'Goal X', column2: 'Activity X', column3: 'Comment X' },
-          { column1: 'Goal Y', column2: 'Activity Y', column3: 'Comment Y' },
-        ],
-      },
-      section5: {
-        rows: [
-          { column1: 'Goal X', column2: 'Activity X', column3: 'Comment X' },
-          { column1: 'Goal Y', column2: 'Activity Y', column3: 'Comment Y' },
-        ],
-      },
-      section6: {
-        rows: [
-          { column1: 'Goal X', column2: 'Activity X', column3: 'Comment X' },
-          { column1: 'Goal Y', column2: 'Activity Y', column3: 'Comment Y' },
-        ],
-      },
-    },
-  };
+class EmployeePerformance extends React.Component {
+  constructor(props) {
+    super(props);
 
-  handleMiniTabChange = (event, value) => {
-    this.setState({ miniTabValue: value });
-    this.props.setEditing(false);
-  };
+    this.state = {
+      profile: {firstname: "Justin", lastname: "Case", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
+      performancePlans: [
+        {
+          year: "2019",
+          sections: [
+            {
+              sectionId: 1,
+              sectionName: "First Section",
+              columns: ["Column 1", "Column 2", "Column 3"],
+              data: [
+                {
+                  id: uniqid(),
+                  "Column 1": "Data for column 1",
+                  "Column 2": "Data for column 2",
+                  "Column 3": "Data for column 3"
+                },
+                {
+                  id: uniqid(),
+                  "Column 1": "2 Data for column 1",
+                  "Column 2": "2 Data for column 2",
+                  "Column 3": "2 Data for column 3"
+                },
+                {
+                  id: uniqid(),
+                  "Column 1": "3 Data for column 1",
+                  "Column 2": "3 Data for column 2",
+                  "Column 3": "3 Data for column 3"
+                }
+              ]
+            },
+            {
+              sectionId: 2,
+              sectionName: "Second Section",
+              columns: ["Column 1", "Column 2"],
+              data: [
+                {
+                  id: uniqid(),
+                  "Column 1": "Data for column 1",
+                  "Column 2": "Data for column 2"
+                },
+                {
+                  id: uniqid(),
+                  "Column 1": "2 Data for column 1",
+                  "Column 2": "2 Data for column 2"
+                },
+                {
+                  id: uniqid(),
+                  "Column 1": "3 Data for column 1",
+                  "Column 2": "3 Data for column 2"
+                }
+              ]
+            },
+            {
+              sectionId: 3,
+              sectionName: "Third Section",
+              columns: ["Column 1"],
+              data: [
+                {
+                  id: uniqid(),
+                  "Column 1": "Data for column 1"
+                },
+                {
+                  id: uniqid(),
+                  "Column 1": "2 Data for column 1"
+                },
+                {
+                  id: uniqid(),
+                  "Column 1": "3 Data for column 1"
+                }
+              ]
+            },
+          ],
+          performanceReview: {
+            year: "2019",
+            sections: [
+              {
+                sectionId: 1,
+                sectionName: "First Section",
+                columns: ["Column 1", "Column 2", "Column 3"],
+                data: [
+                  {
+                    id: uniqid(),
+                    "Column 1": "Data for column 1",
+                    "Column 2": "Data for column 2",
+                    "Column 3": "Data for column 3"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "2 Data for column 1",
+                    "Column 2": "2 Data for column 2",
+                    "Column 3": "2 Data for column 3"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "3 Data for column 1",
+                    "Column 2": "3 Data for column 2",
+                    "Column 3": "3 Data for column 3"
+                  }
+                ]
+              },
+              {
+                sectionId: 2,
+                sectionName: "Second Section",
+                columns: ["Column 1", "Column 2"],
+                data: [
+                  {
+                    id: uniqid(),
+                    "Column 1": "Data for column 1",
+                    "Column 2": "Data for column 2"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "2 Data for column 1",
+                    "Column 2": "2 Data for column 2"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "3 Data for column 1",
+                    "Column 2": "3 Data for column 2"
+                  }
+                ]
+              },
+              {
+                sectionId: 3,
+                sectionName: "Third Section",
+                columns: ["Column 1"],
+                data: [
+                  {
+                    id: uniqid(),
+                    "Column 1": "Data for column 1"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "2 Data for column 1"
+                  },
+                  {
+                    id: uniqid(),
+                    "Column 1": "3 Data for column 1"
+                  }
+                ]
+              },
+            ]
+          }
+        }
+      ]
+    };
+  }
 
   render() {
-    const { classes, selectedEmployee, editing, role } = this.props;
-    const { miniTabValue, samplePR, sampleWorkPlan } = this.state;
+    const { performancePlans, profile } = this.state;
 
     return (
-      <div className="profile-card">
-        <Typography className={classes.employeeName} variant="h5">
-          {selectedEmployee.firstname} {selectedEmployee.lastname}
-        </Typography>
-        <FormControl className={classes.formControl}>
-          <InputLabel>Year</InputLabel>
-          <Select onChange={this.handleSelect}>
-            <MenuItem value={0}>2019-2020</MenuItem>
-            <MenuItem value={1}>2018-2019</MenuItem>
-          </Select>
-          {/* {this.generateDropdown()} */}
-        </FormControl>
-        <AppBar position="static" className={classes.appBar}>
-          <Tabs
-            value={miniTabValue}
-            classes={{
-              root: classes.miniTabs,
-              indicator: classes.tabsIndicator,
-            }}
-            indicatorColor="#ff5000"
-            textColor="white"
-            onChange={this.handleMiniTabChange}
-          >
-            <Tab
-              disableRipple
-              classes={{
-                root: classes.tabRoot,
-                selected: classes.tabSelected,
-              }}
-              label="Work Plan"
-            />
-            <Tab
-              disableRipple
-              classes={{
-                root: classes.tabRoot,
-                selected: classes.tabSelected,
-              }}
-              label="Performance Review"
-            />
-          </Tabs>
-        </AppBar>
-        {miniTabValue === 0 &&
-          !editing && (
-            <div className={classes.docDisplay}>
-              <Button
-                className={classes.editWPButton}
-                onClick={this.handleClickEdit}
-              >
-                Edit
-              </Button>
-              <WorkPlanDisplay
-                sections={[]}
-                form={sampleWorkPlan}
-                years="2019-2020"
-                profile={selectedEmployee}
-                role={role}
-              />
-            </div>
-          )}
-        {miniTabValue === 0 &&
-          editing && (
-            <div>
-              <WorkPlanForm
-                form={sampleWorkPlan}
-                years="2019-2020"
-                profile={selectedEmployee}
-                role={role}
-              />
-              <Button
-                className={classes.cancelButton}
-                onClick={this.cancelEdit}
-              >
-                Cancel
-              </Button>
-              <Button
-                className={classes.saveButton}
-                onClick={this.updateReview}
-              >
-                Save
-              </Button>
-            </div>
-          )}
-        {miniTabValue === 1 &&
-          !editing && (
-            <div className={classes.docDisplay}>
-              <Button
-                className={classes.editWPButton}
-                onClick={this.handleClickEdit}
-              >
-                Edit
-              </Button>
-              <PerformanceReviewDisplay
-                sections={[]}
-                form={samplePR}
-                years="2019-2020"
-                profile={selectedEmployee}
-              />
-            </div>
-          )}
-        {miniTabValue === 1 &&
-          editing && (
-            <div>
-              <PerformanceReviewForm
-                form={samplePR}
-                years="2019-2020"
-                profile={selectedEmployee}
-                role={role}
-              />
-              <Button
-                className={classes.cancelButton}
-                onClick={this.cancelEdit}
-              >
-                Cancel
-              </Button>
-              <Button
-                className={classes.saveButton}
-                onClick={this.updateReview}
-              >
-                Save
-              </Button>
-            </div>
-          )}
+      <div>
+        <PerformanceModule performancePlans={performancePlans} profile={profile} />
       </div>
     );
   }
 }
 
 EmployeePerformance.propTypes = {
-  classes: PropTypes.object.isRequired,
-  setEditing: PropTypes.func.isRequired,
-  editing: PropTypes.bool.isRequired,
-  selectedEmployee: PropTypes.object.isRequired,
-  role: PropTypes.object,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(EmployeePerformance);
