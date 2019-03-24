@@ -229,12 +229,12 @@ export async function createVacation(id: Number, vacation: IVacation, xAuthToken
  **/
 export async function deleteEmployee(id: Number, xAuthToken: String, idAdmin: Number) {
 	try {
-		let employee = await getEmployee(id, xAuthToken)
-		employee.status = IEmployee.statusEnum.INACTIVE
+		let employee = await getEmployee(id, xAuthToken);
 		if (employee.status === IEmployee.statusEnum.INACTIVE)
-			throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is already inactive')
-		await updateEmployee(id, employee, xAuthToken, idAdmin)
-		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The employee was successfully set up to inactive')
+			throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is already inactive');
+        employee.status = IEmployee.statusEnum.INACTIVE;
+        await updateEmployee(id, employee, xAuthToken, idAdmin);
+		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The employee was successfully set up to inactive');
 	} catch (error) {
 		throw error;
 	}
