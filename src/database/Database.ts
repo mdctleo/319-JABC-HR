@@ -1,4 +1,4 @@
-import IDatabaseClient, {DatabaseQueryError, DatabaseWriteError} from "./IDatabaseClient";
+import IDatabaseClient, {DatabaseConnectionError, DatabaseQueryError, DatabaseWriteError} from "./IDatabaseClient";
 import Log from "../../util/Log";
 import * as config from "../database/dbConfig.json";
 import { JABCResponseType } from "../utils/ResponseManager";
@@ -37,14 +37,9 @@ export default class Database implements IDatabaseClient {
         }
     }
 
-    public async rawQuery(query: any, params: any[], responseType?: JABCResponseType): Promise<any> {
-        let response;
-        let conn;
+    public async rawQuery(conn: any, query: any, params: any[], responseType?: JABCResponseType): Promise<any> {
         try {
-            conn = await this.pool.getConnection();
-            response = await conn.execute(query, params);
-            conn.release();
-            return response;
+            return await conn.execute(query, params);
         } catch (err) {
             const errMsg: string = `Database::Failed to perform query: ${query}, with err: ${err}`;
             Log.error(errMsg);
@@ -52,13 +47,10 @@ export default class Database implements IDatabaseClient {
         }
     }
 
-    public async beginTransaction(responseType?: JABCResponseType): Promise<any>{
-        let conn;
+    public async beginTransaction(conn: any, responseType?: JABCResponseType): Promise<any>{
         try {
-            conn = await this.pool.getConnection();
             await conn.query('START TRANSACTION;');
-            conn.release();
-            return
+            return;
         } catch (err) {
             const errMsg: string = `Database::Failed to initialize transaction, with err: ${err}`;
             Log.error(errMsg);
@@ -66,12 +58,10 @@ export default class Database implements IDatabaseClient {
         }
     }
 
-    public async commit(responseType?: JABCResponseType): Promise<any>{
-        let conn;
+    public async commit(conn: any, responseType?: JABCResponseType): Promise<any>{
         try {
-            conn = await this.pool.getConnection();
             await conn.query('COMMIT;');
-            conn.release();
+            return;
         } catch (err) {
             const errMsg: string = `Database::Failed to commit transaction, with err: ${err}`;
             Log.error(errMsg);
@@ -79,12 +69,10 @@ export default class Database implements IDatabaseClient {
         }
     }
 
-    public async rollback(responseType?: JABCResponseType): Promise<any>{
-        let conn;
+    public async rollback(conn: any, responseType?: JABCResponseType): Promise<any>{
         try {
-            conn = await this.pool.getConnection();
             await conn.query('ROLLBACK;');
-            conn.release();
+            return;
         } catch (err) {
             const errMsg: string = `Database::Failed to rollback transaction, with err: ${err}`;
             Log.error(errMsg);
@@ -106,4 +94,25 @@ export default class Database implements IDatabaseClient {
             throw new DatabaseWriteError(responseType, err, errMsg);
         }
     }
+
+    public async initConnection(responseType?: JABCResponseType): Promise<any> {
+        try {
+            return await this.pool.getConnection();
+        } catch (err) {
+            const errMsg: string = `Database::Failed to open connection: ${err}`;
+            Log.error(errMsg);
+            throw new DatabaseWriteError(responseType, err, errMsg);
+        }
+    }
+
+    public async closeConnection(conn: any): Promise<void> {
+        try {
+            await conn.close();
+        } catch (err) {
+            const errMsg: string = `Database::failed to close connection: ${err}`;
+            Log.error(errMsg);
+            throw new DatabaseConnectionError(errMsg);
+        }
+    }
+
 }

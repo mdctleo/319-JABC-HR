@@ -115,10 +115,12 @@ export async function createEmployee(employee: IEmployee, xAuthToken: String) {
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
 	let db = Database.getInstance()
+	let conn: any;
 	try {
-		await db.beginTransaction()
+		conn = await db.initConnection();
+		await db.beginTransaction(conn);
 		// Insert performance plan
-		let res = await db.rawQuery('CALL create_employee_performance_plan(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?)', [
 			id,
 			performance.date,
 			performance.status
@@ -128,21 +130,23 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 
 		// Insert sections
 		for (let section of performance.sections) {
-			await db.rawQuery('CALL create_employee_performance_plan_section(?,?,?)', [
+			await db.rawQuery(conn, 'CALL create_employee_performance_plan_section(?,?,?)', [
 				PERFORMANCE_PLAN_ID,
 				section.data,
 				section.sectionName
 			])
 		}
 
-		await db.commit()
+		await db.commit(conn);
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
 	} catch (error) {
 		try {
-			await db.rollback()
+			await db.rollback(conn);
 		} catch (err) { }
 		throw error;
-	}
+	} finally {
+		await db.closeConnection(conn);
+    }
 }
 
 
@@ -157,10 +161,12 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
  **/
 export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
 	let db = Database.getInstance()
+	let conn: any;
 	try {
-		await db.beginTransaction()
+		conn = await db.initConnection();
+		await db.beginTransaction(conn);
 		// Insert performance review
-		let res = await db.rawQuery('CALL create_employee_performance_review(?,?,?,?)', [
+		let res = await db.rawQuery(conn,'CALL create_employee_performance_review(?,?,?,?)', [
 			id,
 			performance.fkPerformancePlan,
 			performance.date,
@@ -171,21 +177,23 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 
 		// Insert sections
 		for (let section of performance.sections) {
-			await db.rawQuery('CALL create_employee_performance_review_section(?,?,?)', [
+			await db.rawQuery(conn, 'CALL create_employee_performance_review_section(?,?,?)', [
 				PERFORMANCE_REVIEW_ID,
 				section.data,
 				section.sectionName
 			])
 		}
 
-		await db.commit()
+		await db.commit(conn);
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was registered successfully`)
 	} catch (error) {
 		try {
-			await db.rollback()
+			await db.rollback(conn);
 		} catch (err) { }
 		throw error;
-	}
+	} finally {
+		await db.closeConnection(conn);
+    }
 }
 
 

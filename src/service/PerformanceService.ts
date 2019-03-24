@@ -199,34 +199,37 @@ export async function updateComment(id: Number, idComment: Number, comment: ICom
  **/
 export async function updatePerformancePlan(id: Number, performancePlan: IPerformancePlan, xAuthToken: string) {
     let db = Database.getInstance();
-
+    let conn: any;
     try {
-        await db.beginTransaction();
+        conn = await db.initConnection();
+        await db.beginTransaction(conn);
 
-		let res = await db.rawQuery('CALL update_performance_plan(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL update_performance_plan(?,?,?)', [
 			id,
 			performancePlan.date,
 			performancePlan.status
         ], JABCResponse.PERFORMANCE);
 
-		await db.rawQuery('CALL delete_plan_sections(?)', [id], JABCResponse.PERFORMANCE);
+		await db.rawQuery(conn, 'CALL delete_plan_sections(?)', [id], JABCResponse.PERFORMANCE);
 
         for (let section of performancePlan.sections) {
-            await db.rawQuery('CALL create_employee_performance_plan_section(?,?,?)', [
+            await db.rawQuery(conn, 'CALL create_employee_performance_plan_section(?,?,?)', [
                 id,
                 section.data,
                 section.sectionName
             ], JABCResponse.PERFORMANCE);
         }
 
-        await db.commit();
+        await db.commit(conn);
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance plan was updated successfully`);
 	} catch (error) {
 		try {
-			await db.rollback();
-		} catch (err) { }
+			await db.rollback(conn);
+        } catch (err) { }
 		throw error;
-	}
+	} finally {
+        await db.closeConnection(conn);
+    }
 }
 
 
@@ -241,32 +244,36 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
  **/
 export async function updatePerformanceReview(id: Number, performanceReview: IPerformanceReview, xAuthToken: string) {
     let db = Database.getInstance();
+    let conn: any;
 
     try {
-        await db.beginTransaction();
+        conn = await db.initConnection();
+        await db.beginTransaction(conn);
 
-		let res = await db.rawQuery('CALL update_performance_review(?,?,?)', [
+		let res = await db.rawQuery(conn,'CALL update_performance_review(?,?,?)', [
 			id,
 			performanceReview.date,
 			performanceReview.status
         ], JABCResponse.PERFORMANCE);
 
-        await db.rawQuery('CALL delete_review_sections(?)', [id], JABCResponse.PERFORMANCE);
+        await db.rawQuery(conn, 'CALL delete_review_sections(?)', [id], JABCResponse.PERFORMANCE);
 
         for (let section of performanceReview.sections) {
-            await db.rawQuery('CALL create_employee_performance_review_section(?,?,?)', [
+            await db.rawQuery(conn, 'CALL create_employee_performance_review_section(?,?,?)', [
                 id,
                 section.data,
                 section.sectionName
             ], JABCResponse.PERFORMANCE);
         }
 
-        await db.commit();
+        await db.commit(conn);
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance review was updated successfully`);
 	} catch (error) {
 		try {
-			await db.rollback();
-		} catch (err) { }
+			await db.rollback(conn);
+        } catch (err) { }
 		throw error;
-	}
+	} finally {
+        await db.closeConnection(conn);
+    }
 }
