@@ -30,8 +30,7 @@ export default class IEmployee {
     * An Employee contains all the current information of a current or onboarding employee 
     * @alias module:model/IEmployee
     * @class
-    * @param id {Number} The unique identifier of the Employee
-    * @param sin {String} 
+    * @param sin {Number} 
     * @param email {String} 
     * @param password {String} 
     * @param firstname {String} 
@@ -41,13 +40,13 @@ export default class IEmployee {
     * @param adminLevel {Number} 
     */
 
-    constructor(id, sin, email, password, firstname, lastname, fte, status, adminLevel) {
+    constructor(sin, email, password, firstname, lastname, fte, status, adminLevel) {
         
 
         
         
 
-        this['id'] = id;this['sin'] = sin;this['email'] = email;this['password'] = password;this['firstname'] = firstname;this['lastname'] = lastname;this['fte'] = fte;this['status'] = status;this['adminLevel'] = adminLevel;
+        this['sin'] = sin;this['email'] = email;this['password'] = password;this['firstname'] = firstname;this['lastname'] = lastname;this['fte'] = fte;this['status'] = status;this['adminLevel'] = adminLevel;
 
         
     }
@@ -131,7 +130,7 @@ export default class IEmployee {
     */
     id = undefined;
     /**
-    * @member {String} sin
+    * @member {Number} sin
     */
     sin = undefined;
     /**

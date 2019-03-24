@@ -29,17 +29,16 @@ export default class ICompetency {
     * A Competency contains info of competencies and objectives that each role need to fulfill 
     * @alias module:model/ICompetency
     * @class
-    * @param id {Number} The unique identifier of the Competency
     * @param fkRole {Number} Foreign key of the role
     */
 
-    constructor(id, fkRole) {
+    constructor(fkRole) {
         
 
         
         
 
-        this['id'] = id;this['fkRole'] = fkRole;
+        this['fkRole'] = fkRole;
 
         
     }

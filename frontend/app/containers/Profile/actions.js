@@ -4,7 +4,7 @@
  *
  */
 
-import { GET_PROFILE_DATA, SAVE_PROFILE, SET_EDITING } from './constants';
+import { GET_PROFILE_DATA, SAVE_PROFILE, SET_EDITING, UPDATE_PASSWORD } from './constants';
 
 export function getProfileData() {
   return {
@@ -28,8 +28,18 @@ export function setEditing(editing) {
   };
 }
 
+export function updatePassword(profile) {
+  return {
+    type: UPDATE_PASSWORD,
+    payload: {
+      profile,
+    },
+  };
+}
+
 export default {
   getProfileData,
   saveProfile,
   setEditing,
+  updatePassword,
 };

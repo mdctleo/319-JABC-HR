@@ -9,7 +9,7 @@ This is the process you should follow when deploying master to remote
 * `git pull`
 
 2. Take down containers: `docker-compose down`
-3. Copy the production environment variables from `.env-prod` to `.env`. Perform this command at the root: `cp .env-prod -env`
+3. Copy the production environment variables from `.env-prod` to `.env`. Perform this command at the root: `cp .env-prod .env`
 4. Build the container (at root): `docker-compose build`
 5. Run the container (at root): `docker-compose up -d`
 
