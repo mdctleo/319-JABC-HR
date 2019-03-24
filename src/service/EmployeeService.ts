@@ -136,12 +136,10 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		}
 
 		await db.commit()
-		await db.closeConnection()
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
 	} catch (error) {
 		try {
 			await db.rollback()
-			await db.closeConnection()
 		} catch (err) { }
 		throw error;
 	}
@@ -181,12 +179,10 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		}
 
 		await db.commit()
-		await db.closeConnection()
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was registered successfully`)
 	} catch (error) {
 		try {
 			await db.rollback()
-			await db.closeConnection()
 		} catch (err) { }
 		throw error;
 	}

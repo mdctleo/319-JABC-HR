@@ -35,6 +35,8 @@ export default interface IDatabaseClient {
      * @param query
      *
      * If a failure occurs, throw DatabaseWriteError
+     * @param params
+     * @param responseType
      */
     write(query: any, params: any[], responseType?: JABCResponseType): Promise<void>;
 
@@ -43,6 +45,8 @@ export default interface IDatabaseClient {
      *
      * @param query
      *
+     * @param params
+     * @param responseType
      * @return any
      *
      * Retrieves data which matches the given query
@@ -55,6 +59,8 @@ export default interface IDatabaseClient {
     /**
      * Performs a query on an already opened connection without closing it
      *
+     * @param query
+     * @param params
      * @param {JABCResponseType} [responseType] JABC service that requested the transaction
      * @returns {Promise<any>}
      * @memberof IDatabaseClient
@@ -89,22 +95,4 @@ export default interface IDatabaseClient {
      * @memberof IDatabaseClient
      */
     rollback(responseType?: JABCResponseType): Promise<any>;
-
-    /**
-     * Opens a connection to a database service
-     *
-     * @return void
-     *
-     * If a failure occurs, throw DatabaseConnectionError
-     */
-    initConnection(config: any): Promise<void>;
-
-    /**
-     * Closes a connection to a database service
-     *
-     * @return void
-     *
-     * If a failure occurs, throw DatabaseConnectionError
-     */
-    closeConnection(): Promise<void>;
 }

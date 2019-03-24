@@ -220,12 +220,10 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
         }
 
         await db.commit();
-		await db.closeConnection();
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance plan was updated successfully`);
 	} catch (error) {
 		try {
 			await db.rollback();
-			await db.closeConnection();
 		} catch (err) { }
 		throw error;
 	}
@@ -264,12 +262,10 @@ export async function updatePerformanceReview(id: Number, performanceReview: IPe
         }
 
         await db.commit();
-		await db.closeConnection();
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance review was updated successfully`);
 	} catch (error) {
 		try {
 			await db.rollback();
-			await db.closeConnection();
 		} catch (err) { }
 		throw error;
 	}
