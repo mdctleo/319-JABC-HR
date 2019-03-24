@@ -132,6 +132,10 @@ BEGIN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email already in use.';
     ELSEIF salary < 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Salary cannot be negative.';
+    ELSEIF remaining_vacation_days < 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Remaining vacation days cannot be negative.';
+    ELSEIF vacation_days < 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Vacation days cannot be negative.';
     ELSE
       INSERT INTO EMPLOYEE VALUES();
       SELECT LAST_INSERT_ID() INTO employeeID;
