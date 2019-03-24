@@ -50,7 +50,7 @@ export async function deleteComment(id: Number, idComment: Number, xAuthToken: s
 
 /**
  * deletes PerformancePlan
- * Will delete the PerformancePlan that matches with the provided [id] from  the Employee with [id] 
+ * Will delete the PerformancePlan that matches with the provided [id] from  the Employee with [id]
  *
  * @param {Number} id Integer id of the searched PerformancePlan
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
@@ -68,7 +68,7 @@ export async function deletePerformancePlan(id: Number, xAuthToken: string) {
 
 /**
  * deletes PerformanceReview
- * Will delete the PerformanceReview that matches with the provided [id] from  the Employee with [id] 
+ * Will delete the PerformanceReview that matches with the provided [id] from  the Employee with [id]
  *
  * @param {Number} id Integer id of the searched PerformanceReview
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
@@ -105,7 +105,7 @@ export async function getComment(id: Number, idComment: Number, xAuthToken: stri
 
 /**
  * get all the Comments from a PerformanceReview with [id]
- * This returns all the Comments of the PerformanceReview with [id]. 
+ * This returns all the Comments of the PerformanceReview with [id].
  *
  * @param {Number} id Integer id of the PerformanceReview with comments
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
@@ -123,7 +123,7 @@ export async function getComments(id: Number, xAuthToken: string) {
 
 /**
  * gets an specific PerformancePlan
- * Will return the PerformancePlan that matches with the provided [id] from  the Employee with [id] 
+ * Will return the PerformancePlan that matches with the provided [id] from  the Employee with [id]
  *
  * @param {Number} id Integer id of the searched PerformancePlan
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
@@ -144,7 +144,7 @@ export async function getPerformancePlan(id: Number, xAuthToken: string) {
 
 /**
  * gets an specific PerformanceReview
- * Will return the PerformanceReview that matches with the provided [id] from  the Employee with [id] 
+ * Will return the PerformanceReview that matches with the provided [id] from  the Employee with [id]
  *
  * @param {Number} id Integer id of the searched PerformanceReview
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
@@ -190,7 +190,7 @@ export async function updateComment(id: Number, idComment: Number, comment: ICom
 
 /**
  * updates the PerformancePlan
- * Will update an PerformancePlan with the provided data in body  if the PerformancePlan matches the [id] 
+ * Will update an PerformancePlan with the provided data in body  if the PerformancePlan matches the [id]
  *
  * @param {Number} id Integer id of the searched PerformancePlan
  * @param {IPerformancePlan} performancePlan IPerformancePlan PerformancePlan data
@@ -234,7 +234,7 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
 
 /**
  * updates the PerformanceReview
- * Will update an PerformanceReview with the provided data in body  if the PerformanceReview matches the [id] 
+ * Will update an PerformanceReview with the provided data in body  if the PerformanceReview matches the [id]
  *
  * @param {Number} id Integer id of the searched PerformanceReview
  * @param {IPerformanceReview} performanceReview IPerformanceReview PerformanceReview data

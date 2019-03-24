@@ -39,7 +39,9 @@ Note: you will probably need to install grunt cli globally, `npm install -g grun
 
 ## Database
 To run database as a standalone
-Developing requires  `docker`, `docker-compose` to create a local database container.
+Developing requires `docker` for desktop and `mysql` shell client to create a local database container.
+Should use docker for mac instead of docker toolbox if possible.
+Using docker for mac will cause the VM to be created using localhost as address.
 
 ```sh
 brew cask install docker
@@ -58,7 +60,12 @@ docker-compose up -d
 ```
 
 
-To get a fresh copy of database, run:
+To get a fresh copy of database, run this script at db while container is up and running:
+```sh
+./resetdb.sh
+```
+
+Alternatively, you can just destroy current containers and rebuild from image:
 ```sh
 # destroys current copy of database
 docker-compose down
@@ -66,7 +73,9 @@ docker-compose down
 docker-compose up -d
 ```
 
-Access database through phpmyadmin at http://192.168.99.100:80, using jabc_db, root, root 
+
+
+Access database through phpmyadmin at localhost:80, using jabc_db, root, root 
 
 
 Here are some useful commands:
