@@ -130,6 +130,8 @@ BEGIN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'SIN already in use.';
     ELSEIF emailChecker > 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email already in use.';
+    ELSEIF salary < 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Salary cannot be negative.';
     ELSE
       INSERT INTO EMPLOYEE VALUES();
       SELECT LAST_INSERT_ID() INTO employeeID;
@@ -624,6 +626,83 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
+-- procedure get_employees_of_manager
+--    - get the employees reporting under the given
+--    - manager, provided the manager exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_employees_of_manager;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_employees_of_manager` (IN manager_id INT)
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO checker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = manager_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager does not exist.';
+  ELSE
+    SET checker = 0;
+    SELECT ADMIN_LEVEL INTO checker
+    FROM `LATEST_HR_RECORDS`
+    WHERE `LATEST_HR_RECORDS`.EMPLOYEE_ID = manager_id;
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An employee with STAFF admin level does not manage other employees.';
+    ELSE
+      SELECT *
+      FROM LATEST_HR_RECORDS hr1
+      WHERE hr1.EMPLOYEE_ID in (
+      SELECT m.EMPLOYEE_ID
+      FROM MANAGER_EMPLOYEE m
+      WHERE m.MANAGER_ID = manager_id
+      );
+    END IF;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_managers_of_employee
+--    - get the managers this employee reports to
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_managers_of_employee;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_managers_of_employee` (IN employee_id INT)
+BEGIN
+  DECLARE checker INT;
+
+  SET checker = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO checker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
+
+  IF checker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+  ELSE
+    SELECT *
+    FROM LATEST_HR_RECORDS hr1
+    WHERE hr1.EMPLOYEE_ID in (
+      SELECT m.MANAGER_ID
+      FROM MANAGER_EMPLOYEE m
+      WHERE m.EMPLOYEE_ID = employee_id
+    );
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
 -- procedure get_employee_managers
 --    - get the employees reporting under the given
 --    - manager, provided the manager exists
@@ -838,9 +917,11 @@ CREATE PROCEDURE `unlink_employee_manager` (IN e_id INT
 BEGIN
   DECLARE emplChecker INT;
   DECLARE managChecker INT;
+  DECLARE linkChecker INT;
 
   SET emplChecker = 0;
   SET managChecker = 0;
+  SET linkChecker = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
   FROM `EMPLOYEE`
@@ -850,10 +931,17 @@ BEGIN
   FROM `EMPLOYEE`
   WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
 
+  SELECT COUNT(*) INTO linkChecker
+  FROM `MANAGER_EMPLOYEE`
+  WHERE `MANAGER_EMPLOYEE`.EMPLOYEE_ID = e_id
+  AND `MANAGER_EMPLOYEE`.MANAGER_ID = m_id;
+
   IF emplChecker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
   ELSEIF managChecker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager employee does not exist.';
+  ELSEIF linkChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee-Manager link does not exist.';
   ELSE
     DELETE FROM MANAGER_EMPLOYEE
     WHERE MANAGER_ID = m_id AND EMPLOYEE_ID = e_id;

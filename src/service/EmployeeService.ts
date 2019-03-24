@@ -77,7 +77,7 @@ export async function createOnboardingTask(id: Number, onboardingTask: IOnboardi
  **/
 export async function createEmployee(employee: IEmployee, xAuthToken: String) {
 	try {
-		employee = Employee.Prepare(employee)
+		employee = Employee.Prepare(employee);
 		let res = await Database.getInstance().query('CALL create_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			null,
 			employee.fkRole,
@@ -96,7 +96,7 @@ export async function createEmployee(employee: IEmployee, xAuthToken: String) {
 			employee.dateJoined,
 			employee.adminLevel,
 			employee.phoneNumber,
-		], JABCResponse.EMPLOYEE)
+		], JABCResponse.EMPLOYEE);
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, ${employee.firstname} ${employee.lastname}, was registered successfully`)
 	} catch (error) {
 		throw error;
@@ -251,11 +251,13 @@ export async function deleteEmployee(id: Number, xAuthToken: String, idAdmin: Nu
  **/
 export async function getEmployee(id: Number, xAuthToken: String) {
 	try {
-		let res = await Database.getInstance().query('CALL get_employee(?)', [id], JABCResponse.EMPLOYEE)
-		let employee = new Employee(res[0][0][0])
-		if(employee.fkRole != null)
-			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken)
-		return employee
+		let res = await Database.getInstance().query('CALL get_employee(?)', [id], JABCResponse.EMPLOYEE);
+		let employee = new Employee(res[0][0][0]);
+		if (employee.fkRole != null)
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken);
+		delete employee.password;
+
+		return employee;
 	} catch (error) {
 		throw error;
 	}
@@ -322,11 +324,11 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
  **/
 export async function getEmployeesByManager(idManager: Number, xAuthToken: String) {
 	try {
-		let res = await Database.getInstance().query('CALL get_manager_employees(?)', [idManager], JABCResponse.EMPLOYEE)
-		let employees = Employee.Employees(res[0][0])
+		let res = await Database.getInstance().query('CALL get_employees_of_manager(?)', [idManager], JABCResponse.EMPLOYEE)
+		let employees = Employee.Employees(res[0][0]);
 		for(let employee of employees){
 			if(employee.fkRole == null) continue;
-			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken);
 			delete employee.role.competencies
 		}
 		return employees
@@ -365,14 +367,14 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
  **/
 export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 	try {
-		let res = await Database.getInstance().query('CALL get_employee_managers(?)', [id], JABCResponse.EMPLOYEE)
-		let employees = Employee.Employees(res[0][0])
-		for(let employee of employees){
-			if(employee.fkRole == null) continue;
-			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
-			delete employee.role.competencies
+		let res = await Database.getInstance().query('CALL get_managers_of_employee(?)', [id], JABCResponse.EMPLOYEE);
+		let managers = Employee.Employees(res[0][0]);
+		for (let manager of managers) {
+			if (manager.fkRole == null) continue;
+            manager.role = await RoleService.getRole(manager.fkRole, xAuthToken);
+			delete manager.role.competencies;
 		}
-		return employees
+		return managers;
 	} catch (error) {
 		throw error;
 	}
@@ -446,8 +448,8 @@ export async function getVacations(id: Number, xAuthToken: String, term: String)
  * @returns {Promise<IApiResponse>}
  **/
 export async function linkEmployeeManager(id: Number, idManager: Number, xAuthToken: String) {
-	try {
-		let res = await Database.getInstance().query('CALL link_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
+    try {
+        let res = await Database.getInstance().query('CALL link_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, was assigned to the manager`)
 	} catch (error) {
 		throw error;

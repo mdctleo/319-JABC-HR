@@ -42,6 +42,7 @@ export async function createRole(role: IRole, xAuthToken: String) {
     try {
         await db.beginTransaction();
 
+        role = Role.Prepare(role);
         await Database.getInstance().rawQuery('CALL create_role(?,?)', [
             role.name,
             role.description
