@@ -21,6 +21,10 @@ const KEY = process.env.JWT_KEY;
  **/
 export async function completeOnboardingTask(id: Number, idOnboardingTask: Number, xAuthToken: string, document: any) {
 	try {
+		const client = (await Auth(xAuthToken)).employee
+		if(id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF){
+			throw new JABCError(JABCResponse.ONBOARDING, 'An employee can not complete other employee task.')
+		}
 		if (document) {
 			if (document.buffer.length > process.env.MAX_FILE)
 				throw new JABCError(JABCResponse.ONBOARDING, 'The file exceeded the size limit of 16 mb')
@@ -72,14 +76,15 @@ export async function createOnboardingTask(id: Number, onboardingTask: IOnboardi
  * Will create a new Employee with the provided data in body
  *
  * @param {IEmployee} employee Employee data
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
+ * @param {string} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function createEmployee(employee: IEmployee, xAuthToken: String) {
+export async function createEmployee(employee: IEmployee, xAuthToken: string) {
 	try {
+		const client = (await Auth(xAuthToken)).employee
 		employee = Employee.Prepare(employee)
 		let res = await Database.getInstance().query('CALL create_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
-			null,
+			client.id,
 			employee.fkRole,
 			employee.sin,
 			employee.email,
@@ -114,8 +119,25 @@ export async function createEmployee(employee: IEmployee, xAuthToken: String) {
  * @returns {Promise<IApiResponse>}
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
-	let db = Database.getInstance()
+	let db;
 	try {
+		const client = (await Auth(xAuthToken)).employee
+		if(client.adminLevel == IEmployee.adminLevelEnum.MANAGER){
+			let managed = false;
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			for(let manager of managersOfEmployee){
+				if(manager.id === client.id){
+					managed = true;
+					break;
+				}
+			}
+			if(!managed){
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+			}
+		}else if(client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id){
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance plan of other employee.')
+		}
+		db = Database.getInstance()
 		await db.beginTransaction()
 		// Insert performance plan
 		let res = await db.rawQuery('CALL create_employee_performance_plan(?,?,?)', [
@@ -158,8 +180,25 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
  * @returns {Promise<IApiResponse>}
  **/
 export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
-	let db = Database.getInstance()
+	let db;
 	try {
+		const client = (await Auth(xAuthToken)).employee
+		if(client.adminLevel == IEmployee.adminLevelEnum.MANAGER){
+			let managed = false;
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			for(let manager of managersOfEmployee){
+				if(manager.id === client.id){
+					managed = true;
+					break;
+				}
+			}
+			if(!managed){
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+			}
+		}else if(client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id){
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance review of other employee.')
+		}
+		db = Database.getInstance();
 		await db.beginTransaction()
 		// Insert performance review
 		let res = await db.rawQuery('CALL create_employee_performance_review(?,?,?,?)', [
@@ -227,7 +266,7 @@ export async function createVacation(id: Number, vacation: IVacation, xAuthToken
  * @param {Number} idAdmin Who is deleting the employee (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function deleteEmployee(id: Number, xAuthToken: String, idAdmin: Number) {
+export async function deleteEmployee(id: Number, xAuthToken: string, idAdmin: Number) {
 	try {
 		let employee = await getEmployee(id, xAuthToken)
 		employee.status = IEmployee.statusEnum.INACTIVE
@@ -513,12 +552,13 @@ export async function unlinkEmployeeManager(id: Number, idManager: Number, xAuth
  * @param {Number} idAdmin Who is updating the employee (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken: String, idAdmin: Number) {
+export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken: string, idAdmin: Number) {
 	try {
+		const client = (await Auth(xAuthToken)).employee
 		employee = Employee.Prepare(employee)
 		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			id,
-			(idAdmin) ? idAdmin : null,
+			(idAdmin) ? idAdmin : client.id,
 			employee.fkRole,
 			employee.sin,
 			employee.email,

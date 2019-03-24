@@ -16,8 +16,9 @@ import Log from "../../util/Log";
  **/
 export async function createCompetency(competency: ICompetency, idRole: number, xAuthToken: string) {
     try {
+        competency = Competency.Prepare(competency);
         let res = await Database.getInstance().query('CALL create_competency(?,?,?)', [
-            competency.fkRole,
+            idRole,
             competency.name,
             competency.description
         ], JABCResponse.COMPETENCY);

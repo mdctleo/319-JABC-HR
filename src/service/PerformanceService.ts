@@ -1,6 +1,7 @@
 'use strict';
-import { Comment, IComment, IPerformancePlan, IPerformanceReview, IPerformanceSection, PerformancePlan, PerformanceReview, PerformanceSection } from '../model/models'
+import { Comment, IComment, IPerformancePlan, IPerformanceReview, IPerformanceSection, PerformancePlan, PerformanceReview, PerformanceSection, IEmployee } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
+import { Auth, getManagersByEmployee } from '../service/EmployeeService'
 import Database from '../database/Database';
 
 /**
@@ -14,11 +15,12 @@ import Database from '../database/Database';
  **/
 export async function createComment(id: Number, comment: IComment, xAuthToken: string) {
     try {
+        const client = (await Auth(xAuthToken)).employee
         let res = await Database.getInstance().query('CALL create_performance_review_comment(?,?,?,?)', [
             id,
             comment.comment,
             comment.date,
-            comment.fkCommenter,
+            client.id,
         ], JABCResponse.PERFORMANCE)
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The comment was created successfully`)
     } catch (error) {
@@ -198,9 +200,25 @@ export async function updateComment(id: Number, idComment: Number, comment: ICom
  * @returns {Promise<IApiResponse>}
  **/
 export async function updatePerformancePlan(id: Number, performancePlan: IPerformancePlan, xAuthToken: string) {
-    let db = Database.getInstance();
-
-    try {
+    let db;
+	try {
+		const client = (await Auth(xAuthToken)).employee
+		if(client.adminLevel == IEmployee.adminLevelEnum.MANAGER){
+			let managed = false;
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			for(let manager of managersOfEmployee){
+				if(manager.id === client.id){
+					managed = true;
+					break;
+				}
+			}
+			if(!managed){
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+			}
+		}else if(client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id){
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not update a performance plan of other employee.')
+		}
+		db = Database.getInstance();
         await db.beginTransaction();
 
 		let res = await db.rawQuery('CALL update_performance_plan(?,?,?)', [
@@ -242,9 +260,25 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
  * @returns {Promise<IApiResponse>}
  **/
 export async function updatePerformanceReview(id: Number, performanceReview: IPerformanceReview, xAuthToken: string) {
-    let db = Database.getInstance();
-
-    try {
+    let db;
+	try {
+		const client = (await Auth(xAuthToken)).employee
+		if(client.adminLevel == IEmployee.adminLevelEnum.MANAGER){
+			let managed = false;
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			for(let manager of managersOfEmployee){
+				if(manager.id === client.id){
+					managed = true;
+					break;
+				}
+			}
+			if(!managed){
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+			}
+		}else if(client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id){
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not update a performance review of other employee.')
+		}
+		db = Database.getInstance();
         await db.beginTransaction();
 
 		let res = await db.rawQuery('CALL update_performance_review(?,?,?)', [

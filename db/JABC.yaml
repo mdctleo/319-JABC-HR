@@ -1914,7 +1914,6 @@ definitions:
     # - id
     - sin
     - email
-    - password
     - firstname
     - lastname
     - fte
@@ -1957,6 +1956,7 @@ definitions:
         maximum: 2 # HR_ADMIN
       salary:
         type: number
+        minimum: 0
       address:
         type: string
       birthdate:
@@ -1993,7 +1993,6 @@ definitions:
     # - id
     - sin
     - email
-    - password
     - firstname
     - lastname
     - fte
