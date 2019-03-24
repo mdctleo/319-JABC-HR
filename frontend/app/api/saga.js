@@ -24,6 +24,11 @@ export function* updateEmployee(employee) {
   }
 }
 
+export function* updateEmployeePassword(employee) {
+  const employeeObj = IEmployee.constructFromObject(employee);
+  yield employeeApi.updateEmployeePassword(employee.id, employeeObj);
+}
+
 export function* createEmployee(employee) {
   const employeeObj = IEmployee.constructFromObject(employee);
   yield employeeApi.createEmployee(employeeObj);

@@ -29,18 +29,17 @@ export default class IFAQ {
     * A FAQ contains a question and answer, to help the employee while onboarding 
     * @alias module:model/IFAQ
     * @class
-    * @param id {Number} The unique identifier of the FAQ
     * @param question {String} 
     * @param answer {String} 
     */
 
-    constructor(id, question, answer) {
+    constructor(question, answer) {
         
 
         
         
 
-        this['id'] = id;this['question'] = question;this['answer'] = answer;
+        this['question'] = question;this['answer'] = answer;
 
         
     }

@@ -29,17 +29,16 @@ export default class IDocumentType {
     * A DocumentType contains info of the template support document for the onboarding process 
     * @alias module:model/IDocumentType
     * @class
-    * @param id {Number} The unique identifier of the DocumentType
     * @param name {String} 
     */
 
-    constructor(id, name) {
+    constructor(name) {
         
 
         
         
 
-        this['id'] = id;this['name'] = name;
+        this['name'] = name;
 
         
     }

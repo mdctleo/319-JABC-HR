@@ -29,20 +29,19 @@ export default class IVacation {
     * A Vacation contains info of the employee asking for a vaction period 
     * @alias module:model/IVacation
     * @class
-    * @param id {Number} The unique identifier of the Vacation
     * @param fkEmployee {Number} The unique identifier of the Employee that requests the vacation
     * @param requestedDays {Number} The number of vacation days the employee requested
     * @param requestedStatus {Number} 
     * @param _date {Date} The date when the employee requested the vacation
     */
 
-    constructor(id, fkEmployee, requestedDays, requestedStatus, _date) {
+    constructor(fkEmployee, requestedDays, requestedStatus, _date) {
         
 
         
         
 
-        this['id'] = id;this['fkEmployee'] = fkEmployee;this['requestedDays'] = requestedDays;this['requestedStatus'] = requestedStatus;this['date'] = _date;
+        this['fkEmployee'] = fkEmployee;this['requestedDays'] = requestedDays;this['requestedStatus'] = requestedStatus;this['date'] = _date;
 
         
     }
