@@ -316,7 +316,6 @@ CREATE TABLE IF NOT EXISTS `jabc_db`.`COMPETENCY` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table `jabc_db`.`COMMENT`
 -- -----------------------------------------------------
@@ -362,6 +361,142 @@ CREATE TABLE IF NOT EXISTS `jabc_db`.`FAQ` (
   `ANSWER` VARCHAR(1000) NOT NULL,
   PRIMARY KEY (`FAQ_ID`))
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Insert a test some test roles
+-- -----------------------------------------------------
+
+INSERT INTO jabc_db.ROLE (ROLE_ID, ROLE_NAME, DESCRIPTION)
+VALUES
+(NULL, "Developer", "A Test Developer Role"),
+(NULL, "Sales", "A Test Sales Role"),
+(NULL, "Marketing", "A Test Marketing Role");
+
+COMMIT;
+-- -----------------------------------------------------
+-- Insert a some test hr records
+-- -----------------------------------------------------
+
+SET GLOBAL FOREIGN_KEY_CHECKS=0;
+
+COMMIT;
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(1, 1, 1, 1, 11111111, 'tflenderson@jabc.com', 'Toby', 'Flenderson', 'hr_test_road', '1969-11-30', 20, 10, 1, 1, 'hrtest', '200.00', '1989-12-01', 2, '1989-12-01', '6041111111');
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(2, 1, 1, 1, 22222222, 'mscott@jabc.com', 'Michael', 'Scott', '3333 Maple road', '1964-12-08', 20, 0, 1, 1, 'managertest', '5000.00', '1989-12-01', 1, '1989-01-01', '6042222222');
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(3, 1, 1, 2, 33333333, 'jhalpert@jabc.com', 'Jim', 'Halpert', '8888 Halpert road', '1979-09-03', 10, 10, 1, 1, 'employeetest', '3000.00', '2002-04-01', 0, '2002-04-01', '6043333333');
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(4, 1, 1, 2, 44444444, 'dschrute@jabc.com', 'Dwight', 'Schrute', 'Schrute Farm', '1978-10-30', 10, 8, 1, 1, 'employeetest', '3000.0', '2000-03-01', 0, '2000-04-01', '6044444444');
+
+INSERT INTO `HR_RECORD` (`EMPLOYEE_ID`, `VERSION`, `CREATED_BY`, `ROLE`, `SIN`, `EMAIL`, `FIRST_NAME`, `LAST_NAME`, `ADDRESS`, `BIRTHDATE`, `VACATION_DAYS`, `REMAINING_VACATION_DAYS`, `FTE`, `STATUS`, `PASSWORD`, `SALARY`, `DATE_JOINED`, `ADMIN_LEVEL`, `CREATED_DATE`, `PHONE_NUMBER`) VALUES
+(5, 1, 1, 3, 55555555, 'kfilippelli@jabc.com', 'Karen', 'Filippelli', 'Exotic Land', '1980-01-30', 10, 8, 1, 1, 'employeetest', '3000.0', '2004-02-01', 1, '2004-02-03', '6045555555');
+
+INSERT INTO `EMPLOYEE` (`EMPLOYEE_ID`) VALUES
+(1),
+(2),
+(3),
+(4),
+(5);
+
+INSERT INTO `DOC_TYPE`(`DOC_TYPE_ID`, `DOC_NAME`, `TEMPLATE_FILE`, `DESCRIPTION`, `MIME_TYPE`) VALUES
+(NULL, 'young_obi_wan', NULL, 'An image of young obi wan', 'image/jpeg');
+
+INSERT INTO `DOC_TYPE`(`DOC_TYPE_ID`, `DOC_NAME`, `TEMPLATE_FILE`, `DESCRIPTION`, `MIME_TYPE`) VALUES
+(NULL, 'adult_obi_wan', NULL, 'An image of adult obi wan', 'image/jpeg');
+
+INSERT INTO `DOC_TYPE`(`DOC_TYPE_ID`, `DOC_NAME`, `TEMPLATE_FILE`, `DESCRIPTION`, `MIME_TYPE`) VALUES
+(NULL, 'old_obi_wan', NULL, 'An image of old obi wan', 'image/jpeg');
+
+INSERT INTO `PERFORMANCE_PLAN`(`PERFORMANCE_PLAN_ID`, `CREATED_DATE`, `STATUS`, `EMPLOYEE_ID`) VALUES
+(NULL, '2018-01-01', 1, 3);
+
+INSERT INTO `PERFORMANCE_REVIEW`(`PERFORMANCE_REVIEW_ID`, `WORK_PLAN_ID`, `CREATED_DATE`, `STATUS`, `EMPLOYEE_ID`) VALUES
+(NULL, 1, '2018-12-31', 1, 3);
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,
+    '{"pid": 101, "name": "name1"}',
+    1,
+    1,
+    'section_1');
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,
+    '{"pid": 101, "name": "name1"}',
+    1,
+    1,
+    'section_2');
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,
+    '{"pid": 101, "name": "name1"}',
+    1,
+    1,
+    'section_3');
+
+INSERT INTO `PERFORMANCE_PLAN`(`PERFORMANCE_PLAN_ID`, `CREATED_DATE`, `STATUS`, `EMPLOYEE_ID`) VALUES
+(NULL, '2019-01-01', 1, 3);
+
+INSERT INTO `PERFORMANCE_REVIEW`(`PERFORMANCE_REVIEW_ID`, `WORK_PLAN_ID`, `CREATED_DATE`, `STATUS`, `EMPLOYEE_ID`) VALUES
+(NULL, 2, '2019-12-31', 0, 3);
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,
+    '{"pid": 101, "name": "name1"}',
+    2,
+    2,
+    'section_1');
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,
+    '{"pid": 101, "name": "name1"}',
+    2,
+    2,
+    'section_2');
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,'{"pid": 101, "name": "name1"}',2,2,'section_3');
+
+INSERT INTO `PERFORMANCE_PLAN`(`PERFORMANCE_PLAN_ID`, `CREATED_DATE`, `STATUS`, `EMPLOYEE_ID`) VALUES
+(NULL, '2018-01-01', 1, 4);
+
+INSERT INTO `PERFORMANCE_REVIEW`(`PERFORMANCE_REVIEW_ID`, `WORK_PLAN_ID`, `CREATED_DATE`, `STATUS`, `EMPLOYEE_ID`) VALUES
+(NULL, 3, '2018-12-31', 1, 4);
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,
+    '{"pid": 101, "name": "name1"}',
+    3,
+    3,
+    'section_1');
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,
+    '{"pid": 101, "name": "name1"}',
+    3,
+    3,
+    'section_2');
+
+INSERT INTO `PERFORMANCE_SECTION`(`SECTION_ID`, `DATA`, `PERFORMANCE_REVIEW_ID`, `PERFORMANCE_PLAN_ID`, `SECTION_NAME`) VALUES
+(NULL,
+    '{"pid": 101, "name": "name1"}',
+    3,
+    3,
+    'section_3');
+
+
+
+COMMIT;
+
+SET GLOBAL  FOREIGN_KEY_CHECKS=1;
+COMMIT;
+
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

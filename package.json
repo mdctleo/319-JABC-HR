@@ -8,16 +8,24 @@
   "license": "BSD-3-Clause-Clear",
   "scripts": {
     "build": "tsc",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "yarn build && mocha src/test/**/*.js --timeout 10000"
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "chai-exclude": "^1.0.12",
+    "chai-http": "^4.2.1",
+    "chai-json-equal": "^0.0.1",
+    "chai-json-schema": "^1.5.0",
+    "faker": "^4.1.0",
     "grunt": "^1.0.3",
     "grunt-concurrent": "^2.3.1",
     "grunt-nodemon": "^0.4.2",
     "grunt-run": "^0.8.1",
     "grunt-ts": "^6.0.0-beta.22",
-    "mocha": "^5.2.0"
+    "json-schema-faker": "^0.5.0-rc16",
+    "mocha": "^5.2.0",
+    "shelljs": "^0.8.3"
   },
   "dependencies": {
     "@types/chai": "^4.1.7",

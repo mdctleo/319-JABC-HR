@@ -85,12 +85,12 @@ class Profile extends React.PureComponent {
   state = {
     activeTab: 0,
     isAdmin: true,
-    open: false,
+    showPasswordChange: false,
   };
 
   handleChange = (event, value) => {
     this.setState({ activeTab: value });
-    this.setState({ edit: false });
+    this.props.setEditing(false);
   };
 
   handleClickEdit = () => {
@@ -105,16 +105,21 @@ class Profile extends React.PureComponent {
     this.props.setEditing(false);
   };
 
-  handleClose = () => {
-    this.setState({ open: false });
+  closePasswordChangeDialog = () => {
+    this.setState({ showPasswordChange: false });
   };
 
-  handleOpen = () => {
-    this.setState({ open: true });
+  openPasswordChangeDialog = () => {
+    this.setState({ showPasswordChange: true });
+  };
+
+  updatePassword = password => {
+    const newProfile = { ...this.props.profile, password };
+    this.props.updatePassword(newProfile);
   };
 
   render() {
-    const { activeTab, isAdmin, open } = this.state;
+    const { activeTab, isAdmin, showPasswordChange } = this.state;
     const { classes, role, profile, profileDomain, allRoles } = this.props;
     const { editing } = profileDomain;
 
@@ -135,9 +140,10 @@ class Profile extends React.PureComponent {
           </AppBar>
           <div className="profile-card">
             <ChangePasswordDialog
-              open={open}
+              open={showPasswordChange}
               profile={profile}
-              handleClose={this.handleClose}
+              handleClose={this.closePasswordChangeDialog}
+              updatePassword={this.updatePassword}
             />
             {activeTab === 0 &&
               !isAdmin && (
@@ -149,7 +155,7 @@ class Profile extends React.PureComponent {
                   />
                   <Button
                     className={classes.resetButton}
-                    onClick={this.handleOpen}
+                    onClick={this.openPasswordChangeDialog}
                   >
                     Change Password
                   </Button>
@@ -172,7 +178,7 @@ class Profile extends React.PureComponent {
                   />
                   <Button
                     className={classes.resetButton}
-                    onClick={this.handleOpen}
+                    onClick={this.openPasswordChangeDialog}
                   >
                     Change Password
                   </Button>
@@ -202,6 +208,7 @@ Profile.propTypes = {
   role: PropTypes.object,
   getProfileData: PropTypes.func,
   saveProfile: PropTypes.func,
+  updatePassword: PropTypes.func,
   setEditing: PropTypes.func,
   profileDomain: PropTypes.object,
   allRoles: PropTypes.array,

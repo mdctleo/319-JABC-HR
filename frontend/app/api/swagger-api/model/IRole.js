@@ -30,17 +30,16 @@ export default class IRole {
     * An Role is contains all the current information of a current or onboarding employee 
     * @alias module:model/IRole
     * @class
-    * @param id {Number} The unique identifier of the Role
     * @param name {String} 
     */
 
-    constructor(id, name) {
+    constructor(name) {
         
 
         
         
 
-        this['id'] = id;this['name'] = name;
+        this['name'] = name;
 
         
     }

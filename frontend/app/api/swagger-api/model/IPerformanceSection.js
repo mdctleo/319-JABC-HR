@@ -13,6 +13,7 @@
 
 
 import ApiClient from '../ApiClient';
+import IPerformanceSectionData from './IPerformanceSectionData';
 
 
 
@@ -29,15 +30,17 @@ export default class IPerformanceSection {
     * A JSON object containing all the information of a section in either PerformancePlan or PerformanceReview 
     * @alias module:model/IPerformanceSection
     * @class
+    * @param data {module:model/IPerformanceSectionData} 
+    * @param sectionName {String} 
     */
 
-    constructor() {
+    constructor(data, sectionName) {
         
 
         
         
 
-        
+        this['data'] = data;this['sectionName'] = sectionName;
 
         
     }
@@ -57,10 +60,48 @@ export default class IPerformanceSection {
             
             
 
+            if (data.hasOwnProperty('id')) {
+                obj['id'] = ApiClient.convertToType(data['id'], 'Number');
+            }
+            if (data.hasOwnProperty('data')) {
+                obj['data'] = IPerformanceSectionData.constructFromObject(data['data']);
+            }
+            if (data.hasOwnProperty('sectionName')) {
+                obj['sectionName'] = ApiClient.convertToType(data['sectionName'], 'String');
+            }
+            if (data.hasOwnProperty('fkPerformancePlan')) {
+                obj['fkPerformancePlan'] = ApiClient.convertToType(data['fkPerformancePlan'], 'Number');
+            }
+            if (data.hasOwnProperty('fkPerformanceReview')) {
+                obj['fkPerformanceReview'] = ApiClient.convertToType(data['fkPerformanceReview'], 'Number');
+            }
         }
         return obj;
     }
 
+    /**
+    * The unique identifier of the Performance
+    * @member {Number} id
+    */
+    id = undefined;
+    /**
+    * @member {module:model/IPerformanceSectionData} data
+    */
+    data = undefined;
+    /**
+    * @member {String} sectionName
+    */
+    sectionName = undefined;
+    /**
+    * The unique identifier of the Performance Plan that owns this section
+    * @member {Number} fkPerformancePlan
+    */
+    fkPerformancePlan = undefined;
+    /**
+    * The unique identifier of the Performance Review that owns this section
+    * @member {Number} fkPerformanceReview
+    */
+    fkPerformanceReview = undefined;
 
 
 

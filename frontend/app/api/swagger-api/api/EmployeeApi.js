@@ -1260,4 +1260,68 @@ export default class EmployeeApi {
     }
 
 
+    /**
+     * updates the password of an employee
+     * Will update the password provided in the body
+     * @param {Number} id id of the Employee to change password
+     * @param {module:model/IEmployee} employee Employee with new password
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
+     */
+    updateEmployeePasswordWithHttpInfo(id, employee, opts) {
+      opts = opts || {};
+      let postBody = employee;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling updateEmployeePassword");
+      }
+
+      // verify the required parameter 'employee' is set
+      if (employee === undefined || employee === null) {
+        throw new Error("Missing the required parameter 'employee' when calling updateEmployeePassword");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IApiResponse;
+
+      return this.apiClient.callApi(
+        '/employee/{id}/password', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * updates the password of an employee
+     * Will update the password provided in the body
+     * @param {Number} id id of the Employee to change password
+     * @param {module:model/IEmployee} employee Employee with new password
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
+     */
+    updateEmployeePassword(id, employee, opts) {
+      return this.updateEmployeePasswordWithHttpInfo(id, employee, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
 }

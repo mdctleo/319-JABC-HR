@@ -26,6 +26,7 @@ import IOnboardingTask from './model/IOnboardingTask';
 import IPerformancePlan from './model/IPerformancePlan';
 import IPerformanceReview from './model/IPerformanceReview';
 import IPerformanceSection from './model/IPerformanceSection';
+import IPerformanceSectionData from './model/IPerformanceSectionData';
 import IRole from './model/IRole';
 import IVacation from './model/IVacation';
 import EmployeeApi from './api/EmployeeApi';
@@ -150,6 +151,12 @@ export {
      * @property {module:model/IPerformanceSection}
      */
     IPerformanceSection,
+
+    /**
+     * The IPerformanceSectionData model constructor.
+     * @property {module:model/IPerformanceSectionData}
+     */
+    IPerformanceSectionData,
 
     /**
      * The IRole model constructor.

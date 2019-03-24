@@ -42,23 +42,6 @@ describe("Database Tests", () => {
         }
     });
 
-    it ("Should be able to connect to the database", async () => {
-        const config: any = {
-            host: "192.168.99.100",
-            database: "jabc_db",
-            user: "root",
-            password: "root"
-        };
-        let result: any;
-        try {
-            await db.initConnection(config);
-        } catch (err) {
-            Log.trace(err);
-            result = err;
-        } finally {
-            // expect(result).to.be.instanceOf(DatabaseConnectionError);
-        }
-    });
 
     it ("Should throw a DatabaseQueryError when a query is unable to be performed" , async () => {
         let queryResult: any;
