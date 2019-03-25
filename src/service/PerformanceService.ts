@@ -253,7 +253,7 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
 	try {
 		const performancePlan_ = await getPerformancePlan(id, xAuthToken)
         db = Database.getInstance();
-        conn = db.initConnection();
+        conn = await db.initConnection();
         await db.beginTransaction(conn);
 
 		let res = await db.rawQuery(conn, 'CALL update_performance_plan(?,?,?)', [
@@ -275,11 +275,15 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
         }
 
         await db.commit(conn);
+		await db.closeConnection(conn);
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance plan was updated successfully`);
 	} catch (error) {
 		try {
-			await db.rollback(conn);
-        } catch (err) { }
+			await db.rollback(conn)
+		} catch (err) { }
+		try {
+			await db.closeConnection(conn)
+		} catch (err) { }
 		throw error;
 	} finally {
         try {
@@ -304,10 +308,10 @@ export async function updatePerformanceReview(id: Number, performanceReview: IPe
 	try {
 		const performanceReview_ = await getPerformanceReview(id, xAuthToken)
         db = Database.getInstance();
-        conn = db.initConnection();
+        conn = await db.initConnection();
         await db.beginTransaction(conn);
 
-		let res = await db.rawQuery(conn,'CALL update_performance_review(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL update_performance_review(?,?,?)', [
 			id,
 			performanceReview.date,
 			performanceReview.status
@@ -326,11 +330,15 @@ export async function updatePerformanceReview(id: Number, performanceReview: IPe
         }
 
         await db.commit(conn);
+		await db.closeConnection(conn);
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance review was updated successfully`);
 	} catch (error) {
 		try {
-			await db.rollback(conn);
-        } catch (err) { }
+			await db.rollback(conn)
+		} catch (err) { }
+		try {
+			await db.closeConnection(conn)
+		} catch (err) { }
 		throw error;
 	} finally {
         try {

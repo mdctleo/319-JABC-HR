@@ -135,7 +135,7 @@ export async function createEmployee(employee: IEmployee, xAuthToken: string) {
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
 	let db: IDatabaseClient;
-  let conn: any;
+	let conn: any;
 	try {
 		const client = (await Auth(xAuthToken)).employee
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
@@ -154,7 +154,7 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance plan of other employee.')
 		}
 		db = Database.getInstance()
-		conn = db.initConnection()
+		conn = await db.initConnection()
 		await db.beginTransaction(conn)
 		// Insert performance plan
 		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?)', [
@@ -176,12 +176,16 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 			}
 		}
 
-		await db.commit(conn);
+		await db.commit(conn)
+		await db.closeConnection(conn)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
 	} catch (error) {
 		try {
-			await db.rollback(conn);
-        } catch (err) { }
+			await db.rollback(conn)
+		} catch (err) { }
+		try {
+			await db.closeConnection(conn)
+		} catch (err) { }
 		throw error;
 	} finally {
         try {
@@ -202,7 +206,7 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
  **/
 export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
 	let db: IDatabaseClient;
-  let conn: any;
+	let conn: any;
 	try {
 		const client = (await Auth(xAuthToken)).employee
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
@@ -220,11 +224,11 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance review of other employee.')
 		}
-		db = Database.getInstance()
-		conn = db.initConnection()
+		db = Database.getInstance();
+		conn = await db.initConnection();
 		await db.beginTransaction(conn)
 		// Insert performance review
-		let res = await db.rawQuery(conn,'CALL create_employee_performance_review(?,?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_review(?,?,?,?)', [
 			id,
 			performance.fkPerformancePlan,
 			performance.date,
@@ -242,12 +246,16 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 			])
 		}
 
-		await db.commit(conn);
+		await db.commit(conn)
+		await db.closeConnection(conn)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was registered successfully`)
 	} catch (error) {
 		try {
-			await db.rollback(conn);
-        } catch (err) { }
+			await db.rollback(conn)
+		} catch (err) { }
+		try {
+			await db.closeConnection(conn)
+		} catch (err) { }
 		throw error;
 	} finally {
         try {

@@ -3,6 +3,7 @@ import {IRole, Role, ICompetency, Competency} from "../model/models";
 import { JABCResponse, JABCSuccess } from "../utils/ResponseManager";
 import Database from "../database/Database";
 import Log from "../../util/Log";
+import IDatabaseClient from "../database/IDatabaseClient";
 
 
 /**
@@ -39,10 +40,11 @@ export async function createCompetency(competency: ICompetency, idRole: number, 
  * @returns {Promise<IApiResponse>}
  **/
 export async function createRole(role: IRole, xAuthToken: String) {
-    let db = Database.getInstance();
+    let db: IDatabaseClient;
     let conn: any;
     try {
-        conn = await db.initConnection();
+        db = Database.getInstance();
+        conn = await db.initConnection()
         await db.beginTransaction(conn);
 
         role = Role.Prepare(role);
@@ -66,6 +68,8 @@ export async function createRole(role: IRole, xAuthToken: String) {
         }
 
         await db.commit(conn);
+        await db.closeConnection(conn);
+
         return new JABCSuccess(JABCResponse.ROLE, `The role was created successfully.`);
     } catch (error) {
 		try {
@@ -74,7 +78,10 @@ export async function createRole(role: IRole, xAuthToken: String) {
 		throw error;
 	} finally {
         try {
-			await db.closeConnection(conn);
+            await db.rollback(conn);
+        } catch (err) { }
+        try {
+            await db.closeConnection(conn);
         } catch (err) { }
     }
 }
@@ -228,9 +235,10 @@ export async function updateCompetency(id: Number, competency: ICompetency, idRo
  * @returns {Promise<IApiResponse>}
  **/
 export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
-    let db = Database.getInstance();
+    let db: IDatabaseClient;
     let conn: any;
     try {
+        db = Database.getInstance();
         conn = await db.initConnection();
         await db.beginTransaction(conn);
 
@@ -256,6 +264,8 @@ export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
         }
 
         await db.commit(conn);
+        await db.closeConnection(conn);
+
         return new JABCSuccess(JABCResponse.ROLE, `The role, ${role.name}, was updated successfully`);
     } catch (error) {
 		try {
@@ -264,7 +274,10 @@ export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
 		throw error;
 	} finally {
         try {
-			await db.closeConnection(conn);
+            await db.rollback(conn);
+        } catch (err) { }
+        try {
+            await db.closeConnection(conn);
         } catch (err) { }
     }
 }
