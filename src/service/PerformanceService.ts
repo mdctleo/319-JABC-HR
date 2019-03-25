@@ -3,6 +3,7 @@ import { Comment, IComment, IPerformancePlan, IPerformanceReview, IPerformanceSe
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import { Auth, getManagersByEmployee } from '../service/EmployeeService'
 import Database from '../database/Database';
+import IDatabaseClient from '../database/IDatabaseClient';
 
 /**
  * creates a new Comment for the PerformanceReview with [id]
@@ -247,23 +248,25 @@ export async function updateComment(id: Number, idComment: Number, comment: ICom
  * @returns {Promise<IApiResponse>}
  **/
 export async function updatePerformancePlan(id: Number, performancePlan: IPerformancePlan, xAuthToken: string) {
-    let db;
+    let db: IDatabaseClient;
+    let conn: any;
 	try {
 		const performancePlan_ = await getPerformancePlan(id, xAuthToken)
-		db = Database.getInstance();
-        await db.beginTransaction();
+        db = Database.getInstance();
+        conn = await db.initConnection();
+        await db.beginTransaction(conn);
 
-		let res = await db.rawQuery('CALL update_performance_plan(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL update_performance_plan(?,?,?)', [
 			id,
 			performancePlan.date,
 			performancePlan.status
         ], JABCResponse.PERFORMANCE);
 
-		await db.rawQuery('CALL delete_plan_sections(?)', [id], JABCResponse.PERFORMANCE);
+		await db.rawQuery(conn, 'CALL delete_plan_sections(?)', [id], JABCResponse.PERFORMANCE);
 
         if (performancePlan.sections != null){
             for (let section of performancePlan.sections) {
-                await db.rawQuery('CALL create_employee_performance_plan_section(?,?,?)', [
+                await db.rawQuery(conn, 'CALL create_employee_performance_plan_section(?,?,?)', [
                     id,
                     section.data,
                     section.sectionName
@@ -271,13 +274,15 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
             }
         }
 
-        await db.commit();
-		await db.closeConnection();
+        await db.commit(conn);
+		await db.closeConnection(conn);
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance plan was updated successfully`);
 	} catch (error) {
 		try {
-			await db.rollback();
-			await db.closeConnection();
+			await db.rollback(conn)
+		} catch (err) { }
+		try {
+			await db.closeConnection(conn)
 		} catch (err) { }
 		throw error;
 	}
@@ -294,23 +299,25 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
  * @returns {Promise<IApiResponse>}
  **/
 export async function updatePerformanceReview(id: Number, performanceReview: IPerformanceReview, xAuthToken: string) {
-    let db;
+    let db: IDatabaseClient;
+    let conn: any;
 	try {
 		const performanceReview_ = await getPerformanceReview(id, xAuthToken)
-		db = Database.getInstance();
-        await db.beginTransaction();
+        db = Database.getInstance();
+        conn = await db.initConnection();
+        await db.beginTransaction(conn);
 
-		let res = await db.rawQuery('CALL update_performance_review(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL update_performance_review(?,?,?)', [
 			id,
 			performanceReview.date,
 			performanceReview.status
         ], JABCResponse.PERFORMANCE);
 
-        await db.rawQuery('CALL delete_review_sections(?)', [id], JABCResponse.PERFORMANCE);
+        await db.rawQuery(conn, 'CALL delete_review_sections(?)', [id], JABCResponse.PERFORMANCE);
 
         if (performanceReview.sections != null){
             for (let section of performanceReview.sections) {
-                await db.rawQuery('CALL create_employee_performance_review_section(?,?,?)', [
+                await db.rawQuery(conn, 'CALL create_employee_performance_review_section(?,?,?)', [
                     id,
                     section.data,
                     section.sectionName
@@ -318,13 +325,15 @@ export async function updatePerformanceReview(id: Number, performanceReview: IPe
             }
         }
 
-        await db.commit();
-		await db.closeConnection();
+        await db.commit(conn);
+		await db.closeConnection(conn);
 		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance review was updated successfully`);
 	} catch (error) {
 		try {
-			await db.rollback();
-			await db.closeConnection();
+			await db.rollback(conn)
+		} catch (err) { }
+		try {
+			await db.closeConnection(conn)
 		} catch (err) { }
 		throw error;
 	}

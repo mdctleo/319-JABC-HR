@@ -2,6 +2,7 @@ import IDatabaseClient, {DatabaseConnectionError, DatabaseQueryError} from "../d
 import Database from "../database/Database";
 import {expect} from "chai";
 import Log from "../../util/Log";
+import { JABCResponse } from "../utils/ResponseManager";
 
 describe("Database Tests", () => {
 
@@ -22,7 +23,7 @@ describe("Database Tests", () => {
         const malformedQuery: string = "******";
         let result: any;
         try {
-            result = await db.query(malformedQuery, ["s1", "s2"]);
+            result = await db.query(malformedQuery, ["s1", "s2"], JABCResponse.EMPLOYEE);
         } catch (err) {
             result = err;
         } finally {
@@ -30,23 +31,11 @@ describe("Database Tests", () => {
         }
     });
 
-    it ("Should throw a DatabaseConnectionError when a connection is unable to be opened", async () => {
-        const config: any = "invalid config";
-        let result: any;
-        try {
-            await db.initConnection(config);
-        } catch (err) {
-            result = err;
-        } finally {
-            expect(result).to.be.instanceOf(DatabaseConnectionError);
-        }
-    });
-
 
     it ("Should throw a DatabaseQueryError when a query is unable to be performed" , async () => {
         let queryResult: any;
         try {
-            queryResult = await db.query("some invalid query", null);
+            queryResult = await db.query("some invalid query", null, JABCResponse.EMPLOYEE);
         } catch (err) {
             queryResult = err;
         } finally {
