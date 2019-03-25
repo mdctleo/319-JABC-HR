@@ -35,6 +35,8 @@ export default interface IDatabaseClient {
      * @param query
      *
      * If a failure occurs, throw DatabaseWriteError
+     * @param params
+     * @param responseType
      */
     write(query: any, params: any[], responseType?: JABCResponseType): Promise<void>;
 
@@ -43,6 +45,8 @@ export default interface IDatabaseClient {
      *
      * @param query
      *
+     * @param params
+     * @param responseType
      * @return any
      *
      * Retrieves data which matches the given query
@@ -55,49 +59,49 @@ export default interface IDatabaseClient {
     /**
      * Performs a query on an already opened connection without closing it
      *
+     * @param connection  the database connection this rawQuery will use
+     * @param query
+     * @param params
      * @param {JABCResponseType} [responseType] JABC service that requested the transaction
      * @returns {Promise<any>}
      * @memberof IDatabaseClient
      */
-    rawQuery(query: any, params: any[], responseType?: JABCResponseType): Promise<any>;
+    rawQuery(connection: any, query: any, params: any[], responseType?: JABCResponseType): Promise<any>;
 
     /**
      * Initializes the connection and begins a transaction
      * Note: when using transactions after commit or rollback the database 
      * has to be close manually calling closeConnection
      *
+     * @param connection  the database connection this transaction will use
      * @param {JABCResponseType} [responseType] JABC service that requested the transaction
      * @returns {Promise<any>}
      * @memberof IDatabaseClient
      */
-    beginTransaction(responseType?: JABCResponseType): Promise<any>;
+    beginTransaction(connection: any, responseType?: JABCResponseType): Promise<any>;
 
     /**
      * Commits the transaction
      *
+     * @param connection  the database connection this commit will use
      * @param {JABCResponseType} [responseType] JABC service that requested the transaction
      * @returns {Promise<any>}
      * @memberof IDatabaseClient
      */
-    commit(responseType?: JABCResponseType): Promise<any>;
+    commit(connection: any, responseType?: JABCResponseType): Promise<any>;
 
     /**
      * Rollback a transaction
      *
+     * @param connection  the database connection this rollback will use
      * @param {JABCResponseType} [responseType] JABC service that requested the transaction
      * @returns {Promise<any>}
      * @memberof IDatabaseClient
      */
-    rollback(responseType?: JABCResponseType): Promise<any>;
+    rollback(connection: any, responseType?: JABCResponseType): Promise<any>;
 
-    /**
-     * Opens a connection to a database service
-     *
-     * @return void
-     *
-     * If a failure occurs, throw DatabaseConnectionError
-     */
-    initConnection(config: any): Promise<void>;
+
+    initConnection(): Promise<any>;
 
     /**
      * Closes a connection to a database service
@@ -106,5 +110,5 @@ export default interface IDatabaseClient {
      *
      * If a failure occurs, throw DatabaseConnectionError
      */
-    closeConnection(): Promise<void>;
+    closeConnection(conn: any): Promise<void>;
 }

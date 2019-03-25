@@ -6,6 +6,7 @@ import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
 import * as RoleService from './RolesService'
+import IDatabaseClient from '../database/IDatabaseClient';
 const KEY = process.env.JWT_KEY;
 
 
@@ -133,7 +134,8 @@ export async function createEmployee(employee: IEmployee, xAuthToken: string) {
  * @returns {Promise<IApiResponse>}
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
-	let db;
+	let db: IDatabaseClient;
+  let conn: any;
 	try {
 		const client = (await Auth(xAuthToken)).employee
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
@@ -152,9 +154,10 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance plan of other employee.')
 		}
 		db = Database.getInstance()
-		await db.beginTransaction()
+		conn = db.initConnection()
+		await db.beginTransaction(conn)
 		// Insert performance plan
-		let res = await db.rawQuery('CALL create_employee_performance_plan(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?)', [
 			id,
 			performance.date,
 			performance.status
@@ -165,7 +168,7 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		// Insert sections
 		if(performance.sections != null ){
 			for (let section of performance.sections) {
-				await db.rawQuery('CALL create_employee_performance_plan_section(?,?,?)', [
+				await db.rawQuery(conn, 'CALL create_employee_performance_plan_section(?,?,?)', [
 					PERFORMANCE_PLAN_ID,
 					section.data,
 					section.sectionName
@@ -173,16 +176,18 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 			}
 		}
 
-		await db.commit()
-		await db.closeConnection()
+		await db.commit(conn);
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
 	} catch (error) {
 		try {
-			await db.rollback()
-			await db.closeConnection()
-		} catch (err) { }
+			await db.rollback(conn);
+        } catch (err) { }
 		throw error;
-	}
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
+    }
 }
 
 
@@ -196,7 +201,8 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
  * @returns {Promise<IApiResponse>}
  **/
 export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
-	let db;
+	let db: IDatabaseClient;
+  let conn: any;
 	try {
 		const client = (await Auth(xAuthToken)).employee
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
@@ -214,10 +220,11 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance review of other employee.')
 		}
-		db = Database.getInstance();
-		await db.beginTransaction()
+		db = Database.getInstance()
+		conn = db.initConnection()
+		await db.beginTransaction(conn)
 		// Insert performance review
-		let res = await db.rawQuery('CALL create_employee_performance_review(?,?,?,?)', [
+		let res = await db.rawQuery(conn,'CALL create_employee_performance_review(?,?,?,?)', [
 			id,
 			performance.fkPerformancePlan,
 			performance.date,
@@ -228,23 +235,25 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 
 		// Insert sections
 		for (let section of performance.sections) {
-			await db.rawQuery('CALL create_employee_performance_review_section(?,?,?)', [
+			await db.rawQuery(conn, 'CALL create_employee_performance_review_section(?,?,?)', [
 				PERFORMANCE_REVIEW_ID,
 				section.data,
 				section.sectionName
 			])
 		}
 
-		await db.commit()
-		await db.closeConnection()
+		await db.commit(conn);
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was registered successfully`)
 	} catch (error) {
 		try {
-			await db.rollback()
-			await db.closeConnection()
-		} catch (err) { }
+			await db.rollback(conn);
+        } catch (err) { }
 		throw error;
-	}
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
+    }
 }
 
 

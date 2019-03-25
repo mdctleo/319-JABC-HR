@@ -30,19 +30,6 @@ describe("Database Tests", () => {
         }
     });
 
-    it ("Should throw a DatabaseConnectionError when a connection is unable to be opened", async () => {
-        const config: any = "invalid config";
-        let result: any;
-        try {
-            await db.initConnection(config);
-        } catch (err) {
-            result = err;
-        } finally {
-            expect(result).to.be.instanceOf(DatabaseConnectionError);
-        }
-    });
-
-
     it ("Should throw a DatabaseQueryError when a query is unable to be performed" , async () => {
         let queryResult: any;
         try {

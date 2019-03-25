@@ -40,22 +40,24 @@ export async function createCompetency(competency: ICompetency, idRole: number, 
  **/
 export async function createRole(role: IRole, xAuthToken: String) {
     let db = Database.getInstance();
+    let conn: any;
     try {
-        await db.beginTransaction();
+        conn = await db.initConnection();
+        await db.beginTransaction(conn);
 
         role = Role.Prepare(role);
-        await Database.getInstance().rawQuery('CALL create_role(?,?)', [
+        await Database.getInstance().rawQuery(conn, 'CALL create_role(?,?)', [
             role.name,
             role.description
         ], JABCResponse.ROLE);
 
-        let res = await Database.getInstance().rawQuery('CALL get_role_with_name(?)', [role.name], JABCResponse.ROLE);
+        let res = await Database.getInstance().rawQuery(conn, 'CALL get_role_with_name(?)', [role.name], JABCResponse.ROLE);
 
         if(role.competencies != null){
             for (let competency of role.competencies) {
                 competency = Competency.Prepare(competency);
     
-                await db.rawQuery('CALL create_competency(?,?,?)', [
+                await db.rawQuery(conn, 'CALL create_competency(?,?,?)', [
                     res[0][0][0].ROLE_ID,
                     competency.name,
                     competency.description
@@ -63,16 +65,17 @@ export async function createRole(role: IRole, xAuthToken: String) {
             }
         }
 
-        await db.commit();
-        await db.closeConnection();
-
+        await db.commit(conn);
         return new JABCSuccess(JABCResponse.ROLE, `The role was created successfully.`);
     } catch (error) {
-        try {
-            await db.rollback();
-            await db.closeConnection();
+		try {
+			await db.rollback(conn);
         } catch (err) { }
-        throw error;
+		throw error;
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
     }
 }
 
@@ -226,23 +229,25 @@ export async function updateCompetency(id: Number, competency: ICompetency, idRo
  **/
 export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
     let db = Database.getInstance();
+    let conn: any;
     try {
-        await db.beginTransaction();
+        conn = await db.initConnection();
+        await db.beginTransaction(conn);
 
         role = Role.Prepare(role);
-        let res = await db.rawQuery('CALL update_role(?,?,?)', [
+        let res = await db.rawQuery(conn, 'CALL update_role(?,?,?)', [
             id,
             role.name,
             role.description
         ], JABCResponse.ROLE);
 
-        await db.rawQuery('CALL delete_competencies(?)', [id], JABCResponse.COMPETENCY);
+        await db.rawQuery(conn, 'CALL delete_competencies(?)', [id], JABCResponse.COMPETENCY);
 
         if(role.competencies != null){
             for (let competency of role.competencies) {
                 competency = Competency.Prepare(competency);
 
-                await db.rawQuery('CALL create_competency(?,?,?)', [
+                await db.rawQuery(conn, 'CALL create_competency(?,?,?)', [
                     id,
                     competency.name,
                     competency.description
@@ -250,15 +255,16 @@ export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
             }
         }
 
-        await db.commit();
-        await db.closeConnection();
-
+        await db.commit(conn);
         return new JABCSuccess(JABCResponse.ROLE, `The role, ${role.name}, was updated successfully`);
     } catch (error) {
-        try {
-            await db.rollback();
-            await db.closeConnection();
+		try {
+			await db.rollback(conn);
         } catch (err) { }
-        throw error;
+		throw error;
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
     }
 }
