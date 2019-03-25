@@ -172,10 +172,11 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		conn = await db.initConnection()
 		await db.beginTransaction(conn)
 		// Insert performance plan
-		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?,?,?)', [
 			id,
 			performance.startYear,
 			performance.endYear,
+			performance.createDate,
 			performance.status
 		], JABCResponse.EMPLOYEE)
 
@@ -242,13 +243,14 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		}
 		db = Database.getInstance();
 		conn = await db.initConnection();
-		await db.beginTransaction(conn)
+		await db.beginTransaction(conn);
 		// Insert performance review
-		let res = await db.rawQuery(conn, 'CALL create_employee_performance_review(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_review(?,?,?,?)', [
 			id,
+			performance.createDate,
 			performance.fkPerformancePlan,
 			performance.status
-		], JABCResponse.EMPLOYEE)
+		], JABCResponse.EMPLOYEE);
 
 		const PERFORMANCE_REVIEW_ID = res[0][0][0].PERFORMANCE_REVIEW_ID;
 
@@ -386,8 +388,14 @@ export async function getEmployeeHistory(id: Number, xAuthToken: String) {
  * @param {String} inactive String If [inactive] is provided this returns the all the Employees of the system including the inactive ones (optional)
  * @returns {Promise<[]>}
  **/
-export async function getEmployees(xAuthToken: String, term: String, start: String, end: String, inactive: String) {
+export async function getEmployees(xAuthToken: string, term: String, start: String, end: String, inactive: String) {
 	try {
+        const client = (await Auth(xAuthToken)).employee;
+
+        if (client.adminLevel === IEmployee.adminLevelEnum.MANAGER) {
+            return await getEmployeesByManager(client.id, xAuthToken);
+        }
+
 		let res: any;
 		if (start != undefined && end != undefined) {
 			if (inactive != null) {
@@ -407,7 +415,7 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
 			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken)
 			delete employee.role.competencies
 		}
-		return employees
+		return employees;
 	} catch (error) {
 		throw error;
 	}

@@ -2932,6 +2932,7 @@ definitions:
   IPerformancePlan:
     type: "object"
     required:
+    - "createDate"
     - "endYear"
     - "fkEmployee"
     - "startYear"
@@ -2947,6 +2948,10 @@ definitions:
         format: "uint64"
         example: 1
         description: "Foreign key of the employee with this performance review"
+      createDate:
+        type: "string"
+        format: "date"
+        description: "The date the performance review was created"
       startYear:
         type: "integer"
         format: "uint64"
@@ -3004,10 +3009,12 @@ definitions:
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         id: 1
+      createDate: "2000-01-23"
       status: 0
   IPerformanceReview:
     type: "object"
     required:
+    - "createDate"
     - "fkEmployee"
     - "fkPerformancePlan"
     - "status"
@@ -3027,6 +3034,10 @@ definitions:
         format: "uint64"
         example: 1
         description: "Foreign key of the performance plan"
+      createDate:
+        type: "string"
+        format: "date"
+        description: "The date the performance review was created"
       status:
         type: "integer"
         minimum: 0
@@ -3073,6 +3084,7 @@ definitions:
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         id: 1
+      createDate: "2000-01-23"
       status: 0
   IPerformanceSection:
     type: "object"

@@ -29,6 +29,8 @@ export interface IPerformanceReview {
      * Foreign key of the performance plan
      */
     fkPerformancePlan: number;
+    createDate: string;
+
     status: number;
     /**
      * Contains all the IPerformanceSections Related to this IPerformanceReview
@@ -53,6 +55,8 @@ export class PerformanceReview implements IPerformanceReview{
      * Foreign key of the performance plan
      */
     fkPerformancePlan: number;
+    createDate: string;
+
     status: number;
     /**
      * Contains all the IPerformanceSections Related to this IPerformanceReview
@@ -67,6 +71,7 @@ export class PerformanceReview implements IPerformanceReview{
         this.id = rawPerformanceReview.PERFORMANCE_REVIEW_ID;
         this.fkEmployee = rawPerformanceReview.EMPLOYEE_ID;
         this.fkPerformancePlan = rawPerformanceReview.WORK_PLAN_ID;
+        this.createDate = rawPerformanceReview.CREATE_DATE;
         this.status = rawPerformanceReview.STATUS;
     }
 

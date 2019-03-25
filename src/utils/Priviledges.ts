@@ -4,7 +4,7 @@ export class Priviledges{
     // Employee service
     static operations: any = {
         // Employee service
-        'getEmployees': IEmployee.adminLevelEnum.HR_ADMIN,
+        'getEmployees': IEmployee.adminLevelEnum.MANAGER,
         'createEmployee': IEmployee.adminLevelEnum.HR_ADMIN,
         'getEmployee': IEmployee.adminLevelEnum.MANAGER,
         'updateEmployee': IEmployee.adminLevelEnum.STAFF,

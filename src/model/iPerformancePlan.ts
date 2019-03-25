@@ -30,6 +30,7 @@ export interface IPerformancePlan {
      */
     startYear: number;
     endYear: number;
+    createDate: string;
 
     status: number;
     /**
@@ -56,6 +57,7 @@ export class PerformancePlan implements IPerformancePlan{
      */
     startYear: number;
     endYear: number;
+    createDate: string;
 
     status: number;
     /**
@@ -72,6 +74,7 @@ export class PerformancePlan implements IPerformancePlan{
         this.fkEmployee = rawPerformancePlan.EMPLOYEE_ID;
         this.startYear = rawPerformancePlan.START_YEAR;
         this.endYear = rawPerformancePlan.END_YEAR;
+        this.createDate = rawPerformancePlan.CREATE_DATE;
         this.status = rawPerformancePlan.STATUS;
     }
 
