@@ -1,5 +1,20 @@
 'use strict';
-import { Employee, PerformancePlan, PerformanceReview, OnboardingTask, Vacation, IEmployee, IPerformancePlan, IPerformanceReview, IPerformanceSection, IVacation, EmployeeHistory, IOnboardingTask, Role } from '../model/models'
+import {
+    Employee,
+    PerformancePlan,
+    PerformanceReview,
+    OnboardingTask,
+    Vacation,
+    IEmployee,
+    IPerformancePlan,
+    IPerformanceReview,
+    IPerformanceSection,
+    IVacation,
+    EmployeeHistory,
+    IOnboardingTask,
+    Role,
+    PerformanceSection
+} from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import * as jwt from 'jsonwebtoken';
 import { ILogin } from '../model/iLogin';
@@ -157,9 +172,10 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		conn = await db.initConnection()
 		await db.beginTransaction(conn)
 		// Insert performance plan
-		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?,?)', [
 			id,
-			performance.date,
+			performance.startYear,
+			performance.endYear,
 			performance.status
 		], JABCResponse.EMPLOYEE)
 
@@ -228,10 +244,9 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		conn = await db.initConnection();
 		await db.beginTransaction(conn)
 		// Insert performance review
-		let res = await db.rawQuery(conn, 'CALL create_employee_performance_review(?,?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_review(?,?,?)', [
 			id,
 			performance.fkPerformancePlan,
-			performance.date,
 			performance.status
 		], JABCResponse.EMPLOYEE)
 
@@ -486,10 +501,10 @@ export async function getManagersByEmployee(id: Number, xAuthToken: string) {
  **/
 export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
 	try {
-		const client = (await Auth(xAuthToken)).employee
+		const client = (await Auth(xAuthToken)).employee;
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
 			let managed = false;
-			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken);
 			for (let manager of managersOfEmployee) {
 				if (manager.id === client.id) {
 					managed = true;
@@ -497,13 +512,20 @@ export async function getPerformancePlans(id: Number, xAuthToken: string, term: 
 				}
 			}
 			if (!managed) {
-				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.');
 			}
 		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.')
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.');
 		}
-		let res = await Database.getInstance().query('CALL get_employee_performance_plans(?)', [id], JABCResponse.EMPLOYEE)
-		return PerformancePlan.PerformancePlans(res[0][0])
+		let res = await Database.getInstance().query('CALL get_employee_performance_plans(?)', [id], JABCResponse.EMPLOYEE);
+		let performancePlans = PerformancePlan.PerformancePlans(res[0][0]);
+
+		for (let performancePlan of performancePlans) {
+			let resSections = await Database.getInstance().query('CALL get_performance_plan_sections(?)', [performancePlan.id]);
+			performancePlan.sections = PerformanceSection.PerformanceSections(resSections[0][0]);
+		}
+
+		return performancePlans;
 	} catch (error) {
 		throw error;
 	}
@@ -532,13 +554,20 @@ export async function getPerformanceReviews(id: Number, xAuthToken: string, term
 				}
 			}
 			if (!managed) {
-				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.');
 			}
 		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.')
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.');
 		}
-		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE)
-		return PerformanceReview.PerformanceReviews(res[0][0])
+		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE);
+		let performanceReviews = PerformanceReview.PerformanceReviews(res[0][0]);
+
+        for (let performanceReview of performanceReviews) {
+            let resSections = await Database.getInstance().query('CALL get_performance_review_sections(?)', [performanceReview.id]);
+            performanceReview.sections = PerformanceSection.PerformanceSections(resSections[0][0]);
+        }
+
+		return performanceReviews;
 	} catch (error) {
 		throw error;
 	}

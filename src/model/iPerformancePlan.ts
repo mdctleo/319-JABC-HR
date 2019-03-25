@@ -22,13 +22,15 @@ export interface IPerformancePlan {
      */
     id: number;
     /**
-     * Foreign key of the employee with this performance review
+     * Foreign key of the employee with this performance plan
      */
     fkEmployee: number;
     /**
-     * The date the performance review was created
+     * The start and end years of this plan
      */
-    date: string;
+    startYear: number;
+    endYear: number;
+
     status: number;
     /**
      * Contains all the IPerformanceSections Related to this IPerformancePlan
@@ -50,9 +52,11 @@ export class PerformancePlan implements IPerformancePlan{
      */
     fkEmployee: number;
     /**
-     * The date the performance review was created
+     * The start and end years of this plan
      */
-    date: string;
+    startYear: number;
+    endYear: number;
+
     status: number;
     /**
      * Contains all the IPerformanceSections Related to this IPerformancePlan
@@ -66,7 +70,8 @@ export class PerformancePlan implements IPerformancePlan{
     constructor(rawPerformancePlan: any){
         this.id = rawPerformancePlan.PERFORMANCE_PLAN_ID;
         this.fkEmployee = rawPerformancePlan.EMPLOYEE_ID;
-        this.date = rawPerformancePlan.CREATED_DATE;
+        this.startYear = rawPerformancePlan.START_YEAR;
+        this.endYear = rawPerformancePlan.END_YEAR;
         this.status = rawPerformancePlan.STATUS;
     }
 

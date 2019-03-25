@@ -2263,8 +2263,9 @@ definitions:
     required:
     # - id
     - fkEmployee
-    - date
     - status
+    - startYear
+    - endYear
     properties:
       id:
         type: integer
@@ -2276,10 +2277,16 @@ definitions:
         format: uint64
         description: Foreign key of the employee with this performance review
         example: 1
-      date:
-        type: string
-        format: date
-        description: The date the performance review was created
+      startYear:
+        type: integer
+        format: uint64
+        description: The start year of the plan
+        example: 2019
+      endYear:
+        type: integer
+        format: uint64
+        description: The end year of the plan
+        example: 2020
       status:
         type: integer
         minimum: 0 # UNPUBLISHED
@@ -2303,7 +2310,6 @@ definitions:
     # - id
     - fkEmployee
     - fkPerformancePlan
-    - date
     - status
     properties:
       id:
@@ -2321,10 +2327,6 @@ definitions:
         format: uint64
         description: Foreign key of the performance plan
         example: 1
-      date:
-        type: string
-        format: date
-        description: The date the performance review was created
       status:
         type: integer
         minimum: 0 # UNPUBLISHED

@@ -345,7 +345,8 @@ DROP PROCEDURE IF EXISTS update_performance_plan;
 DELIMITER //
 
 CREATE PROCEDURE `update_performance_plan` (IN p_id INT
-, IN created_date DATE
+, IN start_year SMALLINT
+, IN end_year SMALLINT
 , IN status TINYINT
 )
 BEGIN
@@ -361,7 +362,7 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Performance plan does not exist.';
   ELSE
     UPDATE PERFORMANCE_PLAN
-    SET `CREATED_DATE` = created_date, STATUS = status
+    SET START_YEAR = start_year, END_YEAR = end_year, STATUS = status
     WHERE PERFORMANCE_PLAN.PERFORMANCE_PLAN_ID = p_id;
   END IF;
 END //
@@ -378,7 +379,6 @@ DROP PROCEDURE IF EXISTS update_performance_review;
 DELIMITER //
 
 CREATE PROCEDURE `update_performance_review` (IN p_id INT
-, IN created_date DATE
 , IN status TINYINT
 )
 BEGIN
@@ -394,7 +394,7 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Performance review does not exist.';
   ELSE
     UPDATE PERFORMANCE_REVIEW
-    SET `CREATED_DATE` = created_date, STATUS = status
+    SET STATUS = status
     WHERE PERFORMANCE_REVIEW.PERFORMANCE_REVIEW_ID = p_id;
   END IF;
 END //
@@ -490,6 +490,66 @@ BEGIN
     DELETE FROM PERFORMANCE_SECTION
     WHERE PERFORMANCE_SECTION.PERFORMANCE_REVIEW_ID = performance_review_id;
   END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_performance_plan_sections
+--    - get performance plan's sections
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_performance_plan_sections;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_performance_plan_sections` (IN performance_plan_id INT)
+BEGIN
+    DECLARE checker INT;
+
+    SET checker = 0;
+
+    SELECT COUNT(*) INTO checker
+    FROM `PERFORMANCE_PLAN`
+    WHERE `PERFORMANCE_PLAN`.PERFORMANCE_PLAN_ID = performance_plan_id;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Performance plan does not exist.';
+    ELSE
+      SELECT *
+      FROM PERFORMANCE_SECTION
+      WHERE PERFORMANCE_SECTION.PERFORMANCE_PLAN_ID = performance_plan_id;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure get_performance_review_sections
+--    - get performance review's sections
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_performance_review_sections;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_performance_review_sections` (IN performance_review_id INT)
+BEGIN
+    DECLARE checker INT;
+
+    SET checker = 0;
+
+    SELECT COUNT(*) INTO checker
+    FROM `PERFORMANCE_REVIEW`
+    WHERE `PERFORMANCE_REVIEW`.PERFORMANCE_REVIEW_ID = performance_review_id;
+
+    IF checker = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Performance review does not exist.';
+    ELSE
+      SELECT *
+      FROM PERFORMANCE_SECTION
+      WHERE PERFORMANCE_SECTION.PERFORMANCE_REVIEW_ID = performance_review_id;
+    END IF;
 END //
 
 DELIMITER ;
