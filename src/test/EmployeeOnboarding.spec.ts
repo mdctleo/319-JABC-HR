@@ -42,6 +42,7 @@ describe("test related to /employee and onboarding", () => {
             // create an onboarding employee
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
                 ignoreProperties: ["role"]
             });
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
@@ -80,6 +81,7 @@ describe("test related to /employee and onboarding", () => {
             let response: any;
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
                 ignoreProperties: ["type"]
             });
             let task = jsf.generate(schema.definitions.IOnboardingTask);
@@ -105,6 +107,7 @@ describe("test related to /employee and onboarding", () => {
             let response: any;
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
                 ignoreProperties: ["type"]
             });
             let task = jsf.generate(schema.definitions.IOnboardingTask);
@@ -132,6 +135,7 @@ describe("test related to /employee and onboarding", () => {
             let response: any;
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
                 ignoreProperties: ["type"]
 
             });
@@ -160,6 +164,7 @@ describe("test related to /employee and onboarding", () => {
             let response: any;
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
             });
             try {
                 response = await chai.request(SERVER)
@@ -181,6 +186,7 @@ describe("test related to /employee and onboarding", () => {
             let response: any;
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
             });
             try {
                 response = await chai.request(SERVER)
@@ -202,6 +208,7 @@ describe("test related to /employee and onboarding", () => {
             let response: any;
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
             });
             try {
                 response = await chai.request(SERVER)
@@ -230,6 +237,7 @@ describe("test related to /employee and onboarding", () => {
             employeeHeader['X-Auth-Token'] = loginResponse.body.token;
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
             });
             try {
                 response = await chai.request(SERVER)
@@ -250,6 +258,7 @@ describe("test related to /employee and onboarding", () => {
             let response: any;
             jsf.option({
                 alwaysFakeOptionals: true,
+                fixedProbabilities: true,
             });
             try {
                 response = await chai.request(SERVER)

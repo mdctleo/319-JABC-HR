@@ -35,11 +35,12 @@ describe("test related to /employee and performance", () => {
             return HEADERS;
         });
 
+
         it("Should not be able to get performance for non-existent employees ", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
-                    .get(`${BASE_PATH}/88/performance`)
+                    .get(`${BASE_PATH}/88/performance/plan`)
                     .set(HEADERS);
 
             }
@@ -116,7 +117,7 @@ describe("test related to /employee and performance", () => {
             workplan.createdDate = "2025-01-01";
             let section1 = jsf.generate(schema.definitions.IPerformanceSection);
             let section2 = jsf.generate(schema.definitions.IPerformanceSection);
-
+            workplan.sections = [section1, section2]
             try {
                 response = await chai.request(SERVER)
                     .post(`${BASE_PATH}/2/performance/plan`)
@@ -202,7 +203,7 @@ describe("test related to /employee and performance", () => {
             let response = await chai.request(SERVER)
                 .post(`${BASE_PATH}/3/manager/2`)
                 .set(HRHEADERS);
-            HEADERS = TestSetup.login("manager");
+            HEADERS = await TestSetup.login("manager");
             return HEADERS;
         });
 

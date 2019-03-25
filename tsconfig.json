@@ -48,8 +48,15 @@
     "src/service/RolesService.ts",
     "src/service/VacationService.ts",
     "src/test/Database.spec.ts",
+    "src/test/Employee.spec.ts",
+    "src/test/EmployeeOnboarding.spec.ts",
+    "src/test/EmployeePerformance.spec.ts",
+    "src/test/Onboarding.spec.ts",
+    "src/test/Performance.spec.ts",
+    "src/test/Roles.spec.ts",
     "src/utils/Auth.ts",
     "src/utils/Priviledges.ts",
-    "src/utils/ResponseManager.ts"
+    "src/utils/ResponseManager.ts",
+    "src/utils/TestSetup.ts"
   ]
 }

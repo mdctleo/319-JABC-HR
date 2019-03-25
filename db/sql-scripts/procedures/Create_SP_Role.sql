@@ -54,6 +54,9 @@ BEGIN
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Role does not exist.';
   ELSE
+    UPDATE `HR_RECORD` 
+    SET `HR_RECORD`.ROLE = NULL 
+    WHERE `HR_RECORD`.ROLE = role_id;
     DELETE FROM ROLE
     WHERE ROLE.role_id = role_id;
   END IF;

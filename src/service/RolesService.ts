@@ -51,14 +51,16 @@ export async function createRole(role: IRole, xAuthToken: String) {
 
         let res = await Database.getInstance().rawQuery('CALL get_role_with_name(?)', [role.name], JABCResponse.ROLE);
 
-        for (let competency of role.competencies) {
-            competency = Competency.Prepare(competency);
-
-            await db.rawQuery('CALL create_competency(?,?,?)', [
-                res[0][0][0].ROLE_ID,
-                competency.name,
-                competency.description
-            ], JABCResponse.COMPETENCY);
+        if(role.competencies != null){
+            for (let competency of role.competencies) {
+                competency = Competency.Prepare(competency);
+    
+                await db.rawQuery('CALL create_competency(?,?,?)', [
+                    res[0][0][0].ROLE_ID,
+                    competency.name,
+                    competency.description
+                ], JABCResponse.COMPETENCY);
+            }
         }
 
         await db.commit();
@@ -236,14 +238,16 @@ export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
 
         await db.rawQuery('CALL delete_competencies(?)', [id], JABCResponse.COMPETENCY);
 
-        for (let competency of role.competencies) {
-            competency = Competency.Prepare(competency);
+        if(role.competencies != null){
+            for (let competency of role.competencies) {
+                competency = Competency.Prepare(competency);
 
-            await db.rawQuery('CALL create_competency(?,?,?)', [
-                id,
-                competency.name,
-                competency.description
-            ], JABCResponse.COMPETENCY);
+                await db.rawQuery('CALL create_competency(?,?,?)', [
+                    id,
+                    competency.name,
+                    competency.description
+                ], JABCResponse.COMPETENCY);
+            }
         }
 
         await db.commit();

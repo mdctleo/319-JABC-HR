@@ -123,7 +123,8 @@ module.exports.getEmployees = function getEmployees(req, res, next) {
   var term = req.swagger.params['term'].value;
   var start = req.swagger.params['start'].value;
   var end = req.swagger.params['end'].value;
-  Employee.getEmployees(xAuthToken, term, start, end)
+  var inactive = req.swagger.params['inactive'].value;
+  Employee.getEmployees(xAuthToken, term, start, end, inactive)
     .then(function (response) {
       utils.writeJson(res, response, response.responseCode);
     })

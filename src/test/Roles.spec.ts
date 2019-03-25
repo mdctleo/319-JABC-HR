@@ -161,6 +161,7 @@ describe("RoleService tests", () => {
                 expect(response.body.name).to.be.equal("Sales");
             }
         });
+        // REVIEW: This is passing, but is not accomplishing its purpose, it fails because there is not data sent
         it("Should not update a non-existent role ", async () => {
             let response: any;
             try {
@@ -175,7 +176,7 @@ describe("RoleService tests", () => {
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
-
+        // REVIEW: This is passing, but is not accomplishing its purpose, it fails because there is not data sent
         it("Should not update a role with malformed data ", async () => {
             let response: any;
             jsf.option({
@@ -206,7 +207,8 @@ describe("RoleService tests", () => {
             try {
                 response = await chai.request(SERVER)
                     .put(`${BASE_PATH}/2`)
-                    .set(HEADERS);
+                    .set(HEADERS)
+                    .send(role)
             }
             catch (e) {
                 console.log(e);
@@ -247,6 +249,8 @@ describe("RoleService tests", () => {
             }
         });
 
+        // REVIEW: I changed the stored procedure to set to NULL the role of all HR_RECORDs that have
+        // assigned this role, but we should be careful with this on the frontend because its dangerous.
         it("Should delete a role ", async () => {
             let response: any;
             try {
@@ -384,7 +388,7 @@ describe("RoleService tests", () => {
             }
         });
 
-        it("Should create able to update that competency", async () => {
+        it("Should be able to update that competency", async () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
@@ -393,7 +397,7 @@ describe("RoleService tests", () => {
             competency.name = "excel";
             try {
                 response = await chai.request(SERVER)
-                    .put(`${BASE_PATH}/1/comptetency/2`)
+                    .put(`${BASE_PATH}/1/competency/2`)
                     .set(HEADERS)
                     .send(competency);
             }

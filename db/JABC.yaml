@@ -88,8 +88,9 @@ paths:
       - Employee
       summary: get all the Employees
       description: | 
-        This returns all the Employees of the system. 
+        This returns all the active Employees of the system. 
         If [start] and [end] are provided, it will return all employees with a birthday between those dates
+        If [inactive] is provided this returns the all the Employees of the system including the inactive ones.
         If [term] is provided this returns the Employees of the system that match with the [term].
       operationId: getEmployees
       security:
@@ -107,6 +108,10 @@ paths:
         type: string
         format: date
         description: Search employees with a birthday before this date, if this isn't provided there won't be any filtering
+      - in: query
+        name: inactive
+        type: string
+        description: If [inactive] is provided this returns the all the Employees of the system including the inactive ones
       responses:
         200:
           description: successful operation
@@ -1969,10 +1974,12 @@ definitions:
         description: The date joined of the employee
       vacationDays:
         type: integer
+        minimum: 0
         format: uint64
         description: The number of vacation days allowed to the employee per year
       remainingVacationDays:
         type: integer
+        minimum: 0
         format: uint64
         description: The number of vacation days allowed to the employee on the current year
       fkRole:
@@ -2051,6 +2058,7 @@ definitions:
         description: The date the creation of this version of the employee data
       salary:
         type: number
+        minimum: 0
       address:
         type: string
       birthdate:
@@ -2063,10 +2071,12 @@ definitions:
         description: The date joined of the employee
       vacationDays:
         type: integer
+        minimum: 0
         format: uint64
         description: The number of vacation days allowed to the employee per year
       remainingVacationDays:
         type: integer
+        minimum: 0
         format: uint64
         description: The number of vacation days allowed to the employee on the current year
       fkRole:

@@ -63,6 +63,8 @@ export namespace JABCResponse{
         MISSING: 'OBJECT_MISSING_REQUIRED_PROPERTY',
         TYPE: 'INVALID_TYPE',
         FORMAT: 'INVALID_FORMAT',
+        MAXIMUM: 'MAXIMUM',
+        MINIMUM: 'MINIMUM'
     };
 }
 
@@ -140,6 +142,8 @@ export function ErrorHandler(err: any, req: any, res: any, next: any) {
                 let missingProperties = []
                 let invalidProperties = []
                 let typeProperties = []
+                let minProperties = []
+                let maxProperties = []
                 for(let error of err.results.errors){
                     switch(error.code){
                         case JABCResponse.ValidatorCodes.MISSING:
@@ -151,12 +155,20 @@ export function ErrorHandler(err: any, req: any, res: any, next: any) {
                         case JABCResponse.ValidatorCodes.TYPE:
                             typeProperties.push(error.path[0])
                         break;
+                        case JABCResponse.ValidatorCodes.MINIMUM:
+                            minProperties.push(error.path[0])
+                        break;
+                        case JABCResponse.ValidatorCodes.MAXIMUM:
+                            maxProperties.push(error.path[0])
+                        break;
                     }
                 }
                 let messages = []
                 if(missingProperties.length>0) messages.push(`${(missingProperties.length==1)? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length==1)? 'is' : 'are'} missing`)
                 if(invalidProperties.length>0) messages.push(`${(invalidProperties.length==1)? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`)
                 if(typeProperties.length>0) messages.push(`${(typeProperties.length==1)? 'Property' : 'Properties'}: ${typeProperties.join(", ")}, have an invalid type`)
+                if(minProperties.length>0) messages.push(`${(minProperties.length==1)? 'Property' : 'Properties'}: ${minProperties.join(", ")}, have a value that exceeded the minimum limit`)
+                if(maxProperties.length>0) messages.push(`${(maxProperties.length==1)? 'Property' : 'Properties'}: ${maxProperties.join(", ")}, have a value that exceeded the maximum limit`)
                 
                 message = `${messages.join('; ')}.`;
             }else{

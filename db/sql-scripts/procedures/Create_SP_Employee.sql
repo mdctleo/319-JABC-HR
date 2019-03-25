@@ -566,6 +566,24 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
+-- procedure get_all_active_employees
+--    - get the latest version of all employees
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_active_employees;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_active_employees` ()
+BEGIN
+    SELECT *
+    FROM LATEST_HR_RECORDS
+    WHERE LATEST_HR_RECORDS.STATUS != 0;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
 -- procedure get_all_employees_with_birthday
 --    - get the latest version of all employees that matches the birthday with start - end
 -- -----------------------------------------------------
@@ -579,6 +597,24 @@ BEGIN
     SELECT * 
     FROM `LATEST_HR_RECORDS`
     WHERE DATE_FORMAT(BIRTHDATE, '%m-%d') >= DATE_FORMAT(start_period, '%m-%d') and DATE_FORMAT(BIRTHDATE, '%m-%d') <= DATE_FORMAT(end_period, '%m-%d');
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure get_all_active_employees_with_birthday
+--    - get the latest version of all employees that matches the birthday with start - end
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_active_employees_with_birthday;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_active_employees_with_birthday` (IN start_period DATE
+, IN end_period DATE)
+BEGIN
+    SELECT * 
+    FROM `LATEST_HR_RECORDS`
+    WHERE DATE_FORMAT(BIRTHDATE, '%m-%d') >= DATE_FORMAT(start_period, '%m-%d') and DATE_FORMAT(BIRTHDATE, '%m-%d') <= DATE_FORMAT(end_period, '%m-%d') AND LATEST_HR_RECORDS.STATUS != 0;
 END //
 
 DELIMITER ;
