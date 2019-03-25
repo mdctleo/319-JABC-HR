@@ -256,9 +256,10 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
         conn = await db.initConnection();
         await db.beginTransaction(conn);
 
-		let res = await db.rawQuery(conn, 'CALL update_performance_plan(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL update_performance_plan(?,?,?,?)', [
 			id,
-			performancePlan.date,
+			performancePlan.startYear,
+			performancePlan.endYear,
 			performancePlan.status
         ], JABCResponse.PERFORMANCE);
 
@@ -311,9 +312,8 @@ export async function updatePerformanceReview(id: Number, performanceReview: IPe
         conn = await db.initConnection();
         await db.beginTransaction(conn);
 
-		let res = await db.rawQuery(conn, 'CALL update_performance_review(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL update_performance_review(?,?)', [
 			id,
-			performanceReview.date,
 			performanceReview.status
         ], JABCResponse.PERFORMANCE);
 

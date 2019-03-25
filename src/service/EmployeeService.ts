@@ -1,5 +1,20 @@
 'use strict';
-import { Employee, PerformancePlan, PerformanceReview, OnboardingTask, Vacation, IEmployee, IPerformancePlan, IPerformanceReview, IPerformanceSection, IVacation, EmployeeHistory, IOnboardingTask, Role } from '../model/models'
+import {
+    Employee,
+    PerformancePlan,
+    PerformanceReview,
+    OnboardingTask,
+    Vacation,
+    IEmployee,
+    IPerformancePlan,
+    IPerformanceReview,
+    IPerformanceSection,
+    IVacation,
+    EmployeeHistory,
+    IOnboardingTask,
+    Role,
+    PerformanceSection
+} from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import * as jwt from 'jsonwebtoken';
 import { ILogin } from '../model/iLogin';
@@ -157,9 +172,11 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		conn = await db.initConnection()
 		await db.beginTransaction(conn)
 		// Insert performance plan
-		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?,?,?)', [
 			id,
-			performance.date,
+			performance.startYear,
+			performance.endYear,
+			performance.createDate,
 			performance.status
 		], JABCResponse.EMPLOYEE)
 
@@ -226,14 +243,14 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		}
 		db = Database.getInstance();
 		conn = await db.initConnection();
-		await db.beginTransaction(conn)
+		await db.beginTransaction(conn);
 		// Insert performance review
 		let res = await db.rawQuery(conn, 'CALL create_employee_performance_review(?,?,?,?)', [
 			id,
+			performance.createDate,
 			performance.fkPerformancePlan,
-			performance.date,
 			performance.status
-		], JABCResponse.EMPLOYEE)
+		], JABCResponse.EMPLOYEE);
 
 		const PERFORMANCE_REVIEW_ID = res[0][0][0].PERFORMANCE_REVIEW_ID;
 
@@ -371,8 +388,14 @@ export async function getEmployeeHistory(id: Number, xAuthToken: String) {
  * @param {String} inactive String If [inactive] is provided this returns the all the Employees of the system including the inactive ones (optional)
  * @returns {Promise<[]>}
  **/
-export async function getEmployees(xAuthToken: String, term: String, start: String, end: String, inactive: String) {
+export async function getEmployees(xAuthToken: string, term: String, start: String, end: String, inactive: String) {
 	try {
+        const client = (await Auth(xAuthToken)).employee;
+
+        if (client.adminLevel === IEmployee.adminLevelEnum.MANAGER) {
+            return await getEmployeesByManager(client.id, xAuthToken);
+        }
+
 		let res: any;
 		if (start != undefined && end != undefined) {
 			if (inactive != null) {
@@ -392,7 +415,7 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
 			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken)
 			delete employee.role.competencies
 		}
-		return employees
+		return employees;
 	} catch (error) {
 		throw error;
 	}
@@ -486,10 +509,10 @@ export async function getManagersByEmployee(id: Number, xAuthToken: string) {
  **/
 export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
 	try {
-		const client = (await Auth(xAuthToken)).employee
+		const client = (await Auth(xAuthToken)).employee;
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
 			let managed = false;
-			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken);
 			for (let manager of managersOfEmployee) {
 				if (manager.id === client.id) {
 					managed = true;
@@ -497,13 +520,20 @@ export async function getPerformancePlans(id: Number, xAuthToken: string, term: 
 				}
 			}
 			if (!managed) {
-				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.');
 			}
 		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.')
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.');
 		}
-		let res = await Database.getInstance().query('CALL get_employee_performance_plans(?)', [id], JABCResponse.EMPLOYEE)
-		return PerformancePlan.PerformancePlans(res[0][0])
+		let res = await Database.getInstance().query('CALL get_employee_performance_plans(?)', [id], JABCResponse.EMPLOYEE);
+		let performancePlans = PerformancePlan.PerformancePlans(res[0][0]);
+
+		for (let performancePlan of performancePlans) {
+			let resSections = await Database.getInstance().query('CALL get_performance_plan_sections(?)', [performancePlan.id]);
+			performancePlan.sections = PerformanceSection.PerformanceSections(resSections[0][0]);
+		}
+
+		return performancePlans;
 	} catch (error) {
 		throw error;
 	}
@@ -532,13 +562,20 @@ export async function getPerformanceReviews(id: Number, xAuthToken: string, term
 				}
 			}
 			if (!managed) {
-				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.');
 			}
 		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.')
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.');
 		}
-		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE)
-		return PerformanceReview.PerformanceReviews(res[0][0])
+		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE);
+		let performanceReviews = PerformanceReview.PerformanceReviews(res[0][0]);
+
+        for (let performanceReview of performanceReviews) {
+            let resSections = await Database.getInstance().query('CALL get_performance_review_sections(?)', [performanceReview.id]);
+            performanceReview.sections = PerformanceSection.PerformanceSections(resSections[0][0]);
+        }
+
+		return performanceReviews;
 	} catch (error) {
 		throw error;
 	}
