@@ -285,7 +285,11 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
 			await db.closeConnection(conn)
 		} catch (err) { }
 		throw error;
-	}
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
+    }
 }
 
 
@@ -336,5 +340,9 @@ export async function updatePerformanceReview(id: Number, performanceReview: IPe
 			await db.closeConnection(conn)
 		} catch (err) { }
 		throw error;
-	}
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
+    }
 }

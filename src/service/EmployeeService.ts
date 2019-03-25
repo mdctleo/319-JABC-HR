@@ -187,7 +187,11 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 			await db.closeConnection(conn)
 		} catch (err) { }
 		throw error;
-	}
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
+    }
 }
 
 
@@ -253,7 +257,11 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 			await db.closeConnection(conn)
 		} catch (err) { }
 		throw error;
-	}
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
+    }
 }
 
 

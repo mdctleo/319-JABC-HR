@@ -31,7 +31,6 @@ describe("Database Tests", () => {
         }
     });
 
-
     it ("Should throw a DatabaseQueryError when a query is unable to be performed" , async () => {
         let queryResult: any;
         try {
