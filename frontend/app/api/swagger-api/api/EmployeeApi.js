@@ -599,12 +599,13 @@ export default class EmployeeApi {
 
     /**
      * get all the Employees
-     * This returns all the Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [term] is provided this returns the Employees of the system that match with the [term]. 
+     * This returns all the active Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [inactive] is provided this returns the all the Employees of the system including the inactive ones. If [term] is provided this returns the Employees of the system that match with the [term]. 
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @param {String} opts.term Search term for filter the data
      * @param {Date} opts.start Search employees with a birthday after this date, if this isn&#39;t provided there won&#39;t be any filtering
      * @param {Date} opts.end Search employees with a birthday before this date, if this isn&#39;t provided there won&#39;t be any filtering
+     * @param {String} opts.inactive If [inactive] is provided this returns the all the Employees of the system including the inactive ones
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/IEmployee>} and HTTP response
      */
     getEmployeesWithHttpInfo(opts) {
@@ -617,7 +618,8 @@ export default class EmployeeApi {
       let queryParams = {
         'term': opts['term'],
         'start': opts['start'],
-        'end': opts['end']
+        'end': opts['end'],
+        'inactive': opts['inactive']
       };
       let headerParams = {
         'X-Auth-Token': opts['xAuthToken']
@@ -639,12 +641,13 @@ export default class EmployeeApi {
 
     /**
      * get all the Employees
-     * This returns all the Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [term] is provided this returns the Employees of the system that match with the [term]. 
+     * This returns all the active Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [inactive] is provided this returns the all the Employees of the system including the inactive ones. If [term] is provided this returns the Employees of the system that match with the [term]. 
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @param {String} opts.term Search term for filter the data
      * @param {Date} opts.start Search employees with a birthday after this date, if this isn&#39;t provided there won&#39;t be any filtering
      * @param {Date} opts.end Search employees with a birthday before this date, if this isn&#39;t provided there won&#39;t be any filtering
+     * @param {String} opts.inactive If [inactive] is provided this returns the all the Employees of the system including the inactive ones
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/IEmployee>}
      */
     getEmployees(opts) {

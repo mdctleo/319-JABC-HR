@@ -10,7 +10,7 @@ export function* getEmployee(id) {
 }
 
 export function* getEmployees() {
-  const employees = yield employeeApi.getEmployees();
+  const employees = yield employeeApi.getEmployees({ inactive: true });
   yield all(employees.map(e => put(setResource('employee', e.id, e))));
 }
 
