@@ -4,5 +4,6 @@
   "database": "jabc_db",
   "user": "root",
   "password": "root",
-  "dateStrings": true
+  "dateStrings": true,
+  "connectionLimit": 10
 }

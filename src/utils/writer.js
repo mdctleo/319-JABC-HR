@@ -53,7 +53,7 @@ exports.writeFile = function(response, file, code = 200) {
 exports.deleteDeepNulls  = function(data){
   if(typeof data === 'object'){
     Object.keys(data).forEach((key) => {
-        if(data[key] == null){ 
+        if(data[key] == null || (typeof data[key] === 'number' && isNaN(data[key]))){ 
           delete data[key]
         }else{
           exports.deleteDeepNulls(data[key])
@@ -64,7 +64,7 @@ exports.deleteDeepNulls  = function(data){
 }
 
 exports.deleteNulls  = function(data){
-  Object.keys(data).forEach((key) => (data[key] == null) && delete data[key]);
+  Object.keys(data).forEach((key) => (data[key] == null || (typeof data[key] === 'number' && isNaN(data[key]))) && delete data[key]);
   return data
 }
 

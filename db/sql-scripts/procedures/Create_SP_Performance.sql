@@ -311,7 +311,7 @@ DELIMITER //
 
 CREATE PROCEDURE `update_comment` (IN c_id INT
 , IN comment TEXT(4096)
-, IN comment_date TIMESTAMP
+, IN comment_date DATE
 , IN commenter_employee_id INT
 )
 BEGIN

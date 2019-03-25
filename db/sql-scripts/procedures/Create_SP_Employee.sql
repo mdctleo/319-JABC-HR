@@ -358,6 +358,7 @@ BEGIN
     DECLARE sinChecker INT;
     DECLARE emailChecker INT;
     DECLARE emplChecker INT;
+    DECLARE adminChecker INT;
     DECLARE version INT;
     DECLARE created_date DATE;
     DECLARE password VARCHAR(64);
@@ -365,6 +366,7 @@ BEGIN
     SET sinChecker = 0;
     SET emailChecker = 0;
     SET emplChecker = 0;
+    SET adminChecker = 0;
 
     SELECT NOW() INTO created_date;
     SELECT COUNT(SIN) INTO sinChecker
@@ -379,7 +381,17 @@ BEGIN
     FROM `EMPLOYEE`
     WHERE `EMPLOYEE`.EMPLOYEE_ID = employee_id;
 
+    IF IFNULL(created_by_id, -1) = -1 THEN
+      SET adminChecker = 1;
+    ELSE 
+      SELECT COUNT(EMPLOYEE_ID) INTO adminChecker
+      FROM `EMPLOYEE`
+      WHERE `EMPLOYEE`.EMPLOYEE_ID = created_by_id;
+    END IF;
+
     IF sinChecker > 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The creator of the employee does not exist.';
+    ELSEIF sinChecker > 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'SIN already in use.';
     ELSEIF emailChecker > 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email already in use.';
@@ -554,6 +566,24 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
+-- procedure get_all_active_employees
+--    - get the latest version of all employees
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_active_employees;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_active_employees` ()
+BEGIN
+    SELECT *
+    FROM LATEST_HR_RECORDS
+    WHERE LATEST_HR_RECORDS.STATUS != 0;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
 -- procedure get_all_employees_with_birthday
 --    - get the latest version of all employees that matches the birthday with start - end
 -- -----------------------------------------------------
@@ -567,6 +597,24 @@ BEGIN
     SELECT * 
     FROM `LATEST_HR_RECORDS`
     WHERE DATE_FORMAT(BIRTHDATE, '%m-%d') >= DATE_FORMAT(start_period, '%m-%d') and DATE_FORMAT(BIRTHDATE, '%m-%d') <= DATE_FORMAT(end_period, '%m-%d');
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure get_all_active_employees_with_birthday
+--    - get the latest version of all employees that matches the birthday with start - end
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS get_all_active_employees_with_birthday;
+
+DELIMITER //
+
+CREATE PROCEDURE `get_all_active_employees_with_birthday` (IN start_period DATE
+, IN end_period DATE)
+BEGIN
+    SELECT * 
+    FROM `LATEST_HR_RECORDS`
+    WHERE DATE_FORMAT(BIRTHDATE, '%m-%d') >= DATE_FORMAT(start_period, '%m-%d') and DATE_FORMAT(BIRTHDATE, '%m-%d') <= DATE_FORMAT(end_period, '%m-%d') AND LATEST_HR_RECORDS.STATUS != 0;
 END //
 
 DELIMITER ;
@@ -865,10 +913,16 @@ BEGIN
   DECLARE emplChecker INT;
   DECLARE managChecker INT;
   DECLARE linkChecker INT;
+  DECLARE managerLevel INT;
 
   SET emplChecker = 0;
   SET managChecker = 0;
   SET linkChecker = 0;
+  SET managerLevel = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO managerLevel
+  FROM `LATEST_HR_RECORDS`
+  WHERE `LATEST_HR_RECORDS`.EMPLOYEE_ID = m_id AND `LATEST_HR_RECORDS`.ADMIN_LEVEL = 0;
 
   SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
   FROM `EMPLOYEE`
@@ -888,6 +942,8 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager employee does not exist.';
   ELSEIF linkChecker > 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee is already managed by this Manager.';
+  ELSEIF managerLevel > 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An employee with STAFF admin level, can not manage any employee.';
   ELSEIF e_id = m_id THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An employee can not be managed by himself.';
   ELSE

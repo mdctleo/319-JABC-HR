@@ -38,10 +38,11 @@ paths:
       tags:
       - "Employee"
       summary: "get all the Employees"
-      description: "This returns all the Employees of the system. \nIf [start] and\
-        \ [end] are provided, it will return all employees with a birthday between\
-        \ those dates\nIf [term] is provided this returns the Employees of the system\
-        \ that match with the [term].\n"
+      description: "This returns all the active Employees of the system. \nIf [start]\
+        \ and [end] are provided, it will return all employees with a birthday between\
+        \ those dates\nIf [inactive] is provided this returns the all the Employees\
+        \ of the system including the inactive ones.\nIf [term] is provided this returns\
+        \ the Employees of the system that match with the [term].\n"
       operationId: "getEmployees"
       parameters:
       - name: "X-Auth-Token"
@@ -68,6 +69,12 @@ paths:
         required: false
         type: "string"
         format: "date"
+      - name: "inactive"
+        in: "query"
+        description: "If [inactive] is provided this returns the all the Employees\
+          \ of the system including the inactive ones"
+        required: false
+        type: "string"
       responses:
         200:
           description: "successful operation"
@@ -2492,7 +2499,6 @@ definitions:
     - "firstname"
     - "fte"
     - "lastname"
-    - "password"
     - "sin"
     - "status"
     properties:
@@ -2528,6 +2534,7 @@ definitions:
         maximum: 2
       salary:
         type: "number"
+        minimum: 0
       address:
         type: "string"
       birthdate:
@@ -2542,11 +2549,13 @@ definitions:
         type: "integer"
         format: "uint64"
         description: "The number of vacation days allowed to the employee per year"
+        minimum: 0
       remainingVacationDays:
         type: "integer"
         format: "uint64"
         description: "The number of vacation days allowed to the employee on the current\
           \ year"
+        minimum: 0
       fkRole:
         type: "integer"
         format: "uint64"
@@ -2578,14 +2587,14 @@ definitions:
         id: 1
       adminLevel: 1
       dateJoined: "2000-01-23"
-      salary: 5.63737665663332876420099637471139430999755859375
+      salary: 0.5637376656633328320111786524648778140544891357421875
       lastname: "lastname"
       password: "password"
       phoneNumber: "phoneNumber"
-      remainingVacationDays: 7
+      remainingVacationDays: 0
       fte: 0
       sin: 0.80082819046101150206595775671303272247314453125
-      vacationDays: 2
+      vacationDays: 0
       id: 1
       email: "email"
       status: 0
@@ -2599,7 +2608,6 @@ definitions:
     - "fkCreator"
     - "fte"
     - "lastname"
-    - "password"
     - "sin"
     - "status"
     - "version"
@@ -2650,6 +2658,7 @@ definitions:
         description: "The date the creation of this version of the employee data"
       salary:
         type: "number"
+        minimum: 0
       address:
         type: "string"
       birthdate:
@@ -2664,11 +2673,13 @@ definitions:
         type: "integer"
         format: "uint64"
         description: "The number of vacation days allowed to the employee per year"
+        minimum: 0
       remainingVacationDays:
         type: "integer"
         format: "uint64"
         description: "The number of vacation days allowed to the employee on the current\
           \ year"
+        minimum: 0
       fkRole:
         type: "integer"
         format: "uint64"
@@ -2700,17 +2711,17 @@ definitions:
         id: 1
       adminLevel: 0
       dateJoined: "2000-01-23"
-      salary: 5.962133916683182377482808078639209270477294921875
+      salary: 0.59621339166831821554382031536079011857509613037109375
       version: 1
       fkCreator: 1
       lastname: "lastname"
       password: "password"
       createdDate: "2000-01-23"
       phoneNumber: "phoneNumber"
-      remainingVacationDays: 2
+      remainingVacationDays: 0
       fte: 0
       sin: "sin"
-      vacationDays: 5
+      vacationDays: 0
       id: 1
       email: "email"
       status: 1
@@ -3223,14 +3234,14 @@ definitions:
           id: 1
         adminLevel: 1
         dateJoined: "2000-01-23"
-        salary: 5.63737665663332876420099637471139430999755859375
+        salary: 0.5637376656633328320111786524648778140544891357421875
         lastname: "lastname"
         password: "password"
         phoneNumber: "phoneNumber"
-        remainingVacationDays: 7
+        remainingVacationDays: 0
         fte: 0
         sin: 0.80082819046101150206595775671303272247314453125
-        vacationDays: 2
+        vacationDays: 0
         id: 1
         email: "email"
         status: 0

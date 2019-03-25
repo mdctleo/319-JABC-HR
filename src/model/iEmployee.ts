@@ -154,6 +154,7 @@ export class Employee implements IEmployee{
         rawEmployee.fkRole = (rawEmployee.fkRole) ? rawEmployee.fkRole : null;
         rawEmployee.phoneNumber = (rawEmployee.phoneNumber) ? rawEmployee.phoneNumber : null;
         rawEmployee.role = (rawEmployee.role) ? rawEmployee.role : null;
+        rawEmployee.password = (rawEmployee.password) ? rawEmployee.password : null;
         return rawEmployee
     }
 }

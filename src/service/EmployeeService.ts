@@ -6,6 +6,7 @@ import { ILogin } from '../model/iLogin';
 import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
 import * as RoleService from './RolesService'
+import IDatabaseClient from '../database/IDatabaseClient';
 const KEY = process.env.JWT_KEY;
 
 
@@ -21,6 +22,10 @@ const KEY = process.env.JWT_KEY;
  **/
 export async function completeOnboardingTask(id: Number, idOnboardingTask: Number, xAuthToken: string, document: any) {
 	try {
+		const client = (await Auth(xAuthToken)).employee
+		if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+			throw new JABCError(JABCResponse.ONBOARDING, 'An employee can not complete other employee task.')
+		}
 		if (document) {
 			if (document.buffer.length > process.env.MAX_FILE)
 				throw new JABCError(JABCResponse.ONBOARDING, 'The file exceeded the size limit of 16 mb')
@@ -51,6 +56,13 @@ export async function completeOnboardingTask(id: Number, idOnboardingTask: Numbe
 export async function createOnboardingTask(id: Number, onboardingTask: IOnboardingTask, xAuthToken: string) {
 	try {
 		onboardingTask = OnboardingTask.Prepare(onboardingTask)
+		if (onboardingTask.createdDate != null && onboardingTask.dueDate != null) {
+			let createdDate = new Date(onboardingTask.createdDate)
+			let dueDate = new Date(onboardingTask.dueDate)
+			if (createdDate > dueDate) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'Can not create onboarding task with a due date that has already passed')
+			}
+		}
 		let res = await Database.getInstance().query('CALL create_onboarding_task(?,?,?,?,?,?,?)', [
 			id,
 			onboardingTask.fkDocumentType,
@@ -72,14 +84,22 @@ export async function createOnboardingTask(id: Number, onboardingTask: IOnboardi
  * Will create a new Employee with the provided data in body
  *
  * @param {IEmployee} employee Employee data
- * @param {String} xAuthToken Auth Token that grants access to the system (optional)
+ * @param {string} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function createEmployee(employee: IEmployee, xAuthToken: String) {
+export async function createEmployee(employee: IEmployee, xAuthToken: string) {
 	try {
-		employee = Employee.Prepare(employee);
+		const client = (await Auth(xAuthToken)).employee
+		if (employee.dateJoined != null && employee.birthdate != null) {
+			let dateJoined = new Date(employee.dateJoined)
+			let birthdate = new Date(employee.birthdate)
+			if (dateJoined < birthdate) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee can not have a joined date that is before its birthdate')
+			}
+		}
+		employee = Employee.Prepare(employee)
 		let res = await Database.getInstance().query('CALL create_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
-			null,
+			client.id,
 			employee.fkRole,
 			employee.sin,
 			employee.email,
@@ -114,11 +134,30 @@ export async function createEmployee(employee: IEmployee, xAuthToken: String) {
  * @returns {Promise<IApiResponse>}
  **/
 export async function createPerformancePlan(id: Number, performance: IPerformancePlan, xAuthToken: string) {
-	let db = Database.getInstance()
+	let db: IDatabaseClient;
+  let conn: any;
 	try {
-		await db.beginTransaction()
+		const client = (await Auth(xAuthToken)).employee
+		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+			let managed = false;
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			for (let manager of managersOfEmployee) {
+				if (manager.id === client.id) {
+					managed = true;
+					break;
+				}
+			}
+			if (!managed) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+			}
+		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance plan of other employee.')
+		}
+		db = Database.getInstance()
+		conn = db.initConnection()
+		await db.beginTransaction(conn)
 		// Insert performance plan
-		let res = await db.rawQuery('CALL create_employee_performance_plan(?,?,?)', [
+		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?)', [
 			id,
 			performance.date,
 			performance.status
@@ -127,24 +166,28 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		const PERFORMANCE_PLAN_ID = res[0][0][0].PERFORMANCE_PLAN_ID;
 
 		// Insert sections
-		for (let section of performance.sections) {
-			await db.rawQuery('CALL create_employee_performance_plan_section(?,?,?)', [
-				PERFORMANCE_PLAN_ID,
-				section.data,
-				section.sectionName
-			])
+		if(performance.sections != null ){
+			for (let section of performance.sections) {
+				await db.rawQuery(conn, 'CALL create_employee_performance_plan_section(?,?,?)', [
+					PERFORMANCE_PLAN_ID,
+					section.data,
+					section.sectionName
+				])
+			}
 		}
 
-		await db.commit()
-		await db.closeConnection()
+		await db.commit(conn);
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
 	} catch (error) {
 		try {
-			await db.rollback()
-			await db.closeConnection()
-		} catch (err) { }
+			await db.rollback(conn);
+        } catch (err) { }
 		throw error;
-	}
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
+    }
 }
 
 
@@ -158,11 +201,30 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
  * @returns {Promise<IApiResponse>}
  **/
 export async function createPerformanceReview(id: Number, performance: IPerformanceReview, xAuthToken: string) {
-	let db = Database.getInstance()
+	let db: IDatabaseClient;
+  let conn: any;
 	try {
-		await db.beginTransaction()
+		const client = (await Auth(xAuthToken)).employee
+		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+			let managed = false;
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			for (let manager of managersOfEmployee) {
+				if (manager.id === client.id) {
+					managed = true;
+					break;
+				}
+			}
+			if (!managed) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+			}
+		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance review of other employee.')
+		}
+		db = Database.getInstance()
+		conn = db.initConnection()
+		await db.beginTransaction(conn)
 		// Insert performance review
-		let res = await db.rawQuery('CALL create_employee_performance_review(?,?,?,?)', [
+		let res = await db.rawQuery(conn,'CALL create_employee_performance_review(?,?,?,?)', [
 			id,
 			performance.fkPerformancePlan,
 			performance.date,
@@ -173,23 +235,25 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 
 		// Insert sections
 		for (let section of performance.sections) {
-			await db.rawQuery('CALL create_employee_performance_review_section(?,?,?)', [
+			await db.rawQuery(conn, 'CALL create_employee_performance_review_section(?,?,?)', [
 				PERFORMANCE_REVIEW_ID,
 				section.data,
 				section.sectionName
 			])
 		}
 
-		await db.commit()
-		await db.closeConnection()
+		await db.commit(conn);
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was registered successfully`)
 	} catch (error) {
 		try {
-			await db.rollback()
-			await db.closeConnection()
-		} catch (err) { }
+			await db.rollback(conn);
+        } catch (err) { }
 		throw error;
-	}
+	} finally {
+        try {
+			await db.closeConnection(conn);
+        } catch (err) { }
+    }
 }
 
 
@@ -227,13 +291,13 @@ export async function createVacation(id: Number, vacation: IVacation, xAuthToken
  * @param {Number} idAdmin Who is deleting the employee (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function deleteEmployee(id: Number, xAuthToken: String, idAdmin: Number) {
+export async function deleteEmployee(id: Number, xAuthToken: string, idAdmin: Number) {
 	try {
 		let employee = await getEmployee(id, xAuthToken);
 		if (employee.status === IEmployee.statusEnum.INACTIVE)
 			throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is already inactive');
-        employee.status = IEmployee.statusEnum.INACTIVE;
-        await updateEmployee(id, employee, xAuthToken, idAdmin);
+		employee.status = IEmployee.statusEnum.INACTIVE;
+		await updateEmployee(id, employee, xAuthToken, idAdmin);
 		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The employee was successfully set up to inactive');
 	} catch (error) {
 		throw error;
@@ -275,7 +339,11 @@ export async function getEmployee(id: Number, xAuthToken: String) {
 export async function getEmployeeHistory(id: Number, xAuthToken: String) {
 	try {
 		let res = await Database.getInstance().query('CALL get_employee_history(?)', [id], JABCResponse.EMPLOYEE)
-		return EmployeeHistory.Employees(res[0][0])
+		let employeeHistory = EmployeeHistory.Employees(res[0][0])
+		for (let employee of employeeHistory) {
+			delete employee.password
+		}
+		return employeeHistory
 	} catch (error) {
 		throw error;
 	}
@@ -284,27 +352,36 @@ export async function getEmployeeHistory(id: Number, xAuthToken: String) {
 
 /**
  * get all the Employees
- * This returns all the Employees of the system.  
- * If [start] and [end] are provided, it will return all employees with a birthday between those dates 
- * If [term] is provided this returns the Employees of the system that match with the [term]. 
+ * This returns all the Employees of the system that are active by default.  
+ * If [start] and [end] are provided, it will return all employees (inactive or active) with a birthday between those dates 
+ * If [inactive] is provided this returns the all the Employees of the system including the inactive ones (optional)
+ * You can combine both [start], [end] and [inactive] options to filter more the employees
+ * @param {String} term Search term for filter the data (optional)
  * @param {String} start date Search employees with a birthday after this date, if this isn't provided there won't be any filtering (optional)
  * @param {String} end date Search employees with a birthday before this date, if this isn't provided there won't be any filtering (optional)
- *
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
- * @param {String} term Search term for filter the data (optional)
+ * @param {String} inactive String If [inactive] is provided this returns the all the Employees of the system including the inactive ones (optional)
  * @returns {Promise<[]>}
  **/
-export async function getEmployees(xAuthToken: String, term: String, start: String, end: String) {
+export async function getEmployees(xAuthToken: String, term: String, start: String, end: String, inactive: String) {
 	try {
 		let res: any;
-		if(start != undefined && end != undefined)
-			res = await Database.getInstance().query('CALL get_all_employees_with_birthday(?,?)', [start, end], JABCResponse.EMPLOYEE)
-		else
+		if (start != undefined && end != undefined) {
+			if (inactive != null) {
+				res = await Database.getInstance().query('CALL get_all_employees_with_birthday(?,?)', [], JABCResponse.EMPLOYEE)
+			} else {
+				res = await Database.getInstance().query('CALL get_all_active_employees_with_birthday(?,?)', [start, end], JABCResponse.EMPLOYEE)
+			}
+		} else if (inactive != null) {
 			res = await Database.getInstance().query('CALL get_all_employees()', [], JABCResponse.EMPLOYEE)
+		} else {
+			res = await Database.getInstance().query('CALL get_all_active_employees()', [], JABCResponse.EMPLOYEE)
+		}
 		let employees = Employee.Employees(res[0][0])
-		for(let employee of employees){
-			if(employee.fkRole == null) continue;
-			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken) 
+		for (let employee of employees) {
+			delete employee.password
+			if (employee.fkRole == null) continue;
+			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken)
 			delete employee.role.competencies
 		}
 		return employees
@@ -322,12 +399,17 @@ export async function getEmployees(xAuthToken: String, term: String, start: Stri
  * @param {String} xAuthToken Auth Token that grants access to the system (optional)
  * @returns {Promise<[]>}
  **/
-export async function getEmployeesByManager(idManager: Number, xAuthToken: String) {
+export async function getEmployeesByManager(idManager: Number, xAuthToken: string) {
 	try {
+		const manager = await getEmployee(idManager, xAuthToken)
+		if(manager.adminLevel == IEmployee.adminLevelEnum.STAFF){
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level, do not have managed employees')
+		}
 		let res = await Database.getInstance().query('CALL get_employees_of_manager(?)', [idManager], JABCResponse.EMPLOYEE)
 		let employees = Employee.Employees(res[0][0]);
-		for(let employee of employees){
-			if(employee.fkRole == null) continue;
+		for (let employee of employees) {
+			delete employee.password
+			if (employee.fkRole == null) continue;
 			employee.role = await RoleService.getRole(employee.fkRole, xAuthToken);
 			delete employee.role.competencies
 		}
@@ -349,6 +431,10 @@ export async function getEmployeesByManager(idManager: Number, xAuthToken: Strin
  **/
 export async function getOnboardingTasks(id: Number, xAuthToken: string, term: string) {
 	try {
+		const client = (await Auth(xAuthToken)).employee
+		if(client.id != id && client.adminLevel == IEmployee.adminLevelEnum.STAFF){
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level, can not see other employees\' onboarding task')
+		}
 		let res = await Database.getInstance().query('CALL get_employee_tasks(?)', [id], JABCResponse.EMPLOYEE)
 		return OnboardingTask.OnboardingTasks(res[0][0])
 	} catch (error) {
@@ -371,7 +457,7 @@ export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 		let managers = Employee.Employees(res[0][0]);
 		for (let manager of managers) {
 			if (manager.fkRole == null) continue;
-            manager.role = await RoleService.getRole(manager.fkRole, xAuthToken);
+			manager.role = await RoleService.getRole(manager.fkRole, xAuthToken);
 			delete manager.role.competencies;
 		}
 		return managers;
@@ -392,6 +478,22 @@ export async function getManagersByEmployee(id: Number, xAuthToken: string) {
  **/
 export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
 	try {
+		const client = (await Auth(xAuthToken)).employee
+		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+			let managed = false;
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			for (let manager of managersOfEmployee) {
+				if (manager.id === client.id) {
+					managed = true;
+					break;
+				}
+			}
+			if (!managed) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+			}
+		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.')
+		}
 		let res = await Database.getInstance().query('CALL get_employee_performance_plans(?)', [id], JABCResponse.EMPLOYEE)
 		return PerformancePlan.PerformancePlans(res[0][0])
 	} catch (error) {
@@ -411,6 +513,22 @@ export async function getPerformancePlans(id: Number, xAuthToken: string, term: 
  **/
 export async function getPerformanceReviews(id: Number, xAuthToken: string, term: string) {
 	try {
+		const client = (await Auth(xAuthToken)).employee
+		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+			let managed = false;
+			let managersOfEmployee = await getManagersByEmployee(id, xAuthToken)
+			for (let manager of managersOfEmployee) {
+				if (manager.id === client.id) {
+					managed = true;
+					break;
+				}
+			}
+			if (!managed) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
+			}
+		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.')
+		}
 		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE)
 		return PerformanceReview.PerformanceReviews(res[0][0])
 	} catch (error) {
@@ -448,8 +566,8 @@ export async function getVacations(id: Number, xAuthToken: String, term: String)
  * @returns {Promise<IApiResponse>}
  **/
 export async function linkEmployeeManager(id: Number, idManager: Number, xAuthToken: String) {
-    try {
-        let res = await Database.getInstance().query('CALL link_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
+	try {
+		let res = await Database.getInstance().query('CALL link_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The employee, was assigned to the manager`)
 	} catch (error) {
 		throw error;
@@ -515,12 +633,20 @@ export async function unlinkEmployeeManager(id: Number, idManager: Number, xAuth
  * @param {Number} idAdmin Who is updating the employee (optional)
  * @returns {Promise<IApiResponse>}
  **/
-export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken: String, idAdmin: Number) {
+export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken: string, idAdmin: Number) {
 	try {
+		const client = (await Auth(xAuthToken)).employee
+		if (employee.dateJoined != null && employee.birthdate != null) {
+			let dateJoined = new Date(employee.dateJoined)
+			let birthdate = new Date(employee.birthdate)
+			if (dateJoined < birthdate) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee can not have a joined date that is before its birthdate')
+			}
+		}
 		employee = Employee.Prepare(employee)
 		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			id,
-			(idAdmin) ? idAdmin : null,
+			(idAdmin) ? idAdmin : client.id,
 			employee.fkRole,
 			employee.sin,
 			employee.email,
@@ -565,7 +691,7 @@ export async function updateEmployeePassword(id: Number, employee: IEmployee, xA
 		throw error;
 	}
 }
-  
+
 
 /**
  * Authorizes the employee with a jwt [token] string
@@ -579,7 +705,7 @@ export async function Auth(token: string): Promise<ILoginResponse> {
 		if (token === undefined) {
 			throw new JABCError(JABCResponse.UNAUTHORIZED)
 		}
-		return await this.JWTVerify(token, KEY)
+		return await JWTVerify(token, KEY)
 	} catch (error) {
 		throw error
 	}

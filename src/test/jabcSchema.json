@@ -2330,7 +2330,7 @@
     "IEmployee" : {
       "type" : "object",
       "description" : "An Employee contains all the current information of a current or onboarding employee\n",
-      "required" : [ "id", "sin", "email", "password", "firstname", "lastname", "fte", "status", "adminLevel" ],
+      "required" : ["sin", "email", "firstname", "lastname", "fte", "status", "adminLevel" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2382,7 +2382,8 @@
           "maximum" : 2
         },
         "salary" : {
-          "type" : "number"
+          "type" : "number",
+          "minimum" : 0
         },
         "address" : {
           "type" : "string"
@@ -2399,6 +2400,7 @@
         },
         "vacationDays" : {
           "type" : "integer",
+          "minimum" : 0,
           "faker" : {
             "random.number": {
               "min": 50,
@@ -2409,6 +2411,7 @@
         },
         "remainingVacationDays" : {
           "type" : "integer",
+          "minimum" : 0,
           "faker" : {
             "random.number": {
               "min": 0,
@@ -2439,7 +2442,7 @@
     "IEmployeeHistory" : {
       "type" : "object",
       "description" : "An Employee contains all the current information of a current or onboarding employee\n",
-      "required" : [ "id", "sin", "email", "password", "firstname", "lastname", "fte", "status", "adminLevel", "version", "fkCreator", "createdDate" ],
+      "required" : ["sin", "email", "firstname", "lastname", "fte", "status", "adminLevel", "version", "fkCreator", "createdDate" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2501,7 +2504,8 @@
           "description" : "The date the creation of this version of the employee data"
         },
         "salary" : {
-          "type" : "number"
+          "type" : "number",
+          "minimum" : 0
         },
         "address" : {
           "type" : "string"
@@ -2518,11 +2522,13 @@
         },
         "vacationDays" : {
           "type" : "integer",
+          "minimum" : 0,
           "format" : "uint64",
           "description" : "The number of vacation days allowed to the employee per year"
         },
         "remainingVacationDays" : {
           "type" : "integer",
+          "minimum" : 0,
           "format" : "uint64",
           "description" : "The number of vacation days allowed to the employee on the current year"
         },
@@ -2543,7 +2549,7 @@
     "IRole" : {
       "type" : "object",
       "description" : "An Role is contains all the current information of a current or onboarding employee\n",
-      "required" : [ "id", "name" ],
+      "required" : ["name" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2574,7 +2580,7 @@
     "ICompetency" : {
       "type" : "object",
       "description" : "A Competency contains info of competencies and objectives that each role need to fulfill\n",
-      "required" : [ "id", "fkRole" ],
+      "required" : ["fkRole", "name"],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2599,7 +2605,7 @@
     "IVacation" : {
       "type" : "object",
       "description" : "A Vacation contains info of the employee asking for a vaction period\n",
-      "required" : [ "id", "fkEmployee", "requestedDays", "requestedStatus", "date" ],
+      "required" : ["fkEmployee", "requestedDays", "requestedStatus", "date" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2639,7 +2645,7 @@
     "IOnboardingTask" : {
       "type" : "object",
       "description" : "An onboarding task required for the onbarding proccess of a new Employee, if the property [requireDoc] is\nset to 1, then the OnboardingTask require the employee to upload a document, and the fkDocumentType will \ncontain the id of the IDocumentType object with the template of the document to be filled by the employee. \nOtherwise the [fkDocumentType] property will be null.\n",
-      "required" : [ "id", "fkEmployee", "createdDate", "dueDate", "requireDoc", "status" ],
+      "required" : ["fkEmployee", "createdDate", "dueDate", "requireDoc", "status" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2701,7 +2707,7 @@
     "IDocumentType" : {
       "type" : "object",
       "description" : "A DocumentType contains info of the template support document for the onboarding process\n",
-      "required" : [ "id", "name" ],
+      "required" : ["name" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2724,7 +2730,7 @@
     "IPerformancePlan" : {
       "type" : "object",
       "description" : "PerformancePlan contains info of the sections of a performance plan of an employee\n",
-      "required" : [ "id", "fkEmployee", "date", "status" ],
+      "required" : ["fkEmployee", "date", "status" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2767,7 +2773,7 @@
     "IPerformanceReview" : {
       "type" : "object",
       "description" : "PerformanceReview contains info of the sections of a performance plan of an employee\n",
-      "required" : [ "id", "fkEmployee", "fkPerformancePlan", "date", "status" ],
+      "required" : ["fkEmployee", "fkPerformancePlan", "date", "status" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2834,7 +2840,8 @@
           }
         },
         "sectionName" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 45
         },
         "fkPerformancePlan" : {
           "type" : "integer",
@@ -2853,7 +2860,7 @@
     "IComment" : {
       "type" : "object",
       "description" : "A Comment contains what another employee thinks about the performance record of another employee\n",
-      "required" : [ "id", "fkCommenter", "comment", "date" ],
+      "required" : ["fkCommenter", "comment", "date" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2892,7 +2899,7 @@
     "IFAQ" : {
       "type" : "object",
       "description" : "A FAQ contains a question and answer, to help the employee while onboarding\n",
-      "required" : [ "id", "question", "answer" ],
+      "required" : ["question", "answer" ],
       "properties" : {
         "id" : {
           "type" : "integer",
