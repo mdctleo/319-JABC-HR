@@ -161,7 +161,9 @@ DROP PROCEDURE IF EXISTS create_employee_performance_plan;
 DELIMITER //
 
 CREATE PROCEDURE `create_employee_performance_plan` (IN employee_id INT
-, IN created_date DATE
+, IN start_year SMALLINT
+, IN end_year SMALLINT
+, IN create_date DATE
 , IN status TINYINT
 )
 BEGIN
@@ -176,8 +178,8 @@ BEGIN
     IF checker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
     ELSE
-      INSERT INTO `PERFORMANCE_PLAN` (`CREATED_DATE`, STATUS, EMPLOYEE_ID)
-      VALUES (created_date, status, employee_id);
+      INSERT INTO `PERFORMANCE_PLAN` (START_YEAR, END_YEAR, CREATE_DATE, STATUS, EMPLOYEE_ID)
+      VALUES (start_year, end_year, create_date, status, employee_id);
       SELECT LAST_INSERT_ID() AS PERFORMANCE_PLAN_ID;
     END IF;
 END //
@@ -226,8 +228,8 @@ DROP PROCEDURE IF EXISTS create_employee_performance_review;
 DELIMITER //
 
 CREATE PROCEDURE `create_employee_performance_review` (IN employee_id INT
+, IN create_date DATE
 , IN work_plan INT
-, IN created_date DATE
 , IN status TINYINT
 )
 BEGIN
@@ -250,8 +252,8 @@ BEGIN
     ELSEIF work_plan_checker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Work plan does not exist.';
     ELSE
-      INSERT INTO `PERFORMANCE_REVIEW` (`CREATED_DATE`, STATUS, EMPLOYEE_ID, WORK_PLAN_ID)
-      VALUES (created_date, status, employee_id, work_plan);
+      INSERT INTO `PERFORMANCE_REVIEW` (CREATE_DATE, STATUS, EMPLOYEE_ID, WORK_PLAN_ID)
+      VALUES (create_date, status, employee_id, work_plan);
       SELECT LAST_INSERT_ID() AS PERFORMANCE_REVIEW_ID;
     END IF;
 END //
