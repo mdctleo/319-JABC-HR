@@ -168,7 +168,6 @@ class PerformanceModule extends React.Component {
       profile: props.profile,
       value: 0,
       openNewSectionDialog: false,
-      openNewReviewSectionDialog: false,
       openNewPerformancePlanDialog: false,
       columnsForNewSection: [0],
       openCheckDeleteDocDialog: false,
@@ -176,6 +175,8 @@ class PerformanceModule extends React.Component {
       openDeleteSectionDialog: false,
       sectionIDToDelete: 0,
       rowIDSToDelete: [],
+      newPerformanceEnd: '',
+      newPerformanceStart: '',
     };
   }
 
@@ -208,7 +209,7 @@ class PerformanceModule extends React.Component {
     return (
       <Select
         value={selectedPlan ? selectedPlan.id : 0}
-        onChange={this.props.selectYear}
+        onChange={this.selectYear}
       >
         <MenuItem key={-1} value={0}>
           Add Year
@@ -224,6 +225,14 @@ class PerformanceModule extends React.Component {
       </Select>
     );
   }
+
+  selectYear = event => {
+    if (event.target.value === 0) {
+      this.openNewPlanDialog();
+    } else {
+      this.props.selectPlan(event.target.value);
+    }
+  };
 
   // Build a Section from the fields filled out in the Dialog Box
   // Then, add it to the collection of Sections
@@ -263,37 +272,53 @@ class PerformanceModule extends React.Component {
   };
 
   // Make a performance plan with the given plan year
-  // TODO: Validate year inputted is valid and does not already exist
   makePlan = () => {
-    const year = document.getElementById('planYear').value;
+    const d = new Date();
+    let month = `${d.getMonth() + 1}`;
+    let day = `${d.getDate()}`;
+    const year = d.getFullYear();
+    if (month.length < 2) month = `0${month}`;
+    if (day.length < 2) day = `0${day}`;
 
+    const createDate = [year, month, day].join('-');
     const plan = {
-      year,
-      sections: [],
+      fkEmployee: this.props.profile.id,
+      startYear: this.state.newPerformanceStart,
+      endYear:
+        this.state.newPerformanceEnd === ''
+          ? this.state.newPerformanceStart
+          : this.state.newPerformanceEnd,
+      status: 0,
+      createDate,
     };
 
-    const performancePlans = this.state.performancePlans;
+    this.props.createPlan(plan);
 
     this.setState({
-      performancePlans: [...performancePlans, plan],
       openNewPerformancePlanDialog: false,
-      selectedYear: year,
+      newPerformanceStart: '',
+      newPerformanceEnd: '',
       value: 0,
     });
   };
 
   makeReview = () => {
-    const selectedPlan = this.getPerformancePlanOfSelectedYear();
+    const d = new Date();
+    let month = `${d.getMonth() + 1}`;
+    let day = `${d.getDate()}`;
+    const year = d.getFullYear();
+    if (month.length < 2) month = `0${month}`;
+    if (day.length < 2) day = `0${day}`;
 
-    const performancePlans = this.state.performancePlans;
-    for (const plan of performancePlans) {
-      if (plan === selectedPlan) {
-        plan.performanceReview = {};
-        plan.performanceReview.sections = [];
-        plan.performanceReview.year = plan.year;
-        this.setState({ performancePlans: [...performancePlans], value: 1 });
-      }
-    }
+    const createDate = [year, month, day].join('-');
+    const review = {
+      fkEmployee: this.props.profile.id,
+      status: 0,
+      createDate,
+      fkPerformancePlan: this.props.selectedPlan.id,
+    };
+
+    this.props.createReview(review);
   };
 
   openNewSectionDialog = () => {
@@ -302,17 +327,6 @@ class PerformanceModule extends React.Component {
 
   closeNewSectionDialog = () => {
     this.setState({ openNewSectionDialog: false, columnsForNewSection: [0] });
-  };
-
-  openNewSectionReviewDialog = () => {
-    this.setState({ openNewReviewSectionDialog: true });
-  };
-
-  closeNewSectionReviewDialog = () => {
-    this.setState({
-      openNewReviewSectionDialog: false,
-      columnsForNewSection: [0],
-    });
   };
 
   openNewPlanDialog = () => {
@@ -355,41 +369,13 @@ class PerformanceModule extends React.Component {
     this.props.deleteSection(this.state.sectionIDToDelete, isPlan);
   };
 
-  handleDeletePlan = () => {
-    const selectedPlan = this.getPerformancePlanOfSelectedYear();
-
-    const performancePlans = this.state.performancePlans;
-    for (let i = 0; i < performancePlans.length; i++) {
-      const plan = performancePlans[i];
-      if (plan === selectedPlan) {
-        performancePlans.splice(i, 1);
-      }
-    }
-
-    this.setState({
-      performancePlans: [...performancePlans],
-      selectedYear: '',
-    });
-    this.setState({ openCheckDeleteDocDialog: false });
-  };
-
-  handleDeleteReview = () => {
-    const selectedPlan = this.getPerformancePlanOfSelectedYear();
-
-    const performancePlans = this.state.performancePlans;
-    for (let i = 0; i < performancePlans.length; i++) {
-      const plan = performancePlans[i];
-      if (plan === selectedPlan) {
-        performancePlans[i].performanceReview = null;
-      }
-    }
-
-    this.setState({ performancePlans: [...performancePlans] });
+  handleDeletePerformance = isPlan => {
+    this.props.deletePerformance(isPlan);
     this.setState({ openCheckDeleteDocDialog: false });
   };
 
   render() {
-    const { classes, selectedPlan, planList } = this.props;
+    const { classes, selectedPlan, selectedReview, planList } = this.props;
     const {
       columnsForNewSection,
       profile,
@@ -449,11 +435,27 @@ class PerformanceModule extends React.Component {
               </DialogTitle>
               <DialogContent>
                 <TextField
-                  autoFocus
+                  required
                   margin="dense"
-                  id="planYear"
-                  label="Year"
+                  label="Start Year"
                   fullWidth
+                  placeholder="2018"
+                  value={this.state.newPerformanceStart}
+                  onChange={event =>
+                    this.setState({ newPerformanceStart: event.target.value })
+                  }
+                  type="number"
+                />
+                <TextField
+                  margin="dense"
+                  label="End Year"
+                  fullWidth
+                  placeholder="2019"
+                  value={this.state.newPerformanceEnd}
+                  onChange={event =>
+                    this.setState({ newPerformanceEnd: event.target.value })
+                  }
+                  type="number"
                 />
               </DialogContent>
               <DialogActions>
@@ -480,11 +482,17 @@ class PerformanceModule extends React.Component {
                   No
                 </Button>
                 {value === 0 ? (
-                  <Button onClick={this.handleDeletePlan} color="primary">
+                  <Button
+                    onClick={() => this.handleDeletePerformance(true)}
+                    color="primary"
+                  >
                     Yes
                   </Button>
                 ) : (
-                  <Button onClick={this.handleDeleteReview} color="primary">
+                  <Button
+                    onClick={() => this.handleDeletePerformance(false)}
+                    color="primary"
+                  >
                     Yes
                   </Button>
                 )}
@@ -588,53 +596,21 @@ class PerformanceModule extends React.Component {
                 <Button onClick={this.closeNewSectionDialog} color="primary">
                   Cancel
                 </Button>
-                <Button onClick={() => this.saveSection(true)} color="primary">
-                  OK
-                </Button>
-              </DialogActions>
-            </Dialog>
-
-            <Dialog
-              open={this.state.openNewReviewSectionDialog}
-              onClose={this.closeNewSectionReviewDialog}
-              aria-labelledby="form-dialog-title"
-            >
-              <DialogTitle id="form-dialog-title">Add new Section</DialogTitle>
-              <DialogContent>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="sectionName"
-                  label="Section Name"
-                  fullWidth
-                />
-                {columnsForNewSection.map((column, i) => (
-                  <TextField
-                    autoFocus
-                    key={i}
-                    margin="dense"
-                    id={'col-name'.concat(column)}
-                    label="Column Name"
-                    fullWidth
-                  />
-                ))}
-                <Button
-                  className={classes.addColButton}
-                  onClick={this.incNumColumnsForNewSection}
-                >
-                  Add Column
-                </Button>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={this.closeNewSectionReviewDialog}
-                  color="primary"
-                >
-                  Cancel
-                </Button>
-                <Button onClick={() => this.saveSection(false)} color="primary">
-                  OK
-                </Button>
+                {value === 0 ? (
+                  <Button
+                    onClick={() => this.saveSection(true)}
+                    color="primary"
+                  >
+                    OK
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => this.saveSection(false)}
+                    color="primary"
+                  >
+                    OK
+                  </Button>
+                )}
               </DialogActions>
             </Dialog>
             <div>
@@ -682,9 +658,15 @@ class PerformanceModule extends React.Component {
                     </Button>
                     <Button
                       className={classes.saveButton}
-                      onClick={this.saveWorkPlan}
+                      onClick={() => this.props.savePlan(false)}
                     >
-                      Save
+                      Save Draft
+                    </Button>
+                    <Button
+                      className={classes.saveButton}
+                      onClick={() => this.props.savePlan(true)}
+                    >
+                      Publish
                     </Button>
                     <WorkPlanDisplay
                       sections={selectedPlan.sections}
@@ -704,10 +686,8 @@ class PerformanceModule extends React.Component {
                     </Button>
                   </div>
                 )}
-              {selectedPlan &&
-                value === 1 &&
-                selectedPlan.hasOwnProperty('performanceReview') &&
-                selectedPlan.performanceReview && (
+              {selectedReview &&
+                value === 1 && (
                   <div className="profile-card">
                     <Button
                       className={classes.deleteWPButton}
@@ -717,13 +697,19 @@ class PerformanceModule extends React.Component {
                     </Button>
                     <Button
                       className={classes.saveButton}
-                      onClick={this.saveWorkPlan}
+                      onClick={() => this.props.saveReview(false)}
                     >
-                      Save
+                      Save Draft
+                    </Button>
+                    <Button
+                      className={classes.saveButton}
+                      onClick={() => this.props.saveReview(true)}
+                    >
+                      Publish
                     </Button>
                     <PerformanceReviewDisplay
-                      sections={selectedPlan.performanceReview.sections}
-                      year={selectedPlan.performanceReview.year}
+                      sections={selectedReview.sections}
+                      year={selectedPlanYear}
                       profile={profile}
                       handleDeleteSection={this.openDeleteSectionDialog}
                       handleAddRow={(sectionId, row) =>
@@ -733,7 +719,7 @@ class PerformanceModule extends React.Component {
                     />
                     <Button
                       className={classes.sectionButton}
-                      onClick={this.openNewSectionReviewDialog}
+                      onClick={this.openNewSectionDialog}
                     >
                       Add Section
                     </Button>
@@ -741,10 +727,7 @@ class PerformanceModule extends React.Component {
                 )}
               {selectedPlan &&
                 value === 1 &&
-                !(
-                  selectedPlan.hasOwnProperty('performanceReview') &&
-                  selectedPlan.performanceReview
-                ) && (
+                !selectedReview && (
                   <div className="profile-card">
                     <Typography>
                       You currently have no performance review for this work
@@ -772,12 +755,18 @@ PerformanceModule.propTypes = {
   classes: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   planList: PropTypes.array.isRequired,
-  selectYear: PropTypes.func.isRequired,
   selectedPlan: PropTypes.object,
+  selectedReview: PropTypes.object,
   deleteRows: PropTypes.func.isRequired,
   addRow: PropTypes.func.isRequired,
   addSection: PropTypes.func.isRequired,
   deleteSection: PropTypes.func.isRequired,
+  deletePerformance: PropTypes.func.isRequired,
+  selectPlan: PropTypes.func.isRequired,
+  createPlan: PropTypes.func.isRequired,
+  createReview: PropTypes.func.isRequired,
+  savePlan: PropTypes.func.isRequired,
+  saveReview: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(PerformanceModule);

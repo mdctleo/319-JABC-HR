@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import PerformanceModule from '../../components/PerformanceModule';
 import { createStructuredSelector } from 'reselect';
-import { selectPlanList, selectSelectedPlan } from './selectors';
+import { selectPlanList, selectSelectedPlan, selectSelectedReview } from './selectors';
 import actions from './actions';
 import connect from 'react-redux/es/connect/connect';
 import reducer from './reducer';
@@ -17,7 +17,7 @@ import saga from './saga';
 import { compose } from 'redux';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-const uniqid = require('uniqid');
+import { selectProfile } from '../App/selectors';
 
 const styles = theme => ({
   root: {
@@ -155,199 +155,30 @@ const styles = theme => ({
 });
 
 class PerformancePage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      profile: {
-        firstname: 'Justin',
-        lastname: 'Case',
-        id: '1',
-        sin: '777 777 777',
-        role: { name: 'Developer' },
-        status: 'Active',
-        salary: 60000,
-        manager: 'Sarah James',
-        type: 'FT',
-        vacation: 12,
-        address: 'Box 123',
-        phone: '555-5555',
-      },
-      performancePlans: [
-        {
-          year: '2019',
-          sections: [
-            {
-              sectionId: 1,
-              sectionName: 'First Section',
-              columns: ['Column 1', 'Column 2', 'Column 3'],
-              data: [
-                {
-                  id: uniqid(),
-                  'Column 1': 'Data for column 1',
-                  'Column 2': 'Data for column 2',
-                  'Column 3': 'Data for column 3',
-                },
-                {
-                  id: uniqid(),
-                  'Column 1': '2 Data for column 1',
-                  'Column 2': '2 Data for column 2',
-                  'Column 3': '2 Data for column 3',
-                },
-                {
-                  id: uniqid(),
-                  'Column 1': '3 Data for column 1',
-                  'Column 2': '3 Data for column 2',
-                  'Column 3': '3 Data for column 3',
-                },
-              ],
-            },
-            {
-              sectionId: 2,
-              sectionName: 'Second Section',
-              columns: ['Column 1', 'Column 2'],
-              data: [
-                {
-                  id: uniqid(),
-                  'Column 1': 'Data for column 1',
-                  'Column 2': 'Data for column 2',
-                },
-                {
-                  id: uniqid(),
-                  'Column 1': '2 Data for column 1',
-                  'Column 2': '2 Data for column 2',
-                },
-                {
-                  id: uniqid(),
-                  'Column 1': '3 Data for column 1',
-                  'Column 2': '3 Data for column 2',
-                },
-              ],
-            },
-            {
-              sectionId: 3,
-              sectionName: 'Third Section',
-              columns: ['Column 1'],
-              data: [
-                {
-                  id: uniqid(),
-                  'Column 1': 'Data for column 1',
-                },
-                {
-                  id: uniqid(),
-                  'Column 1': '2 Data for column 1',
-                },
-                {
-                  id: uniqid(),
-                  'Column 1': '3 Data for column 1',
-                },
-              ],
-            },
-          ],
-          performanceReview: {
-            year: '2019',
-            sections: [
-              {
-                sectionId: 1,
-                sectionName: 'First Section',
-                columns: ['Column 1', 'Column 2', 'Column 3'],
-                data: [
-                  {
-                    id: uniqid(),
-                    'Column 1': 'Data for column 1',
-                    'Column 2': 'Data for column 2',
-                    'Column 3': 'Data for column 3',
-                  },
-                  {
-                    id: uniqid(),
-                    'Column 1': '2 Data for column 1',
-                    'Column 2': '2 Data for column 2',
-                    'Column 3': '2 Data for column 3',
-                  },
-                  {
-                    id: uniqid(),
-                    'Column 1': '3 Data for column 1',
-                    'Column 2': '3 Data for column 2',
-                    'Column 3': '3 Data for column 3',
-                  },
-                ],
-              },
-              {
-                sectionId: 2,
-                sectionName: 'Second Section',
-                columns: ['Column 1', 'Column 2'],
-                data: [
-                  {
-                    id: uniqid(),
-                    'Column 1': 'Data for column 1',
-                    'Column 2': 'Data for column 2',
-                  },
-                  {
-                    id: uniqid(),
-                    'Column 1': '2 Data for column 1',
-                    'Column 2': '2 Data for column 2',
-                  },
-                  {
-                    id: uniqid(),
-                    'Column 1': '3 Data for column 1',
-                    'Column 2': '3 Data for column 2',
-                  },
-                ],
-              },
-              {
-                sectionId: 3,
-                sectionName: 'Third Section',
-                columns: ['Column 1'],
-                data: [
-                  {
-                    id: uniqid(),
-                    'Column 1': 'Data for column 1',
-                  },
-                  {
-                    id: uniqid(),
-                    'Column 1': '2 Data for column 1',
-                  },
-                  {
-                    id: uniqid(),
-                    'Column 1': '3 Data for column 1',
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      ],
-    };
-  }
-
   componentDidMount() {
     this.props.getAllPlans();
   }
 
-  selectYear = event => {
-    if (event.target.value === 0) {
-      this.openNewPlanDialog();
-    } else {
-      this.props.selectPlan(event.target.value);
-    }
-  };
-
   render() {
-    const { performancePlans, profile } = this.state;
-    const { planList, selectedPlan } = this.props;
+    const { planList, selectedPlan, selectedReview, profile } = this.props;
 
     return (
       <div>
         <PerformanceModule
           planList={planList}
-          performancePlans={performancePlans}
           profile={profile}
-          selectYear={this.selectYear}
+          selectPlan={this.props.selectPlan}
           selectedPlan={selectedPlan}
+          selectedReview={selectedReview}
           deleteRows={this.props.deleteRows}
           addRow={this.props.addRow}
           addSection={this.props.addSection}
           deleteSection={this.props.deleteSection}
+          deletePerformance={this.props.deletePerformance}
+          createPlan={this.props.createPlan}
+          createReview={this.props.createReview}
+          savePlan={this.props.savePlan}
+          saveReview={this.props.saveReview}
         />
       </div>
     );
@@ -357,17 +188,26 @@ class PerformancePage extends React.Component {
 PerformancePage.propTypes = {
   planList: PropTypes.array.isRequired,
   getAllPlans: PropTypes.func.isRequired,
+  profile: PropTypes.object,
   selectPlan: PropTypes.func.isRequired,
   selectedPlan: PropTypes.object,
+  selectedReview: PropTypes.object,
   deleteRows: PropTypes.func.isRequired,
   addRow: PropTypes.func.isRequired,
   addSection: PropTypes.func.isRequired,
   deleteSection: PropTypes.func.isRequired,
+  deletePerformance: PropTypes.func.isRequired,
+  createPlan: PropTypes.func.isRequired,
+  createReview: PropTypes.func.isRequired,
+  savePlan: PropTypes.func.isRequired,
+  saveReview: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
   planList: selectPlanList,
   selectedPlan: selectSelectedPlan,
+  selectedReview: selectSelectedReview,
+  profile: selectProfile,
 });
 
 const mapDispatchToProps = {

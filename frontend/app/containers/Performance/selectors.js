@@ -9,11 +9,6 @@ export const selectPerofrmanceDomainJS = createSelector(
   performanceDomain => performanceDomain.toJS(),
 );
 
-export const selectSelectedPlanId = createSelector(
-  [selectPerformanceDomain],
-  performanceDomain => performanceDomain.get('selectedPlanId'),
-);
-
 export const selectPlanList = createSelector(
   [selectResource('plan')],
   plans => {
@@ -44,5 +39,13 @@ export const selectSelectedPlan = createSelector(
   performanceDomain => {
     const selectedPlan = performanceDomain.get('selectedPlan');
     return selectedPlan && selectedPlan.toJS();
+  },
+);
+
+export const selectSelectedReview = createSelector(
+  [selectPerformanceDomain],
+  performanceDomain => {
+    const selectedReview = performanceDomain.get('selectedReview');
+    return selectedReview && selectedReview.toJS();
   },
 );

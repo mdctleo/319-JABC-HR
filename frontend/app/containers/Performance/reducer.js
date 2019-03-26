@@ -11,6 +11,7 @@ import {
   DELETE_ROWS,
   DELETE_SECTION,
   SET_PLAN_COPY,
+  SET_REVIEW_COPY,
 } from './constants';
 
 export const initialState = fromJS({});
@@ -50,7 +51,7 @@ const addRow = (state, sectionId, row, isPlan) => {
       .update(sectionIndex, section =>
         section.setIn(
           ['data', 'rows'],
-          section.getIn(['data', 'rows']).push(row),
+          section.getIn(['data', 'rows']).push(fromJS(row)),
         ),
       );
     const newPerformance = performance.set('sections', newSections);
@@ -63,9 +64,11 @@ const addSection = (state, section, isPlan) => {
   const performanceName = isPlan ? 'selectedPlan' : 'selectedReview';
   const performance = state.get(performanceName);
   const sections = performance.get('sections');
-  const maxId =
-    sections.size > 0 ? sections.maxBy(s => parseInt(s.sectionId, 10)) : 0;
-  const newSection = fromJS({ ...section, id: maxId.get('id') + 1 });
+  const maxId = sections.maxBy(s => parseInt(s.sectionId, 10));
+  const newSection = fromJS({
+    ...section,
+    id: maxId ? maxId.get('id') + 1 : 1,
+  });
   const newPerformance = performance.set('sections', sections.push(newSection));
   return state.set(performanceName, newPerformance);
 };
@@ -90,7 +93,12 @@ function performanceReducer(state = initialState, action) {
     case SET_PLAN_COPY:
       return state.set(
         'selectedPlan',
-        fromJS(JSON.parse(JSON.stringify(action.plan))),
+        action.plan && fromJS(JSON.parse(JSON.stringify(action.plan))),
+      );
+    case SET_REVIEW_COPY:
+      return state.set(
+        'selectedReview',
+        action.review && fromJS(JSON.parse(JSON.stringify(action.review))),
       );
     case DELETE_ROWS:
       return deleteRows(state, action.sectionId, action.rowIds, action.isPlan);

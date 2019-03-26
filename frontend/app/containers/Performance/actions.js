@@ -7,11 +7,17 @@
 import {
   ADD_ROW,
   ADD_SECTION,
+  CREATE_PLAN,
+  CREATE_REVIEW,
+  DELETE_PERFORMANCE,
   DELETE_ROWS,
   DELETE_SECTION,
   GET_ALL_PLANS,
+  SAVE_PLAN,
+  SAVE_REVIEW,
   SELECT_PLAN,
   SET_PLAN_COPY,
+  SET_REVIEW_COPY,
 } from './constants';
 
 export function getAllPlans() {
@@ -31,6 +37,13 @@ export function setPlanCopy(plan) {
   return {
     type: SET_PLAN_COPY,
     plan,
+  };
+}
+
+export function setReviewCopy(review) {
+  return {
+    type: SET_REVIEW_COPY,
+    review,
   };
 }
 
@@ -68,6 +81,41 @@ export function deleteSection(sectionId, isPlan) {
   };
 }
 
+export function deletePerformance(isPlan) {
+  return {
+    type: DELETE_PERFORMANCE,
+    isPlan,
+  };
+}
+
+export function createPlan(plan) {
+  return {
+    type: CREATE_PLAN,
+    plan,
+  };
+}
+
+export function createReview(review) {
+  return {
+    type: CREATE_REVIEW,
+    review,
+  };
+}
+
+export function savePlan(isPublished) {
+  return {
+    type: SAVE_PLAN,
+    isPublished,
+  };
+}
+
+export function saveReview(isPublished) {
+  return {
+    type: SAVE_REVIEW,
+    isPublished,
+  };
+}
+
 export default {
   getAllPlans,
   selectPlan,
@@ -75,4 +123,9 @@ export default {
   addRow,
   addSection,
   deleteSection,
+  deletePerformance,
+  createPlan,
+  createReview,
+  savePlan,
+  saveReview,
 };

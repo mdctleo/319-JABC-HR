@@ -32,17 +32,19 @@ export default class IPerformancePlan {
     * @alias module:model/IPerformancePlan
     * @class
     * @param fkEmployee {Number} Foreign key of the employee with this performance review
-    * @param _date {Date} The date the performance review was created
+    * @param createDate {Date} The date the performance review was created
+    * @param startYear {Number} The start year of the plan
+    * @param endYear {Number} The end year of the plan
     * @param status {Number} 
     */
 
-    constructor(fkEmployee, _date, status) {
+    constructor(fkEmployee, createDate, startYear, endYear, status) {
         
 
         
         
 
-        this['fkEmployee'] = fkEmployee;this['date'] = _date;this['status'] = status;
+        this['fkEmployee'] = fkEmployee;this['createDate'] = createDate;this['startYear'] = startYear;this['endYear'] = endYear;this['status'] = status;
 
         
     }
@@ -68,11 +70,14 @@ export default class IPerformancePlan {
             if (data.hasOwnProperty('fkEmployee')) {
                 obj['fkEmployee'] = ApiClient.convertToType(data['fkEmployee'], 'Number');
             }
+            if (data.hasOwnProperty('createDate')) {
+                obj['createDate'] = ApiClient.convertToType(data['createDate'], 'String');
+            }
             if (data.hasOwnProperty('startYear')) {
                 obj['startYear'] = ApiClient.convertToType(data['startYear'], 'Number');
             }
             if (data.hasOwnProperty('endYear')) {
-              obj['endYear'] = ApiClient.convertToType(data['endYear'], 'Number');
+                obj['endYear'] = ApiClient.convertToType(data['endYear'], 'Number');
             }
             if (data.hasOwnProperty('status')) {
                 obj['status'] = ApiClient.convertToType(data['status'], 'Number');
@@ -99,8 +104,19 @@ export default class IPerformancePlan {
     fkEmployee = undefined;
     /**
     * The date the performance review was created
-    * @member {Date} date
+    * @member {Date} createDate
     */
+    createDate = undefined;
+    /**
+    * The start year of the plan
+    * @member {Number} startYear
+    */
+    startYear = undefined;
+    /**
+    * The end year of the plan
+    * @member {Number} endYear
+    */
+    endYear = undefined;
     /**
     * @member {Number} status
     */

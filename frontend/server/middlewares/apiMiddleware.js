@@ -349,6 +349,19 @@ router.get('/employee/:id/performance/plan', (req, res) =>
   ]),
 );
 
+router.get('/employee/:id/performance/review', (req, res) =>
+  res.send([
+    {
+      id: 4,
+      fkEmployee: 12345,
+      fkPerformancePlan: 1,
+      createDate: '2019-03-25',
+      status: 0,
+      sections: [],
+    },
+  ]),
+);
+
 router.use('*', (req, res, next) => res.send('NO ENDPOINT'));
 
 module.exports = router;
