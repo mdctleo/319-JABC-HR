@@ -13,6 +13,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+const generator = require('generate-password');
 
 const styles = theme => ({
     pwd: {
@@ -31,9 +32,12 @@ class SetPasswordDialog extends React.PureComponent {
   }
 
   generateRandomPassword() {
-    // set profile's password to this random string
-    var newPassword = Math.random().toString(36).slice(-8);
-    return newPassword;
+    return generator.generate({
+      length: 10,
+      numbers: true,
+      symbols: true,
+      strict: true,
+    });
   }
 
   handleClose = event => {
@@ -66,7 +70,7 @@ class SetPasswordDialog extends React.PureComponent {
                 Yes
                 </Button>
             </DialogActions>
-            </Dialog>) : 
+            </Dialog>) :
             (<Dialog
             open={open}
             onClose={this.handleClose}
@@ -74,7 +78,7 @@ class SetPasswordDialog extends React.PureComponent {
             <DialogTitle id="alert-dialog-title">Reset password</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description1">
-                  This employee's password has been changed to: 
+                  This employee's password has been changed to:
                 </DialogContentText>
                 <DialogContentText className={classes.pwd} id="alert-dialog-pwd">
                 {newPwd}
