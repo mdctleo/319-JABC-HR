@@ -15,6 +15,7 @@ import Button from '@material-ui/core/Button/Button';
 import NewEmployeeDialog from '../NewEmployeeDialog';
 import { IEmployee } from 'api/swagger-api';
 import Select from 'react-select';
+const generator = require('generate-password');
 
 const styles = theme => ({
   title: {
@@ -100,9 +101,12 @@ class AddEmployeeForm extends React.PureComponent {
     blankProfile.status = 2;
     blankProfile.fte = 1;
     blankProfile.adminLevel = 0;
-    blankProfile.password = Math.random()
-      .toString(36)
-      .slice(-8);
+    blankProfile.password = generator.generate({
+      length: 10,
+      numbers: true,
+      symbols: true,
+      strict: true,
+    });
     blankProfile.fkRole = '';
 
     this.state = {
