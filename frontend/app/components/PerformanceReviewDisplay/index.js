@@ -62,7 +62,7 @@ class PerformanceReviewDisplay extends React.Component  {
         <Typography className={classes.firstTopHeading} variant="subtitle1" color="textPrimary">Name: {profile.firstname} {profile.lastname}</Typography>
         <Typography className={classes.topHeading} variant="subtitle1" color="textPrimary">Position: {role && role.name}</Typography>
         {sections.map(function(section) {
-          return <PerformanceSection key = {section.sectionId}
+          return <PerformanceSection key = {section.id}
                                         classes = {classes}
                                         section = {section}
                                         handleDeleteSection={that.props.handleDeleteSection}

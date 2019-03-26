@@ -33,17 +33,17 @@ export default class IPerformanceReview {
     * @class
     * @param fkEmployee {Number} Foreign key of the employee with this performance review
     * @param fkPerformancePlan {Number} Foreign key of the performance plan
-    * @param _date {Date} The date the performance review was created
+    * @param createDate {Date} The date the performance review was created
     * @param status {Number} 
     */
 
-    constructor(fkEmployee, fkPerformancePlan, _date, status) {
+    constructor(fkEmployee, fkPerformancePlan, createDate, status) {
         
 
         
         
 
-        this['fkEmployee'] = fkEmployee;this['fkPerformancePlan'] = fkPerformancePlan;this['date'] = _date;this['status'] = status;
+        this['fkEmployee'] = fkEmployee;this['fkPerformancePlan'] = fkPerformancePlan;this['createDate'] = createDate;this['status'] = status;
 
         
     }
@@ -72,8 +72,8 @@ export default class IPerformanceReview {
             if (data.hasOwnProperty('fkPerformancePlan')) {
                 obj['fkPerformancePlan'] = ApiClient.convertToType(data['fkPerformancePlan'], 'Number');
             }
-            if (data.hasOwnProperty('date')) {
-                obj['date'] = ApiClient.convertToType(data['date'], 'Date');
+            if (data.hasOwnProperty('createDate')) {
+                obj['createDate'] = ApiClient.convertToType(data['createDate'], 'String');
             }
             if (data.hasOwnProperty('status')) {
                 obj['status'] = ApiClient.convertToType(data['status'], 'Number');
@@ -105,9 +105,9 @@ export default class IPerformanceReview {
     fkPerformancePlan = undefined;
     /**
     * The date the performance review was created
-    * @member {Date} date
+    * @member {Date} createDate
     */
-    date = undefined;
+    createDate = undefined;
     /**
     * @member {Number} status
     */

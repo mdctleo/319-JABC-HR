@@ -233,11 +233,6 @@ class EnhancedTable extends React.Component {
     this.unlisten();
   }
 
-  saveProfile = profile => {
-    const newData = this.state.data.concat(profile);
-    this.setState({ data: newData });
-  };
-
   handleBackButton = () => {
     this.props.selectEmployee(null);
     this.props.setEditing(false);

@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import { SET_RESOURCE, SET_COLLECTION } from './constants';
+import {SET_RESOURCE, SET_COLLECTION, CLEAR_RESOURCE} from './constants';
 
 export const initialState = fromJS({});
 
@@ -11,6 +11,8 @@ function apiReducer(state = initialState, action) {
           [action.payload.id]: action.payload.resource,
         },
       });
+    case CLEAR_RESOURCE:
+      return state.set(action.payload.resourceName, null);
     case SET_COLLECTION:
       return state.setIn(
         ['collections', action.payload.collectionName],

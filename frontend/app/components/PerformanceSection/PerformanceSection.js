@@ -22,10 +22,7 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-
-let uniqid = require('uniqid');
-
+const uniqid = require('uniqid');
 
 const styles = theme => ({
   editButton: {
@@ -38,7 +35,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   addButton: {
     float: 'left',
@@ -50,7 +47,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#efefef',
-    }
+    },
   },
   buttonStyle: {
     float: 'right',
@@ -60,16 +57,16 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   subHeading: {
-    marginTop: '40px'
+    marginTop: '40px',
   },
   firstTopHeading: {
-    marginTop: '40px'
+    marginTop: '40px',
   },
   topHeading: {
-    marginTop: '20px'
+    marginTop: '20px',
   },
   displayTable: {
     width: '100%',
@@ -88,11 +85,11 @@ const styles = theme => ({
     width: '100%',
   },
   root: {
-    marginBottom: '40px'
+    marginBottom: '40px',
   },
   bottomRow: {
-    height: '60px'
-  }
+    height: '60px',
+  },
 });
 
 class EnhancedTableHead extends React.Component {
@@ -109,9 +106,9 @@ class EnhancedTableHead extends React.Component {
               onChange={onSelectAllClick}
             />
           </TableCell>
-            {section.columns.map(function(column) {
-              return <TableCell key={column.concat(-1)}>{column}</TableCell>
-            })}
+          {section.data.columns.map(column => (
+            <TableCell key={column.concat(-1)}>{column}</TableCell>
+          ))}
         </TableRow>
       </TableHead>
     );
@@ -125,7 +122,6 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-
 const toolbarStyles = theme => ({
   root: {
     paddingRight: theme.spacing.unit,
@@ -135,13 +131,13 @@ const toolbarStyles = theme => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
   spacer: {
     flex: '1 1 100%',
   },
@@ -182,11 +178,18 @@ let EnhancedTableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-      {numSelected == 0 ?
-      <IconButton className={classes.deleteButton} onClick={props.handleDeleteSection} size='small'><DeleteIcon /></IconButton> : (
+        {numSelected === 0 ? (
+          <IconButton
+            className={classes.deleteButton}
+            onClick={props.handleDeleteSection}
+            size="small"
+          >
+            <DeleteIcon />
+          </IconButton>
+        ) : (
           <Tooltip title="Delete">
             <IconButton onClick={props.handleDeleteRows} aria-label="Delete">
-              <DeleteIcon/>
+              <DeleteIcon />
             </IconButton>
           </Tooltip>
         )}
@@ -199,31 +202,36 @@ EnhancedTableToolbar.propTypes = {
   sectionName: PropTypes.string.isRequired,
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
+  handleDeleteSection: PropTypes.func.isRequired,
+  handleDeleteRows: PropTypes.func.isRequired,
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
-
 class PerformanceSection extends React.Component {
   state = {
     openAddRowDialog: false,
-    selected: []
+    selected: [],
   };
 
   handleDeleteRows = () => {
-    this.props.handleDeleteRows(this.props.section.sectionId, this.state.selected);
+    this.props.handleDeleteRows(
+      this.props.section.id,
+      this.state.selected,
+    );
 
-    this.setState( {selected: []} );
+    this.setState({ selected: [] });
   };
 
   handleDeleteSection = () => {
-    this.props.handleDeleteSection(this.props.section.sectionId);
+    this.props.handleDeleteSection(this.props.section.id);
   };
 
   handleSelectAllClick = event => {
-
     if (event.target.checked) {
-      this.setState(state => ({ selected: this.props.section.data.map(data => data.id) }));
+      this.setState({
+        selected: this.props.section.data.rows.map(data => data.id),
+      });
       return;
     }
 
@@ -256,51 +264,54 @@ class PerformanceSection extends React.Component {
   // Build data from the fields filled out in the Dialog Box
   // Then, add it to this Section
   saveRowToSection = () => {
-    let section = this.props.section;
-    let newRow = {};
+    const section = this.props.section;
+    const newRow = {};
 
     newRow.id = uniqid();
 
-    for (let column of section.columns) {
-      newRow[column] = document.getElementById(column.concat(section.sectionId)).value;
+    for (const column of section.data.columns) {
+      newRow[column] = document.getElementById(
+        column.concat(section.id),
+      ).value;
     }
 
-    this.props.handleAddRow(this.props.section.sectionId, newRow);
+    this.props.handleAddRow(this.props.section.id, newRow);
     this.closeNewRowDialog();
   };
 
   openNewRowDialog = () => {
-    console.log("inside add row dialog");
-    this.setState({openAddRowDialog: true});
+    this.setState({ openAddRowDialog: true });
   };
 
   closeNewRowDialog = () => {
-    this.setState({openAddRowDialog: false});
+    this.setState({ openAddRowDialog: false });
   };
 
   render() {
     const { classes, section } = this.props;
     const { openAddRowDialog, selected } = this.state;
-    let that = this;
+    const that = this;
 
-    return(
+    return (
       <div>
         <Dialog
           open={that.state.openAddRowDialog}
           onClose={this.closeNewRowDialog}
           aria-labelledby="form-dialog-title"
-          fullWidth>
+          fullWidth
+        >
           <DialogTitle id="form-dialog-title">Add new row</DialogTitle>
           <DialogContent>
-            {section.columns.map(function(column) {
-              return <TextField
-                key={column.concat(section.sectionId)}
+            {section.data.columns.map(column => (
+              <TextField
+                key={column.concat(section.id)}
                 autoFocus
                 margin="dense"
-                id={column.concat(section.sectionId)}
+                id={column.concat(section.id)}
                 label={column}
-                fullWidth/>
-            })}
+                fullWidth
+              />
+            ))}
           </DialogContent>
           <DialogActions>
             <Button onClick={this.closeNewRowDialog} color="primary">
@@ -312,37 +323,56 @@ class PerformanceSection extends React.Component {
           </DialogActions>
         </Dialog>
         <Paper className={classes.root}>
-          <EnhancedTableToolbar sectionName={section.sectionName} selected={selected} numSelected={selected.length} handleDeleteRows={that.handleDeleteRows}
-            handleDeleteSection={that.handleDeleteSection} />
+          <EnhancedTableToolbar
+            sectionName={section.sectionName}
+            selected={selected}
+            numSelected={selected.length}
+            handleDeleteRows={that.handleDeleteRows}
+            handleDeleteSection={that.handleDeleteSection}
+          />
           <div className={classes.tableWrapper}>
             <Table className={classes.table}>
-              <EnhancedTableHead section={section} numSelected={selected.length} onSelectAllClick={this.handleSelectAllClick} rowCount={section.data.length}/>
+              <EnhancedTableHead
+                section={section}
+                numSelected={selected.length}
+                onSelectAllClick={this.handleSelectAllClick}
+                rowCount={section.data.rows.length}
+              />
               <TableBody>
-                {section.data.map(function(item) {
+                {section.data.rows.map(item => {
                   const isSelected = that.isSelected(item.id);
                   return (
-                    <TableRow hover
-                              onClick={event => that.handleClick(event, item.id)}
-                              role="checkbox"
-                              aria-checked={isSelected}
-                              selected={isSelected}
-                              tabIndex={-1}
-                              key={item.id}>
+                    <TableRow
+                      hover
+                      onClick={event => that.handleClick(event, item.id)}
+                      role="checkbox"
+                      aria-checked={isSelected}
+                      selected={isSelected}
+                      tabIndex={-1}
+                      key={item.id}
+                    >
                       <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
                       </TableCell>
-                      {section.columns.map(function(column) {
-                        return <TableCell key={column.concat(item.id)}>{item[column]}</TableCell>
-                      })
-                      }
+                      {section.data.columns.map(column => (
+                        <TableCell key={column.concat(item.id)}>
+                          {item[column]}
+                        </TableCell>
+                      ))}
                     </TableRow>
-                  )
+                  );
                 })}
                 <TableRow className={classes.bottomRow}>
-                  <TableCell colSpan={section.columns.length+1}>
-                  <Button className={classes.addButton} onClick={this.openNewRowDialog} size='small'>ADD ROW</Button>
+                  <TableCell colSpan={section.data.columns.length + 1}>
+                    <Button
+                      className={classes.addButton}
+                      onClick={this.openNewRowDialog}
+                      size="small"
+                    >
+                      ADD ROW
+                    </Button>
                   </TableCell>
-                  </TableRow>
+                </TableRow>
               </TableBody>
             </Table>
           </div>
@@ -355,8 +385,9 @@ class PerformanceSection extends React.Component {
 PerformanceSection.propTypes = {
   classes: PropTypes.object.isRequired,
   section: PropTypes.object.isRequired,
-  handleDeleteSection:PropTypes.func.isRequired,
-  handleDeleteRows: PropTypes.func.isRequired
+  handleDeleteSection: PropTypes.func.isRequired,
+  handleDeleteRows: PropTypes.func.isRequired,
+  handleAddRow: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(PerformanceSection);

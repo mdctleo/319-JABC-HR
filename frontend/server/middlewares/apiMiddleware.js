@@ -274,6 +274,94 @@ router.put('/role/:id', (req, res) => {
   });
 });
 
+router.get('/employee/:id/performance/plan', (req, res) =>
+  res.send([
+    {
+      id: 1,
+      fkEmployee: 12345,
+      startYear: 2018,
+      endYear: 2019,
+      status: 0,
+      sections: [
+        {
+          id: 1,
+          data: {
+            columns: ['Column 1', 'Column 2', 'Column 3'],
+            rows: [
+              {
+                id: 1,
+                'Column 1': 'Data for column 1',
+                'Column 2': 'Data for column 2',
+                'Column 3': 'Data for column 3',
+              },
+              {
+                id: 2,
+                'Column 1': '2 Data for column 1',
+                'Column 2': '2 Data for column 2',
+                'Column 3': '2 Data for column 3',
+              },
+              {
+                id: 3,
+                'Column 1': '3 Data for column 1',
+                'Column 2': '3 Data for column 2',
+                'Column 3': '3 Data for column 3',
+              },
+            ],
+          },
+          sectionName: 'First Section',
+          fkPerformancePlan: 1,
+        },
+        {
+          id: 2,
+          data: {
+            columns: ['Column 1', 'Column 2'],
+            rows: [
+              {
+                id: 4,
+                'Column 1': 'Data for column 1',
+                'Column 2': 'Data for column 2',
+              },
+              {
+                id: 5,
+                'Column 1': '2 Data for column 1',
+                'Column 2': '2 Data for column 2',
+              },
+              {
+                id: 6,
+                'Column 1': '3 Data for column 1',
+                'Column 2': '3 Data for column 2',
+              },
+            ],
+          },
+          sectionName: 'Second Section',
+          fkPerformancePlan: 1,
+        },
+      ],
+      comments: [],
+    },
+    {
+      id: 2,
+      fkEmployee: 12345,
+      startYear: 2019,
+      endYear: 2019,
+      status: 0,
+    },
+  ]),
+);
+
+router.get('/employee/:id/performance/review', (req, res) =>
+  res.send([
+    {
+      id: 4,
+      fkEmployee: 12345,
+      fkPerformancePlan: 1,
+      createDate: '2019-03-25',
+      status: 0,
+      sections: [],
+    },
+  ]),
+);
+
 router.use('*', (req, res, next) => res.send('NO ENDPOINT'));
 
 module.exports = router;

@@ -1,8 +1,17 @@
 import { put, all } from 'redux-saga/effects';
-import { setResource, setCollection } from './actions';
-import { EmployeeApi, IEmployee, RolesApi, IRole } from 'api/swagger-api';
+import { setResource, setCollection, clearResource } from './actions';
+import {
+  EmployeeApi,
+  IEmployee,
+  RolesApi,
+  IRole,
+  PerformanceApi,
+  IPerformancePlan,
+  IPerformanceReview,
+} from 'api/swagger-api';
 const employeeApi = new EmployeeApi();
 const rolesApi = new RolesApi();
+const performanceApi = new PerformanceApi();
 
 export function* getEmployee(id) {
   const employee = yield employeeApi.getEmployee(id);
@@ -32,6 +41,28 @@ export function* updateEmployeePassword(employee) {
 export function* createEmployee(employee) {
   const employeeObj = IEmployee.constructFromObject(employee);
   yield employeeApi.createEmployee(employeeObj);
+}
+
+export function* getPerformancePlans(id) {
+  const plans = yield employeeApi.getPerformancePlans(id);
+  yield put(clearResource('plan'));
+  yield all(plans.map(p => put(setResource('plan', p.id, p))));
+}
+
+export function* getPerformanceReviews(id) {
+  const reviews = yield employeeApi.getPerformanceReviews(id);
+  yield put(clearResource('review'));
+  yield all(reviews.map(r => put(setResource('review', r.id, r))));
+}
+
+export function* createPerformancePlan(employeeId, plan) {
+  const planObj = IPerformancePlan.constructFromObject(plan);
+  yield employeeApi.createPerformancePlan(employeeId, planObj);
+}
+
+export function* createPerformanceReview(employeeId, review) {
+  const reviewObj = IPerformanceReview.constructFromObject(review);
+  yield employeeApi.createPerformanceReview(employeeId, reviewObj);
 }
 
 export function* getRole(id) {
@@ -64,4 +95,22 @@ export function* updateRole(role) {
 export function* createRole(role) {
   const roleObj = IRole.constructFromObject(role);
   yield rolesApi.createRole(roleObj);
+}
+
+export function* deletePerformancePlan(id) {
+  yield performanceApi.deletePerformancePlan(id);
+}
+
+export function* deletePerformanceReview(id) {
+  yield performanceApi.deletePerformanceReview(id);
+}
+
+export function* updatePerformancePlan(plan) {
+  const planObj = IPerformancePlan.constructFromObject(plan);
+  yield performanceApi.updatePerformancePlan(plan.id, planObj);
+}
+
+export function* updatePerformanceReview(review) {
+  const reviewObj = IPerformanceReview.constructFromObject(review);
+  yield performanceApi.updatePerformanceReview(review.id, reviewObj);
 }

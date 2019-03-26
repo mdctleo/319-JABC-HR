@@ -50,18 +50,7 @@ export default class IPerformanceSectionData {
     * @return {module:model/IPerformanceSectionData} The populated <code>IPerformanceSectionData</code> instance.
     */
     static constructFromObject(data, obj) {
-        if (data) {
-            obj = obj || new IPerformanceSectionData();
-
-            
-            
-            
-
-            if (data.hasOwnProperty('value')) {
-                obj['value'] = ApiClient.convertToType(data['value'], 'String');
-            }
-        }
-        return obj;
+        return data;
     }
 
     /**
