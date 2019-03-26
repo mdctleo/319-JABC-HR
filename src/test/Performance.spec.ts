@@ -101,7 +101,7 @@ describe("PerformanceService tests", () => {
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.fkEmployee = 3;
-            workplan.createdDate = "2025-01-01";
+            workplan.createDate = "2025-01-01";
             workplan.comments = [];
             workplan.sections = [];
             let section = jsf.generate(schema.definitions.IPerformanceSection);
@@ -203,7 +203,7 @@ describe("PerformanceService tests", () => {
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.fkEmployee = 3;
-            workplan.createdDate = "2025-01-01";
+            workplan.createDate = "2025-01-01";
             workplan.comments = [];
             workplan.sections = [];
             let section = jsf.generate(schema.definitions.IPerformanceSection);
@@ -278,7 +278,7 @@ describe("PerformanceService tests", () => {
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.fkEmployee = 3;
-            workplan.createdDate = "2025-01-01";
+            workplan.createDate = "2025-01-01";
             workplan.comments = [];
             workplan.sections = [];
             let section = jsf.generate(schema.definitions.IPerformanceSection);
@@ -380,7 +380,7 @@ describe("PerformanceService tests", () => {
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.fkEmployee = 3;
-            workplan.createdDate = "2025-01-01";
+            workplan.createDate = "2025-01-01";
             workplan.comments = [];
             workplan.sections = [];
             let section = jsf.generate(schema.definitions.IPerformanceSection);
@@ -407,7 +407,7 @@ describe("PerformanceService tests", () => {
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.fkEmployee = 3;
-            workplan.createdDate = "2025-01-01";
+            workplan.createDate = "2025-01-01";
             workplan.comments = [];
             workplan.sections = [];
             let section = jsf.generate(schema.definitions.IPerformanceSection);

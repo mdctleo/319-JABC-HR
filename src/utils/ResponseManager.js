@@ -6,27 +6,27 @@ const DEBUG = process.env.DEBUG;
 class JABCResponse {
 }
 JABCResponse.EMPLOYEE = {
-    error: 410,
+    error: 422,
     success: 200
 };
 JABCResponse.ONBOARDING = {
-    error: 411,
+    error: 422,
     success: 200
 };
 JABCResponse.PERFORMANCE = {
-    error: 412,
+    error: 422,
     success: 200
 };
 JABCResponse.ROLE = {
-    error: 413,
+    error: 422,
     success: 200
 };
 JABCResponse.VACATION = {
-    error: 414,
+    error: 422,
     success: 200
 };
 JABCResponse.COMPETENCY = {
-    error: 415,
+    error: 422,
     success: 200
 };
 JABCResponse.UNHANDLED_ERROR = {
@@ -57,7 +57,10 @@ exports.JABCResponse = JABCResponse;
         TYPE: 'INVALID_TYPE',
         FORMAT: 'INVALID_FORMAT',
         MAXIMUM: 'MAXIMUM',
-        MINIMUM: 'MINIMUM'
+        MINIMUM: 'MINIMUM',
+        MIN_LENGTH: 'MIN_LENGTH',
+        MAX_LENGTH: 'MAX_LENGTH',
+        PATTERN: 'PATTERN'
     };
 })(JABCResponse = exports.JABCResponse || (exports.JABCResponse = {}));
 class JABCError extends Error {
@@ -123,8 +126,7 @@ function ErrorHandler(err, req, res, next) {
                 let missingProperties = [];
                 let invalidProperties = [];
                 let typeProperties = [];
-                let minProperties = [];
-                let maxProperties = [];
+                let importantMessage = false;
                 for (let error of err.results.errors) {
                     switch (error.code) {
                         case JABCResponse.ValidatorCodes.MISSING:
@@ -137,25 +139,40 @@ function ErrorHandler(err, req, res, next) {
                             typeProperties.push(error.path[0]);
                             break;
                         case JABCResponse.ValidatorCodes.MINIMUM:
-                            minProperties.push(error.path[0]);
+                            message = error.message.replace('Value', `Property ${error.description.split(',')[0]} with value,`);
+                            importantMessage = true;
                             break;
                         case JABCResponse.ValidatorCodes.MAXIMUM:
-                            maxProperties.push(error.path[0]);
+                            message = error.message.replace('Value', `Property ${error.description.split(',')[0]} with value,`);
+                            importantMessage = true;
+                            break;
+                        case JABCResponse.ValidatorCodes.MIN_LENGTH:
+                            message = error.message.replace('String', `Property ${error.description.split(',')[0]}`);
+                            importantMessage = true;
+                            break;
+                        case JABCResponse.ValidatorCodes.MAX_LENGTH:
+                            message = error.message.replace('String', `Property ${error.description.split(',')[0]}`);
+                            importantMessage = true;
+                            break;
+                        case JABCResponse.ValidatorCodes.PATTERN:
+                            message = error.message.replace('String', `Property ${error.description.split(',')[0]}`);
+                            importantMessage = true;
+                            if (error.path[0] === 'password') {
+                                message = `Property password, does not meet the requirements for a good password.\n Please use at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character [#,?,!,@,$,%,^,&,*,-,:,_,+,¿,¡,¬]`;
+                            }
                             break;
                     }
                 }
-                let messages = [];
-                if (missingProperties.length > 0)
-                    messages.push(`${(missingProperties.length == 1) ? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length == 1) ? 'is' : 'are'} missing`);
-                if (invalidProperties.length > 0)
-                    messages.push(`${(invalidProperties.length == 1) ? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`);
-                if (typeProperties.length > 0)
-                    messages.push(`${(typeProperties.length == 1) ? 'Property' : 'Properties'}: ${typeProperties.join(", ")}, have an invalid type`);
-                if (minProperties.length > 0)
-                    messages.push(`${(minProperties.length == 1) ? 'Property' : 'Properties'}: ${minProperties.join(", ")}, have a value that exceeded the minimum limit`);
-                if (maxProperties.length > 0)
-                    messages.push(`${(maxProperties.length == 1) ? 'Property' : 'Properties'}: ${maxProperties.join(", ")}, have a value that exceeded the maximum limit`);
-                message = `${messages.join('; ')}.`;
+                if (!importantMessage) {
+                    let messages = [];
+                    if (missingProperties.length > 0)
+                        messages.push(`${(missingProperties.length == 1) ? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length == 1) ? 'is' : 'are'} missing`);
+                    if (invalidProperties.length > 0)
+                        messages.push(`${(invalidProperties.length == 1) ? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`);
+                    if (typeProperties.length > 0)
+                        messages.push(`${(typeProperties.length == 1) ? 'Property' : 'Properties'}: ${typeProperties.join(", ")}, have an invalid type`);
+                    message = `${messages.join('; ')}.`;
+                }
             }
             else {
                 debugMessage = {

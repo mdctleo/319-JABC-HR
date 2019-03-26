@@ -86,7 +86,7 @@ describe("EmployeeService tests", () => {
             let employeeRecord2 = jsf.generate(schema.definitions.IEmployee);
             employeeRecord2.id = 7;
             employeeRecord2.sin = 777777777;
-            employeeRecord2.password = 'password';
+            employeeRecord2.password = 'passwordA#1';
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -297,7 +297,7 @@ describe("EmployeeService tests", () => {
             return HEADERS;
         });
 
-        it("Should not get all employees wrong credential", async () => {
+        it("Should get all employees under my management", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -306,8 +306,8 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.within(400, 500);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(0);
             }
         });
 
@@ -402,7 +402,7 @@ describe("EmployeeService tests", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IEmployee);
                 expect(response.body.salary).to.be.equal(200.00);
-                expect(response.body.sin).to.be.equal(11111111);
+                expect(response.body.sin).to.be.equal(111111111);
                 // we shouldnt pass the password?
                 expect(response.body.password).to.be.undefined;
             }
@@ -1089,7 +1089,7 @@ describe("EmployeeService tests", () => {
             let response: any;
             let loginBody = {
                 email: "tn@jabc.com",
-                password: "hrtest"
+                password: "passwordA#1"
             };
 
             try {

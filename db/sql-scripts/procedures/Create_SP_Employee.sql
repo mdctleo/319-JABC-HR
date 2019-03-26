@@ -18,7 +18,7 @@ CREATE PROCEDURE `create_onboarding_task` (IN employee_id INT
 , IN created_date DATE
 , IN due_date DATE
 , IN expiry_date DATE
-, IN description VARCHAR(512)
+, IN description VARCHAR(2512)
 , IN require_doc TINYINT
 )
 BEGIN
@@ -51,7 +51,7 @@ DROP PROCEDURE IF EXISTS complete_onboarding_task;
 DELIMITER //
 
 CREATE PROCEDURE `complete_onboarding_task` (IN onboarding_task_id INT
-, IN actual_file MEDIUMBLOB
+, IN actual_file BLOB(25000000)
 , IN mime_type VARCHAR(100)
 )
 BEGIN
@@ -92,16 +92,16 @@ DELIMITER //
 CREATE PROCEDURE `create_employee`(IN created_by_id INT
 , IN role INT
 , IN SIN INT
-, IN email VARCHAR(320)
+, IN email VARCHAR(100)
 , IN first_name VARCHAR(100)
 , IN last_name VARCHAR(100)
-, IN address VARCHAR(255)
+, IN address VARCHAR(512)
 , IN birthdate DATE
 , IN vacation_days INT
 , IN remaining_vacation_days INT
 , IN FTE TINYINT
 , IN status TINYINT
-, IN password VARCHAR(64)
+, IN password VARCHAR(200)
 , IN salary DECIMAL(10, 2)
 , IN date_joined DATE
 , IN admin_level TINYINT
@@ -197,7 +197,7 @@ DELIMITER //
 
 CREATE PROCEDURE `create_employee_performance_plan_section` (IN performance_plan_id INT
 , IN section_data JSON
-, IN section_name VARCHAR(45)
+, IN section_name VARCHAR(100)
 )
 BEGIN
     DECLARE checker INT;
@@ -271,7 +271,7 @@ DELIMITER //
 
 CREATE PROCEDURE `create_employee_performance_review_section` (IN performance_review_id INT
 , IN section_data JSON
-, IN section_name VARCHAR(45)
+, IN section_name VARCHAR(100)
 )
 BEGIN
     DECLARE checker INT;
@@ -342,10 +342,10 @@ CREATE PROCEDURE `update_employee`(IN employee_id INT
 , IN created_by_id INT
 , IN role INT
 , IN SIN INT
-, IN email VARCHAR(320)
+, IN email VARCHAR(100)
 , IN first_name VARCHAR(100)
 , IN last_name VARCHAR(100)
-, IN address VARCHAR(255)
+, IN address VARCHAR(512)
 , IN birthdate DATE
 , IN vacation_days INT
 , IN remaining_vacation_days INT
@@ -363,7 +363,7 @@ BEGIN
     DECLARE adminChecker INT;
     DECLARE version INT;
     DECLARE created_date DATE;
-    DECLARE password VARCHAR(64);
+    DECLARE password VARCHAR(200);
     
     SET sinChecker = 0;
     SET emailChecker = 0;
@@ -425,7 +425,7 @@ DROP PROCEDURE IF EXISTS update_employee_password;
 DELIMITER //
 
 CREATE PROCEDURE `update_employee_password`(IN employee_id INT
-, IN password VARCHAR(64)
+, IN password VARCHAR(200)
 )
 BEGIN
     DECLARE emplChecker INT;
@@ -1019,7 +1019,7 @@ DELIMITER ;
 -- -----------------------------------------------------
 DROP PROCEDURE IF EXISTS login;
 DELIMITER $$
-CREATE PROCEDURE `login`(IN `EMAIL` VARCHAR(100), IN `PASSWORD` VARCHAR(500))
+CREATE PROCEDURE `login`(IN `EMAIL` VARCHAR(100), IN `PASSWORD` VARCHAR(200))
 BEGIN
     DECLARE checker INT;
     DECLARE checker2 INT;

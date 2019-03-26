@@ -65,7 +65,7 @@ describe("test related to /employee and performance", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body.length).to.be.equal(2);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformancePlan);
-                expect(response.body[0].date).to.be.equal('2018-01-01');
+                expect(response.body[0].createDate).to.be.equal('2018-12-31');
             }
         });
 
@@ -114,7 +114,7 @@ describe("test related to /employee and performance", () => {
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.id = 3;
-            workplan.createdDate = "2025-01-01";
+            workplan.createDate = "2025-01-01";
             let section1 = jsf.generate(schema.definitions.IPerformanceSection);
             let section2 = jsf.generate(schema.definitions.IPerformanceSection);
             workplan.sections = [section1, section2]
@@ -141,7 +141,7 @@ describe("test related to /employee and performance", () => {
             performance.id = 3;
             performance.fkEmployee = 2;
             performance.fkPerformancePlan = 2;
-            performance.createdDate = "2025-01-01";
+            performance.createDate = "2025-01-01";
             try {
                 response = await chai.request(SERVER)
                     .post(`${BASE_PATH}/2/performance/review`)
@@ -169,8 +169,7 @@ describe("test related to /employee and performance", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body.length).to.be.equal(1);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformancePlan);
-
-                expect(response.body.createdDate).to.not.equal("2025-01-01");
+                expect(response.body.createDate).to.not.equal("2025-01-01");
 
             }
         });
@@ -189,7 +188,7 @@ describe("test related to /employee and performance", () => {
                 expect(response.body.length).to.be.equal(1);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformanceReview);
 
-                expect(response.body.createdDate).to.not.equal("2025-01-01");
+                expect(response.body.createDate).to.not.equal("2025-01-01");
 
             }
         });
@@ -244,7 +243,7 @@ describe("test related to /employee and performance", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body.length).to.be.equal(2);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IPerformancePlan);
-                expect(response.body[0].date).to.be.equal('2018-01-01');
+                expect(response.body[0].createDate).to.be.equal('2018-12-31');
             }
         });
 

@@ -79,7 +79,7 @@
       "get" : {
         "tags" : [ "Employee" ],
         "summary" : "get all the Employees",
-        "description" : "This returns all the Employees of the system. \nIf [start] and [end] are provided, it will return all employees with a birthday between those dates\nIf [term] is provided this returns the Employees of the system that match with the [term].\n",
+        "description" : "This returns all the active Employees of the system. \nIf [start] and [end] are provided, it will return all employees with a birthday between those dates\nIf [inactive] is provided this returns the all the Employees of the system including the inactive ones.\nIf [term] is provided this returns the Employees of the system that match with the [term].\n",
         "operationId" : "getEmployees",
         "security" : [ {
           "AuthToken" : [ ]
@@ -100,6 +100,11 @@
           "type" : "string",
           "format" : "date",
           "description" : "Search employees with a birthday before this date, if this isn't provided there won't be any filtering"
+        }, {
+          "in" : "query",
+          "name" : "inactive",
+          "type" : "string",
+          "description" : "If [inactive] is provided this returns the all the Employees of the system including the inactive ones"
         } ],
         "responses" : {
           "200" : {
@@ -254,6 +259,46 @@
           "required" : false,
           "type" : "integer",
           "format" : "uint64"
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/responses/SuccessfulResponse"
+          },
+          "401" : {
+            "$ref" : "#/responses/NoAccessResponse"
+          },
+          "default" : {
+            "$ref" : "#/responses/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/employee/{id}/password" : {
+      "post" : {
+        "tags" : [ "Employee" ],
+        "summary" : "updates the password of an employee",
+        "description" : "Will update the password provided in the body",
+        "operationId" : "updateEmployeePassword",
+        "security" : [ {
+          "AuthToken" : [ ]
+        } ],
+        "parameters" : [ {
+          "$ref" : "#/parameters/securityAuthToken"
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id of the Employee to change password",
+          "required" : true,
+          "type" : "integer",
+          "format" : "uint64"
+        }, {
+          "name" : "employee",
+          "in" : "body",
+          "description" : "Employee with new password",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/IEmployee"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -956,7 +1001,7 @@
       "get" : {
         "tags" : [ "Onboarding" ],
         "summary" : "gets all the OnboardingTasks",
-        "description" : "Will return all the OnboardingTasks on the system.\nIf [start] and [end] are provided, it will return all OnboardingTasks with a due date between those dates\nIf [status] is provided, it will return the onboarding tasks that matches that status (0:active, 1:done)\n",
+        "description" : "Will return all the OnboardingTasks on the system.\nIf [start] and [end] are provided, it will return all OnboardingTasks with a due date between those dates\nIf [id] is provided, it will return the onboarding tasks of an employee that matches that id\nIf [status] is provided, it will return the onboarding tasks that matches that status (0:active, 1:done)\n",
         "operationId" : "getAllOnboardingTasks",
         "security" : [ {
           "AuthToken" : [ ]
@@ -975,6 +1020,12 @@
           "type" : "string",
           "format" : "date",
           "description" : "Search onboarding tasks with a due date before this date, if this isn't provided there won't be any filtering"
+        }, {
+          "in" : "query",
+          "name" : "id",
+          "description" : "If provided will return the onboarding tasks of an employee that matches that id",
+          "type" : "integer",
+          "format" : "uint64"
         }, {
           "in" : "query",
           "name" : "status",
@@ -2330,109 +2381,132 @@
     "IEmployee" : {
       "type" : "object",
       "description" : "An Employee contains all the current information of a current or onboarding employee\n",
-      "required" : ["sin", "email", "firstname", "lastname", "fte", "status", "adminLevel" ],
+      "required" : [ "sin", "email", "firstname", "lastname", "fte", "status", "adminLevel" ],
       "properties" : {
         "id" : {
           "type" : "integer",
-          "faker" : {
-            "random.number": {
-              "min": 0
-            }
-          },
-          "description" : "The unique identifier of the Employee",
+          "format" : "uint64",
+          "minimum" : 0,
+          "description" : "employee ID, the unique identifier of the Employee",
           "example" : 1
         },
         "sin" : {
-          "type" : "integer",
-          "faker": {
-            "random.number": {
-              "min": 0
-            }
-          }
+          "type" : "number",
+          "format" : "uint64",
+          "minimum" : 100000000,
+          "maximum" : 999999999,
+          "description" : "SIN, the social insurance number of an employee"
         },
         "email" : {
           "type" : "string",
+          "format" : "email",
+          "maxLength" : 100,
+          "description" : "email, used to sign into the system",
           "faker" : "internet.email"
         },
         "password" : {
           "type" : "string",
+          "format" : "password",
+          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
+          "maxLength" : 40,
+          "description" : "password, used to sign into the system",
           "faker" : "internet.password"
         },
         "firstname" : {
           "type" : "string",
+          "maxLength" : 100,
+          "description" : "first name, of an employee",
           "faker": "name.firstname"
         },
         "lastname" : {
           "type" : "string",
+          "maxLength" : 100,
+          "description" : "last name, of an employee",
           "faker": "name.lastname"
         },
         "fte" : {
           "type" : "integer",
+          "format" : "uint64",
           "minimum" : 0,
-          "maximum" : 1
+          "maximum" : 1,
+          "description" : "FTE, this determines if an employee is working full time or not"
         },
         "status" : {
           "type" : "integer",
+          "format" : "uint64",
           "minimum" : 0,
-          "maximum" : 3
+          "maximum" : 3,
+          "description" : "status, it can be active | inactive | onboarding | probation"
         },
         "adminLevel" : {
           "type" : "integer",
+          "format" : "uint64",
           "minimum" : 0,
-          "maximum" : 2
+          "maximum" : 2,
+          "description" : "admin level, this restricts the access of the user to the system"
         },
         "salary" : {
           "type" : "number",
-          "minimum" : 0
+          "minimum" : 0,
+          "description" : "salary, this is how much an employee earn per month"
         },
         "address" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 512,
+          "description" : "address, where does the employee live"
         },
         "birthdate" : {
           "type" : "string",
-          "faker" : "date.past",
-          "description" : "The birthdate of the employee"
+          "format" : "date",
+          "description" : "birthdate, of the employee",
+          "faker" : "date.past"
         },
         "dateJoined" : {
           "type" : "string",
-          "faker" : "date.recent",
-          "description" : "The date joined of the employee"
+          "format" : "date",
+          "description" : "date joined, of the employee",
+          "faker" : "date.recent"
         },
         "vacationDays" : {
           "type" : "integer",
           "minimum" : 0,
+          "format" : "uint64",
+          "description" : "total vacation days, allowed to the employee per year",
           "faker" : {
             "random.number": {
               "min": 50,
               "max": 365
             }
-          },
-          "description" : "The number of vacation days allowed to the employee per year"
+          }
         },
         "remainingVacationDays" : {
           "type" : "integer",
           "minimum" : 0,
+          "format" : "uint64",
+          "description" : "remaining vacation days, allowed to the employee on the current year",
           "faker" : {
             "random.number": {
               "min": 0,
               "max": 30
             }
-          },
-          "description" : "The number of vacation days allowed to the employee on the current year"
+          }
         },
         "fkRole" : {
           "type" : "integer",
+          "format" : "uint64",
+          "example" : 1,
+          "description" : "role ID, Foreign key of the role",
           "faker" : {
             "random.number": {
               "min": 1,
               "max": 3
             }
-          },
-          "example" : 1,
-          "description" : "Foreign key of the role"
+          }
         },
         "phoneNumber" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 45,
+          "description" : "phone number, of an employee"
         },
         "role" : {
           "$ref" : "#/definitions/IRole"
@@ -2442,104 +2516,125 @@
     "IEmployeeHistory" : {
       "type" : "object",
       "description" : "An Employee contains all the current information of a current or onboarding employee\n",
-      "required" : ["sin", "email", "firstname", "lastname", "fte", "status", "adminLevel", "version", "fkCreator", "createdDate" ],
+      "required" : [ "sin", "email", "firstname", "lastname", "fte", "status", "adminLevel", "version", "fkCreator", "createdDate" ],
       "properties" : {
         "id" : {
           "type" : "integer",
-          "faker" : {
-            "random.number": {
-              "min": 0
-            }
-          },
-          "description" : "The unique identifier of the Employee",
+          "format" : "uint64",
+          "minimum" : 0,
+          "description" : "employee ID, the unique identifier of the Employee",
           "example" : 1
         },
         "sin" : {
-          "type" : "integer"
+          "type" : "number",
+          "format" : "uint64",
+          "minimum" : 100000000,
+          "maximum" : 999999999,
+          "description" : "SIN, the social insurance number of an employee"
         },
         "email" : {
           "type" : "string",
-          "format" : "email"
+          "format" : "email",
+          "maxLength" : 100,
+          "description" : "email, used to sign into the system"
         },
         "password" : {
           "type" : "string",
-          "format" : "password"
+          "format" : "password",
+          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
+          "maxLength" : 40,
+          "description" : "password, used to sign into the system"
         },
         "firstname" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 100,
+          "description" : "first name, of an employee"
         },
         "lastname" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 100,
+          "description" : "last name, of an employee"
         },
         "fte" : {
           "type" : "integer",
+          "format" : "uint64",
           "minimum" : 0,
-          "maximum" : 1
+          "maximum" : 1,
+          "description" : "FTE, this determines if an employee is working full time or not"
         },
         "status" : {
           "type" : "integer",
+          "format" : "uint64",
           "minimum" : 0,
-          "maximum" : 3
+          "maximum" : 3,
+          "description" : "status, it can be active | inactive | onboarding | probation"
         },
         "adminLevel" : {
           "type" : "integer",
+          "format" : "uint64",
           "minimum" : 0,
-          "maximum" : 2
+          "maximum" : 2,
+          "description" : "admin level, this restricts the access of the user to the system"
         },
         "version" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The number of the version of the Employee data",
+          "description" : "version of employee data, at some point",
           "example" : 1
         },
         "fkCreator" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Employee that updated the data of the Employee",
+          "description" : "creator ID, the unique identifier of the Employee that updated the data of the Employee",
           "example" : 1
         },
         "createdDate" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The date the creation of this version of the employee data"
+          "description" : "date of creation, of this version of the employee data"
         },
         "salary" : {
           "type" : "number",
-          "minimum" : 0
+          "minimum" : 0,
+          "description" : "salary, this is how much an employee earn per month"
         },
         "address" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 512,
+          "description" : "address, where does the employee live"
         },
         "birthdate" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The birthdate of the employee"
+          "description" : "birthdate, of the employee"
         },
         "dateJoined" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The date joined of the employee"
+          "description" : "date joined, of the employee"
         },
         "vacationDays" : {
           "type" : "integer",
           "minimum" : 0,
           "format" : "uint64",
-          "description" : "The number of vacation days allowed to the employee per year"
+          "description" : "total vacation days, allowed to the employee per year"
         },
         "remainingVacationDays" : {
           "type" : "integer",
           "minimum" : 0,
           "format" : "uint64",
-          "description" : "The number of vacation days allowed to the employee on the current year"
+          "description" : "remaining vacation days, allowed to the employee on the current year"
         },
         "fkRole" : {
           "type" : "integer",
           "format" : "uint64",
           "example" : 1,
-          "description" : "Foreign key of the role"
+          "description" : "role ID, Foreign key of the role"
         },
         "phoneNumber" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 45,
+          "description" : "phone number, of an employee"
         },
         "role" : {
           "$ref" : "#/definitions/IRole"
@@ -2549,27 +2644,28 @@
     "IRole" : {
       "type" : "object",
       "description" : "An Role is contains all the current information of a current or onboarding employee\n",
-      "required" : ["name" ],
+      "required" : [ "name" ],
       "properties" : {
         "id" : {
           "type" : "integer",
-          "faker" : {
-            "random.number": {
-              "min": 0
-            }
-          },
-          "description" : "The unique identifier of the Role",
+          "format" : "uint64",
+          "minimum" : 0,
+          "description" : "role ID, the unique identifier of the Role",
           "example" : 1
         },
         "name" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 100,
+          "description" : "name, of the role"
         },
         "description" : {
           "type" : "string",
+          "maxLength" : 2512,
+          "description" : "description, of the role",
           "faker": "lorem.words"
         },
         "competencies" : {
-          "description" : "Contains all the competencies of this role",
+          "description" : "role competencies, contains all the competencies of this role",
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/ICompetency"
@@ -2580,124 +2676,138 @@
     "ICompetency" : {
       "type" : "object",
       "description" : "A Competency contains info of competencies and objectives that each role need to fulfill\n",
-      "required" : ["fkRole", "name"],
+      "required" : [ "fkRole" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Competency",
+          "minimum" : 0,
+          "description" : "competency ID, the unique identifier of the Competency",
           "example" : 1
         },
         "fkRole" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "Foreign key of the role",
+          "description" : "role ID, Foreign key of the role",
           "example" : 1
         },
         "name" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 100,
+          "description" : "name, of the competency"
         },
         "description" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 2512,
+          "description" : "description, of the competency"
         }
       }
     },
     "IVacation" : {
       "type" : "object",
       "description" : "A Vacation contains info of the employee asking for a vaction period\n",
-      "required" : ["fkEmployee", "requestedDays", "requestedStatus", "date" ],
+      "required" : [ "fkEmployee", "requestedDays", "requestedStatus", "date" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Vacation",
+          "minimum" : 0,
+          "description" : "vacation ID, the unique identifier of the Vacation",
           "example" : 1
         },
         "fkEmployee" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Employee that requests the vacation",
+          "description" : "employee ID, the unique identifier of the Employee that requests the vacation",
           "example" : 1
         },
         "fkApprover" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Employee that approves the vacation request",
+          "description" : "approver ID, the unique identifier of the Employee that approves the vacation request",
           "example" : 1
         },
         "requestedDays" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The number of vacation days the employee requested"
+          "description" : "requested days the number of vacation days the employee requested",
+          "minimum" : 1
         },
         "requestedStatus" : {
           "type" : "integer",
+          "format" : "uint64",
+          "description" : "vacation request status, the number of vacation days the employee requested",
           "minimum" : 0,
           "maximum" : 2
         },
         "date" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The date when the employee requested the vacation"
+          "description" : "date, when the employee requested the vacation"
         }
       }
     },
     "IOnboardingTask" : {
       "type" : "object",
       "description" : "An onboarding task required for the onbarding proccess of a new Employee, if the property [requireDoc] is\nset to 1, then the OnboardingTask require the employee to upload a document, and the fkDocumentType will \ncontain the id of the IDocumentType object with the template of the document to be filled by the employee. \nOtherwise the [fkDocumentType] property will be null.\n",
-      "required" : ["fkEmployee", "createdDate", "dueDate", "requireDoc", "status" ],
+      "required" : [ "fkEmployee", "createdDate", "dueDate", "requireDoc", "status" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Role",
+          "minimum" : 0,
+          "description" : "onboarding task ID, the unique identifier of the Role",
           "example" : 1
         },
         "fkDocumentType" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The foreign key  of the DocumentType of this Document",
+          "description" : "document template ID, foreign key of the DocumentType of this onboarding task",
           "example" : 1
         },
         "fkEmployee" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The foreign key  of the Employee that needs to upload this Document",
+          "description" : "employee ID, foreign key of the Employee that needs to upload this onboarding task",
           "example" : 1
         },
         "createdDate" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The created date of this Document"
+          "description" : "created date, of this onboarding task"
         },
         "dueDate" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The due date of this Document"
+          "description" : "due date, of this onboarding task"
         },
         "requireDoc" : {
           "type" : "integer",
-          "description" : "Wether the Onboarding task requires document upload or not.",
+          "format" : "uint64",
+          "description" : "require doc, controls wether the Onboarding task requires document upload or not.",
           "minimum" : 0,
           "maximum" : 1
         },
         "status" : {
           "type" : "integer",
-          "description" : "Wether the Onboarding task is done or not",
+          "format" : "uint64",
+          "description" : "status, controls wether the Onboarding task is done or not",
           "minimum" : 0,
           "maximum" : 1
         },
         "expiryDate" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The expiry date of this Document"
+          "description" : "expiry date, of this onboarding task"
         },
         "file" : {
           "type" : "string",
-          "description" : "The link to the file if it is required"
+          "description" : "link to file, to the file if it is required"
         },
         "description" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 2512,
+          "description" : "description, of this onboarding task"
         },
         "type" : {
           "$ref" : "#/definitions/IDocumentType"
@@ -2707,62 +2817,86 @@
     "IDocumentType" : {
       "type" : "object",
       "description" : "A DocumentType contains info of the template support document for the onboarding process\n",
-      "required" : ["name" ],
+      "required" : [ "name" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the DocumentType",
+          "minimum" : 0,
+          "description" : "document template ID, the unique identifier of the DocumentType",
           "example" : 1
         },
         "name" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 100,
+          "description" : "name, of document template"
         },
         "description" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 2512,
+          "description" : "description, of document template"
         },
         "file" : {
           "type" : "string",
-          "description" : "If the document has a template, this will be the link to access it"
+          "description" : "link to file, if the document has a template, this will be the link to access it"
         }
       }
     },
     "IPerformancePlan" : {
       "type" : "object",
       "description" : "PerformancePlan contains info of the sections of a performance plan of an employee\n",
-      "required" : ["fkEmployee", "date", "status" ],
+      "required" : [ "fkEmployee", "status", "createDate", "startYear", "endYear" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Performance",
+          "minimum" : 0,
+          "description" : "performance plan ID, the unique identifier of the Performance",
           "example" : 1
         },
         "fkEmployee" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "Foreign key of the employee with this performance review",
+          "description" : "employee ID, Foreign key of the employee with this performance review",
           "example" : 1
         },
-        "date" : {
+        "createDate" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The date the performance review was created"
+          "description" : "created date, the performance review was created"
+        },
+        "startYear" : {
+          "type" : "integer",
+          "format" : "uint64",
+          "description" : "start year, of the plan",
+          "example" : 2019,
+          "minimum" : 1950,
+          "maximum" : 2100
+        },
+        "endYear" : {
+          "type" : "integer",
+          "format" : "uint64",
+          "description" : "end year, of the plan",
+          "example" : 2020,
+          "minimum" : 1950,
+          "maximum" : 2100
         },
         "status" : {
           "type" : "integer",
+          "format" : "uint64",
+          "description" : "status, of the plan",
           "minimum" : 0,
           "maximum" : 1
         },
         "sections" : {
-          "description" : "Contains all the IPerformanceSections Related to this IPerformancePlan",
+          "description" : "sections, contains all the IPerformanceSections Related to this IPerformancePlan",
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IPerformanceSection"
           }
         },
         "comments" : {
-          "description" : "Contains all the comments of this performance review",
+          "description" : "commentsm contains all the comments of this performance review",
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IComment"
@@ -2773,45 +2907,48 @@
     "IPerformanceReview" : {
       "type" : "object",
       "description" : "PerformanceReview contains info of the sections of a performance plan of an employee\n",
-      "required" : ["fkEmployee", "fkPerformancePlan", "date", "status" ],
+      "required" : [ "fkEmployee", "fkPerformancePlan", "createDate", "status" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Performance",
+          "minimum" : 0,
+          "description" : "performance review ID, the unique identifier of the Performance",
           "example" : 1
         },
         "fkEmployee" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "Foreign key of the employee with this performance review",
+          "description" : "employee ID, Foreign key of the employee with this performance review",
           "example" : 1
         },
         "fkPerformancePlan" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "Foreign key of the performance plan",
+          "description" : "performance plan ID, Foreign key of the performance plan",
           "example" : 1
         },
-        "date" : {
+        "createDate" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The date the performance review was created"
+          "description" : "created date, the performance review was created"
         },
         "status" : {
           "type" : "integer",
+          "format" : "uint64",
+          "description" : "status, of the review",
           "minimum" : 0,
           "maximum" : 1
         },
         "sections" : {
-          "description" : "Contains all the IPerformanceSections Related to this IPerformanceReview",
+          "description" : "sections, contains all the IPerformanceSections Related to this IPerformanceReview",
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IPerformanceSection"
           }
         },
         "comments" : {
-          "description" : "Contains all the comments of this performance review",
+          "description" : "comments, contains all the comments of this performance review",
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/IComment"
@@ -2827,32 +2964,34 @@
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Performance",
+          "minimum" : 0,
+          "description" : "section ID, the unique identifier of the Performance",
           "example" : 1
         },
         "data" : {
           "type" : "object",
-          "description" : "The object that represents all the data of this performance section",
+          "description" : "data, the object that represents all the data of this performance section",
           "properties" : {
-            "value" : {
+            "v_a_l_u_e" : {
               "type" : "string"
             }
           }
         },
         "sectionName" : {
           "type" : "string",
-          "maxLength" : 45
+          "maxLength" : 100,
+          "description" : "section name, of this performance section"
         },
         "fkPerformancePlan" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Performance Plan that owns this section",
+          "description" : "performance plan ID, the unique identifier of the Performance Plan that owns this section",
           "example" : 1
         },
         "fkPerformanceReview" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Performance Review that owns this section",
+          "description" : "performance review ID, the unique identifier of the Performance Review that owns this section",
           "example" : 1
         }
       }
@@ -2860,58 +2999,66 @@
     "IComment" : {
       "type" : "object",
       "description" : "A Comment contains what another employee thinks about the performance record of another employee\n",
-      "required" : ["fkCommenter", "comment", "date" ],
+      "required" : [ "fkCommenter", "comment", "date" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the Comment",
+          "minimum" : 0,
+          "description" : "comment ID, the unique identifier of the Comment",
           "example" : 1
         },
         "fkPerformancePlan" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "Foreign key of PerformancePlan that has this Comment",
+          "description" : "performance plan ID, Foreign key of PerformancePlan that has this Comment",
           "example" : 1
         },
         "fkPerformanceReview" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "Foreign key of PerformanceReview that has this Comment",
+          "description" : "performance review ID, Foreign key of PerformanceReview that has this Comment",
           "example" : 1
         },
         "fkCommenter" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "Foreign key of Employee that created the Comment",
+          "description" : "commenter ID, Foreign key of Employee that created the Comment",
           "example" : 1
         },
         "comment" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 5000,
+          "description" : "comment, text of this comment"
         },
         "date" : {
           "type" : "string",
           "format" : "date",
-          "description" : "The date when the Comment was created"
+          "description" : "date, when the Comment was created"
         }
       }
     },
     "IFAQ" : {
       "type" : "object",
       "description" : "A FAQ contains a question and answer, to help the employee while onboarding\n",
-      "required" : ["question", "answer" ],
+      "required" : [ "question", "answer" ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "uint64",
-          "description" : "The unique identifier of the FAQ",
+          "minimum" : 0,
+          "description" : "FAQ ID, the unique identifier of the FAQ",
           "example" : 1
         },
         "question" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 512,
+          "description" : "description, of this FAQ"
         },
         "answer" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength" : 2512,
+          "description" : "answer, of this FAQ"
         }
       }
     },
@@ -2921,10 +3068,17 @@
       "required" : [ "email", "password" ],
       "properties" : {
         "email" : {
-          "type" : "string"
+          "type" : "string",
+          "format" : "email",
+          "maxLength" : 100,
+          "description" : "email, used to sign into the system"
         },
         "password" : {
-          "type" : "string"
+          "type" : "string",
+          "format" : "password",
+          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
+          "maxLength" : 40,
+          "description" : "password, used to sign into the system"
         }
       }
     },
@@ -2957,6 +3111,6 @@
     }
   },
   "host" : "virtserver.swaggerhub.com",
-  "basePath" : "/jatj/JABC/1.0.0",
+  "basePath" : "/jatj/Jorges/1.0.0",
   "schemes" : [ "https", "http" ]
 }
