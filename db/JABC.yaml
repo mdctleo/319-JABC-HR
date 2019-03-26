@@ -1929,66 +1929,90 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Employee
+        minimum: 0
+        description: employee ID, the unique identifier of the Employee
         example: 1
       sin:
         type: number
         format: uint64
+        minimum: 100000000
+        maximum: 999999999
+        description: SIN, the social insurance number of an employee
       email:
         type: string
         format: email
+        maxLength: 100
+        description: email, used to sign into the system
       password:
         type: string
         format: password
+        pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+        maxLength: 40
+        description: password, used to sign into the system
       firstname:
         type: string
+        maxLength: 100
+        description: first name, of an employee
       lastname:
         type: string
+        maxLength: 100
+        description: last name, of an employee
       fte:
         type: integer
+        format: uint64
         minimum: 0 # PART_TIME
         maximum: 1 # FULL_TIME
+        description: FTE, this determines if an employee is working full time or not
       status:
         type: integer
+        format: uint64
         minimum: 0 # INACTIVE
         # 1: ACTIVE
         # 2: ONBOARDING
         maximum: 3 # PROBATION
+        description: status, it can be active | inactive | onboarding | probation
       adminLevel:
         type: integer
+        format: uint64
         minimum: 0 # STAFF
         # 1: MANAGER
         maximum: 2 # HR_ADMIN
+        description: admin level, this restricts the access of the user to the system
       salary:
         type: number
         minimum: 0
+        description: salary, this is how much an employee earn per month
       address:
         type: string
+        maxLength: 512
+        description: address, where does the employee live
       birthdate:
         type: string
         format: date
-        description: The birthdate of the employee
+        description: birthdate, of the employee
       dateJoined:
         type: string
         format: date
-        description: The date joined of the employee
+        description: date joined, of the employee
       vacationDays:
         type: integer
         minimum: 0
         format: uint64
-        description: The number of vacation days allowed to the employee per year
+        description: total vacation days, allowed to the employee per year
       remainingVacationDays:
         type: integer
         minimum: 0
         format: uint64
-        description: The number of vacation days allowed to the employee on the current year
+        description: remaining vacation days, allowed to the employee on the current year
       fkRole:
         type: integer
         format: uint64
         example: 1
-        description: Foreign key of the role 
+        description: role ID, Foreign key of the role 
       phoneNumber:
         type: string
+        maxLength: 45
+        description: phone number, of an employee
       role:
         $ref: '#/definitions/IRole'
   
@@ -2013,79 +2037,104 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Employee
+        minimum: 0
+        description: employee ID, the unique identifier of the Employee
         example: 1
       sin:
-        type: string
+        type: number
+        format: uint64
+        minimum: 100000000
+        maximum: 999999999
+        description: SIN, the social insurance number of an employee
       email:
         type: string
         format: email
+        maxLength: 100
+        description: email, used to sign into the system
       password:
         type: string
         format: password
+        pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+        maxLength: 40
+        description: password, used to sign into the system
       firstname:
         type: string
+        maxLength: 100
+        description: first name, of an employee
       lastname:
         type: string
+        maxLength: 100
+        description: last name, of an employee
       fte:
         type: integer
+        format: uint64
         minimum: 0 # PART_TIME
         maximum: 1 # FULL_TIME
+        description: FTE, this determines if an employee is working full time or not
       status:
         type: integer
+        format: uint64
         minimum: 0 # INACTIVE
         # 1: ACTIVE
         # 2: ONBOARDING
         maximum: 3 # PROBATION
+        description: status, it can be active | inactive | onboarding | probation
       adminLevel:
         type: integer
+        format: uint64
         minimum: 0 # STAFF
         # 1: MANAGER
         maximum: 2 # HR_ADMIN
+        description: admin level, this restricts the access of the user to the system
       version:
         type: integer
         format: uint64
-        description: The number of the version of the Employee data
+        description: version of employee data, at some point
         example: 1
       fkCreator:
         type: integer
         format: uint64
-        description: The unique identifier of the Employee that updated the data of the Employee
+        description: creator ID, the unique identifier of the Employee that updated the data of the Employee
         example: 1
       createdDate:
         type: string
         format: date
-        description: The date the creation of this version of the employee data
+        description: date of creation, of this version of the employee data
       salary:
         type: number
         minimum: 0
+        description: salary, this is how much an employee earn per month
       address:
         type: string
+        maxLength: 512
+        description: address, where does the employee live
       birthdate:
         type: string
         format: date
-        description: The birthdate of the employee
+        description: birthdate, of the employee
       dateJoined:
         type: string
         format: date
-        description: The date joined of the employee
+        description: date joined, of the employee
       vacationDays:
         type: integer
         minimum: 0
         format: uint64
-        description: The number of vacation days allowed to the employee per year
+        description: total vacation days, allowed to the employee per year
       remainingVacationDays:
         type: integer
         minimum: 0
         format: uint64
-        description: The number of vacation days allowed to the employee on the current year
+        description: remaining vacation days, allowed to the employee on the current year
       fkRole:
         type: integer
         format: uint64
         example: 1
-        description: Foreign key of the role 
+        description: role ID, Foreign key of the role 
       phoneNumber:
         type: string
+        maxLength: 45
+        description: phone number, of an employee
       role:
         $ref: '#/definitions/IRole'
 
@@ -2100,14 +2149,19 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Role
+        minimum: 0
+        description: role ID, the unique identifier of the Role
         example: 1
       name:
         type: string
+        maxLength: 100
+        description: name, of the role
       description:
         type: string
+        maxLength: 2512
+        description: description, of the role
       competencies:
-        description: Contains all the competencies of this role
+        description: role competencies, contains all the competencies of this role
         type: array
         items: 
           $ref: '#/definitions/ICompetency'
@@ -2123,17 +2177,22 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Competency
+        minimum: 0
+        description: competency ID, the unique identifier of the Competency
         example: 1
       fkRole:
         type: integer
         format: uint64
-        description: Foreign key of the role 
+        description: role ID, Foreign key of the role 
         example: 1
       name:
         type: string
+        maxLength: 100
+        description: name, of the competency
       description:
         type: string
+        maxLength: 2512
+        description: description, of the competency
 
   IVacation:
     type: object
@@ -2149,31 +2208,35 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Vacation
+        minimum: 0
+        description: vacation ID, the unique identifier of the Vacation
         example: 1
       fkEmployee:
         type: integer
         format: uint64
-        description: The unique identifier of the Employee that requests the vacation
+        description: employee ID, the unique identifier of the Employee that requests the vacation
         example: 1
       fkApprover:
         type: integer
         format: uint64
-        description: The unique identifier of the Employee that approves the vacation request
+        description: approver ID, the unique identifier of the Employee that approves the vacation request
         example: 1
       requestedDays:
         type: integer
         format: uint64
-        description: The number of vacation days the employee requested
+        description: requested days the number of vacation days the employee requested
+        minimum: 1
       requestedStatus:
         type: integer
+        format: uint64
+        description: vacation request status, the number of vacation days the employee requested
         minimum: 0 # REQUESTED
         # 1: APPROVED
         maximum: 2 # DENIED
       date:
         type: string
         format: date
-        description: The date when the employee requested the vacation
+        description: date, when the employee requested the vacation
 
   IOnboardingTask:
     type: object
@@ -2193,45 +2256,50 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Role
+        minimum: 0
+        description: onboarding task ID, the unique identifier of the Role
         example: 1
       fkDocumentType:
         type: integer
         format: uint64
-        description: The foreign key  of the DocumentType of this Document
+        description: document template ID, foreign key of the DocumentType of this onboarding task
         example: 1
       fkEmployee:
         type: integer
         format: uint64
-        description: The foreign key  of the Employee that needs to upload this Document
+        description: employee ID, foreign key of the Employee that needs to upload this onboarding task
         example: 1
       createdDate:
         type: string
         format: date
-        description: The created date of this Document
+        description: created date, of this onboarding task 
       dueDate:
         type: string
         format: date
-        description: The due date of this Document
+        description: due date, of this onboarding task
       requireDoc:
         type: integer
-        description: Wether the Onboarding task requires document upload or not.
+        format: uint64
+        description: require doc, controls wether the Onboarding task requires document upload or not.
         minimum: 0 # TASK
         maximum: 1 # UPLOAD
       status:
         type: integer
-        description: Wether the Onboarding task is done or not
+        format: uint64
+        description: status, controls wether the Onboarding task is done or not
         minimum: 0 # ACTIVE
         maximum: 1 # DONE
       expiryDate:
         type: string
         format: date
-        description: The expiry date of this Document
+        description: expiry date, of this onboarding task
       file:
         type: string
-        description: The link to the file if it is required
+        description: link to file, to the file if it is required
       description:
         type: string
+        maxLength: 2512
+        description: description, of this onboarding task
       type:
         $ref: "#/definitions/IDocumentType"
   
@@ -2246,15 +2314,20 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the DocumentType
+        minimum: 0
+        description: document template ID, the unique identifier of the DocumentType
         example: 1
       name:
         type: string
+        maxLength: 100
+        description: name, of document template
       description:
         type: string
+        maxLength: 2512
+        description: description, of document template
       file:
         type: string
-        description: If the document has a template, this will be the link to access it
+        description: link to file, if the document has a template, this will be the link to access it
 
   IPerformancePlan:
     type: object
@@ -2271,42 +2344,45 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Performance
+        minimum: 0
+        description: performance plan ID, the unique identifier of the Performance
         example: 1
       fkEmployee:
         type: integer
         format: uint64
-        description: Foreign key of the employee with this performance review
+        description: employee ID, Foreign key of the employee with this performance review
         example: 1
       createDate:
         type: string
         format: date
-        description: The date the performance review was created
+        description: created date, the performance review was created
       startYear:
         type: integer
         format: uint64
-        description: The start year of the plan
+        description: start year, of the plan
         example: 2019
         minimum: 1950
         maximum: 2100
       endYear:
         type: integer
         format: uint64
-        description: The end year of the plan
+        description: end year, of the plan
         example: 2020
         minimum: 1950
         maximum: 2100
       status:
         type: integer
+        format: uint64
+        description: status, of the plan
         minimum: 0 # UNPUBLISHED
         maximum: 1 # PUBLISHED
       sections:
-        description: Contains all the IPerformanceSections Related to this IPerformancePlan
+        description: sections, contains all the IPerformanceSections Related to this IPerformancePlan
         type: array
         items: 
           $ref: '#/definitions/IPerformanceSection'
       comments:
-        description: Contains all the comments of this performance review
+        description: commentsm contains all the comments of this performance review
         type: array
         items: 
           $ref: '#/definitions/IComment'
@@ -2325,33 +2401,36 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Performance
+        minimum: 0
+        description: performance review ID, the unique identifier of the Performance
         example: 1
       fkEmployee:
         type: integer
         format: uint64
-        description: Foreign key of the employee with this performance review
+        description: employee ID, Foreign key of the employee with this performance review
         example: 1
       fkPerformancePlan:
         type: integer
         format: uint64
-        description: Foreign key of the performance plan
+        description: performance plan ID, Foreign key of the performance plan
         example: 1
       createDate:
         type: string
         format: date
-        description: The date the performance review was created
+        description: created date, the performance review was created
       status:
         type: integer
+        format: uint64
+        description: status, of the review
         minimum: 0 # UNPUBLISHED
         maximum: 1 # PUBLISHED
       sections:
-        description: Contains all the IPerformanceSections Related to this IPerformanceReview
+        description: sections, contains all the IPerformanceSections Related to this IPerformanceReview
         type: array
         items: 
           $ref: '#/definitions/IPerformanceSection'
       comments:
-        description: Contains all the comments of this performance review
+        description: comments, contains all the comments of this performance review
         type: array
         items: 
           $ref: '#/definitions/IComment'
@@ -2368,25 +2447,28 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Performance
+        minimum: 0
+        description: section ID, the unique identifier of the Performance
         example: 1
       data:
         type: object
-        description: The object that represents all the data of this performance section
+        description: data, the object that represents all the data of this performance section
         properties:
-          value:
+          v_a_l_u_e:
             type: string
       sectionName:
         type: string
+        maxLength: 100
+        description: section name, of this performance section
       fkPerformancePlan:
         type: integer
         format: uint64
-        description: The unique identifier of the Performance Plan that owns this section
+        description: performance plan ID, the unique identifier of the Performance Plan that owns this section
         example: 1
       fkPerformanceReview:
         type: integer
         format: uint64
-        description: The unique identifier of the Performance Review that owns this section
+        description: performance review ID, the unique identifier of the Performance Review that owns this section
         example: 1
 
   IComment:
@@ -2402,29 +2484,32 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the Comment
+        minimum: 0
+        description: comment ID, the unique identifier of the Comment
         example: 1
       fkPerformancePlan:
         type: integer
         format: uint64
-        description: Foreign key of PerformancePlan that has this Comment
+        description: performance plan ID, Foreign key of PerformancePlan that has this Comment
         example: 1
       fkPerformanceReview:
         type: integer
         format: uint64
-        description: Foreign key of PerformanceReview that has this Comment
+        description: performance review ID, Foreign key of PerformanceReview that has this Comment
         example: 1
       fkCommenter:
         type: integer
         format: uint64
-        description: Foreign key of Employee that created the Comment
+        description: commenter ID, Foreign key of Employee that created the Comment
         example: 1
       comment:
         type: string
+        maxLength: 5000
+        description: comment, text of this comment
       date:
         type: string
         format: date
-        description: The date when the Comment was created
+        description: date, when the Comment was created
 
   IFAQ:
     type: object
@@ -2438,12 +2523,17 @@ definitions:
       id:
         type: integer
         format: uint64
-        description: The unique identifier of the FAQ
+        minimum: 0
+        description: FAQ ID, the unique identifier of the FAQ
         example: 1
       question:
         type: string
+        maxLength: 512
+        description: description, of this FAQ
       answer:
         type: string
+        maxLength: 2512
+        description: answer, of this FAQ
 
   ILogin:
     description: Represents the basic info to logged into the system
@@ -2454,8 +2544,15 @@ definitions:
     properties:
       email:
         type: string
+        format: email
+        maxLength: 100
+        description: email, used to sign into the system
       password:
         type: string
+        format: password
+        pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+        maxLength: 40
+        description: password, used to sign into the system
 
   ILoginResponse:
     description: The data returned by the login path contains the employee info as well as the auth token

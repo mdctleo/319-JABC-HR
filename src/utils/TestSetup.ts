@@ -37,13 +37,13 @@ export default class TestSetup {
            };
            if (adminLevel === 'admin') {
                loginBody.email = "tflenderson@jabc.com";
-               loginBody.password = "hrtest";
+               loginBody.password = "HRadmin1*";
            } else if (adminLevel === 'manager') {
                loginBody.email = "mscott@jabc.com";
-               loginBody.password = "managertest";
+               loginBody.password = "Manager1*";
            } else {
                loginBody.email = "jhalpert@jabc.com";
-               loginBody.password = "employeetest";
+               loginBody.password = "Employee1*";
            }
 
             let loginResponse = await chai.request(SERVER)

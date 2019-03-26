@@ -402,7 +402,7 @@ describe("EmployeeService tests", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IEmployee);
                 expect(response.body.salary).to.be.equal(200.00);
-                expect(response.body.sin).to.be.equal(11111111);
+                expect(response.body.sin).to.be.equal(111111111);
                 // we shouldnt pass the password?
                 expect(response.body.password).to.be.undefined;
             }

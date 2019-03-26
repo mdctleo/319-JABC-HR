@@ -58,6 +58,7 @@ describe("test related to /employee and onboarding", () => {
                 .send(employeeRecord);
             onBoardingEmployeeCredentials.email = employeeRecord.email;
             onBoardingEmployeeCredentials.password = employeeRecord.password;
+            console.log(employeeRecord.password)
             return HEADERS;
         });
 

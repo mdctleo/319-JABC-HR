@@ -10,7 +10,7 @@ DROP PROCEDURE IF EXISTS create_performance_review_comment;
 DELIMITER //
 
 CREATE PROCEDURE `create_performance_review_comment` (IN performance_id INT
-, IN comment VARCHAR(1000)
+, IN comment VARCHAR(5000)
 , IN comment_date DATE
 , IN commenter_employee_id INT
 )
@@ -52,7 +52,7 @@ DROP PROCEDURE IF EXISTS create_performance_plan_comment;
 DELIMITER //
 
 CREATE PROCEDURE `create_performance_plan_comment` (IN performance_id INT
-, IN comment VARCHAR(1000)
+, IN comment VARCHAR(5000)
 , IN comment_date DATE
 , IN commenter_employee_id INT
 )
@@ -310,7 +310,7 @@ DROP PROCEDURE IF EXISTS update_comment;
 DELIMITER //
 
 CREATE PROCEDURE `update_comment` (IN c_id INT
-, IN comment TEXT(4096)
+, IN comment TEXT(5000)
 , IN comment_date DATE
 , IN commenter_employee_id INT
 )
@@ -414,7 +414,7 @@ DELIMITER //
 
 CREATE PROCEDURE `update_performance_section` (IN performance_section_id INT
 , IN section_data JSON
-, IN section_name VARCHAR(45)
+, IN section_name VARCHAR(100)
 )
 BEGIN
     DECLARE checker INT;
