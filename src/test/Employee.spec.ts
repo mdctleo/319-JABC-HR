@@ -86,7 +86,7 @@ describe("EmployeeService tests", () => {
             let employeeRecord2 = jsf.generate(schema.definitions.IEmployee);
             employeeRecord2.id = 7;
             employeeRecord2.sin = 777777777;
-            employeeRecord2.password = 'password';
+            employeeRecord2.password = 'passwordA#1';
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -1089,7 +1089,7 @@ describe("EmployeeService tests", () => {
             let response: any;
             let loginBody = {
                 email: "tn@jabc.com",
-                password: "hrtest"
+                password: "passwordA#1"
             };
 
             try {

@@ -2407,7 +2407,7 @@
         "password" : {
           "type" : "string",
           "format" : "password",
-          "pattern" : "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
+          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
           "maxLength" : 40,
           "description" : "password, used to sign into the system",
           "faker" : "internet.password"
@@ -2541,7 +2541,7 @@
         "password" : {
           "type" : "string",
           "format" : "password",
-          "pattern" : "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
+          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
           "maxLength" : 40,
           "description" : "password, used to sign into the system"
         },
@@ -3076,7 +3076,7 @@
         "password" : {
           "type" : "string",
           "format" : "password",
-          "pattern" : "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
+          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
           "maxLength" : 40,
           "description" : "password, used to sign into the system"
         }

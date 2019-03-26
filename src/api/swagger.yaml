@@ -2506,63 +2506,88 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Employee"
+        description: "employee ID, the unique identifier of the Employee"
+        minimum: 0
       sin:
         type: "number"
         format: "uint64"
+        description: "SIN, the social insurance number of an employee"
+        minimum: 100000000
+        maximum: 999999999
       email:
         type: "string"
         format: "email"
+        description: "email, used to sign into the system"
+        maxLength: 100
       password:
         type: "string"
         format: "password"
+        description: "password, used to sign into the system"
+        maxLength: 40
+        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$"
       firstname:
         type: "string"
+        description: "first name, of an employee"
+        maxLength: 100
       lastname:
         type: "string"
+        description: "last name, of an employee"
+        maxLength: 100
       fte:
         type: "integer"
+        format: "uint64"
+        description: "FTE, this determines if an employee is working full time or\
+          \ not"
         minimum: 0
         maximum: 1
       status:
         type: "integer"
+        format: "uint64"
+        description: "status, it can be active | inactive | onboarding | probation"
         minimum: 0
         maximum: 3
       adminLevel:
         type: "integer"
+        format: "uint64"
+        description: "admin level, this restricts the access of the user to the system"
         minimum: 0
         maximum: 2
       salary:
         type: "number"
+        description: "salary, this is how much an employee earn per month"
         minimum: 0
       address:
         type: "string"
+        description: "address, where does the employee live"
+        maxLength: 512
       birthdate:
         type: "string"
         format: "date"
-        description: "The birthdate of the employee"
+        description: "birthdate, of the employee"
       dateJoined:
         type: "string"
         format: "date"
-        description: "The date joined of the employee"
+        description: "date joined, of the employee"
       vacationDays:
         type: "integer"
         format: "uint64"
-        description: "The number of vacation days allowed to the employee per year"
+        description: "total vacation days, allowed to the employee per year"
         minimum: 0
       remainingVacationDays:
         type: "integer"
         format: "uint64"
-        description: "The number of vacation days allowed to the employee on the current\
+        description: "remaining vacation days, allowed to the employee on the current\
           \ year"
         minimum: 0
       fkRole:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of the role"
+        description: "role ID, Foreign key of the role"
       phoneNumber:
         type: "string"
+        description: "phone number, of an employee"
+        maxLength: 45
       role:
         $ref: "#/definitions/IRole"
     description: "An Employee contains all the current information of a current or\
@@ -2593,7 +2618,7 @@ definitions:
       phoneNumber: "phoneNumber"
       remainingVacationDays: 0
       fte: 0
-      sin: 0.80082819046101150206595775671303272247314453125
+      sin: 172074537.061408221721649169921875
       vacationDays: 0
       id: 1
       email: "email"
@@ -2616,77 +2641,103 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Employee"
+        description: "employee ID, the unique identifier of the Employee"
+        minimum: 0
       sin:
-        type: "string"
+        type: "number"
+        format: "uint64"
+        description: "SIN, the social insurance number of an employee"
+        minimum: 100000000
+        maximum: 999999999
       email:
         type: "string"
         format: "email"
+        description: "email, used to sign into the system"
+        maxLength: 100
       password:
         type: "string"
         format: "password"
+        description: "password, used to sign into the system"
+        maxLength: 40
+        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$"
       firstname:
         type: "string"
+        description: "first name, of an employee"
+        maxLength: 100
       lastname:
         type: "string"
+        description: "last name, of an employee"
+        maxLength: 100
       fte:
         type: "integer"
+        format: "uint64"
+        description: "FTE, this determines if an employee is working full time or\
+          \ not"
         minimum: 0
         maximum: 1
       status:
         type: "integer"
+        format: "uint64"
+        description: "status, it can be active | inactive | onboarding | probation"
         minimum: 0
         maximum: 3
       adminLevel:
         type: "integer"
+        format: "uint64"
+        description: "admin level, this restricts the access of the user to the system"
         minimum: 0
         maximum: 2
       version:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The number of the version of the Employee data"
+        description: "version of employee data, at some point"
       fkCreator:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Employee that updated the data\
-          \ of the Employee"
+        description: "creator ID, the unique identifier of the Employee that updated\
+          \ the data of the Employee"
       createdDate:
         type: "string"
         format: "date"
-        description: "The date the creation of this version of the employee data"
+        description: "date of creation, of this version of the employee data"
       salary:
         type: "number"
+        description: "salary, this is how much an employee earn per month"
         minimum: 0
       address:
         type: "string"
+        description: "address, where does the employee live"
+        maxLength: 512
       birthdate:
         type: "string"
         format: "date"
-        description: "The birthdate of the employee"
+        description: "birthdate, of the employee"
       dateJoined:
         type: "string"
         format: "date"
-        description: "The date joined of the employee"
+        description: "date joined, of the employee"
       vacationDays:
         type: "integer"
         format: "uint64"
-        description: "The number of vacation days allowed to the employee per year"
+        description: "total vacation days, allowed to the employee per year"
         minimum: 0
       remainingVacationDays:
         type: "integer"
         format: "uint64"
-        description: "The number of vacation days allowed to the employee on the current\
+        description: "remaining vacation days, allowed to the employee on the current\
           \ year"
         minimum: 0
       fkRole:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of the role"
+        description: "role ID, Foreign key of the role"
       phoneNumber:
         type: "string"
+        description: "phone number, of an employee"
+        maxLength: 45
       role:
         $ref: "#/definitions/IRole"
     description: "An Employee contains all the current information of a current or\
@@ -2709,9 +2760,9 @@ definitions:
           description: "description"
           id: 1
         id: 1
-      adminLevel: 0
+      adminLevel: 1
       dateJoined: "2000-01-23"
-      salary: 0.59621339166831821554382031536079011857509613037109375
+      salary: 0.5637376656633328320111786524648778140544891357421875
       version: 1
       fkCreator: 1
       lastname: "lastname"
@@ -2720,11 +2771,11 @@ definitions:
       phoneNumber: "phoneNumber"
       remainingVacationDays: 0
       fte: 0
-      sin: "sin"
+      sin: 172074537.061408221721649169921875
       vacationDays: 0
       id: 1
       email: "email"
-      status: 1
+      status: 0
   IRole:
     type: "object"
     required:
@@ -2734,14 +2785,19 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Role"
+        description: "role ID, the unique identifier of the Role"
+        minimum: 0
       name:
         type: "string"
+        description: "name, of the role"
+        maxLength: 100
       description:
         type: "string"
+        description: "description, of the role"
+        maxLength: 2512
       competencies:
         type: "array"
-        description: "Contains all the competencies of this role"
+        description: "role competencies, contains all the competencies of this role"
         items:
           $ref: "#/definitions/ICompetency"
     description: "An Role is contains all the current information of a current or\
@@ -2768,16 +2824,21 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Competency"
+        description: "competency ID, the unique identifier of the Competency"
+        minimum: 0
       fkRole:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of the role"
+        description: "role ID, Foreign key of the role"
       name:
         type: "string"
+        description: "name, of the competency"
+        maxLength: 100
       description:
         type: "string"
+        description: "description, of the competency"
+        maxLength: 2512
     description: "A Competency contains info of competencies and objectives that each\
       \ role need to fulfill\n"
     example:
@@ -2797,34 +2858,40 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Vacation"
+        description: "vacation ID, the unique identifier of the Vacation"
+        minimum: 0
       fkEmployee:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Employee that requests the vacation"
+        description: "employee ID, the unique identifier of the Employee that requests\
+          \ the vacation"
       fkApprover:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Employee that approves the vacation\
-          \ request"
+        description: "approver ID, the unique identifier of the Employee that approves\
+          \ the vacation request"
       requestedDays:
         type: "integer"
         format: "uint64"
-        description: "The number of vacation days the employee requested"
+        description: "requested days the number of vacation days the employee requested"
+        minimum: 1
       requestedStatus:
         type: "integer"
+        format: "uint64"
+        description: "vacation request status, the number of vacation days the employee\
+          \ requested"
         minimum: 0
         maximum: 2
       date:
         type: "string"
         format: "date"
-        description: "The date when the employee requested the vacation"
+        description: "date, when the employee requested the vacation"
     description: "A Vacation contains info of the employee asking for a vaction period\n"
     example:
       date: "2000-01-23"
-      requestedDays: 0
+      requestedDays: 1
       fkApprover: 1
       fkEmployee: 1
       id: 1
@@ -2842,44 +2909,52 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Role"
+        description: "onboarding task ID, the unique identifier of the Role"
+        minimum: 0
       fkDocumentType:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The foreign key  of the DocumentType of this Document"
+        description: "document template ID, foreign key of the DocumentType of this\
+          \ onboarding task"
       fkEmployee:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The foreign key  of the Employee that needs to upload this Document"
+        description: "employee ID, foreign key of the Employee that needs to upload\
+          \ this onboarding task"
       createdDate:
         type: "string"
         format: "date"
-        description: "The created date of this Document"
+        description: "created date, of this onboarding task"
       dueDate:
         type: "string"
         format: "date"
-        description: "The due date of this Document"
+        description: "due date, of this onboarding task"
       requireDoc:
         type: "integer"
-        description: "Wether the Onboarding task requires document upload or not."
+        format: "uint64"
+        description: "require doc, controls wether the Onboarding task requires document\
+          \ upload or not."
         minimum: 0
         maximum: 1
       status:
         type: "integer"
-        description: "Wether the Onboarding task is done or not"
+        format: "uint64"
+        description: "status, controls wether the Onboarding task is done or not"
         minimum: 0
         maximum: 1
       expiryDate:
         type: "string"
         format: "date"
-        description: "The expiry date of this Document"
+        description: "expiry date, of this onboarding task"
       file:
         type: "string"
-        description: "The link to the file if it is required"
+        description: "link to file, to the file if it is required"
       description:
         type: "string"
+        description: "description, of this onboarding task"
+        maxLength: 2512
       type:
         $ref: "#/definitions/IDocumentType"
     description: "An onboarding task required for the onbarding proccess of a new\
@@ -2913,15 +2988,20 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the DocumentType"
+        description: "document template ID, the unique identifier of the DocumentType"
+        minimum: 0
       name:
         type: "string"
+        description: "name, of document template"
+        maxLength: 100
       description:
         type: "string"
+        description: "description, of document template"
+        maxLength: 2512
       file:
         type: "string"
-        description: "If the document has a template, this will be the link to access\
-          \ it"
+        description: "link to file, if the document has a template, this will be the\
+          \ link to access it"
     description: "A DocumentType contains info of the template support document for\
       \ the onboarding process\n"
     example:
@@ -2942,38 +3022,47 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Performance"
+        description: "performance plan ID, the unique identifier of the Performance"
+        minimum: 0
       fkEmployee:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of the employee with this performance review"
+        description: "employee ID, Foreign key of the employee with this performance\
+          \ review"
       createDate:
         type: "string"
         format: "date"
-        description: "The date the performance review was created"
+        description: "created date, the performance review was created"
       startYear:
         type: "integer"
         format: "uint64"
         example: 2019
-        description: "The start year of the plan"
+        description: "start year, of the plan"
+        minimum: 1950
+        maximum: 2100
       endYear:
         type: "integer"
         format: "uint64"
         example: 2020
-        description: "The end year of the plan"
+        description: "end year, of the plan"
+        minimum: 1950
+        maximum: 2100
       status:
         type: "integer"
+        format: "uint64"
+        description: "status, of the plan"
         minimum: 0
         maximum: 1
       sections:
         type: "array"
-        description: "Contains all the IPerformanceSections Related to this IPerformancePlan"
+        description: "sections, contains all the IPerformanceSections Related to this\
+          \ IPerformancePlan"
         items:
           $ref: "#/definitions/IPerformanceSection"
       comments:
         type: "array"
-        description: "Contains all the comments of this performance review"
+        description: "commentsm contains all the comments of this performance review"
         items:
           $ref: "#/definitions/IComment"
     description: "PerformancePlan contains info of the sections of a performance plan\
@@ -2999,13 +3088,13 @@ definitions:
       sections:
       - sectionName: "sectionName"
         data:
-          value: "value"
+          v_a_l_u_e: "v_a_l_u_e"
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         id: 1
       - sectionName: "sectionName"
         data:
-          value: "value"
+          v_a_l_u_e: "v_a_l_u_e"
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         id: 1
@@ -3023,33 +3112,38 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Performance"
+        description: "performance review ID, the unique identifier of the Performance"
+        minimum: 0
       fkEmployee:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of the employee with this performance review"
+        description: "employee ID, Foreign key of the employee with this performance\
+          \ review"
       fkPerformancePlan:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of the performance plan"
+        description: "performance plan ID, Foreign key of the performance plan"
       createDate:
         type: "string"
         format: "date"
-        description: "The date the performance review was created"
+        description: "created date, the performance review was created"
       status:
         type: "integer"
+        format: "uint64"
+        description: "status, of the review"
         minimum: 0
         maximum: 1
       sections:
         type: "array"
-        description: "Contains all the IPerformanceSections Related to this IPerformanceReview"
+        description: "sections, contains all the IPerformanceSections Related to this\
+          \ IPerformanceReview"
         items:
           $ref: "#/definitions/IPerformanceSection"
       comments:
         type: "array"
-        description: "Contains all the comments of this performance review"
+        description: "comments, contains all the comments of this performance review"
         items:
           $ref: "#/definitions/IComment"
     description: "PerformanceReview contains info of the sections of a performance\
@@ -3074,13 +3168,13 @@ definitions:
       sections:
       - sectionName: "sectionName"
         data:
-          value: "value"
+          v_a_l_u_e: "v_a_l_u_e"
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         id: 1
       - sectionName: "sectionName"
         data:
-          value: "value"
+          v_a_l_u_e: "v_a_l_u_e"
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         id: 1
@@ -3096,29 +3190,32 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Performance"
+        description: "section ID, the unique identifier of the Performance"
+        minimum: 0
       data:
         $ref: "#/definitions/IPerformanceSection_data"
       sectionName:
         type: "string"
+        description: "section name, of this performance section"
+        maxLength: 100
       fkPerformancePlan:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Performance Plan that owns this\
-          \ section"
+        description: "performance plan ID, the unique identifier of the Performance\
+          \ Plan that owns this section"
       fkPerformanceReview:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Performance Review that owns this\
-          \ section"
+        description: "performance review ID, the unique identifier of the Performance\
+          \ Review that owns this section"
     description: "A JSON object containing all the information of a section in either\
       \ PerformancePlan or PerformanceReview\n"
     example:
       sectionName: "sectionName"
       data:
-        value: "value"
+        v_a_l_u_e: "v_a_l_u_e"
       fkPerformanceReview: 1
       fkPerformancePlan: 1
       id: 1
@@ -3133,28 +3230,33 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the Comment"
+        description: "comment ID, the unique identifier of the Comment"
+        minimum: 0
       fkPerformancePlan:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of PerformancePlan that has this Comment"
+        description: "performance plan ID, Foreign key of PerformancePlan that has\
+          \ this Comment"
       fkPerformanceReview:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of PerformanceReview that has this Comment"
+        description: "performance review ID, Foreign key of PerformanceReview that\
+          \ has this Comment"
       fkCommenter:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "Foreign key of Employee that created the Comment"
+        description: "commenter ID, Foreign key of Employee that created the Comment"
       comment:
         type: "string"
+        description: "comment, text of this comment"
+        maxLength: 5000
       date:
         type: "string"
         format: "date"
-        description: "The date when the Comment was created"
+        description: "date, when the Comment was created"
     description: "A Comment contains what another employee thinks about the performance\
       \ record of another employee\n"
     example:
@@ -3174,11 +3276,16 @@ definitions:
         type: "integer"
         format: "uint64"
         example: 1
-        description: "The unique identifier of the FAQ"
+        description: "FAQ ID, the unique identifier of the FAQ"
+        minimum: 0
       question:
         type: "string"
+        description: "description, of this FAQ"
+        maxLength: 512
       answer:
         type: "string"
+        description: "answer, of this FAQ"
+        maxLength: 2512
     description: "A FAQ contains a question and answer, to help the employee while\
       \ onboarding\n"
     example:
@@ -3193,8 +3300,15 @@ definitions:
     properties:
       email:
         type: "string"
+        format: "email"
+        description: "email, used to sign into the system"
+        maxLength: 100
       password:
         type: "string"
+        format: "password"
+        description: "password, used to sign into the system"
+        maxLength: 40
+        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$"
     description: "Represents the basic info to logged into the system"
     example:
       password: "password"
@@ -3254,7 +3368,7 @@ definitions:
         phoneNumber: "phoneNumber"
         remainingVacationDays: 0
         fte: 0
-        sin: 0.80082819046101150206595775671303272247314453125
+        sin: 172074537.061408221721649169921875
         vacationDays: 0
         id: 1
         email: "email"
@@ -3263,11 +3377,12 @@ definitions:
       token: "token"
   IPerformanceSection_data:
     properties:
-      value:
+      v_a_l_u_e:
         type: "string"
-    description: "The object that represents all the data of this performance section"
+    description: "data, the object that represents all the data of this performance\
+      \ section"
     example:
-      value: "value"
+      v_a_l_u_e: "v_a_l_u_e"
 parameters:
   securityAuthToken:
     name: "X-Auth-Token"

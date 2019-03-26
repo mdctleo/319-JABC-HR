@@ -36,13 +36,13 @@ export default class TestSetup {
                password: ""
            };
            if (adminLevel === 'admin') {
-               loginBody.email = "tflenderson@jabc.com";
+               loginBody.email = "hradmin@jabc.com";
                loginBody.password = "HRadmin1*";
            } else if (adminLevel === 'manager') {
-               loginBody.email = "mscott@jabc.com";
+               loginBody.email = "manager@jabc.com";
                loginBody.password = "Manager1*";
            } else {
-               loginBody.email = "jhalpert@jabc.com";
+               loginBody.email = "employee1@jabc.com";
                loginBody.password = "Employee1*";
            }
 
