@@ -258,12 +258,14 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		const PERFORMANCE_REVIEW_ID = res[0][0][0].PERFORMANCE_REVIEW_ID;
 
 		// Insert sections
-		for (let section of performance.sections) {
-			await db.rawQuery(conn, 'CALL create_employee_performance_review_section(?,?,?)', [
-				PERFORMANCE_REVIEW_ID,
-				section.data,
-				section.sectionName
-			])
+		if (performance.sections != null) {
+			for (let section of performance.sections) {
+				await db.rawQuery(conn, 'CALL create_employee_performance_review_section(?,?,?)', [
+					PERFORMANCE_REVIEW_ID,
+					section.data,
+					section.sectionName
+				])
+			}
 		}
 
 		await db.commit(conn)
