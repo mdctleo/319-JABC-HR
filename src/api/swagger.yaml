@@ -2932,8 +2932,10 @@ definitions:
   IPerformancePlan:
     type: "object"
     required:
-    - "date"
+    - "createDate"
+    - "endYear"
     - "fkEmployee"
+    - "startYear"
     - "status"
     properties:
       id:
@@ -2946,10 +2948,20 @@ definitions:
         format: "uint64"
         example: 1
         description: "Foreign key of the employee with this performance review"
-      date:
+      createDate:
         type: "string"
         format: "date"
         description: "The date the performance review was created"
+      startYear:
+        type: "integer"
+        format: "uint64"
+        example: 2019
+        description: "The start year of the plan"
+      endYear:
+        type: "integer"
+        format: "uint64"
+        example: 2020
+        description: "The end year of the plan"
       status:
         type: "integer"
         minimum: 0
@@ -2967,7 +2979,6 @@ definitions:
     description: "PerformancePlan contains info of the sections of a performance plan\
       \ of an employee\n"
     example:
-      date: "2000-01-23"
       comments:
       - fkCommenter: 1
         date: "2000-01-23"
@@ -2981,8 +2992,10 @@ definitions:
         fkPerformancePlan: 1
         comment: "comment"
         id: 1
+      startYear: 2019
       fkEmployee: 1
       id: 1
+      endYear: 2020
       sections:
       - sectionName: "sectionName"
         data:
@@ -2996,11 +3009,12 @@ definitions:
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         id: 1
+      createDate: "2000-01-23"
       status: 0
   IPerformanceReview:
     type: "object"
     required:
-    - "date"
+    - "createDate"
     - "fkEmployee"
     - "fkPerformancePlan"
     - "status"
@@ -3020,7 +3034,7 @@ definitions:
         format: "uint64"
         example: 1
         description: "Foreign key of the performance plan"
-      date:
+      createDate:
         type: "string"
         format: "date"
         description: "The date the performance review was created"
@@ -3041,7 +3055,6 @@ definitions:
     description: "PerformanceReview contains info of the sections of a performance\
       \ plan of an employee\n"
     example:
-      date: "2000-01-23"
       comments:
       - fkCommenter: 1
         date: "2000-01-23"
@@ -3071,6 +3084,7 @@ definitions:
         fkPerformanceReview: 1
         fkPerformancePlan: 1
         id: 1
+      createDate: "2000-01-23"
       status: 0
   IPerformanceSection:
     type: "object"
