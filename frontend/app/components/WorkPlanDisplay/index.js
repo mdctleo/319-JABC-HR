@@ -90,7 +90,7 @@ class WorkPlanDisplay extends React.Component {
 
 WorkPlanDisplay.propTypes = {
   classes: PropTypes.object.isRequired,
-  sections: PropTypes.array.isRequired,
+  sections: PropTypes.array,
   profile: PropTypes.object.isRequired,
   year: PropTypes.string.isRequired,
   role: PropTypes.object,
