@@ -34,6 +34,11 @@ export function* createEmployee(employee) {
   yield employeeApi.createEmployee(employeeObj);
 }
 
+export function* getPerformancePlans(id) {
+  const plans = yield employeeApi.getPerformancePlans(id);
+  yield all(plans.map(p => put(setResource('plan', p.id, p))));
+}
+
 export function* getRole(id) {
   const role = yield rolesApi.getRole(id);
   yield put(setResource('role', role.id, role));

@@ -8,8 +8,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import PerformanceModule from '../../components/PerformanceModule';
-let uniqid = require('uniqid');
-
+import { createStructuredSelector } from 'reselect';
+import { selectPlanList, selectSelectedPlan } from './selectors';
+import actions from './actions';
+import connect from 'react-redux/es/connect/connect';
+import reducer from './reducer';
+import saga from './saga';
+import { compose } from 'redux';
+import injectSaga from 'utils/injectSaga';
+import injectReducer from 'utils/injectReducer';
+const uniqid = require('uniqid');
 
 const styles = theme => ({
   root: {
@@ -29,7 +37,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   editButton: {
     float: 'right',
@@ -41,7 +49,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   deleteWPButton: {
     float: 'right',
@@ -54,7 +62,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#efefef',
-    }
+    },
   },
   saveButton: {
     float: 'right',
@@ -66,7 +74,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -100,7 +108,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   formButton: {
     float: 'right',
@@ -115,7 +123,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   addDocButton: {
     display: 'inline',
@@ -129,7 +137,7 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
-    }
+    },
   },
   addColButton: {
     float: 'left',
@@ -142,178 +150,241 @@ const styles = theme => ({
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#fefefe',
-    }
-  }
+    },
+  },
 });
-
 
 class PerformancePage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      profile: {firstname: "Justin", lastname: "Case", id: "1", sin: "777 777 777", role: {name: "Developer"}, status: "Active", salary: 60000, manager: "Sarah James", type: "FT", vacation: 12, address: "Box 123", phone: "555-5555"},
+      profile: {
+        firstname: 'Justin',
+        lastname: 'Case',
+        id: '1',
+        sin: '777 777 777',
+        role: { name: 'Developer' },
+        status: 'Active',
+        salary: 60000,
+        manager: 'Sarah James',
+        type: 'FT',
+        vacation: 12,
+        address: 'Box 123',
+        phone: '555-5555',
+      },
       performancePlans: [
         {
-          year: "2019",
+          year: '2019',
           sections: [
             {
               sectionId: 1,
-              sectionName: "First Section",
-              columns: ["Column 1", "Column 2", "Column 3"],
+              sectionName: 'First Section',
+              columns: ['Column 1', 'Column 2', 'Column 3'],
               data: [
                 {
                   id: uniqid(),
-                  "Column 1": "Data for column 1",
-                  "Column 2": "Data for column 2",
-                  "Column 3": "Data for column 3"
+                  'Column 1': 'Data for column 1',
+                  'Column 2': 'Data for column 2',
+                  'Column 3': 'Data for column 3',
                 },
                 {
                   id: uniqid(),
-                  "Column 1": "2 Data for column 1",
-                  "Column 2": "2 Data for column 2",
-                  "Column 3": "2 Data for column 3"
+                  'Column 1': '2 Data for column 1',
+                  'Column 2': '2 Data for column 2',
+                  'Column 3': '2 Data for column 3',
                 },
                 {
                   id: uniqid(),
-                  "Column 1": "3 Data for column 1",
-                  "Column 2": "3 Data for column 2",
-                  "Column 3": "3 Data for column 3"
-                }
-              ]
+                  'Column 1': '3 Data for column 1',
+                  'Column 2': '3 Data for column 2',
+                  'Column 3': '3 Data for column 3',
+                },
+              ],
             },
             {
               sectionId: 2,
-              sectionName: "Second Section",
-              columns: ["Column 1", "Column 2"],
+              sectionName: 'Second Section',
+              columns: ['Column 1', 'Column 2'],
               data: [
                 {
                   id: uniqid(),
-                  "Column 1": "Data for column 1",
-                  "Column 2": "Data for column 2"
+                  'Column 1': 'Data for column 1',
+                  'Column 2': 'Data for column 2',
                 },
                 {
                   id: uniqid(),
-                  "Column 1": "2 Data for column 1",
-                  "Column 2": "2 Data for column 2"
+                  'Column 1': '2 Data for column 1',
+                  'Column 2': '2 Data for column 2',
                 },
                 {
                   id: uniqid(),
-                  "Column 1": "3 Data for column 1",
-                  "Column 2": "3 Data for column 2"
-                }
-              ]
+                  'Column 1': '3 Data for column 1',
+                  'Column 2': '3 Data for column 2',
+                },
+              ],
             },
             {
               sectionId: 3,
-              sectionName: "Third Section",
-              columns: ["Column 1"],
+              sectionName: 'Third Section',
+              columns: ['Column 1'],
               data: [
                 {
                   id: uniqid(),
-                  "Column 1": "Data for column 1"
+                  'Column 1': 'Data for column 1',
                 },
                 {
                   id: uniqid(),
-                  "Column 1": "2 Data for column 1"
+                  'Column 1': '2 Data for column 1',
                 },
                 {
                   id: uniqid(),
-                  "Column 1": "3 Data for column 1"
-                }
-              ]
+                  'Column 1': '3 Data for column 1',
+                },
+              ],
             },
           ],
           performanceReview: {
-            year: "2019",
+            year: '2019',
             sections: [
               {
                 sectionId: 1,
-                sectionName: "First Section",
-                columns: ["Column 1", "Column 2", "Column 3"],
+                sectionName: 'First Section',
+                columns: ['Column 1', 'Column 2', 'Column 3'],
                 data: [
                   {
                     id: uniqid(),
-                    "Column 1": "Data for column 1",
-                    "Column 2": "Data for column 2",
-                    "Column 3": "Data for column 3"
+                    'Column 1': 'Data for column 1',
+                    'Column 2': 'Data for column 2',
+                    'Column 3': 'Data for column 3',
                   },
                   {
                     id: uniqid(),
-                    "Column 1": "2 Data for column 1",
-                    "Column 2": "2 Data for column 2",
-                    "Column 3": "2 Data for column 3"
+                    'Column 1': '2 Data for column 1',
+                    'Column 2': '2 Data for column 2',
+                    'Column 3': '2 Data for column 3',
                   },
                   {
                     id: uniqid(),
-                    "Column 1": "3 Data for column 1",
-                    "Column 2": "3 Data for column 2",
-                    "Column 3": "3 Data for column 3"
-                  }
-                ]
+                    'Column 1': '3 Data for column 1',
+                    'Column 2': '3 Data for column 2',
+                    'Column 3': '3 Data for column 3',
+                  },
+                ],
               },
               {
                 sectionId: 2,
-                sectionName: "Second Section",
-                columns: ["Column 1", "Column 2"],
+                sectionName: 'Second Section',
+                columns: ['Column 1', 'Column 2'],
                 data: [
                   {
                     id: uniqid(),
-                    "Column 1": "Data for column 1",
-                    "Column 2": "Data for column 2"
+                    'Column 1': 'Data for column 1',
+                    'Column 2': 'Data for column 2',
                   },
                   {
                     id: uniqid(),
-                    "Column 1": "2 Data for column 1",
-                    "Column 2": "2 Data for column 2"
+                    'Column 1': '2 Data for column 1',
+                    'Column 2': '2 Data for column 2',
                   },
                   {
                     id: uniqid(),
-                    "Column 1": "3 Data for column 1",
-                    "Column 2": "3 Data for column 2"
-                  }
-                ]
+                    'Column 1': '3 Data for column 1',
+                    'Column 2': '3 Data for column 2',
+                  },
+                ],
               },
               {
                 sectionId: 3,
-                sectionName: "Third Section",
-                columns: ["Column 1"],
+                sectionName: 'Third Section',
+                columns: ['Column 1'],
                 data: [
                   {
                     id: uniqid(),
-                    "Column 1": "Data for column 1"
+                    'Column 1': 'Data for column 1',
                   },
                   {
                     id: uniqid(),
-                    "Column 1": "2 Data for column 1"
+                    'Column 1': '2 Data for column 1',
                   },
                   {
                     id: uniqid(),
-                    "Column 1": "3 Data for column 1"
-                  }
-                ]
+                    'Column 1': '3 Data for column 1',
+                  },
+                ],
               },
-            ]
-          }
-        }
-      ]
+            ],
+          },
+        },
+      ],
     };
   }
 
+  componentDidMount() {
+    this.props.getAllPlans();
+  }
+
+  selectYear = event => {
+    if (event.target.value === 0) {
+      this.openNewPlanDialog();
+    } else {
+      this.props.selectPlan(event.target.value);
+    }
+  };
+
   render() {
     const { performancePlans, profile } = this.state;
+    const { planList, selectedPlan } = this.props;
 
     return (
       <div>
-        <PerformanceModule performancePlans={performancePlans} profile={profile} />
+        <PerformanceModule
+          planList={planList}
+          performancePlans={performancePlans}
+          profile={profile}
+          selectYear={this.selectYear}
+          selectedPlan={selectedPlan}
+          deleteRows={this.props.deleteRows}
+          addRow={this.props.addRow}
+          addSection={this.props.addSection}
+          deleteSection={this.props.deleteSection}
+        />
       </div>
     );
   }
 }
 
-
 PerformancePage.propTypes = {
-  classes: PropTypes.object.isRequired,
+  planList: PropTypes.array.isRequired,
+  getAllPlans: PropTypes.func.isRequired,
+  selectPlan: PropTypes.func.isRequired,
+  selectedPlan: PropTypes.object,
+  deleteRows: PropTypes.func.isRequired,
+  addRow: PropTypes.func.isRequired,
+  addSection: PropTypes.func.isRequired,
+  deleteSection: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(PerformancePage);
+const mapStateToProps = createStructuredSelector({
+  planList: selectPlanList,
+  selectedPlan: selectSelectedPlan,
+});
+
+const mapDispatchToProps = {
+  ...actions,
+};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withReducer = injectReducer({ key: 'performance', reducer });
+const withSaga = injectSaga({ key: 'performance', saga });
+
+export default compose(
+  withReducer,
+  withSaga,
+  withConnect,
+  withStyles(styles),
+)(PerformancePage);

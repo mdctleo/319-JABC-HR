@@ -68,8 +68,11 @@ export default class IPerformancePlan {
             if (data.hasOwnProperty('fkEmployee')) {
                 obj['fkEmployee'] = ApiClient.convertToType(data['fkEmployee'], 'Number');
             }
-            if (data.hasOwnProperty('date')) {
-                obj['date'] = ApiClient.convertToType(data['date'], 'Date');
+            if (data.hasOwnProperty('startYear')) {
+                obj['startYear'] = ApiClient.convertToType(data['startYear'], 'Number');
+            }
+            if (data.hasOwnProperty('endYear')) {
+              obj['endYear'] = ApiClient.convertToType(data['endYear'], 'Number');
             }
             if (data.hasOwnProperty('status')) {
                 obj['status'] = ApiClient.convertToType(data['status'], 'Number');
@@ -98,7 +101,6 @@ export default class IPerformancePlan {
     * The date the performance review was created
     * @member {Date} date
     */
-    date = undefined;
     /**
     * @member {Number} status
     */
