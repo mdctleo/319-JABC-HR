@@ -1,19 +1,19 @@
 'use strict';
 import {
-    Employee,
-    PerformancePlan,
-    PerformanceReview,
-    OnboardingTask,
-    Vacation,
-    IEmployee,
-    IPerformancePlan,
-    IPerformanceReview,
-    IPerformanceSection,
-    IVacation,
-    EmployeeHistory,
-    IOnboardingTask,
-    Role,
-    PerformanceSection
+	Employee,
+	PerformancePlan,
+	PerformanceReview,
+	OnboardingTask,
+	Vacation,
+	IEmployee,
+	IPerformancePlan,
+	IPerformanceReview,
+	IPerformanceSection,
+	IVacation,
+	EmployeeHistory,
+	IOnboardingTask,
+	Role,
+	PerformanceSection
 } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import * as jwt from 'jsonwebtoken';
@@ -22,7 +22,9 @@ import { ILoginResponse } from '../model/iLoginResponse';
 import Database from '../database/Database';
 import * as RoleService from './RolesService'
 import IDatabaseClient from '../database/IDatabaseClient';
-const KEY = process.env.JWT_KEY;
+import * as Security from '../utils/Security';
+const JWT_KEY = process.env.JWT_KEY;
+const AES_KEY = process.env.AES_KEY;
 
 
 /**
@@ -113,6 +115,7 @@ export async function createEmployee(employee: IEmployee, xAuthToken: string) {
 			}
 		}
 		employee = Employee.Prepare(employee)
+		let encryptedPassword = Security.EncryptAES(employee.password, AES_KEY);
 		let res = await Database.getInstance().query('CALL create_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			client.id,
 			employee.fkRole,
@@ -126,7 +129,7 @@ export async function createEmployee(employee: IEmployee, xAuthToken: string) {
 			employee.vacationDays,
 			employee.fte,
 			employee.status,
-			employee.password,
+			encryptedPassword,
 			employee.salary,
 			employee.dateJoined,
 			employee.adminLevel,
@@ -183,7 +186,7 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		const PERFORMANCE_PLAN_ID = res[0][0][0].PERFORMANCE_PLAN_ID;
 
 		// Insert sections
-		if(performance.sections != null ){
+		if (performance.sections != null) {
 			for (let section of performance.sections) {
 				await db.rawQuery(conn, 'CALL create_employee_performance_plan_section(?,?,?)', [
 					PERFORMANCE_PLAN_ID,
@@ -205,10 +208,10 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		} catch (err) { }
 		throw error;
 	} finally {
-        try {
+		try {
 			await db.closeConnection(conn);
-        } catch (err) { }
-    }
+		} catch (err) { }
+	}
 }
 
 
@@ -275,10 +278,10 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		} catch (err) { }
 		throw error;
 	} finally {
-        try {
+		try {
 			await db.closeConnection(conn);
-        } catch (err) { }
-    }
+		} catch (err) { }
+	}
 }
 
 
@@ -390,11 +393,11 @@ export async function getEmployeeHistory(id: Number, xAuthToken: String) {
  **/
 export async function getEmployees(xAuthToken: string, term: String, start: String, end: String, inactive: String) {
 	try {
-        const client = (await Auth(xAuthToken)).employee;
+		const client = (await Auth(xAuthToken)).employee;
 
-        if (client.adminLevel === IEmployee.adminLevelEnum.MANAGER) {
-            return await getEmployeesByManager(client.id, xAuthToken);
-        }
+		if (client.adminLevel === IEmployee.adminLevelEnum.MANAGER) {
+			return await getEmployeesByManager(client.id, xAuthToken);
+		}
 
 		let res: any;
 		if (start != undefined && end != undefined) {
@@ -433,7 +436,7 @@ export async function getEmployees(xAuthToken: string, term: String, start: Stri
 export async function getEmployeesByManager(idManager: Number, xAuthToken: string) {
 	try {
 		const manager = await getEmployee(idManager, xAuthToken)
-		if(manager.adminLevel == IEmployee.adminLevelEnum.STAFF){
+		if (manager.adminLevel == IEmployee.adminLevelEnum.STAFF) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level, do not have managed employees')
 		}
 		let res = await Database.getInstance().query('CALL get_employees_of_manager(?)', [idManager], JABCResponse.EMPLOYEE)
@@ -463,7 +466,7 @@ export async function getEmployeesByManager(idManager: Number, xAuthToken: strin
 export async function getOnboardingTasks(id: Number, xAuthToken: string, term: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if(client.id != id && client.adminLevel == IEmployee.adminLevelEnum.STAFF){
+		if (client.id != id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level, can not see other employees\' onboarding task')
 		}
 		let res = await Database.getInstance().query('CALL get_employee_tasks(?)', [id], JABCResponse.EMPLOYEE)
@@ -487,6 +490,7 @@ export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 		let res = await Database.getInstance().query('CALL get_managers_of_employee(?)', [id], JABCResponse.EMPLOYEE);
 		let managers = Employee.Employees(res[0][0]);
 		for (let manager of managers) {
+			delete manager.password
 			if (manager.fkRole == null) continue;
 			manager.role = await RoleService.getRole(manager.fkRole, xAuthToken);
 			delete manager.role.competencies;
@@ -570,10 +574,10 @@ export async function getPerformanceReviews(id: Number, xAuthToken: string, term
 		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE);
 		let performanceReviews = PerformanceReview.PerformanceReviews(res[0][0]);
 
-        for (let performanceReview of performanceReviews) {
-            let resSections = await Database.getInstance().query('CALL get_performance_review_sections(?)', [performanceReview.id]);
-            performanceReview.sections = PerformanceSection.PerformanceSections(resSections[0][0]);
-        }
+		for (let performanceReview of performanceReviews) {
+			let resSections = await Database.getInstance().query('CALL get_performance_review_sections(?)', [performanceReview.id]);
+			performanceReview.sections = PerformanceSection.PerformanceSections(resSections[0][0]);
+		}
 
 		return performanceReviews;
 	} catch (error) {
@@ -624,16 +628,21 @@ export async function linkEmployeeManager(id: Number, idManager: Number, xAuthTo
  *
  * @param {ILogin} body ILogin Employee login data
  * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @param {boolean} encrypt Boolean Whether the password in body is encrypted or not
  * @returns {Promise<ILoginResponse>}
  **/
-export async function login(body: ILogin, xAuthToken: string) {
+export async function login(body: ILogin, xAuthToken: string, encrypt = true) {
 	try {
-		let res = await Database.getInstance().query('CALL login(?,?)', [body.email, body.password], JABCResponse.EMPLOYEE)
+		let encryptedPassword = body.password
+		if (encrypt) {
+			encryptedPassword = Security.EncryptAES(body.password, AES_KEY);
+		}
+		let res = await Database.getInstance().query('CALL login(?,?)', [body.email, encryptedPassword], JABCResponse.EMPLOYEE)
 		var employee = new Employee(res[0][0][0]);
 		var token = jwt.sign({
 			exp: Math.floor(Date.now() / 1000) + (60 * 60 * 8),
 			employee: employee
-		}, KEY);
+		}, JWT_KEY);
 		let response = new JABCSuccess(JABCResponse.EMPLOYEE, `Welcome ${employee.firstname} ${employee.lastname}`)
 		var loginResponse: ILoginResponse = {
 			message: response.message,
@@ -727,9 +736,10 @@ export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken
 export async function updateEmployeePassword(id: Number, employee: IEmployee, xAuthToken: String) {
 	try {
 		employee = Employee.Prepare(employee)
+		let encryptedPassword = Security.EncryptAES(employee.password, AES_KEY);
 		let res = await Database.getInstance().query('CALL update_employee_password(?,?)', [
 			id,
-			employee.password
+			encryptedPassword
 		], JABCResponse.EMPLOYEE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The password has been updated`)
 	} catch (error) {
@@ -750,7 +760,7 @@ export async function Auth(token: string): Promise<ILoginResponse> {
 		if (token === undefined) {
 			throw new JABCError(JABCResponse.UNAUTHORIZED)
 		}
-		return await JWTVerify(token, KEY)
+		return await JWTVerify(token, JWT_KEY)
 	} catch (error) {
 		throw error
 	}
@@ -784,7 +794,7 @@ export function JWTVerify(token: string, key: string): Promise<ILoginResponse> {
 			login({
 				email: decoded.employee.email,
 				password: decoded.employee.password,
-			}, token).then((loginResponse: ILoginResponse) => {
+			}, token, false).then((loginResponse: ILoginResponse) => {
 				resolve(loginResponse)
 			}).catch((error: any) => {
 				reject(error)

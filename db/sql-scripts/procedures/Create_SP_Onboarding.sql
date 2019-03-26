@@ -10,8 +10,8 @@ DROP PROCEDURE IF EXISTS create_doc_type;
 
 DELIMITER //
 
-CREATE PROCEDURE `create_doc_type` (IN type_name VARCHAR(48)
-, IN description VARCHAR(512)
+CREATE PROCEDURE `create_doc_type` (IN type_name VARCHAR(100)
+, IN description VARCHAR(2512)
 )
 BEGIN
     DECLARE checker INT;
@@ -409,7 +409,7 @@ CREATE PROCEDURE `update_onboarding_task` (IN onboarding_task_id INT
 , IN created_date DATE
 , IN due_date DATE
 , IN expiry_date DATE
-, IN description VARCHAR(512)
+, IN description VARCHAR(2512)
 , IN require_doc TINYINT
 )
 BEGIN
@@ -443,8 +443,8 @@ DROP PROCEDURE IF EXISTS update_doc_type;
 DELIMITER //
 
 CREATE PROCEDURE `update_doc_type` (IN type_id INT
-, IN type_name VARCHAR(48)
-, IN description VARCHAR(512)
+, IN type_name VARCHAR(100)
+, IN description VARCHAR(2512)
 )
 BEGIN
     DECLARE checker INT;
@@ -476,7 +476,7 @@ DROP PROCEDURE IF EXISTS upload_doc_type;
 DELIMITER //
 
 CREATE PROCEDURE `upload_doc_type` (IN type_id INT
-, IN template_file MEDIUMBLOB
+, IN template_file BLOB(25000000)
 , IN mime_type VARCHAR(100)
 )
 BEGIN

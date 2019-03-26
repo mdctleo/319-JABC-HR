@@ -32,7 +32,6 @@ export default class IEmployeeHistory {
     * @class
     * @param sin {String} 
     * @param email {String} 
-    * @param password {String} 
     * @param firstname {String} 
     * @param lastname {String} 
     * @param fte {Number} 
@@ -43,13 +42,13 @@ export default class IEmployeeHistory {
     * @param createdDate {Date} The date the creation of this version of the employee data
     */
 
-    constructor(sin, email, password, firstname, lastname, fte, status, adminLevel, version, fkCreator, createdDate) {
+    constructor(sin, email, firstname, lastname, fte, status, adminLevel, version, fkCreator, createdDate) {
         
 
         
         
 
-        this['sin'] = sin;this['email'] = email;this['password'] = password;this['firstname'] = firstname;this['lastname'] = lastname;this['fte'] = fte;this['status'] = status;this['adminLevel'] = adminLevel;this['version'] = version;this['fkCreator'] = fkCreator;this['createdDate'] = createdDate;
+        this['sin'] = sin;this['email'] = email;this['firstname'] = firstname;this['lastname'] = lastname;this['fte'] = fte;this['status'] = status;this['adminLevel'] = adminLevel;this['version'] = version;this['fkCreator'] = fkCreator;this['createdDate'] = createdDate;
 
         
     }

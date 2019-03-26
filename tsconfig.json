@@ -57,6 +57,7 @@
     "src/utils/Auth.ts",
     "src/utils/Priviledges.ts",
     "src/utils/ResponseManager.ts",
+    "src/utils/Security.ts",
     "src/utils/TestSetup.ts"
   ]
 }

@@ -151,8 +151,8 @@ DROP PROCEDURE IF EXISTS update_role;
 DELIMITER //
 
 CREATE PROCEDURE `update_role` (IN role_id INT
-, IN role_name VARCHAR(48)
-, IN description VARCHAR(45)
+, IN role_name VARCHAR(100)
+, IN description VARCHAR(2512)
 )
 BEGIN
   DECLARE checker INT;
@@ -187,7 +187,7 @@ DELIMITER //
 
 CREATE PROCEDURE `create_competency` (IN role_id INT
 , IN competency_name VARCHAR(100)
-, IN description VARCHAR(512)
+, IN description VARCHAR(2512)
 )
 BEGIN
   DECLARE checker INT;
@@ -337,7 +337,7 @@ DELIMITER //
 
 CREATE PROCEDURE `update_competency` (IN competency_id INT
 , IN competency_name VARCHAR(100)
-, IN description VARCHAR(512)
+, IN description VARCHAR(2512)
 )
 BEGIN
   DECLARE checker INT;

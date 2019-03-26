@@ -32,7 +32,6 @@ export default class IEmployee {
     * @class
     * @param sin {Number} 
     * @param email {String} 
-    * @param password {String} 
     * @param firstname {String} 
     * @param lastname {String} 
     * @param fte {Number} 
@@ -40,13 +39,13 @@ export default class IEmployee {
     * @param adminLevel {Number} 
     */
 
-    constructor(sin, email, password, firstname, lastname, fte, status, adminLevel) {
+    constructor(sin, email, firstname, lastname, fte, status, adminLevel) {
         
 
         
         
 
-        this['sin'] = sin;this['email'] = email;this['password'] = password;this['firstname'] = firstname;this['lastname'] = lastname;this['fte'] = fte;this['status'] = status;this['adminLevel'] = adminLevel;
+        this['sin'] = sin;this['email'] = email;this['firstname'] = firstname;this['lastname'] = lastname;this['fte'] = fte;this['status'] = status;this['adminLevel'] = adminLevel;
 
         
     }

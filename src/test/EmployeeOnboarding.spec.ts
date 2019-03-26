@@ -48,7 +48,7 @@ describe("test related to /employee and onboarding", () => {
             let employeeRecord = jsf.generate(schema.definitions.IEmployee);
             employeeRecord.birthdate = "1997-11-30";
             employeeRecord.dateJoined = "2012-01-01";
-            employeeRecord.sin = 99999999;
+            employeeRecord.sin = 999999999;
             // set the employee to onboarding status
             employeeRecord.status = 2;
 
@@ -58,6 +58,7 @@ describe("test related to /employee and onboarding", () => {
                 .send(employeeRecord);
             onBoardingEmployeeCredentials.email = employeeRecord.email;
             onBoardingEmployeeCredentials.password = employeeRecord.password;
+            console.log(employeeRecord.password)
             return HEADERS;
         });
 
