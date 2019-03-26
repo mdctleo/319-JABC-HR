@@ -16,6 +16,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import Toolbar from '@material-ui/core/Toolbar';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Typography from '@material-ui/core/Typography';
@@ -90,6 +91,19 @@ const styles = theme => ({
   bottomRow: {
     height: '60px',
   },
+  spacer: {
+    flex: '1 1 100%',
+  },
+  actionButton: {
+    float: 'right',
+    display: 'inline',
+    color: theme.palette.text.secondary,
+    // borderRadius: '15px',
+    marginLeft: '10px',
+  },
+  colNameField: {
+    flex: '0 0 auto',
+  },
 });
 
 class EnhancedTableHead extends React.Component {
@@ -139,7 +153,7 @@ const toolbarStyles = theme => ({
           backgroundColor: theme.palette.secondary.dark,
         },
   spacer: {
-    flex: '1 1 100%',
+    flex: '1 1 50%',
   },
   actions: {
     color: theme.palette.text.secondary,
@@ -147,8 +161,8 @@ const toolbarStyles = theme => ({
   title: {
     flex: '0 0 auto',
   },
-  deleteButton: {
-    float: 'right',
+  actionButton: {
+    float: 'left',
     display: 'inline',
     color: theme.palette.text.secondary,
     // borderRadius: '15px',
@@ -163,8 +177,7 @@ let EnhancedTableToolbar = props => {
     <Toolbar
       className={classNames(classes.root, {
         [classes.highlight]: numSelected > 0,
-      })}
-    >
+      })}>
       <div className={classes.title}>
         {numSelected > 0 ? (
           <Typography color="inherit" variant="subtitle1">
@@ -178,9 +191,16 @@ let EnhancedTableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
+        <IconButton
+          className={classes.actionButton}
+          onClick={props.openEditSectionDialog}
+          size="small"
+        >
+          <EditIcon />
+        </IconButton>
         {numSelected === 0 ? (
           <IconButton
-            className={classes.deleteButton}
+            className={classes.actionButton}
             onClick={props.handleDeleteSection}
             size="small"
           >
@@ -204,6 +224,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   handleDeleteSection: PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired,
+  openEditSectionDialog: PropTypes.func.isRequired
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
@@ -211,6 +232,8 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 class PerformanceSection extends React.Component {
   state = {
     openAddRowDialog: false,
+    openEditSectionDialog: false,
+    editSectionError: null,
     selected: [],
   };
 
@@ -287,15 +310,23 @@ class PerformanceSection extends React.Component {
     this.setState({ openAddRowDialog: false });
   };
 
+  openEditSectionDialog = () => {
+    this.setState({ openEditSectionDialog: true });
+  };
+
+  closeEditSectionDialog = () => {
+    this.setState({ openEditSectionDialog: false });
+  };
+
   render() {
     const { classes, section } = this.props;
-    const { openAddRowDialog, selected } = this.state;
+    const { editSectionError, openAddRowDialog, selected } = this.state;
     const that = this;
 
     return (
       <div>
         <Dialog
-          open={that.state.openAddRowDialog}
+          open={openAddRowDialog}
           onClose={this.closeNewRowDialog}
           aria-labelledby="form-dialog-title"
           fullWidth
@@ -322,6 +353,70 @@ class PerformanceSection extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog
+          open={this.state.openEditSectionDialog}
+          onClose={this.closeEditSectionDialog}
+          aria-labelledby="form-dialog-title"
+          fullWidth
+        >
+          <DialogTitle id="form-dialog-title">Edit Section</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="sectionName"
+              label="Section Name"
+              defaultValue={section.sectionName}
+              fullWidth
+            />
+            {section.data.columns.map((column, i) => (
+              <div key={i}>
+                <div className={classes.colNameField}>
+                  <TextField
+                    autoFocus
+                    key={i}
+                    margin="dense"
+                    id={'col-name'.concat(column)}
+                    label="Column Name"
+                    defaultValue={column}
+                    fullWidth
+                  />
+                </div>
+                <div className={classes.spacer} />
+                <div>
+                  <IconButton
+                    className={classes.actionButton}
+                    onClick={this.handleDeleteSection}
+                    size="small">
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              </div>
+            ))}
+            <Button
+              className={classes.addColButton}
+              onClick={this.incNumColumnsForNewSection}>
+              Add Column
+            </Button>
+          </DialogContent>
+          <DialogActions>
+            {editSectionError && (
+              <Typography color="error" variant="body2">
+                {editSectionError}
+              </Typography>
+            )}
+            <Button onClick={this.closeEditSectionDialog} color="primary">
+              Cancel
+            </Button>
+              <Button
+                onClick={() => this.saveSection(true)}
+                color="primary">
+                OK
+              </Button>
+          </DialogActions>
+        </Dialog>
+
         <Paper className={classes.root}>
           <EnhancedTableToolbar
             sectionName={section.sectionName}
@@ -329,6 +424,7 @@ class PerformanceSection extends React.Component {
             numSelected={selected.length}
             handleDeleteRows={that.handleDeleteRows}
             handleDeleteSection={that.handleDeleteSection}
+            openEditSectionDialog={that.openEditSectionDialog}
           />
           <div className={classes.tableWrapper}>
             <Table className={classes.table}>
