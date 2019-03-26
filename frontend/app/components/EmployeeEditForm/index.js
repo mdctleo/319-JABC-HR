@@ -121,12 +121,17 @@ class EmployeeEditForm extends React.PureComponent {
     }));
   };
 
-  handleClose = event => {
+  handleClose = () => {
     this.setState({ dialog: false });
   };
 
-  handleOpen = event => {
+  handleOpen = () => {
     this.setState({ dialog: true });
+  };
+
+  updatePassword = newPassword => {
+    const newProfile = { ...this.props.profile, password: newPassword };
+    this.props.updatePassword(newProfile);
   };
 
   render() {
@@ -420,10 +425,9 @@ class EmployeeEditForm extends React.PureComponent {
           </Button>
         )}
         <SetPasswordDialog
-          profile={profile}
           open={dialog}
           handleClose={this.handleClose}
-          add={add}
+          updatePassword={this.updatePassword}
         />
         <Button className={classes.cancelButton} onClick={cancelEdit}>
           Cancel
@@ -443,6 +447,7 @@ EmployeeEditForm.propTypes = {
   classes: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
+  updatePassword: PropTypes.func.isRequired,
   cancelEdit: PropTypes.func.isRequired,
   allRoles: PropTypes.array,
   add: PropTypes.bool,

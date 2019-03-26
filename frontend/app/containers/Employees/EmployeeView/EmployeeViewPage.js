@@ -153,18 +153,19 @@ class EmployeeViewPage extends React.PureComponent {
                 <EmployeeEditForm
                   profile={selectedEmployee}
                   saveProfile={this.props.saveProfile}
+                  updatePassword={this.props.updatePassword}
                   cancelEdit={() => this.props.setEditing(false)}
                   allRoles={sortedRoles}
                 />
               </div>
             )}
           {currentTab === 2 && (
-            <EmployeePerformance
-              selectedEmployee={selectedEmployee}
-            />
+            <EmployeePerformance selectedEmployee={selectedEmployee} />
           )}
           {currentTab === 3 && <EmployeeOnboarding />}
-          {currentTab === 4 && <EmployeeHistory selectedEmployee={selectedEmployee}/>}
+          {currentTab === 4 && (
+            <EmployeeHistory selectedEmployee={selectedEmployee} />
+          )}
         </div>
       </Paper>
     );
@@ -179,6 +180,7 @@ EmployeeViewPage.propTypes = {
   handleBackButton: PropTypes.func.isRequired,
   allRoles: PropTypes.object,
   saveProfile: PropTypes.func.isRequired,
+  updatePassword: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(EmployeeViewPage);
