@@ -2730,7 +2730,7 @@
     "IPerformancePlan" : {
       "type" : "object",
       "description" : "PerformancePlan contains info of the sections of a performance plan of an employee\n",
-      "required" : ["fkEmployee", "date", "status" ],
+      "required" : ["fkEmployee", "createDate", "startYear", "endYear", "status" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2744,10 +2744,26 @@
           "description" : "Foreign key of the employee with this performance review",
           "example" : 1
         },
-        "date" : {
+        "createDate" : {
           "type" : "string",
           "format" : "date",
           "description" : "The date the performance review was created"
+        },
+        "startYear" : {
+          "type" : "integer",
+          "format" : "uint64",
+          "description" : "The start year of the plan",
+          "example": 2019,
+          "minimum": 1950,
+          "maximum": 2100
+        },
+        "endYear" : {
+          "type" : "integer",
+          "format" : "uint64",
+          "description" : "The end year of the plan",
+          "example": 2019,
+          "minimum": 1950,
+          "maximum": 2100
         },
         "status" : {
           "type" : "integer",
@@ -2773,7 +2789,7 @@
     "IPerformanceReview" : {
       "type" : "object",
       "description" : "PerformanceReview contains info of the sections of a performance plan of an employee\n",
-      "required" : ["fkEmployee", "fkPerformancePlan", "date", "status" ],
+      "required" : ["fkEmployee", "fkPerformancePlan", "createDate", "status" ],
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -2793,7 +2809,7 @@
           "description" : "Foreign key of the performance plan",
           "example" : 1
         },
-        "date" : {
+        "createDate" : {
           "type" : "string",
           "format" : "date",
           "description" : "The date the performance review was created"

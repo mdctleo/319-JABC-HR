@@ -2287,11 +2287,15 @@ definitions:
         format: uint64
         description: The start year of the plan
         example: 2019
+        minimum: 1950
+        maximum: 2100
       endYear:
         type: integer
         format: uint64
         description: The end year of the plan
         example: 2020
+        minimum: 1950
+        maximum: 2100
       status:
         type: integer
         minimum: 0 # UNPUBLISHED

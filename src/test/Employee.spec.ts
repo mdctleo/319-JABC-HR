@@ -297,7 +297,7 @@ describe("EmployeeService tests", () => {
             return HEADERS;
         });
 
-        it("Should not get all employees wrong credential", async () => {
+        it("Should get all employees under my management", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)
@@ -306,8 +306,8 @@ describe("EmployeeService tests", () => {
             } catch (e) {
                 console.log(e);
             } finally {
-                expect(response.statusCode).to.be.within(400, 500);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(0);
             }
         });
 
