@@ -26,10 +26,10 @@ class DeleteRoleDialog extends React.PureComponent {
     if (single) {
       message = `Are you sure you want to delete this role?`;
     } else {
-      message = `Are you sure you want to delete these ${
-        list.length
-      } roles?`;
+      message = `Are you sure you want to delete these ${list.length} roles?`;
     }
+    message +=
+      '\nDeleted roles will no longer be viewable in employee profiles and history.';
 
     return (
       <Dialog
@@ -48,7 +48,7 @@ class DeleteRoleDialog extends React.PureComponent {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-        <Button onClick={cancelDelete} color="primary">
+          <Button onClick={cancelDelete} color="primary">
             No
           </Button>
           <Button onClick={confirmDelete} color="primary">

@@ -9,7 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 
-import EmployeePerformance from './EmployeePerformance';
+import EmployeePerformance from '../../EmployeePerformance';
 import EmployeeOnboarding from './EmployeeOnboarding';
 import EmployeeHistory from './EmployeeHistory';
 
@@ -153,21 +153,19 @@ class EmployeeViewPage extends React.PureComponent {
                 <EmployeeEditForm
                   profile={selectedEmployee}
                   saveProfile={this.props.saveProfile}
+                  updatePassword={this.props.updatePassword}
                   cancelEdit={() => this.props.setEditing(false)}
                   allRoles={sortedRoles}
                 />
               </div>
             )}
           {currentTab === 2 && (
-            <EmployeePerformance
-              setEditing={this.props.setEditing}
-              editing={editing}
-              selectedEmployee={selectedEmployee}
-              role={role}
-            />
+            <EmployeePerformance selectedEmployee={selectedEmployee} />
           )}
           {currentTab === 3 && <EmployeeOnboarding />}
-          {currentTab === 4 && <EmployeeHistory selectedEmployee={selectedEmployee}/>}
+          {currentTab === 4 && (
+            <EmployeeHistory selectedEmployee={selectedEmployee} />
+          )}
         </div>
       </Paper>
     );
@@ -182,6 +180,7 @@ EmployeeViewPage.propTypes = {
   handleBackButton: PropTypes.func.isRequired,
   allRoles: PropTypes.object,
   saveProfile: PropTypes.func.isRequired,
+  updatePassword: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(EmployeeViewPage);
