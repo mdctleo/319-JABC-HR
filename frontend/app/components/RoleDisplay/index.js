@@ -45,6 +45,9 @@ const styles = theme => ({
     backgroundColor: '#e0e0e0',
     width: '100%',
   },
+  tableWrapper: {
+    width: '75%',
+  }
 });
 
 class RoleDisplay extends React.PureComponent {
@@ -64,8 +67,8 @@ class RoleDisplay extends React.PureComponent {
           </TableRow>
           {role.competencies.map(competency => (
             <TableRow key={competency.id} className={classes.row}>
-              <TableCell align="left">{competency.name}</TableCell>
-              <TableCell align="left">{competency.description}</TableCell>
+              <TableCell align="left" style={{ wordWrap: 'break-word', padding: '20px'}}>{competency.name}</TableCell>
+              <TableCell align="left" style={{ wordWrap: 'break-word', padding: '20px'}}>{competency.description}</TableCell>
             </TableRow>
           ))}
         </React.Fragment>
@@ -92,7 +95,7 @@ class RoleDisplay extends React.PureComponent {
         >
           Competencies
         </Typography>
-        <Table className={classes.displayTable}>
+        <Table style={{ marginTop: '20px', tableLayout: 'fixed', width: '100%'}}>
           <TableBody>{generateCompetencies()}</TableBody>
         </Table>
       </div>
