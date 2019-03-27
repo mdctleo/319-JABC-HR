@@ -66,6 +66,25 @@ export function* createPlan({ plan, selectedEmployee }) {
   try {
     yield call(createPerformancePlan, selectedEmployee.id, plan);
     yield call(getAllPlans, { selectedEmployee });
+    const plans = yield select(selectResource('plan'));
+    if (plans) {
+      const newPlan = plans.find(
+        p =>
+          p.createDate === plan.createDate &&
+          p.endYear === plan.endYear &&
+          p.startYear === plan.startYear &&
+          p.fkEmployee === plan.fkEmployee,
+      );
+      if (newPlan) {
+        yield put(setPlanCopy(newPlan));
+      }
+    }
+    const reviews = yield select(selectResource('review'));
+    if (reviews) {
+      yield put(
+        setReviewCopy(reviews.find(r => r.fkPerformancePlan === selectedEmployee.id)),
+      );
+    }
   } catch (e) {
     yield put(displayError(e.response ? e.response.body.message : e.message));
   }
@@ -75,6 +94,14 @@ export function* createReview({ review, selectedEmployee }) {
   try {
     yield call(createPerformanceReview, selectedEmployee.id, review);
     yield call(getAllPlans, { selectedEmployee });
+    const reviews = yield select(selectResource('review'));
+    if (reviews) {
+      yield put(
+        setReviewCopy(
+          reviews.find(r => r.fkPerformancePlan === review.fkPerformancePlan),
+        ),
+      );
+    }
   } catch (e) {
     yield put(displayError(e.response ? e.response.body.message : e.message));
   }

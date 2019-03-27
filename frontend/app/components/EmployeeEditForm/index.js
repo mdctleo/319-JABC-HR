@@ -183,6 +183,7 @@ class EmployeeEditForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('sin')}
+                type="number"
               />
             </div>
             <div className={classes.fieldContainer}>
@@ -296,6 +297,7 @@ class EmployeeEditForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('salary')}
+                type="number"
               />
             </div>
             <div className={classes.fieldContainer}>
