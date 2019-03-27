@@ -51,6 +51,10 @@ const styles = theme => ({
 });
 
 class WorkPlanDisplay extends React.Component {
+  updateSection = (section) => {
+    this.props.updateSection(section, true);
+  };
+
   render() {
     const { classes, sections, profile, role } = this.props;
     const that = this;
@@ -81,7 +85,7 @@ class WorkPlanDisplay extends React.Component {
               handleDeleteSection={that.props.handleDeleteSection}
               handleAddRow={that.props.handleAddRow}
               handleDeleteRows={that.props.handleDeleteRows}
-              updateSection={that.props.updateSection}
+              updateSection={(section) => that.updateSection(section)}
             />
           ))}
       </div>

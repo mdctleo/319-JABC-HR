@@ -679,7 +679,6 @@ class PerformanceModule extends React.Component {
                       }
                       handleDeleteRows={this.openDeleteRowsDialog}
                       updateSection={this.props.updateSection}
-                      // updateSection={(section) => this.props.updateSection(section, true)}
                     />
                     <Button
                       className={classes.sectionButton}
