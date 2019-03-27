@@ -192,21 +192,23 @@ let EnhancedTableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        <IconButton
-          className={classes.actionButton}
-          onClick={props.openEditSectionDialog}
-          size="small"
-        >
-          <EditIcon />
-        </IconButton>
         {numSelected === 0 ? (
-          <IconButton
-            className={classes.actionButton}
-            onClick={props.handleDeleteSection}
-            size="small"
-          >
-            <DeleteIcon />
-          </IconButton>
+          <div>
+            <IconButton
+              className={classes.actionButton}
+              onClick={props.openEditSectionDialog}
+              size="small"
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              className={classes.actionButton}
+              onClick={props.handleDeleteSection}
+              size="small"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </div>
         ) : (
           <Tooltip title="Delete">
             <IconButton onClick={props.handleDeleteRows} aria-label="Delete">
@@ -371,7 +373,7 @@ class PerformanceSection extends React.Component {
     // Handle rows of updated section
     let rows = [];
     for (let dataRow of this.state.section.data.rows) {
-      let row = {};
+      let row = {id: dataRow.id};
 
       for (let i = 0; i < columns.length; i++) {
         let currColumn = columns[i];
