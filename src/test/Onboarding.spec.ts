@@ -246,7 +246,6 @@ describe("test related /onboarding", () => {
             catch (e) {
                 console.log(e);
             } finally {
-                let test = response.data;
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.deep.equal(tempBuf);
             }
@@ -303,14 +302,463 @@ describe("test related /onboarding", () => {
             }
         });
 
-
     });
 
     describe("/onboarding/documentType", async () => {
+        let HEADERS: any = null;
+
+        before(async () => {
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
+
+
+            return HEADERS;
+        });
+
+        it("Should be able to display 3 documentTypes", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/documentType`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                response.body.forEach((documentType: any) => {
+                    expect(documentType).to.be.jsonSchema(schema.definitions.IDocumentType);
+                });
+                expect(response.body.length).to.be.equal(3);
+                expect(response.body[1].name).to.be.equal("adult_obi_wan");
+            }
+        });
+
+        it("Should not be able to get non existing document type", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/documentType/88`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to get a specific document type", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/documentType/2`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IDocumentType);
+                expect(response.body.name).to.be.equal("adult_obi_wan");
+            }
+        });
+
+        it("Should be able to create a new documentType", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true
+            });
+
+            let documentType = jsf.generate(schema.definitions.IDocumentType);
+
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/documentType`)
+                    .set(HEADERS)
+                    .send(documentType);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be to upload a file template to the newly created document type", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/documentType/4`)
+                    .type('multipart/form-data')
+                    .set(HEADERS)
+                    .attach('document', fs.readFileSync('src/utils/resources/young_obi_wan.jpg'), 'young_obi_wan.jpg');
+
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be to see the new created documentType", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/documentType/4`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IDocumentType);
+            }
+        });
+
+        it("Should be to get the file attached to the newly created template", async () => {
+            let response: any;
+            let tempBuf = fs.readFileSync('src/utils/resources/young_obi_wan.jpg');
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/documentType/4/file`)
+                    .set(HEADERS)
+
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.deep.equal(tempBuf);
+            }
+        });
+
+        it("Should not be able to update non existing documentType", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true
+            });
+            let documentType = jsf.generate(schema.definitions.IDocumentType);
+
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/documentType/88`)
+                    .set(HEADERS)
+                    .send(documentType);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to update documentType", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true
+            });
+            let documentType = jsf.generate(schema.definitions.IDocumentType);
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/documentType/4`)
+                    .set(HEADERS)
+                    .send(documentType);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should not be able to delete non existing documentType", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/documentType/88`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+
+
+            }
+        });
+
+        it("Should be able to delete documentType", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/documentType/4`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+
+            }
+        });
+
+        it("Should be able to see the deletion of documentType", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/documentType`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                response.body.forEach((task: any) => {
+                    expect(task).to.be.jsonSchema(schema.definitions.IDocumentType);
+                });
+                expect(response.body.length).to.be.equal(3);
+            }
+        });
 
     });
 
     describe("/onboarding/faq", async () => {
+
+        let HEADERS: any = null;
+
+        before(async () => {
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("admin");
+
+            return HEADERS;
+        });
+
+        it("Should be able to create a FAQ", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+            });
+            let faq = jsf.generate(schema.definitions.IFAQ);
+
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/faq`)
+                    .set(HEADERS)
+                    .send(faq);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to create a FAQ", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+            });
+            let faq = jsf.generate(schema.definitions.IFAQ);
+
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/faq`)
+                    .set(HEADERS)
+                    .send(faq);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to display two FAQs", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/faq`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                response.body.forEach((task: any) => {
+                    expect(task).to.be.jsonSchema(schema.definitions.IFAQ);
+                });
+                expect(response.body.length).to.be.equal(2);
+            }
+        });
+
+        it("Should not be to get non existing FAQ", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/faq/88`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to get a specific FAQ", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/faq/2`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IFAQ);
+            }
+        });
+
+        it("Should not be able to update a non-existing FAQ", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+            });
+            let faq = jsf.generate(schema.definitions.IFAQ);
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/faq/88`)
+                    .set(HEADERS)
+                    .send(faq)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to update a FAQ", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+            });
+            let faq = jsf.generate(schema.definitions.IFAQ);
+            faq.question = "test question";
+            faq.answer = "test answer";
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/faq/2`)
+                    .set(HEADERS)
+                    .send(faq)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to see the updated FAQ", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/faq/2`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IFAQ);
+                expect(response.body.quesiton).to.be.equal("test question");
+                expect(response.body.answer).to.be.equal("test answer");
+            }
+        });
+
+        it("Should not be able to delete a non-existing FAQ", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/faq/88`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to get delete a FAQ", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/faq/1`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be display one FAQ", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/faq`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body.length).to.be.equal(1);
+                expect(response.body[0].question).to.be.equal("test quesiton");
+            }
+        });
 
     });
 
