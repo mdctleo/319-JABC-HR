@@ -12,6 +12,9 @@ var serveStatic = require('serve-static')
 var Auth = require('./src/utils/Auth').default
 var ResponseManager = require('./src/utils//ResponseManager')
 var serverPort = process.env.PORT;
+var Log = require('./util/Log').default;
+
+Log.level = process.env.LOG_LEVEL
 
 // swaggerRouter configuration
 var options = {
@@ -56,7 +59,7 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
 
   // Start the server
   http.createServer(app).listen(serverPort, function () {
-    console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
+    Log.info(`Your server is listening on port ${serverPort} (http://localhost:${serverPort})`);
   });
 
 });
