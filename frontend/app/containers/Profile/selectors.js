@@ -26,3 +26,34 @@ export const selectRole = createSelector(
     return null;
   },
 );
+
+export const selectAllEmployees = createSelector(
+  [selectResource('employee')],
+  employees => {
+    if (employees) {
+      const allEmployees = employees.toJS()
+      return Object.keys(allEmployees).map(key => allEmployees[key]);
+    }
+    return [];
+  }
+);
+
+export const selectEmployees = createSelector(
+  [selectCollection('employeesOfManager')],
+  employees => {
+    if (employees) {
+      return Object.keys(employees).map(key => employees[key]);
+    }
+    return [];
+  },
+);
+
+export const selectManagers = createSelector(
+  [selectCollection('managersOfEmployee')],
+  employees => {
+    if (employees) {
+      return Object.keys(employees).map(key => employees[key]);
+    }
+    return [];
+  },
+);

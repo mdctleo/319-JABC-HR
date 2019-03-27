@@ -6,6 +6,9 @@ import {
   getRoles,
   updateEmployee,
   updateEmployeePassword,
+  getEmployees,
+  getManagersByEmployee,
+  getEmployeesByManager,
 } from 'api/saga';
 import { selectProfile, selectUser } from '../App/selectors';
 import { displayError } from 'containers/App/actions';
@@ -15,6 +18,9 @@ import {login} from '../Login/actions';
 export function* getProfileData() {
   const user = yield select(selectUser());
   yield call(getEmployee, user.id);
+  yield call(getManagersByEmployee, user);
+  yield call(getEmployeesByManager, user);
+  yield call(getEmployees);
   const profile = yield select(selectProfile);
   yield call(getRoles);
   if (profile.fkRole) {

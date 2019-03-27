@@ -6,6 +6,7 @@
 
 import {
   GET_ALL_EMPLOYEES,
+  GET_EMPLOYEE_DATA,
   SELECT_PROFILE,
   SET_EDITING,
   SAVE_EMPLOYEE,
@@ -18,6 +19,13 @@ import {
 export function getAllEmployees() {
   return {
     type: GET_ALL_EMPLOYEES,
+  };
+}
+
+export function getEmployeeData(employee) {
+  return {
+    type: GET_EMPLOYEE_DATA,
+    employee,
   };
 }
 
@@ -72,6 +80,7 @@ export function updateTableSettings(tableSettings) {
 
 export default {
   getAllEmployees,
+  getEmployeeData,
   selectEmployee,
   setEditing,
   saveEmployee,

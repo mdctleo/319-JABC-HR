@@ -508,7 +508,7 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
 export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER && id != client.id) {
 			await isManagedBy(id, client.id)
 		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level can not get another employee information.')

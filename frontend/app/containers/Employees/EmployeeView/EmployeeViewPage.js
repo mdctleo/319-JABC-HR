@@ -152,6 +152,10 @@ class EmployeeViewPage extends React.PureComponent {
               <div className="profile-card">
                 <EmployeeEditForm
                   profile={selectedEmployee}
+                  currentEmployee={this.props.currentEmployee}
+                  allEmployees={this.props.allEmployees}
+                  managers={this.props.managers}
+                  employees={this.props.employees}
                   saveProfile={this.props.saveProfile}
                   cancelEdit={() => this.props.setEditing(false)}
                   allRoles={sortedRoles}
@@ -182,6 +186,10 @@ EmployeeViewPage.propTypes = {
   handleBackButton: PropTypes.func.isRequired,
   allRoles: PropTypes.object,
   saveProfile: PropTypes.func.isRequired,
+  currentEmployee: PropTypes.object,
+  allEmployees: PropTypes.array,
+  managers: PropTypes.array,
+  employees: PropTypes.array,
 };
 
 export default withStyles(styles)(EmployeeViewPage);
