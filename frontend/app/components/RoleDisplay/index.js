@@ -30,8 +30,9 @@ const styles = theme => ({
     marginTop: '40px',
   },
   displayTable: {
-    width: '100%',
-    marginTop: '20px',
+    marginTop: '20px', 
+    tableLayout: 'fixed', 
+    width: '100%'
   },
   description: {
     marginTop: '20px',
@@ -47,6 +48,10 @@ const styles = theme => ({
   },
   tableWrapper: {
     width: '75%',
+  },
+  couldOverflow: {
+    wordWrap: 'break-word', 
+    padding: '20px'
   }
 });
 
@@ -59,16 +64,16 @@ class RoleDisplay extends React.PureComponent {
         <React.Fragment>
           <TableRow className={classes.tableHead}>
             <TableCell align="left">
-              <Typography variant="caption">NAME</Typography>
+              <Typography variant="caption" className={classes.couldOverflow}>NAME</Typography>
             </TableCell>
             <TableCell align="left">
-              <Typography variant="caption">DESCRIPTION</Typography>
+              <Typography variant="caption" className={classes.couldOverflow}>DESCRIPTION</Typography>
             </TableCell>
           </TableRow>
           {role.competencies.map(competency => (
             <TableRow key={competency.id} className={classes.row}>
-              <TableCell align="left" style={{ wordWrap: 'break-word', padding: '20px'}}>{competency.name}</TableCell>
-              <TableCell align="left" style={{ wordWrap: 'break-word', padding: '20px'}}>{competency.description}</TableCell>
+              <TableCell align="left" className={classes.couldOverflow}>{competency.name}</TableCell>
+              <TableCell align="left" className={classes.couldOverflow}>{competency.description}</TableCell>
             </TableRow>
           ))}
         </React.Fragment>
@@ -95,7 +100,7 @@ class RoleDisplay extends React.PureComponent {
         >
           Competencies
         </Typography>
-        <Table style={{ marginTop: '20px', tableLayout: 'fixed', width: '100%'}}>
+        <Table className={classes.displayTable}>
           <TableBody>{generateCompetencies()}</TableBody>
         </Table>
       </div>
