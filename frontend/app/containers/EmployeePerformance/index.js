@@ -159,6 +159,7 @@ const styles = theme => ({
 
 class PerformancePage extends React.Component {
   componentDidMount() {
+    this.props.reset();
     this.props.getAllPlans(this.props.selectedEmployee);
   }
 
@@ -211,6 +212,7 @@ PerformancePage.propTypes = {
   savePlan: PropTypes.func.isRequired,
   saveReview: PropTypes.func.isRequired,
   selectedEmployee: PropTypes.object.isRequired,
+  reset: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
