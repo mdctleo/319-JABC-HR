@@ -155,7 +155,7 @@ class EmployeeEditForm extends React.PureComponent {
             <div className={classes.fieldContainer}>
               <TextField
                 value={profile.firstname}
-                label="First Name"
+                label="First Name*"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
@@ -166,7 +166,7 @@ class EmployeeEditForm extends React.PureComponent {
             <div className={classes.fieldContainer}>
               <TextField
                 value={profile.lastname}
-                label="Last Name"
+                label="Last Name*"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
@@ -176,6 +176,19 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
+                value={profile.email}
+                label="Email"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('email')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                required
                 value={profile.sin}
                 label="SIN"
                 className={classes.textField}
@@ -243,6 +256,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.status}
                 label="Status"
@@ -302,6 +316,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.fte}
                 label="Employee Type"
@@ -345,6 +360,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.adminLevel}
                 label="Admin Level"
