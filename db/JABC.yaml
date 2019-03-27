@@ -295,6 +295,39 @@ paths:
           $ref: '#/responses/NoAccessResponse'
         default:
           $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Employee
+      summary: update all the Managers of an employee with the provided [id]
+      description: | 
+        This will delete all previous links to managers of the employee with [id] 
+      operationId: setManagersOfEmployee
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: id
+        in: path
+        description: id of the Employee to set the Managers
+        required: true
+        type: integer
+        format: uint64
+      - name: managers
+        in: body
+        description: array of ids of the managers
+        required: true
+        schema: 
+          type: array
+          items:
+            type: integer
+            format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
   /employee/{id}/manager/{idManager}:
     post:
       tags:
@@ -381,6 +414,39 @@ paths:
             type: array
             items: 
               $ref: '#/definitions/IEmployee'
+        401:
+          $ref: '#/responses/NoAccessResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    put:
+      tags:
+      - Employee
+      summary: update all the managed Employees of a manager with the provided [idManager]
+      description: | 
+        This will delete all previous links to managers of the employee with [idManager] 
+      operationId: setEmployeesOfManager
+      security:
+      - AuthToken: []
+      parameters:
+      - $ref: '#/parameters/securityAuthToken'
+      - name: idManager
+        in: path
+        description: Employee that will manage the employees 
+        required: true
+        type: integer
+        format: uint64
+      - name: employees
+        in: body
+        description: array of ids of the employees that will be managed
+        required: true
+        schema: 
+          type: array
+          items:
+            type: integer
+            format: uint64
+      responses:
+        200:
+          $ref: '#/responses/SuccessfulResponse'
         401:
           $ref: '#/responses/NoAccessResponse'
         default:
@@ -1914,7 +1980,7 @@ definitions:
   IEmployee:
     type: object
     description: |
-      An Employee contains all the current information of a current or onboarding employee
+      Employee, contains all the current information of a current or onboarding employee
     required:
     # - id
     - sin
@@ -2019,7 +2085,7 @@ definitions:
   IEmployeeHistory:
     type: object
     description: |
-      An Employee contains all the current information of a current or onboarding employee
+      Employee, contains all the current information of a current or onboarding employee
     required:
     # - id
     - sin
@@ -2141,7 +2207,7 @@ definitions:
   IRole:
     type: object
     description: |
-      An Role is contains all the current information of a current or onboarding employee
+      Role, is contains all the current information of a current or onboarding employee
     required:
     # - id
     - name
@@ -2169,7 +2235,7 @@ definitions:
   ICompetency:
     type: object
     description: |
-      A Competency contains info of competencies and objectives that each role need to fulfill
+      Competency, contains info of competencies and objectives that each role need to fulfill
     required:
     # - id
     - fkRole
@@ -2197,7 +2263,7 @@ definitions:
   IVacation:
     type: object
     description: |
-      A Vacation contains info of the employee asking for a vaction period
+      Vacation request, contains info of the employee asking for a vaction period
     required:
     # - id
     - fkEmployee
@@ -2241,7 +2307,7 @@ definitions:
   IOnboardingTask:
     type: object
     description: |
-      An onboarding task required for the onbarding proccess of a new Employee, if the property [requireDoc] is
+      Onboarding task, required for the onbarding proccess of a new Employee, if the property [requireDoc] is
       set to 1, then the OnboardingTask require the employee to upload a document, and the fkDocumentType will 
       contain the id of the IDocumentType object with the template of the document to be filled by the employee. 
       Otherwise the [fkDocumentType] property will be null.
@@ -2306,7 +2372,7 @@ definitions:
   IDocumentType:
     type: object
     description: |
-      A DocumentType contains info of the template support document for the onboarding process
+      Document template, contains info of the template support document for the onboarding process
     required:
     # - id
     - name
@@ -2332,7 +2398,7 @@ definitions:
   IPerformancePlan:
     type: object
     description: |
-      PerformancePlan contains info of the sections of a performance plan of an employee
+      Work plan, contains info of the sections of a performance plan of an employee
     required:
     # - id
     - fkEmployee
@@ -2390,7 +2456,7 @@ definitions:
   IPerformanceReview:
     type: object
     description: |
-      PerformanceReview contains info of the sections of a performance plan of an employee
+      Performance review, contains info of the sections of a performance plan of an employee
     required:
     # - id
     - fkEmployee
@@ -2437,7 +2503,7 @@ definitions:
 
   IPerformanceSection:
     description: | 
-      A JSON object containing all the information of a section in either PerformancePlan or PerformanceReview
+      Performance section, a JSON object containing all the information of a section in either PerformancePlan or PerformanceReview
     type: object
     required:
     # - id
@@ -2474,7 +2540,7 @@ definitions:
   IComment:
     type: object
     description: |
-      A Comment contains what another employee thinks about the performance record of another employee
+      Comment, contains what another employee thinks about the performance record of another employee
     required:
     # - id
     - fkCommenter
@@ -2514,7 +2580,7 @@ definitions:
   IFAQ:
     type: object
     description: |
-      A FAQ contains a question and answer, to help the employee while onboarding
+      Frequently Asked Question, contains a question and answer, to help the employee while onboarding
     required:
     # - id
     - question
@@ -2536,7 +2602,7 @@ definitions:
         description: answer, of this FAQ
 
   ILogin:
-    description: Represents the basic info to logged into the system
+    description: Login, represents the basic info to logged into the system
     type: object
     required:
     - email

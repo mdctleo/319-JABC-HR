@@ -31,37 +31,39 @@ export default class Log {
     private static BgCyan = "\x1b[46m"
     private static BgWhite = "\x1b[47m"
 
-    public static trace(msg: string, level?: Log.Level): void {
-        level = (level) ? level : Log.level;
-        if(level != 'VERBOSE') return;
+    public static debug(...args: any[]): void {
+        if(Log.level != 'VERBOSE') return;
         const timeNow: string = Log.currentTime();
-        console.trace(`<T> ${timeNow}: ${msg}`)
+        console.info(`${Log.FgGreen}${Log.Dim}<D> %s: ${Log.Reset}${Log.FgGreen}${Log.Bright}`, timeNow, ...args, Log.Reset);
     }
 
-    public static info(msg: string, level?: Log.Level): void {
-        level = (level) ? level : Log.level;
-        if(level == 'SILENT') return;
-        if(level != 'VERBOSE')
-            if(level != 'INFO') return;
+    public static trace(...args: any[]): void {
+        if(Log.level != 'VERBOSE') return;
         const timeNow: string = Log.currentTime();
-        console.log(`${Log.FgBlue}${Log.Dim}<I> %s: ${Log.Reset}${Log.FgBlue}${Log.Bright}%s${Log.Reset}`, timeNow, msg);
+        console.trace(`<T> ${timeNow}: %s`, ...args)
     }
 
-    public static warn(msg: string, level?: Log.Level): void {
-        level = (level) ? level : Log.level;
-        if(level == 'SILENT') return;
-        if(level != 'VERBOSE')
-            if(level != 'WARN')
-                if(level != 'INFO') return;
+    public static info(...args: any[]): void {
+        if(Log.level == 'SILENT') return;
+        if(Log.level != 'VERBOSE')
+            if(Log.level != 'INFO') return;
         const timeNow: string = Log.currentTime();
-        console.log(`${Log.FgYellow}${Log.Dim}<W> %s: ${Log.Reset}${Log.FgYellow}${Log.Bright}%s${Log.Reset}`, timeNow, msg);
+        console.info(`${Log.FgBlue}${Log.Dim}<I> %s: ${Log.Reset}${Log.FgBlue}${Log.Bright}`, timeNow, ...args, Log.Reset);
     }
 
-    public static error(msg: string, level?: Log.Level): void {
-        level = (level) ? level : Log.level;
-        if(level == 'SILENT') return;
+    public static warn(...args: any[]): void {
+        if(Log.level == 'SILENT') return;
+        if(Log.level != 'VERBOSE')
+            if(Log.level != 'WARN')
+                if(Log.level != 'INFO') return;
         const timeNow: string = Log.currentTime();
-        console.log(`${Log.FgRed}${Log.Dim}<E> %s: ${Log.Reset}${Log.FgRed}${Log.Bright}%s${Log.Reset}`, timeNow, msg);
+        console.warn(`${Log.FgYellow}${Log.Dim}<W> %s: ${Log.Reset}${Log.FgYellow}${Log.Bright}`, timeNow, ...args, Log.Reset);
+    }
+
+    public static error(...args: any[]): void {
+        if(Log.level == 'SILENT') return;
+        const timeNow: string = Log.currentTime();
+        console.error(`${Log.FgRed}${Log.Dim}<E> %s: ${Log.Reset}${Log.FgRed}${Log.Bright}`, timeNow, ...args, Log.Reset);
     }
 
     private static currentTime(): string {

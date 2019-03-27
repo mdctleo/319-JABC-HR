@@ -1054,6 +1054,65 @@ END //
 
 DELIMITER ;
 
+-- -----------------------------------------------------
+-- procedure delete_managers
+--    - unlink the managers of an employee
+--    - provided employee exist
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS delete_managers;
+
+DELIMITER //
+
+CREATE PROCEDURE `delete_managers` (IN e_id INT)
+BEGIN
+  DECLARE emplChecker INT;
+
+  SET emplChecker = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = e_id;
+
+  IF emplChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+  ELSE
+    DELETE FROM MANAGER_EMPLOYEE
+    WHERE EMPLOYEE_ID = e_id;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure delete_employees
+--    - unlink the managers of a manager
+--    - provided manager exist
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS delete_employees;
+
+DELIMITER //
+
+CREATE PROCEDURE `delete_employees` (IN m_id INT)
+BEGIN
+  DECLARE managChecker INT;
+
+  SET managChecker = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO managChecker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
+
+  IF managChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager does not exist.';
+  ELSE
+    DELETE FROM MANAGER_EMPLOYEE
+    WHERE MANAGER_ID = m_id;
+  END IF;
+END //
+
+DELIMITER ;
+
 
 -- -----------------------------------------------------
 -- procedure login

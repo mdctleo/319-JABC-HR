@@ -13,7 +13,8 @@ import {
 	EmployeeHistory,
 	IOnboardingTask,
 	Role,
-	PerformanceSection
+	PerformanceSection,
+	IApiResponse
 } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
 import * as jwt from 'jsonwebtoken';
@@ -195,14 +196,10 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		}
 
 		await db.commit(conn)
-		await db.closeConnection(conn)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
 	} catch (error) {
 		try {
 			await db.rollback(conn)
-		} catch (err) { }
-		try {
-			await db.closeConnection(conn)
 		} catch (err) { }
 		throw error;
 	} finally {
@@ -257,14 +254,10 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		}
 
 		await db.commit(conn)
-		await db.closeConnection(conn)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance review was registered successfully`)
 	} catch (error) {
 		try {
 			await db.rollback(conn)
-		} catch (err) { }
-		try {
-			await db.closeConnection(conn)
 		} catch (err) { }
 		throw error;
 	} finally {
@@ -344,7 +337,7 @@ export async function deleteEmployee(id: Number, xAuthToken: string, idAdmin: Nu
 export async function getEmployee(id: Number, xAuthToken: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if(id != client.id){
+		if (id != client.id) {
 			if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
 				await isManagedBy(id, client.id)
 			} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
@@ -671,6 +664,80 @@ export async function login(body: ILogin, xAuthToken: string, encrypt = true) {
 
 
 /**
+ * update all the managed Employees of a manager with the provided [idManager]
+ * This will delete all previous links to managers of the employee with [idManager]  
+ *
+ * @param {Number} idManager Integer Employee that will manage the employees
+ * @param {Array<Number>} employees List array of ids of the employees that will be managed
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>} IApiResponse
+ **/
+export async function setEmployeesOfManager(idManager: Number, employees: Array<Number>, xAuthToken: string) {
+	let db: IDatabaseClient;
+	let conn: any;
+	try {
+		db = Database.getInstance()
+		conn = await db.initConnection()
+		await db.beginTransaction(conn)
+		// Delete all previous links
+		await db.rawQuery(conn, 'CALL delete_employees(?)', [idManager], JABCResponse.EMPLOYEE)
+		// Insert links
+		for (let idEmployee of employees) {
+			await db.rawQuery(conn, 'CALL link_employee_manager(?,?)', [idEmployee, idManager], JABCResponse.EMPLOYEE)
+		}
+		await db.commit(conn)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The managed employees of the employee were updated`)
+	} catch (error) {
+		try {
+			await db.rollback(conn)
+		} catch (err) { }
+		throw error;
+	} finally {
+		try {
+			await db.closeConnection(conn);
+		} catch (err) { }
+	}
+}
+
+
+/**
+ * update all the Managers of an employee with the provided [id]
+ * This will delete all previous links to managers of the employee with [id]  
+ *
+ * @param {Number} id Integer id of the Employee to set the Managers
+ * @param {Array<Number>} managers List array of ids of the managers
+ * @param {string} xAuthToken String Auth Token that grants access to the system (optional)
+ * @returns {Promise<IApiResponse>} IApiResponse
+ **/
+export async function setManagersOfEmployee(id: Number, managers: Array<Number>, xAuthToken: string) {
+	let db: IDatabaseClient;
+	let conn: any;
+	try {
+		db = Database.getInstance()
+		conn = await db.initConnection()
+		await db.beginTransaction(conn)
+		// Delete all previous links
+		await db.rawQuery(conn, 'CALL delete_managers(?)', [id], JABCResponse.EMPLOYEE)
+		// Insert links
+		for (let idManager of managers) {
+			await db.rawQuery(conn, 'CALL link_employee_manager(?,?)', [id, idManager], JABCResponse.EMPLOYEE)
+		}
+		await db.commit(conn)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The managers of the employee were updated`)
+	} catch (error) {
+		try {
+			await db.rollback(conn)
+		} catch (err) { }
+		throw error;
+	} finally {
+		try {
+			await db.closeConnection(conn);
+		} catch (err) { }
+	}
+}
+
+
+/**
  * Unlinks employee from his manager
  * Deletes the relation between employee with [id] and the employee with [idManager]
  *
@@ -778,7 +845,7 @@ export async function updateEmployeePassword(id: Number, employee: IEmployee, xA
  * @param {Number} idEmployee Id of the employee to check
  * @param {Number} idManager Id of the manager that should be managing the employe
  */
-export async function isManagedBy(idEmployee: Number, idManager: Number){
+export async function isManagedBy(idEmployee: Number, idManager: Number) {
 	try {
 		let res = await Database.getInstance().query('CALL check_employee_manager(?,?)', [
 			idEmployee,

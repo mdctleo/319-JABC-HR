@@ -145,6 +145,16 @@ class EmployeeEditForm extends React.PureComponent {
     this.props.updatePassword(newProfile);
   };
 
+  handleEmployees = employees => {
+    console.log(employees)
+    this.setState({employees: employees})
+  }
+
+  handleManagers = managers => {
+    console.log(managers)
+    this.setState({managers: managers})
+  }
+
   render() {
     const { classes, saveProfile, cancelEdit, allRoles, add, currentEmployee } = this.props;
     const { profile, dialog, managers, employees } = this.state;
@@ -422,6 +432,7 @@ class EmployeeEditForm extends React.PureComponent {
                         options={this.selectionManagers}
                         className="basic-multi-select"
                         classNamePrefix="select"
+                        onChange={this.handleManagers}
                         theme={theme => ({
                           ...theme,
                           colors: {
@@ -466,6 +477,7 @@ class EmployeeEditForm extends React.PureComponent {
                         options={this.selectionEmployees}
                         className="basic-multi-select"
                         classNamePrefix="select"
+                        onChange={this.handleEmployees}
                         theme={theme => ({
                           ...theme,
                           colors: {
