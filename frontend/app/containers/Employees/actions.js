@@ -13,7 +13,8 @@ import {
   DELETE_EMPLOYEES,
   UPDATE_TABLE_SETTINGS,
   ADD_EMPLOYEE,
-  SET_GENERATING_REPORT
+  SET_GENERATING_REPORT,
+  UPDATE_PASSWORD,
 } from './constants';
 
 export function getAllEmployees() {
@@ -64,6 +65,13 @@ export function saveEmployee(employee) {
   };
 }
 
+export function updatePassword(employee) {
+  return {
+    type: UPDATE_PASSWORD,
+    employee,
+  };
+}
+
 export function deleteEmployees(employees) {
   return {
     type: DELETE_EMPLOYEES,
@@ -88,4 +96,5 @@ export default {
   updateTableSettings,
   addEmployee,
   setGeneratingReport,
+  updatePassword,
 };

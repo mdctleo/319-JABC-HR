@@ -30,8 +30,9 @@ const styles = theme => ({
     marginTop: '40px',
   },
   displayTable: {
-    width: '100%',
-    marginTop: '20px',
+    marginTop: '20px', 
+    tableLayout: 'fixed', 
+    width: '100%'
   },
   description: {
     marginTop: '20px',
@@ -45,6 +46,13 @@ const styles = theme => ({
     backgroundColor: '#e0e0e0',
     width: '100%',
   },
+  tableWrapper: {
+    width: '75%',
+  },
+  couldOverflow: {
+    wordWrap: 'break-word', 
+    padding: '20px'
+  }
 });
 
 class RoleDisplay extends React.PureComponent {
@@ -56,16 +64,16 @@ class RoleDisplay extends React.PureComponent {
         <React.Fragment>
           <TableRow className={classes.tableHead}>
             <TableCell align="left">
-              <Typography variant="caption">NAME</Typography>
+              <Typography variant="caption" className={classes.couldOverflow}>NAME</Typography>
             </TableCell>
             <TableCell align="left">
-              <Typography variant="caption">DESCRIPTION</Typography>
+              <Typography variant="caption" className={classes.couldOverflow}>DESCRIPTION</Typography>
             </TableCell>
           </TableRow>
           {role.competencies.map(competency => (
             <TableRow key={competency.id} className={classes.row}>
-              <TableCell align="left">{competency.name}</TableCell>
-              <TableCell align="left">{competency.description}</TableCell>
+              <TableCell align="left" className={classes.couldOverflow}>{competency.name}</TableCell>
+              <TableCell align="left" className={classes.couldOverflow}>{competency.description}</TableCell>
             </TableRow>
           ))}
         </React.Fragment>

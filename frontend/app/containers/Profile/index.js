@@ -84,7 +84,6 @@ class Profile extends React.PureComponent {
 
   state = {
     activeTab: 0,
-    isAdmin: true,
     showPasswordChange: false,
   };
 
@@ -119,9 +118,10 @@ class Profile extends React.PureComponent {
   };
 
   render() {
-    const { activeTab, isAdmin, showPasswordChange } = this.state;
+    const { activeTab, showPasswordChange } = this.state;
     const { classes, role, profile, profileDomain, allRoles } = this.props;
     const { editing } = profileDomain;
+    const isAdmin = profile && profile.adminLevel >= 2;
 
     if (!profile) return null;
     return (

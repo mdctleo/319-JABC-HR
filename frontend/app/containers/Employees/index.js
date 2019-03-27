@@ -336,6 +336,7 @@ class EnhancedTable extends React.Component {
             editing={editing}
             setEditing={this.props.setEditing}
             saveProfile={profile => this.props.saveEmployee(profile)}
+            updatePassword={this.props.updatePassword}
           />
         )}
       </React.Fragment>
@@ -362,6 +363,7 @@ EnhancedTable.propTypes = {
   selectedEmployee: PropTypes.object,
   addEmployee: PropTypes.func.isRequired,
   saveEmployee: PropTypes.func.isRequired,
+  updatePassword: PropTypes.func.isRequired,
   setGeneratingReport: PropTypes.func.isRequired,
   selectedEmployeeList: PropTypes.array.isRequired,
   history: PropTypes.object,

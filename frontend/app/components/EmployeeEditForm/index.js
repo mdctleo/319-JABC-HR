@@ -132,12 +132,17 @@ class EmployeeEditForm extends React.PureComponent {
     }));
   };
 
-  handleClose = event => {
+  handleClose = () => {
     this.setState({ dialog: false });
   };
 
-  handleOpen = event => {
+  handleOpen = () => {
     this.setState({ dialog: true });
+  };
+
+  updatePassword = newPassword => {
+    const newProfile = { ...this.props.profile, password: newPassword };
+    this.props.updatePassword(newProfile);
   };
 
   render() {
@@ -161,7 +166,7 @@ class EmployeeEditForm extends React.PureComponent {
             <div className={classes.fieldContainer}>
               <TextField
                 value={profile.firstname}
-                label="First Name"
+                label="First Name*"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
@@ -172,7 +177,7 @@ class EmployeeEditForm extends React.PureComponent {
             <div className={classes.fieldContainer}>
               <TextField
                 value={profile.lastname}
-                label="Last Name"
+                label="Last Name*"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
@@ -182,6 +187,19 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
+                value={profile.email}
+                label="Email"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('email')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                required
                 value={profile.sin}
                 label="SIN"
                 className={classes.textField}
@@ -189,6 +207,7 @@ class EmployeeEditForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('sin')}
+                type="number"
               />
             </div>
             <div className={classes.fieldContainer}>
@@ -248,6 +267,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.status}
                 label="Status"
@@ -302,10 +322,12 @@ class EmployeeEditForm extends React.PureComponent {
                 variant="outlined"
                 fullWidth
                 onChange={this.handleChange('salary')}
+                type="number"
               />
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.fte}
                 label="Employee Type"
@@ -349,6 +371,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.adminLevel}
                 label="Admin Level"
@@ -465,10 +488,9 @@ class EmployeeEditForm extends React.PureComponent {
           </Button>
         )}
         <SetPasswordDialog
-          profile={profile}
           open={dialog}
           handleClose={this.handleClose}
-          add={add}
+          updatePassword={this.updatePassword}
         />
         <Button className={classes.cancelButton} onClick={cancelEdit}>
           Cancel
@@ -488,6 +510,7 @@ EmployeeEditForm.propTypes = {
   classes: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
+  updatePassword: PropTypes.func.isRequired,
   cancelEdit: PropTypes.func.isRequired,
   allRoles: PropTypes.array,
   add: PropTypes.bool,

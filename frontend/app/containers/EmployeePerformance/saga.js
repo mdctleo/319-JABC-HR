@@ -8,7 +8,6 @@ import {
   SAVE_PLAN,
   SAVE_REVIEW,
 } from './constants';
-import { selectProfile } from '../App/selectors';
 import {
   getPerformancePlans,
   getPerformanceReviews,
@@ -24,13 +23,12 @@ import { setPlanCopy, setReviewCopy } from './actions';
 import { displayError } from 'containers/App/actions';
 import { selectSelectedPlan, selectSelectedReview } from './selectors';
 
-export function* getAllPlans() {
-  const profile = yield select(selectProfile);
+export function* getAllPlans({ selectedEmployee }) {
   try {
-    yield call(getPerformancePlans, profile.id);
+    yield call(getPerformancePlans, selectedEmployee.id);
   } catch (e) {}
   try {
-    yield call(getPerformanceReviews, profile.id);
+    yield call(getPerformanceReviews, selectedEmployee.id);
   } catch (e) {}
 }
 
@@ -53,7 +51,7 @@ export function* deletePerformance(action) {
       const plan = yield select(selectSelectedPlan);
       yield call(deletePerformancePlan, plan.id);
       yield put(setPlanCopy(null));
-      yield call(getAllPlans);
+      yield call(getAllPlans, { selectedEmployee: action.selectedEmployee });
     } else {
       const review = yield select(selectSelectedReview);
       yield call(deletePerformanceReview, review.id);
@@ -64,11 +62,10 @@ export function* deletePerformance(action) {
   }
 }
 
-export function* createPlan({ plan }) {
+export function* createPlan({ plan, selectedEmployee }) {
   try {
-    const profile = yield select(selectProfile);
-    yield call(createPerformancePlan, profile.id, plan);
-    yield call(getAllPlans);
+    yield call(createPerformancePlan, selectedEmployee.id, plan);
+    yield call(getAllPlans, { selectedEmployee });
     const plans = yield select(selectResource('plan'));
     if (plans) {
       const newPlan = plans.find(
@@ -85,7 +82,7 @@ export function* createPlan({ plan }) {
     const reviews = yield select(selectResource('review'));
     if (reviews) {
       yield put(
-        setReviewCopy(reviews.find(r => r.fkPerformancePlan === profile.id)),
+        setReviewCopy(reviews.find(r => r.fkPerformancePlan === selectedEmployee.id)),
       );
     }
   } catch (e) {
@@ -93,11 +90,10 @@ export function* createPlan({ plan }) {
   }
 }
 
-export function* createReview({ review }) {
+export function* createReview({ review, selectedEmployee }) {
   try {
-    const profile = yield select(selectProfile);
-    yield call(createPerformanceReview, profile.id, review);
-    yield call(getAllPlans);
+    yield call(createPerformanceReview, selectedEmployee.id, review);
+    yield call(getAllPlans, { selectedEmployee });
     const reviews = yield select(selectResource('review'));
     if (reviews) {
       yield put(

@@ -21,7 +21,6 @@ import saga from './saga';
 import { compose } from 'redux';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import { selectProfile } from '../App/selectors';
 
 const styles = theme => ({
   root: {
@@ -160,17 +159,23 @@ const styles = theme => ({
 
 class PerformancePage extends React.Component {
   componentDidMount() {
-    this.props.getAllPlans();
+    this.props.reset();
+    this.props.getAllPlans(this.props.selectedEmployee);
   }
 
   render() {
-    const { planList, selectedPlan, selectedReview, profile } = this.props;
+    const {
+      planList,
+      selectedPlan,
+      selectedReview,
+      selectedEmployee,
+    } = this.props;
 
     return (
       <div>
         <PerformanceModule
           planList={planList}
-          profile={profile}
+          profile={selectedEmployee}
           selectPlan={this.props.selectPlan}
           selectedPlan={selectedPlan}
           selectedReview={selectedReview}
@@ -178,9 +183,11 @@ class PerformancePage extends React.Component {
           addRow={this.props.addRow}
           addSection={this.props.addSection}
           deleteSection={this.props.deleteSection}
-          deletePerformance={this.props.deletePerformance}
-          createPlan={this.props.createPlan}
-          createReview={this.props.createReview}
+          deletePerformance={isPlan => this.props.deletePerformance(isPlan, selectedEmployee)}
+          createPlan={plan => this.props.createPlan(plan, selectedEmployee)}
+          createReview={review =>
+            this.props.createReview(review, selectedEmployee)
+          }
           savePlan={this.props.savePlan}
           saveReview={this.props.saveReview}
         />
@@ -192,7 +199,6 @@ class PerformancePage extends React.Component {
 PerformancePage.propTypes = {
   planList: PropTypes.array.isRequired,
   getAllPlans: PropTypes.func.isRequired,
-  profile: PropTypes.object,
   selectPlan: PropTypes.func.isRequired,
   selectedPlan: PropTypes.object,
   selectedReview: PropTypes.object,
@@ -205,13 +211,14 @@ PerformancePage.propTypes = {
   createReview: PropTypes.func.isRequired,
   savePlan: PropTypes.func.isRequired,
   saveReview: PropTypes.func.isRequired,
+  selectedEmployee: PropTypes.object.isRequired,
+  reset: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
   planList: selectPlanList,
   selectedPlan: selectSelectedPlan,
   selectedReview: selectSelectedReview,
-  profile: selectProfile,
 });
 
 const mapDispatchToProps = {
@@ -223,8 +230,8 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer({ key: 'performance', reducer });
-const withSaga = injectSaga({ key: 'performance', saga });
+const withReducer = injectReducer({ key: 'employeePerformance', reducer });
+const withSaga = injectSaga({ key: 'employeePerformance', saga });
 
 export default compose(
   withReducer,

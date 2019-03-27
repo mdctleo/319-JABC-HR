@@ -10,6 +10,7 @@ import {
   ADD_SECTION,
   DELETE_ROWS,
   DELETE_SECTION,
+  RESET,
   SET_PLAN_COPY,
   SET_REVIEW_COPY,
 } from './constants';
@@ -90,6 +91,8 @@ const deleteSection = (state, sectionId, isPlan) => {
 
 function performanceReducer(state = initialState, action) {
   switch (action.type) {
+    case RESET:
+      return initialState;
     case SET_PLAN_COPY: {
       const sections = action.plan.sections;
       action.plan.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);

@@ -274,7 +274,7 @@ router.put('/role/:id', (req, res) => {
   });
 });
 
-router.get('/employee/:id/performance/plan', (req, res) =>
+router.get('/employee/12345/performance/plan', (req, res) =>
   res.send([
     {
       id: 1,
@@ -349,7 +349,7 @@ router.get('/employee/:id/performance/plan', (req, res) =>
   ]),
 );
 
-router.get('/employee/:id/performance/review', (req, res) =>
+router.get('/employee/12345/performance/review', (req, res) =>
   res.send([
     {
       id: 4,
