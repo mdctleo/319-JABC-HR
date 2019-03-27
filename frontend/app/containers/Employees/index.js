@@ -32,7 +32,10 @@ import {
   selectEmployeeDomainJS,
   selectAllRoles,
   selectSelectedEmployees,
+  selectEmployees, 
+  selectManagers,
 } from './selectors';
+import { selectProfile } from '../App/selectors'
 
 const styles = theme => ({
   root: {
@@ -318,11 +321,16 @@ class EnhancedTable extends React.Component {
               tableSettings={tableSettings}
               updateTableSettings={this.props.updateTableSettings}
               generateReport={this.generateReport}
+              getEmployeeData={this.props.getEmployeeData}
             />
           )}
         {selectedEmployee && (
           <EmployeeViewPage
             selectedEmployee={selectedEmployee}
+            currentEmployee={this.props.currentEmployee}
+            allEmployees={this.props.allEmployees}
+            managers={this.props.managers}
+            employees={this.props.employees}
             allRoles={allRoles}
             handleBackButton={this.handleBackButton}
             editing={editing}
@@ -359,6 +367,10 @@ EnhancedTable.propTypes = {
   setGeneratingReport: PropTypes.func.isRequired,
   selectedEmployeeList: PropTypes.array.isRequired,
   history: PropTypes.object,
+  getEmployeeData: PropTypes.func,
+  currentEmployee: PropTypes.object,
+  managers: PropTypes.array,
+  employees: PropTypes.array,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -367,6 +379,9 @@ const mapStateToProps = createStructuredSelector({
   selectedEmployee: selectSelectedEmployee,
   employeeDomain: selectEmployeeDomainJS,
   selectedEmployeeList: selectSelectedEmployees,
+  currentEmployee: selectProfile,
+  managers: selectManagers,
+  employees: selectEmployees,
 });
 
 const mapDispatchToProps = {

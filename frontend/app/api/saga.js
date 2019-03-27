@@ -23,6 +23,16 @@ export function* getEmployees() {
   yield all(employees.map(e => put(setResource('employee', e.id, e))));
 }
 
+export function* getManagersByEmployee(employee) {
+  const employees = yield employeeApi.getManagersByEmployee(employee.id, { inactive: true });
+  yield put(setCollection('managersOfEmployee', employees));
+}
+
+export function* getEmployeesByManager(manager) {
+  const employees = yield employeeApi.getEmployeesByManager(manager.id, { inactive: true });
+  yield put(setCollection('employeesOfManager', employees));
+}
+
 export function* updateEmployee(employee) {
   if (employee.birthdate === '') employee.birthdate = null;
   if (employee.dateJoined === '') employee.dateJoined = null;

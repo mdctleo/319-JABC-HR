@@ -15,6 +15,9 @@ import Button from '@material-ui/core/Button/Button';
 import SetPasswordDialog from '../SetPasswordDialog';
 import Select from 'react-select';
 
+const HR_ADMIN = 2;
+const MANAGER = 1;
+const STAFF = 0;
 const styles = theme => ({
   title: {
     display: 'inline',
@@ -94,21 +97,29 @@ const styles = theme => ({
 class EmployeeEditForm extends React.PureComponent {
   constructor(props) {
     super(props);
+    console.log(props.profile);
+    console.log(props.currentEmployee);
+    console.log(props.allEmployees);
+    console.log(props.managers);
+    console.log(props.employees);
 
     this.state = {
       profile: { ...props.profile, fkRole: props.profile.fkRole || '' },
       dialog: false,
+      managers: props.managers.map(this.toSelectOption),
+      employees: props.employees.map(this.toSelectOption),
     };
+    
+    this.selectionEmployees = props.allEmployees.filter(employee => {
+     return employee.adminLevel == STAFF
+    }).map(this.toSelectOption)
+    this.selectionManagers = props.allEmployees.filter(employee => {
+      return employee.adminLevel > STAFF
+    }).concat(props.managers).map(this.toSelectOption)
+  }
 
-    this.managers = [
-      { value: 'mikayla', label: 'Mikayla Preete' },
-      { value: 'james', label: 'James Yoo' },
-      { value: 'reed', label: 'Reed Esler' },
-      { value: 'anita', label: 'Anita Tse' },
-      { value: 'abraham', label: 'Abraham Torres' },
-      { value: 'leo', label: 'Leo Lin' },
-      { value: 'sam', label: 'Sam Veloso' },
-    ];
+  toSelectOption = employee =>{
+    return { value: employee.id, label: `${employee.firstname} ${employee.lastname}`}
   }
 
   handleChange = name => event => {
@@ -135,8 +146,8 @@ class EmployeeEditForm extends React.PureComponent {
   };
 
   render() {
-    const { classes, saveProfile, cancelEdit, allRoles, add } = this.props;
-    const { profile, dialog } = this.state;
+    const { classes, saveProfile, cancelEdit, allRoles, add, currentEmployee } = this.props;
+    const { profile, dialog, managers, employees } = this.state;
 
     return (
       <div>
@@ -155,7 +166,7 @@ class EmployeeEditForm extends React.PureComponent {
             <div className={classes.fieldContainer}>
               <TextField
                 value={profile.firstname}
-                label="First Name"
+                label="First Name*"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
@@ -166,7 +177,7 @@ class EmployeeEditForm extends React.PureComponent {
             <div className={classes.fieldContainer}>
               <TextField
                 value={profile.lastname}
-                label="Last Name"
+                label="Last Name*"
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
@@ -176,6 +187,19 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
+                value={profile.email}
+                label="Email"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                onChange={this.handleChange('email')}
+              />
+            </div>
+            <div className={classes.fieldContainer}>
+              <TextField
+                required
                 value={profile.sin}
                 label="SIN"
                 className={classes.textField}
@@ -243,6 +267,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.status}
                 label="Status"
@@ -302,6 +327,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.fte}
                 label="Employee Type"
@@ -345,6 +371,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.adminLevel}
                 label="Admin Level"
@@ -354,69 +381,103 @@ class EmployeeEditForm extends React.PureComponent {
                 fullWidth
                 onChange={this.handleChange('adminLevel')}
               >
-                <MenuItem key={0} value={0}>
+                <MenuItem key={STAFF} value={STAFF}>
                   Employee
                 </MenuItem>
-                <MenuItem key={1} value={1}>
+                <MenuItem key={MANAGER} value={MANAGER}>
                   Manager
                 </MenuItem>
-                <MenuItem key={2} value={2}>
+                <MenuItem key={HR_ADMIN} value={HR_ADMIN}>
                   Admin
                 </MenuItem>
               </TextField>
             </div>
-            <Typography
-              className={classes.subHeading}
-              variant="subtitle1"
-              color="textSecondary"
-            >
-              Manager(s)
-            </Typography>
-            <div className={classes.fieldContainer}>
-              <Select
-                defaultValue={[]}
-                isMulti
-                name="managers"
-                options={this.people}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                theme={theme => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary25: 'orange',
-                    primary: 'orange',
-                  },
-                })}
-              />
-            </div>
-            {profile.adminLevel >= 1 && (
+            {(profile.adminLevel == STAFF && (this.selectionManagers.length > 0 || currentEmployee.adminLevel == STAFF))  && (
               <div>
-                <Typography
-                  className={classes.subHeading}
-                  variant="subtitle1"
-                  color="textSecondary"
-                >
-                  Employees
-                </Typography>
-                <div className={classes.fieldContainer}>
-                  <Select
-                    defaultValue={[]}
-                    isMulti
-                    name="employees"
-                    options={this.people}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    theme={theme => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary25: 'orange',
-                        primary: 'orange',
-                      },
-                    })}
-                  />
-                </div>
+                {this.selectionManagers.length == 0  && (
+                  <Typography
+                    className={classes.subHeading}
+                    variant="subtitle1"
+                    color="textSecondary"
+                  >
+                    No Manager(s)
+                  </Typography>
+                )}
+                {this.selectionManagers.length > 0  && (
+                  <div>
+                    <Typography
+                      className={classes.subHeading}
+                      variant="subtitle1"
+                      color="textSecondary"
+                    >
+                      Manager(s)
+                    </Typography>
+                    <div className={classes.fieldContainer}>
+                      <Select
+                        defaultValue={[]}
+                        isDisabled={currentEmployee.adminLevel != HR_ADMIN}
+                        isMulti
+                        name="managers"
+                        value={managers}
+                        options={this.selectionManagers}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        theme={theme => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: 'orange',
+                            primary: 'orange',
+                          },
+                        })}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            {(currentEmployee.adminLevel > STAFF && profile.adminLevel > STAFF) && (
+              <div>
+                {(this.selectionEmployees.length == 0  && currentEmployee.adminLevel == MANAGER) && (
+                  <Typography
+                    className={classes.subHeading}
+                    variant="subtitle1"
+                    color="textSecondary"
+                  >
+                    No managed employee(s)
+                  </Typography>
+                )}
+                {(this.selectionEmployees.length > 0 || currentEmployee.adminLevel == HR_ADMIN) && (
+                  <div>
+                    <Typography
+                      className={classes.subHeading}
+                      variant="subtitle1"
+                      color="textSecondary"
+                    >
+                      Managed Employee(s)
+                    </Typography>
+                    <div className={classes.fieldContainer}>
+                      <Select
+                        isDisabled={currentEmployee.adminLevel != HR_ADMIN}
+                        defaultValue={[]}
+                        isMulti
+                        name="employees"
+                        value={employees}
+                        options={this.selectionEmployees}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        theme={theme => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: 'orange',
+                            primary: 'orange',
+                          },
+                        })}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </Grid>
@@ -453,6 +514,10 @@ EmployeeEditForm.propTypes = {
   cancelEdit: PropTypes.func.isRequired,
   allRoles: PropTypes.array,
   add: PropTypes.bool,
+  currentEmployee: PropTypes.object.isRequired,
+  allEmployees: PropTypes.array.isRequired,
+  managers: PropTypes.array.isRequired,
+  employees: PropTypes.array.isRequired,
 };
 
 export default withStyles(styles)(EmployeeEditForm);
