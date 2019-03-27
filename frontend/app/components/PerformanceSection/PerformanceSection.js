@@ -23,6 +23,7 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import EditPerformanceSection from "./EditPerformanceSection";
 const uniqid = require('uniqid');
 
 const styles = theme => ({
@@ -121,7 +122,7 @@ class EnhancedTableHead extends React.Component {
             />
           </TableCell>
           {section.data.columns.map(column => (
-            <TableCell key={column.concat(-1)}>{column}</TableCell>
+            <TableCell key={column.concat("-1")}>{column}</TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -230,11 +231,31 @@ EnhancedTableToolbar.propTypes = {
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
 class PerformanceSection extends React.Component {
-  state = {
-    openAddRowDialog: false,
-    openEditSectionDialog: false,
-    editSectionError: null,
-    selected: [],
+  constructor(props) {
+    super(props);
+
+    let columnsForEditSection = [];
+    for (let i = 0; i < props.section.data.columns.length; i++) {
+      columnsForEditSection.push(i);
+    }
+
+    this.state = {
+      section: props.section,
+      openAddRowDialog: false,
+      openEditSectionDialog: false,
+      editSectionError: null,
+      selected: [],
+      columnsForEditSection: columnsForEditSection
+    };
+  }
+
+  resetColumnsForEditSection = () => {
+    let columnsForEditSection = [];
+    for (let i = 0; i < props.section.data.columns.length; i++) {
+      columnsForEditSection.push(i);
+    }
+
+    this.setState({columnsForEditSection: columnsForEditSection});
   };
 
   handleDeleteRows = () => {
@@ -311,16 +332,126 @@ class PerformanceSection extends React.Component {
   };
 
   openEditSectionDialog = () => {
-    this.setState({ openEditSectionDialog: true });
+    let columnsForEditSection = [];
+    for (let i = 0; i < this.state.section.data.columns.length; i++) {
+      columnsForEditSection.push(i);
+    }
+
+    this.setState({ openEditSectionDialog: true, columnsForEditSection: columnsForEditSection });
   };
 
   closeEditSectionDialog = () => {
     this.setState({ openEditSectionDialog: false });
   };
 
+  // Saves edited section
+  saveEditedSection = () => {
+    let editCols = this.state.columnsForEditSection;
+    let section = {};
+    let columns = [];
+
+    // Handle columns of updated section
+    for (const editCol of editCols) {
+      columns.push(document.getElementById('col-name'.concat(editCol)).value);
+    }
+    for (let i = 0; i < columns.length; i++) {
+      for (let j = i + 1; j < columns.length; j++) {
+        if (columns[i] === columns[j]) {
+          this.setState({
+            editSectionError: 'Columns must have different names',
+          });
+          return;
+        }
+      }
+    }
+    this.setState({
+      editSectionError: null,
+    });
+
+    // Handle rows of updated section
+    let rows = [];
+    for (let dataRow of this.state.section.data.rows) {
+      let row = {};
+
+      for (let i = 0; i < columns.length; i++) {
+        let currColumn = columns[i];
+        let colId = editCols[i];
+
+        // If column unchanged and exists in data row
+        if (dataRow.hasOwnProperty(currColumn) && dataRow[currColumn]) {
+          row[currColumn] = dataRow[currColumn];
+        }
+        // If column name changed but has data in data row
+        else if (colId < this.state.section.data.columns.length) {
+          let oldColumn = this.state.section.data.columns[colId];
+          row[currColumn] = dataRow[oldColumn];
+        }
+        // Completely new column added to section
+        else {
+          row[currColumn] = null;
+        }
+      }
+
+      rows.push(row);
+    }
+
+    // Make new section as updated section
+    section.id = this.state.section.id;
+    section.sectionName = document.getElementById('sectionName').value;
+    section.fkPerformancePlan = this.state.section.fkPerformancePlan;
+    section.data = {};
+    section.data.columns = columns;
+    section.data.rows = rows;
+
+    // Reset columnsForEditSection
+    let columnsForEditSection = [];
+    for (let i = 0; i < columns.length; i++) {
+      columnsForEditSection.push(i);
+    }
+
+    this.setState({
+      section: section,
+      openEditSectionDialog: false,
+      columnsForEditSection: columnsForEditSection,
+    });
+
+    this.props.updateSection(section, true);
+  };
+
+  // New column ids will never clash with existing column ids
+  // because they are at least the length of the existing columns
+  getNextColId = () => {
+    let max = this.state.section.data.columns.length;
+    for (let colForEditSection of this.state.columnsForEditSection) {
+      if (colForEditSection > max) {
+        max = colForEditSection;
+      }
+    }
+
+    return max + 1;
+  };
+
+  // Mark column to be removed when this section is being edited
+  rmColumnForEditSection = (colId) => {
+    let colsForEditSection = this.state.columnsForEditSection.filter(function(column) {
+      return column !== colId;
+    });
+
+    this.setState({ columnsForEditSection: colsForEditSection });
+  };
+
+  addColumnForEditSection = () => {
+    this.setState(prevState => ({
+      columnsForEditSection: [
+        ...prevState.columnsForEditSection,
+        this.getNextColId()
+      ],
+    }));
+  };
+
   render() {
     const { classes, section } = this.props;
-    const { editSectionError, openAddRowDialog, selected } = this.state;
+    const { columnsForEditSection, openEditSectionDialog, editSectionError, openAddRowDialog, selected } = this.state;
     const that = this;
 
     return (
@@ -354,68 +485,16 @@ class PerformanceSection extends React.Component {
           </DialogActions>
         </Dialog>
 
-        <Dialog
-          open={this.state.openEditSectionDialog}
-          onClose={this.closeEditSectionDialog}
-          aria-labelledby="form-dialog-title"
-          fullWidth
-        >
-          <DialogTitle id="form-dialog-title">Edit Section</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="sectionName"
-              label="Section Name"
-              defaultValue={section.sectionName}
-              fullWidth
-            />
-            {section.data.columns.map((column, i) => (
-              <div key={i}>
-                <div className={classes.colNameField}>
-                  <TextField
-                    autoFocus
-                    key={i}
-                    margin="dense"
-                    id={'col-name'.concat(column)}
-                    label="Column Name"
-                    defaultValue={column}
-                    fullWidth
-                  />
-                </div>
-                <div className={classes.spacer} />
-                <div>
-                  <IconButton
-                    className={classes.actionButton}
-                    onClick={this.handleDeleteSection}
-                    size="small">
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
-              </div>
-            ))}
-            <Button
-              className={classes.addColButton}
-              onClick={this.incNumColumnsForNewSection}>
-              Add Column
-            </Button>
-          </DialogContent>
-          <DialogActions>
-            {editSectionError && (
-              <Typography color="error" variant="body2">
-                {editSectionError}
-              </Typography>
-            )}
-            <Button onClick={this.closeEditSectionDialog} color="primary">
-              Cancel
-            </Button>
-              <Button
-                onClick={() => this.saveSection(true)}
-                color="primary">
-                OK
-              </Button>
-          </DialogActions>
-        </Dialog>
+        <EditPerformanceSection
+          openEditSectionDialog={this.state.openEditSectionDialog}
+          closeEditSectionDialog={this.closeEditSectionDialog}
+          section={section}
+          columnsForEditSection={columnsForEditSection}
+          addColumnForEditSection={this.addColumnForEditSection}
+          rmColumnForEditSection={this.rmColumnForEditSection}
+          saveEditedSection={this.saveEditedSection}
+          editSectionError={this.state.editSectionError}
+        />
 
         <Paper className={classes.root}>
           <EnhancedTableToolbar
@@ -484,6 +563,7 @@ PerformanceSection.propTypes = {
   handleDeleteSection: PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired,
   handleAddRow: PropTypes.func.isRequired,
+  updateSection: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(PerformanceSection);

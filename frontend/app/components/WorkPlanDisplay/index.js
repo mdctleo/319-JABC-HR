@@ -81,6 +81,7 @@ class WorkPlanDisplay extends React.Component {
               handleDeleteSection={that.props.handleDeleteSection}
               handleAddRow={that.props.handleAddRow}
               handleDeleteRows={that.props.handleDeleteRows}
+              updateSection={that.props.updateSection}
             />
           ))}
       </div>
@@ -97,6 +98,7 @@ WorkPlanDisplay.propTypes = {
   handleDeleteSection: PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired,
   handleAddRow: PropTypes.func.isRequired,
+  updateSection: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(WorkPlanDisplay);
