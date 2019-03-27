@@ -792,6 +792,48 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
+-- procedure check_employee_manager
+--    - checks if the employe-manager link exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS check_employee_manager;
+
+DELIMITER //
+
+CREATE PROCEDURE `check_employee_manager` (IN e_id INT, IN m_id INT)
+BEGIN
+  DECLARE emplChecker INT;
+  DECLARE managChecker INT;
+  DECLARE linkChecker INT;
+
+  SET emplChecker = 0;
+  SET managChecker = 0;
+  SET linkChecker = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = e_id;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO managChecker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
+
+  SELECT COUNT(MANAGER_ID) INTO linkChecker
+  FROM `MANAGER_EMPLOYEE`
+  WHERE `MANAGER_EMPLOYEE`.MANAGER_ID = m_id AND `MANAGER_EMPLOYEE`.EMPLOYEE_ID = e_id;
+
+  IF emplChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+  ELSEIF managChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager employee does not exist.';
+  ELSEIF linkChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee is not under the managed employees of the manager.';
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
 -- procedure get_employee_performance_plans
 --    - get the performance plans for a given employee,
 --    - provided the employee exists
