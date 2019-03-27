@@ -161,7 +161,7 @@ class EmployeeDisplay extends React.PureComponent {
                 <Typography variant="caption">SALARY</Typography>
               </TableCell>
               <TableCell align="left" className={classes.rightCell}>
-                {this.salaryFormatter.format(profile.salary)}
+                {!isNaN(profile.salary) && this.salaryFormatter.format(profile.salary)}
               </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
