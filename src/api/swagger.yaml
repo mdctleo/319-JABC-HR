@@ -2524,7 +2524,7 @@ definitions:
         format: "password"
         description: "password, used to sign into the system"
         maxLength: 40
-        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$"
+        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}$"
       firstname:
         type: "string"
         description: "first name, of an employee"
@@ -2659,7 +2659,7 @@ definitions:
         format: "password"
         description: "password, used to sign into the system"
         maxLength: 40
-        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$"
+        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}$"
       firstname:
         type: "string"
         description: "first name, of an employee"
@@ -3308,7 +3308,7 @@ definitions:
         format: "password"
         description: "password, used to sign into the system"
         maxLength: 40
-        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$"
+        pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}$"
     description: "Represents the basic info to logged into the system"
     example:
       password: "password"

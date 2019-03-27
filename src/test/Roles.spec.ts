@@ -61,6 +61,7 @@ describe("RoleService tests", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let role = jsf.generate(schema.definitions.IRole);
             role.name = null;
@@ -83,6 +84,7 @@ describe("RoleService tests", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let role = jsf.generate(schema.definitions.IRole);
             role.name = "CEO";
@@ -201,6 +203,7 @@ describe("RoleService tests", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let role = jsf.generate(schema.definitions.IRole);
             role.name = "Updated role name";
@@ -315,6 +318,7 @@ describe("RoleService tests", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let competency = jsf.generate(schema.definitions.ICompetency);
             competency.fkRole = 1;
@@ -336,6 +340,7 @@ describe("RoleService tests", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let competency = jsf.generate(schema.definitions.ICompetency);
             competency.name = "communications";
@@ -392,6 +397,7 @@ describe("RoleService tests", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let competency = jsf.generate(schema.definitions.ICompetency);
             competency.name = "excel";

@@ -6,7 +6,7 @@ export class Priviledges{
         // Employee service
         'getEmployees': IEmployee.adminLevelEnum.MANAGER,
         'createEmployee': IEmployee.adminLevelEnum.HR_ADMIN,
-        'getEmployee': IEmployee.adminLevelEnum.MANAGER,
+        'getEmployee': IEmployee.adminLevelEnum.STAFF,
         'updateEmployee': IEmployee.adminLevelEnum.STAFF,
         'deleteEmployee': IEmployee.adminLevelEnum.MANAGER,
         'updateEmployeePassword': IEmployee.adminLevelEnum.STAFF,

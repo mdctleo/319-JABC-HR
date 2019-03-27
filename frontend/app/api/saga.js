@@ -114,3 +114,11 @@ export function* updatePerformanceReview(review) {
   const reviewObj = IPerformanceReview.constructFromObject(review);
   yield performanceApi.updatePerformanceReview(review.id, reviewObj);
 }
+
+export function* linkEmployeeManager(id, idManager) {
+  yield employeeApi.linkEmployeeManager(id, idManager);
+}
+
+export function* unLinkEmployeeManager(id, idManager) {
+  yield employeeApi.unLinkEmployeeManager(id, idManager);
+}
