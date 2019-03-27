@@ -24,6 +24,7 @@ import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import EditPerformanceSection from "./EditPerformanceSection";
+import EditPerformanceSectionRow from "./EditPerformanceSectionRow";
 const uniqid = require('uniqid');
 
 const styles = theme => ({
@@ -245,6 +246,8 @@ class PerformanceSection extends React.Component {
       section: props.section,
       openAddRowDialog: false,
       openEditSectionDialog: false,
+      openEditRowDialog: false,
+      indexOfEditRow: 0,
       editSectionError: null,
       selected: [],
       columnsForEditSection: columnsForEditSection
@@ -344,6 +347,14 @@ class PerformanceSection extends React.Component {
 
   closeEditSectionDialog = () => {
     this.setState({ openEditSectionDialog: false });
+  };
+
+  openEditRowDialog = (index) => {
+    this.setState({ openEditRowDialog: true, indexOfEditRow: index });
+  };
+
+  closeEditRowDialog = () => {
+    this.setState({ openEditRowDialog: false });
   };
 
   // Saves edited section
@@ -451,6 +462,10 @@ class PerformanceSection extends React.Component {
     }));
   };
 
+  saveEditedRow = () => {
+    console.log("Saved!");
+  };
+
   render() {
     const { classes, section } = this.props;
     const { columnsForEditSection, openEditSectionDialog, editSectionError, openAddRowDialog, selected } = this.state;
@@ -498,6 +513,14 @@ class PerformanceSection extends React.Component {
           editSectionError={this.state.editSectionError}
         />
 
+        <EditPerformanceSectionRow
+          openEditRowDialog={this.state.openEditRowDialog}
+          closeEditRowDialog={this.closeEditRowDialog}
+          section={section}
+          indexOfEditRow={this.state.indexOfEditRow}
+          saveEditedRow={this.saveEditedRow}
+        />
+
         <Paper className={classes.root}>
           <EnhancedTableToolbar
             sectionName={section.sectionName}
@@ -516,12 +539,12 @@ class PerformanceSection extends React.Component {
                 rowCount={section.data.rows.length}
               />
               <TableBody>
-                {section.data.rows.map(item => {
+                {section.data.rows.map((item, index) => {
                   const isSelected = that.isSelected(item.id);
                   return (
                     <TableRow
                       hover
-                      onClick={event => that.handleClick(event, item.id)}
+                      onClick={() => that.openEditRowDialog(index)}
                       role="checkbox"
                       aria-checked={isSelected}
                       selected={isSelected}
@@ -529,7 +552,9 @@ class PerformanceSection extends React.Component {
                       key={item.id}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
+                        <Checkbox
+                          onClick={event => that.handleClick(event, item.id)}
+                          checked={isSelected} />
                       </TableCell>
                       {section.data.columns.map(column => (
                         <TableCell key={column.concat(item.id)}>
