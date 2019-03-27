@@ -640,7 +640,6 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        // REVIEW: Cant be link to itself
         it("Should not be able to link a manager to itself", async () => {
             let response: any;
             try {
@@ -697,7 +696,6 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        // REVIEW: Change to two employees because it cant be link to itself
         it("Should be able to display two employees under manager michael scott", async () => {
             let response: any;
             try {
@@ -812,36 +810,6 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        // REVIEW: Can not link to itself
-        it("Should not be able to link a hr to a hr", async () => {
-            let response: any;
-            try {
-                response = await chai.request(SERVER)
-                    .post(`${BASE_PATH}/1/manager/1`)
-                    .set(HEADERS);
-            } catch (e) {
-                console.log(e);
-            } finally {
-                expect(response.statusCode).to.not.be.equal(200);
-                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-            }
-        });
-
-        // REVIEW: Deleted this because the link can not be created 
-        // it("Should be able to unlink a hr to a hr", async () => {
-        //     let response: any;
-        //     try {
-        //         response = await chai.request(SERVER)
-        //             .delete(`${BASE_PATH}/1/manager/1`)
-        //             .set(HEADERS);
-        //     } catch (e) {
-        //         console.log(e);
-        //     } finally {
-        //         expect(response.statusCode).to.be.equal(200);
-        //         expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-        //     }
-        // });
-
         it("Should be able to link a manager to an hr", async () => {
             let response: any;
             try {
@@ -885,7 +853,6 @@ describe("EmployeeService tests", () => {
         });
 
 
-        // REVIEW: The link manager 2 -> employee 4 existed, so I changed the employee id to 3, to pass the test
         it("Should not be able to unlink an employee to a manager that they have no relation with", async () => {
             let response: any;
             try {
@@ -900,23 +867,7 @@ describe("EmployeeService tests", () => {
             }
         });
 
-        // REVIEW: There is no link to itself
-        // it("Should be able to unlink an someone linked to itself", async () => {
-        //     let response: any;
-        //     try {
-        //         response = await chai.request(SERVER)
-        //             .delete(`${BASE_PATH}/2/manager/2`)
-        //             .set(HEADERS);
-        //     } catch (e) {
-        //         console.log(e);
-        //     } finally {
-        //         expect(response.statusCode).to.be.equal(200);
-        //         expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-        //     }
-        // });
-
-        // REVIEW: Added this so the next test can pass, because the link manager 2 -> employe 4 still exists
-        it("Should be able to unlink an someone linked to itself", async () => {
+        it("Should be able to unlink an employee", async () => {
             let response: any;
             try {
                 response = await chai.request(SERVER)

@@ -735,21 +735,21 @@ describe("PerformanceService tests", () => {
         });
 
         // REVIEW: I think he should be able to get un published reviews, if not let me know and uncomment this and I will support that feature
-        // it("Should not be able to get its own unpublished review ", async () => {
-        //     let response: any;
-        //     try {
-        //         response = await chai.request(SERVER)
-        //             .get(`${BASE_PATH}/review/2`)
-        //             .set(HEADERS);
-        //     }
-        //     catch (e) {
-        //         console.log(e);
-        //     } finally {
-        //         expect(response.statusCode).to.be.within(400, 500);
-        //         expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+        it("Should not be able to get its own unpublished review ", async () => {
+            let response: any;
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/review/2`)
+                    .set(HEADERS);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
 
-        //     }
-        // });
+            }
+        });
 
         it("Should not be able to get other people's review ", async () => {
             let response: any;
@@ -768,31 +768,31 @@ describe("PerformanceService tests", () => {
 
         // REVIEW: I think he should be able to update his review as I know we are no sure about who filled this stuffed, 
         // we shoud not limit them to do this, if not let me know and uncomment this and I will support that feature
-        // it("Should not be able to update reviews ", async () => {
-        //     let response: any;
-        //     jsf.option({
-        //         optionalsProbability: 1.0
-        //     });
-        //     let review = jsf.generate(schema.definitions.IPerformanceReview);
-        //     review.createdDate = "2025-01-01";
-        //     review.sections = [];
-        //     review.comments = [];
-        //     let section = jsf.generate(schema.definitions.IPerformanceSection);
-        //     section.data = '{"pid": 102, "name": "name2"}';
-        //     review.sections.push(section);
-        //     try {
-        //         response = await chai.request(SERVER)
-        //             .put(`${BASE_PATH}/review/1`)
-        //             .set(HEADERS)
-        //             .send(review);
-        //     }
-        //     catch (e) {
-        //         console.log(e);
-        //     } finally {
-        //         expect(response.statusCode).to.be.within(400, 500);
-        //         expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-        //     }
-        // });
+        it("Should not be able to update reviews ", async () => {
+            let response: any;
+            jsf.option({
+                optionalsProbability: 1.0
+            });
+            let review = jsf.generate(schema.definitions.IPerformanceReview);
+            review.createdDate = "2025-01-01";
+            review.sections = [];
+            review.comments = [];
+            let section = jsf.generate(schema.definitions.IPerformanceSection);
+            section.data = '{"pid": 102, "name": "name2"}';
+            review.sections.push(section);
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/review/1`)
+                    .set(HEADERS)
+                    .send(review);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
 
         it("Should not be able to delete reviews ", async () => {
             let response: any;
@@ -884,7 +884,6 @@ describe("PerformanceService tests", () => {
         });
 
 
-        // REVIEW: The put /review/{id} doesn't return  the comments, that is why I commented the last expect
         it("Should be able to display two comments ", async () => {
             let response: any;
             jsf.option({
@@ -902,8 +901,6 @@ describe("PerformanceService tests", () => {
             } finally {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
-                // expect(response.body.length).to.be.equal(2);
-
             }
         });
 
