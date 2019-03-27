@@ -575,7 +575,6 @@ class PerformanceModule extends React.Component {
                 />
                 {columnsForNewSection.map((column, i) => (
                   <TextField
-                    autoFocus
                     key={i}
                     margin="dense"
                     id={'col-name'.concat(column)}
