@@ -1,7 +1,7 @@
 'use strict';
 import { Comment, IComment, IPerformancePlan, IPerformanceReview, IPerformanceSection, PerformancePlan, PerformanceReview, PerformanceSection, IEmployee } from '../model/models'
 import { JABCError, JABCSuccess, JABCResponse } from '../utils/ResponseManager'
-import { Auth, getManagersByEmployee } from '../service/EmployeeService'
+import { Auth, getManagersByEmployee, isManagedBy } from '../service/EmployeeService'
 import Database from '../database/Database';
 import IDatabaseClient from '../database/IDatabaseClient';
 
@@ -148,17 +148,7 @@ export async function getPerformancePlan(id: Number, xAuthToken: string) {
         let res = await Database.getInstance().query('CALL get_performance_plan(?)', [id], JABCResponse.PERFORMANCE)
         let performancePlan = new PerformancePlan(res[0][0][0])
         if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			let managed = false;
-			let managersOfEmployee = await getManagersByEmployee(performancePlan.fkEmployee, xAuthToken)
-			for (let manager of managersOfEmployee) {
-				if (manager.id === client.id) {
-					managed = true;
-					break;
-				}
-			}
-			if (!managed) {
-				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
-			}
+            await isManagedBy(performancePlan.fkEmployee, client.id)
 		}else if(client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id != performancePlan.fkEmployee){
             throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not manage other employee\'s performance plan.')
         }
@@ -185,17 +175,7 @@ export async function getPerformanceReview(id: Number, xAuthToken: string) {
         let res = await Database.getInstance().query('CALL get_performance_review(?)', [id], JABCResponse.PERFORMANCE)
         let performanceReview = new PerformanceReview(res[0][0][0])
         if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			let managed = false;
-			let managersOfEmployee = await getManagersByEmployee(performanceReview.fkEmployee, xAuthToken)
-			for (let manager of managersOfEmployee) {
-				if (manager.id === client.id) {
-					managed = true;
-					break;
-				}
-			}
-			if (!managed) {
-				throw new JABCError(JABCResponse.EMPLOYEE, 'The employee is not under the managed employees of the manager.')
-			}
+			await isManagedBy(performanceReview.fkEmployee, client.id)
 		}else if(client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id != performanceReview.fkEmployee){
             throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not manage other employee\'s performance review.')
         }

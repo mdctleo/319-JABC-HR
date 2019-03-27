@@ -116,9 +116,9 @@ export class Employee implements IEmployee{
     phoneNumber?: string;
     role?: IRole;
 
-    constructor(rawEmployee: any){
+    constructor(rawEmployee: any, sensitive = true){
         this.id = rawEmployee.EMPLOYEE_ID;
-        this.sin = rawEmployee.SIN;
+        this.sin = (sensitive) ? rawEmployee.SIN : 100000000;
         this.email = rawEmployee.EMAIL;
         this.password = rawEmployee.PASSWORD;
         this.firstname = rawEmployee.FIRST_NAME;
@@ -126,6 +126,7 @@ export class Employee implements IEmployee{
         this.fte = rawEmployee.FTE;
         this.status = rawEmployee.STATUS;
         this.adminLevel = rawEmployee.ADMIN_LEVEL;
+        if(!sensitive) return;
         this.salary = parseFloat(rawEmployee.SALARY);
         this.address = rawEmployee.ADDRESS;
         this.birthdate = rawEmployee.BIRTHDATE;
@@ -136,10 +137,10 @@ export class Employee implements IEmployee{
         this.phoneNumber = rawEmployee.PHONE_NUMBER;
     }
 
-    static Employees(rawEmployees: any[]){
+    static Employees(rawEmployees: any[], sensitive = true){
         let employees: IEmployee[] = [];
         for(let rawEmployee of rawEmployees){
-            employees.push(new Employee(rawEmployee))
+            employees.push(new Employee(rawEmployee, sensitive))
         }
         return employees
     }

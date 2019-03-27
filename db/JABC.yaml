@@ -1946,7 +1946,7 @@ definitions:
       password:
         type: string
         format: password
-        pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$'
+        pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}$'
         maxLength: 40
         description: password, used to sign into the system
       firstname:
@@ -2054,7 +2054,7 @@ definitions:
       password:
         type: string
         format: password
-        pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$'
+        pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}$'
         maxLength: 40
         description: password, used to sign into the system
       firstname:
@@ -2550,7 +2550,7 @@ definitions:
       password:
         type: string
         format: password
-        pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$'
+        pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}$'
         maxLength: 40
         description: password, used to sign into the system
 

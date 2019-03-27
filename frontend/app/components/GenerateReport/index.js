@@ -427,13 +427,15 @@ class GenerateReport extends React.PureComponent {
     for (const employee of this.props.employees) {
       const data = [];
       for (const col of this.state.columns) {
-        data.push(employee[col.id]);
+        data.push(col.id === 'role' ? (employee.role && employee.role.name) : employee[col.id]);
       }
       rows.push(data.join());
     }
     const file = new Blob([rows.join('\n')], { type: 'text/csv' });
-    element.href = URL.createObjectURL(file);
-    element.download = this.state.reportName;
+    element.style.display = 'none';
+    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(rows.join('\n')));
+    // element.href = URL.createObjectURL(file);
+    element.download = `${this.state.reportName}.csv`;
     document.body.appendChild(element);
     element.click();
     document.removeChild(element);
