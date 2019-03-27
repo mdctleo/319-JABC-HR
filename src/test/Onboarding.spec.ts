@@ -52,11 +52,15 @@ describe("test related /onboarding", () => {
             task0.createdDate = "2019-02-02";
             task0.fkEmployee = 3;
             task0.fkDocumentType = 1;
+            task0.requireDoc = 1;
+            task0.status = 0;
             let task1 = jsf.generate(schema.definitions.IOnboardingTask);
             task1.dueDate = "2019-03-04";
             task1.createdDate = "2019-02-02";
             task1.fkEmployee = 4;
             task1.fkDocumentType = 2;
+            task1.requireDoc = 1;
+            task1.status = 0;
 
 
             await chai.request(SERVER)
@@ -224,14 +228,15 @@ describe("test related /onboarding", () => {
 
         it("Should be able to get file of task, after it is completed", async () => {
             let response: any;
+            let tempBuf = fs.readFileSync('src/utils/resources/young_obi_wan.jpg');
 
              let employeeHeader = await TestSetup.login("employee");
-             let test = await chai.request(SERVER)
+             await chai.request(SERVER)
                 .put(`/JABC/1.0.0/employee/3/task/1`)
-                .type('form-data')
+                .type('multipart/form-data')
                 .set(employeeHeader)
-                .attach('document', fs.readFileSync('src/utils/resources/young_obi_wan.jpg'),
-                    'young_obi_wan');
+                .attach('document', tempBuf,
+                    'young_obi_wan.jpg');
 
             try {
                 response = await chai.request(SERVER)
@@ -241,8 +246,9 @@ describe("test related /onboarding", () => {
             catch (e) {
                 console.log(e);
             } finally {
+                let test = response.data;
                 expect(response.statusCode).to.be.equal(200);
-                expect(file(response.body)).to.be.equal(file('src/utils/resources/young_obi_wan.jpg'));
+                expect(response.body).to.be.deep.equal(tempBuf);
             }
         });
 
