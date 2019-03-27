@@ -60,7 +60,7 @@ export function* deletePerformance(action) {
       yield put(setReviewCopy(null));
     }
   } catch (e) {
-    yield put(displayError(e.response ? e.response.body.message : e));
+    yield put(displayError(e.response ? e.response.body.message : e.message));
   }
 }
 
@@ -69,8 +69,27 @@ export function* createPlan({ plan }) {
     const profile = yield select(selectProfile);
     yield call(createPerformancePlan, profile.id, plan);
     yield call(getAllPlans);
+    const plans = yield select(selectResource('plan'));
+    if (plans) {
+      const newPlan = plans.find(
+        p =>
+          p.createDate === plan.createDate &&
+          p.endYear === plan.endYear &&
+          p.startYear === plan.startYear &&
+          p.fkEmployee === plan.fkEmployee,
+      );
+      if (newPlan) {
+        yield put(setPlanCopy(newPlan));
+      }
+    }
+    const reviews = yield select(selectResource('review'));
+    if (reviews) {
+      yield put(
+        setReviewCopy(reviews.find(r => r.fkPerformancePlan === profile.id)),
+      );
+    }
   } catch (e) {
-    yield put(displayError(e.response ? e.response.body.message : e));
+    yield put(displayError(e.response ? e.response.body.message : e.message));
   }
 }
 
@@ -79,8 +98,16 @@ export function* createReview({ review }) {
     const profile = yield select(selectProfile);
     yield call(createPerformanceReview, profile.id, review);
     yield call(getAllPlans);
+    const reviews = yield select(selectResource('review'));
+    if (reviews) {
+      yield put(
+        setReviewCopy(
+          reviews.find(r => r.fkPerformancePlan === review.fkPerformancePlan),
+        ),
+      );
+    }
   } catch (e) {
-    yield put(displayError(e.response ? e.response.body.message : e));
+    yield put(displayError(e.response ? e.response.body.message : e.message));
   }
 }
 
@@ -90,7 +117,7 @@ export function* savePlan({ isPublished }) {
     plan.status = isPublished ? 1 : 0;
     yield call(updatePerformancePlan, plan);
   } catch (e) {
-    yield put(displayError(e.response ? e.response.body.message : e));
+    yield put(displayError(e.response ? e.response.body.message : e.message));
   }
 }
 
@@ -100,7 +127,7 @@ export function* saveReview({ isPublished }) {
     review.status = isPublished ? 1 : 0;
     yield call(updatePerformanceReview, review);
   } catch (e) {
-    yield put(displayError(e.response ? e.response.body.message : e));
+    yield put(displayError(e.response ? e.response.body.message : e.message));
   }
 }
 

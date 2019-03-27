@@ -13,6 +13,7 @@ import {
   DELETE_ROWS,
   DELETE_SECTION,
   GET_ALL_PLANS,
+  RESET,
   SAVE_PLAN,
   SAVE_REVIEW,
   SELECT_PLAN,
@@ -120,6 +121,12 @@ export function saveReview(isPublished) {
   };
 }
 
+export function reset() {
+  return {
+    type: RESET,
+  };
+}
+
 export default {
   getAllPlans,
   selectPlan,
@@ -132,4 +139,5 @@ export default {
   createReview,
   savePlan,
   saveReview,
+  reset,
 };
