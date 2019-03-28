@@ -11,7 +11,7 @@ import { withStyles } from '@material-ui/core';
 
 import EmployeePerformance from '../../EmployeePerformance';
 import EmployeeOnboarding from './EmployeeOnboarding';
-import EmployeeHistory from './EmployeeHistory';
+import EmployeeHistory from '../../EmployeeHistory/Loadable';
 
 const styles = theme => ({
   root: {

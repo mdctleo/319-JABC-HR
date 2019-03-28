@@ -73,6 +73,11 @@ export function* getPerformanceReviews(id) {
   yield all(reviews.map(r => put(setResource('review', r.id, r))));
 }
 
+export function* getEmployeeHistory(id) {
+  const history = yield employeeApi.getEmployeeHistory(id);
+  yield put(setResource('history', id, history));
+}
+
 export function* createPerformancePlan(employeeId, plan) {
   const planObj = IPerformancePlan.constructFromObject(plan);
   yield employeeApi.createPerformancePlan(employeeId, planObj);
