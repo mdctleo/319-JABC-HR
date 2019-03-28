@@ -105,6 +105,7 @@ class EditPerformanceSectionRow extends React.Component {
       indexOfEditRow,
       saveEditedRow
     } = this.props;
+    if (indexOfEditRow < 0) return null;
 
     return (
       <Dialog

@@ -222,7 +222,7 @@ let EnhancedTableToolbar = props => {
             </IconButton>
             <IconButton
               className={classes.actionButton}
-              onClick={props.handleDeleteSection}
+              onClick={props.handleDeleteRows}
               size="small"
             >
               <DeleteIcon />
@@ -263,11 +263,10 @@ class PerformanceSection extends React.Component {
     }
 
     this.state = {
-      section: props.section,
       openAddRowDialog: false,
       openEditSectionDialog: false,
       openEditRowDialog: false,
-      indexOfEditRow: 0,
+      indexOfEditRow: -1,
       editSectionError: null,
       selected: [],
       columnsForEditSection: columnsForEditSection
@@ -358,7 +357,7 @@ class PerformanceSection extends React.Component {
 
   openEditSectionDialog = () => {
     let columnsForEditSection = [];
-    for (let i = 0; i < this.state.section.data.columns.length; i++) {
+    for (let i = 0; i < this.props.section.data.columns.length; i++) {
       columnsForEditSection.push(i);
     }
 
@@ -373,7 +372,7 @@ class PerformanceSection extends React.Component {
   // Open it for edit
   openEditRowDialog = () => {
     let indexSelected = 0;
-    let rows = this.state.section.data.rows;
+    let rows = this.props.section.data.rows;
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].id === this.state.selected[0]) {
         indexSelected = i;
@@ -385,7 +384,7 @@ class PerformanceSection extends React.Component {
   };
 
   closeEditRowDialog = () => {
-    this.setState({ openEditRowDialog: false });
+    this.setState({ openEditRowDialog: false, indexOfEditRow: -1 });
   };
 
   // Saves edited section
@@ -414,7 +413,7 @@ class PerformanceSection extends React.Component {
 
     // Handle rows of updated section
     let rows = [];
-    for (let dataRow of this.state.section.data.rows) {
+    for (let dataRow of this.props.section.data.rows) {
       let row = {id: dataRow.id};
 
       for (let i = 0; i < columns.length; i++) {
@@ -426,8 +425,8 @@ class PerformanceSection extends React.Component {
           row[currColumn] = dataRow[currColumn];
         }
         // If column name changed but has data in data row
-        else if (colId < this.state.section.data.columns.length) {
-          let oldColumn = this.state.section.data.columns[colId];
+        else if (colId < this.props.section.data.columns.length) {
+          let oldColumn = this.props.section.data.columns[colId];
           row[currColumn] = dataRow[oldColumn];
         }
         // Completely new column added to section
@@ -440,9 +439,9 @@ class PerformanceSection extends React.Component {
     }
 
     // Make new section as updated section
-    section.id = this.state.section.id;
+    section.id = this.props.section.id;
     section.sectionName = document.getElementById('sectionName').value;
-    section.fkPerformancePlan = this.state.section.fkPerformancePlan;
+    section.fkPerformancePlan = this.props.section.fkPerformancePlan;
     section.data = {};
     section.data.columns = columns;
     section.data.rows = rows;
@@ -459,13 +458,13 @@ class PerformanceSection extends React.Component {
       columnsForEditSection: columnsForEditSection,
     });
 
-    this.props.updateSection(section, true);
+    this.props.updateSection(section);
   };
 
   // New column ids will never clash with existing column ids
   // because they are at least the length of the existing columns
   getNextColId = () => {
-    let max = this.state.section.data.columns.length;
+    let max = this.props.section.data.columns.length;
     for (let colForEditSection of this.state.columnsForEditSection) {
       if (colForEditSection > max) {
         max = colForEditSection;
@@ -505,7 +504,6 @@ class PerformanceSection extends React.Component {
     }
 
     section.data.rows.splice(this.state.indexOfEditRow, 1, newRow);
-    console.log(section.data.rows);
 
     this.props.updateSection(section);
     this.setState( {selected: []} );

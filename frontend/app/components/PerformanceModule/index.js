@@ -677,7 +677,7 @@ class PerformanceModule extends React.Component {
                         this.props.addRow(sectionId, row, true)
                       }
                       handleDeleteRows={this.openDeleteRowsDialog}
-                      updateSection={this.props.updateSection}
+                      updateSection={(section) => this.props.updateSection(section, true)}
                     />
                     <Button
                       className={classes.sectionButton}
@@ -717,6 +717,7 @@ class PerformanceModule extends React.Component {
                         this.props.addRow(sectionId, row, false)
                       }
                       handleDeleteRows={this.openDeleteRowsDialog}
+                      updateSection={(section) => this.props.updateSection(section, false)}
                     />
                     <Button
                       className={classes.sectionButton}

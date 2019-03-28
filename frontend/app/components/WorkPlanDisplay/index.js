@@ -85,7 +85,7 @@ class WorkPlanDisplay extends React.Component {
               handleDeleteSection={that.props.handleDeleteSection}
               handleAddRow={that.props.handleAddRow}
               handleDeleteRows={that.props.handleDeleteRows}
-              updateSection={(section) => that.updateSection(section)}
+              updateSection={(newSection) => that.updateSection(newSection)}
             />
           ))}
       </div>
