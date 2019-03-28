@@ -31,7 +31,7 @@ const styles = theme => ({
     width: '95%',
     marginTop: theme.spacing.unit * 3,
     marginLeft: '2.5%',
-    paddingBottom: '100px',
+    paddingBottom: '50px',
   },
   sectionButton: {
     display: 'inline-block',
@@ -707,6 +707,7 @@ class PerformanceModule extends React.Component {
                       }
                       handleDeleteRows={this.openDeleteRowsDialog}
                       updateSection={(section) => this.props.updateSection(section, true)}
+                      role={role}
                     />
                     <div className={classes.sectionButtonWrapper}>
                       <Button
@@ -755,6 +756,7 @@ class PerformanceModule extends React.Component {
                       }
                       handleDeleteRows={this.openDeleteRowsDialog}
                       updateSection={(section) => this.props.updateSection(section, false)}
+                      role={role}
                     />
                     <div className={classes.sectionButtonWrapper}>
                       <Button

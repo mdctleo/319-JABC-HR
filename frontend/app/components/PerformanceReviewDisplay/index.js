@@ -31,7 +31,7 @@ const styles = theme => ({
     marginTop: '40px'
   },
   topHeading: {
-    marginTop: '20px'
+    marginTop: '10px'
   },
   displayTable: {
     width: '100%',
