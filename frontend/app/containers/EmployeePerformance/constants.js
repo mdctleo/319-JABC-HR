@@ -11,6 +11,7 @@ export const SET_REVIEW_COPY = 'app/EmployeePerformance/SET_REVIEW_COPY';
 export const DELETE_ROWS = 'app/EmployeePerformance/DELETE_ROWS';
 export const ADD_ROW = 'app/EmployeePerformance/ADD_ROW';
 export const ADD_SECTION = 'app/EmployeePerformance/ADD_SECTION';
+export const UPDATE_SECTION = 'app/EmployeePerformance/UPDATE_SECTION';
 export const DELETE_SECTION = 'app/EmployeePerformance/DELETE_SECTION';
 export const DELETE_PERFORMANCE = 'app/EmployeePerformance/DELETE_PERFORMANCE';
 export const CREATE_PLAN = 'app/EmployeePerformance/CREATE_PLAN';

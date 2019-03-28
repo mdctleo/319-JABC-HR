@@ -13,6 +13,7 @@ import {
   RESET,
   SET_PLAN_COPY,
   SET_REVIEW_COPY,
+  UPDATE_SECTION,
 } from './constants';
 
 export const initialState = fromJS({});
@@ -89,21 +90,44 @@ const deleteSection = (state, sectionId, isPlan) => {
   return state;
 };
 
+const updateSection = (state, section, isPlan) => {
+  const performanceName = isPlan ? 'selectedPlan' : 'selectedReview';
+  const performance = state.get(performanceName);
+  const sections = performance.get('sections');
+  const sectionIndex = sections.findIndex(s => s.get('id') === section.id);
+  if (sectionIndex >= 0) {
+    const updatedSection = fromJS({
+      ...section,
+      fkPerformancePlan: sections.get(sectionIndex).get('fkPerformancePlan')
+    });
+    const newPerformance = performance.set(
+      'sections',
+      sections.splice(sectionIndex, 1, updatedSection),
+    );
+    return state.set(performanceName, newPerformance);
+  }
+  return state;
+};
+
 function performanceReducer(state = initialState, action) {
   switch (action.type) {
     case RESET:
       return initialState;
     case SET_PLAN_COPY: {
-      const sections = action.plan.sections;
-      action.plan.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
+      if (action.plan) {
+        const sections = action.plan.sections;
+        action.plan.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
+      }
       return state.set(
         'selectedPlan',
         action.plan && fromJS(JSON.parse(JSON.stringify(action.plan))),
       );
     }
     case SET_REVIEW_COPY: {
-      const sections = action.review.sections;
-      action.review.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
+      if (action.review) {
+        const sections = action.review.sections;
+        action.review.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
+      }
       return state.set(
         'selectedReview',
         action.review && fromJS(JSON.parse(JSON.stringify(action.review))),
@@ -115,6 +139,8 @@ function performanceReducer(state = initialState, action) {
       return addRow(state, action.sectionId, action.row, action.isPlan);
     case ADD_SECTION:
       return addSection(state, action.section, action.isPlan);
+    case UPDATE_SECTION:
+      return updateSection(state, action.section, action.isPlan);
     case DELETE_SECTION:
       return deleteSection(state, action.sectionId, action.isPlan);
     default:

@@ -19,6 +19,7 @@ import {
   SELECT_PLAN,
   SET_PLAN_COPY,
   SET_REVIEW_COPY,
+  UPDATE_SECTION,
 } from './constants';
 
 export function getAllPlans(selectedEmployee) {
@@ -70,6 +71,14 @@ export function addRow(sectionId, row, isPlan) {
 export function addSection(section, isPlan) {
   return {
     type: ADD_SECTION,
+    section,
+    isPlan,
+  };
+}
+
+export function updateSection(section, isPlan) {
+  return {
+    type: UPDATE_SECTION,
     section,
     isPlan,
   };
@@ -140,4 +149,5 @@ export default {
   savePlan,
   saveReview,
   reset,
+  updateSection,
 };
