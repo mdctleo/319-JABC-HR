@@ -680,6 +680,7 @@ class PerformanceModule extends React.Component {
                         this.props.addRow(sectionId, row, true)
                       }
                       handleDeleteRows={this.openDeleteRowsDialog}
+                      updateSection={this.props.updateSection}
                     />
                     <Button
                       className={classes.sectionButton}
@@ -770,6 +771,7 @@ PerformanceModule.propTypes = {
   createReview: PropTypes.func.isRequired,
   savePlan: PropTypes.func.isRequired,
   saveReview: PropTypes.func.isRequired,
+  updateSection: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(PerformanceModule);

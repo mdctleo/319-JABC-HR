@@ -52,6 +52,10 @@ const styles = theme => ({
 });
 
 class PerformanceReviewDisplay extends React.Component  {
+  updateSection = (section) => {
+    this.props.updateSection(section, false);
+  };
+
   render() {
     const { classes, sections, profile, role } = this.props;
     let that = this;
@@ -67,7 +71,8 @@ class PerformanceReviewDisplay extends React.Component  {
                                         section = {section}
                                         handleDeleteSection={that.props.handleDeleteSection}
                                         handleAddRow = {that.props.handleAddRow}
-                                        handleDeleteRows = {that.props.handleDeleteRows} />
+                                        handleDeleteRows = {that.props.handleDeleteRows}
+                                        updateSection={(section) => that.updateSection(section)}/>
         })
         }
       </div>

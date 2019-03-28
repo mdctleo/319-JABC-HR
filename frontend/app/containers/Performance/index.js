@@ -183,6 +183,7 @@ class PerformancePage extends React.Component {
           createReview={this.props.createReview}
           savePlan={this.props.savePlan}
           saveReview={this.props.saveReview}
+          updateSection={this.props.updateSection}
         />
       </div>
     );
@@ -205,6 +206,7 @@ PerformancePage.propTypes = {
   createReview: PropTypes.func.isRequired,
   savePlan: PropTypes.func.isRequired,
   saveReview: PropTypes.func.isRequired,
+  updateSection: PropTypes.func.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({
