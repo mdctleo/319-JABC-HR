@@ -161,6 +161,8 @@ describe("test related /onboarding", () => {
             task0.createdDate = "2019-02-03";
             task0.fkEmployee = 3;
             task0.fkDocumentType = 1;
+            task0.status = 0;
+            task0.requireDoc = 1;
 
             try {
                 response = await chai.request(SERVER)
@@ -233,7 +235,7 @@ describe("test related /onboarding", () => {
              let employeeHeader = await TestSetup.login("employee");
              await chai.request(SERVER)
                 .put(`/JABC/1.0.0/employee/3/task/1`)
-                .type('multipart/form-data')
+                .type('form-data')
                 .set(employeeHeader)
                 .attach('document', tempBuf,
                     'young_obi_wan.jpg');
