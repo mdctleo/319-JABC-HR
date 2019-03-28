@@ -141,7 +141,6 @@ describe("test related to /employee and onboarding", () => {
             });
             let task = jsf.generate(schema.definitions.IOnboardingTask);
             task.dueDate = "2019-03-04";
-            task.fkEmployee = 6;
             task.createdDate = "2019-02-02";
             task.status = 0;
             task.requireDoc = 1;
@@ -181,6 +180,36 @@ describe("test related to /employee and onboarding", () => {
             }
         });
 
+        it("Should be able to create onboarding taks for an employee even if status is not onboarding", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+                ignoreProperties: ["type"]
+
+            });
+            let task = jsf.generate(schema.definitions.IOnboardingTask);
+            task.dueDate = "2019-03-04";
+            task.fkEmployee = 6;
+            task.createdDate = "2019-02-02";
+            task.status = 0;
+            task.requireDoc = 1;
+            task.fkDocumentType = 1;
+            try {
+                response = await chai.request(SERVER)
+                    .post(`${BASE_PATH}/3/task`)
+                    .set(HEADERS)
+                    .send(task);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+
         it("Should not be able to complete other employee's onboarding tasks", async () => {
             let employeeHeader = await TestSetup.login("employee");
             let response: any;
@@ -191,7 +220,7 @@ describe("test related to /employee and onboarding", () => {
             try {
                 response = await chai.request(SERVER)
                     .put(`${BASE_PATH}/6/task/1`)
-                    .type('Content-Type', 'multipart/form-data')
+                    .type('multipart/form-data')
                     .set(employeeHeader)
                     .attach('document', fs.readFileSync('src/utils/resources/young_obi_wan.jpg'), 'young_obi_wan.jpg');
             }
@@ -213,7 +242,7 @@ describe("test related to /employee and onboarding", () => {
             try {
                 response = await chai.request(SERVER)
                     .get(`${BASE_PATH}/6/task`)
-                    .type('Content-Type', 'multipart/form-data')
+                    .type('multipart/form-data')
                     .set(employeeHeader)
             }
             catch (e) {
@@ -223,6 +252,33 @@ describe("test related to /employee and onboarding", () => {
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
+
+        // it("Should be able to complete an onboarding task, required doc is set to 0", async () => {
+        //     let response: any;
+        //     let employeeHeader = {
+        //         'X-APP-ID': 'test-id',
+        //         'X-API-Key': 'API-KEY',
+        //         'X-Auth-Token': '',
+        //     };
+        //     let loginResponse = await chai.request(SERVER)
+        //         .post(`${BASE_PATH}/token`)
+        //         .send(onBoardingEmployeeCredentials);
+        //     employeeHeader['X-Auth-Token'] = loginResponse.body.token;
+        //
+        //     try {
+        //         response = await chai.request(SERVER)
+        //             .put(`${BASE_PATH}/6/task/1`)
+        //             .type('multipart/form-data')
+        //             .set(employeeHeader)
+        //             .attach('document', fs.readFileSync('src/utils/resources/young_obi_wan.jpg'), 'young_obi_wan.jpg');
+        //     }
+        //     catch (e) {
+        //         console.log(e);
+        //     } finally {
+        //         expect(response.statusCode).to.be.equal(200);
+        //         expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+        //     }
+        // });
 
         it("Should be able to complete an onboarding task", async () => {
             let response: any;
@@ -235,14 +291,11 @@ describe("test related to /employee and onboarding", () => {
                 .post(`${BASE_PATH}/token`)
                 .send(onBoardingEmployeeCredentials);
             employeeHeader['X-Auth-Token'] = loginResponse.body.token;
-            jsf.option({
-                alwaysFakeOptionals: true,
-                fixedProbabilities: true,
-            });
+
             try {
                 response = await chai.request(SERVER)
                     .put(`${BASE_PATH}/6/task/2`)
-                    .type('Content-Type', 'multipart/form-data')
+                    .type('multipart/form-data')
                     .set(employeeHeader)
                     .attach('document', fs.readFileSync('src/utils/resources/young_obi_wan.jpg'), 'young_obi_wan.jpg');
             }
@@ -271,8 +324,36 @@ describe("test related to /employee and onboarding", () => {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body[0]).to.be.jsonSchema(schema.definitions.IOnboardingTask);
                 expect(response.body[0].status).to.be.equal(1);
+                expect(response.body[1].status).to.be.equal(1);
             }
         });
+
+        // it("Should not be able to complete an onboarding task, already completed", async () => {
+        //     let response: any;
+        //     let employeeHeader = {
+        //         'X-APP-ID': 'test-id',
+        //         'X-API-Key': 'API-KEY',
+        //         'X-Auth-Token': '',
+        //     };
+        //     let loginResponse = await chai.request(SERVER)
+        //         .post(`${BASE_PATH}/token`)
+        //         .send(onBoardingEmployeeCredentials);
+        //     employeeHeader['X-Auth-Token'] = loginResponse.body.token;
+        //
+        //     try {
+        //         response = await chai.request(SERVER)
+        //             .put(`${BASE_PATH}/6/task/2`)
+        //             .type('multipart/form-data')
+        //             .set(employeeHeader)
+        //             .attach('document', fs.readFileSync('src/utils/resources/young_obi_wan.jpg'), 'young_obi_wan.jpg');
+        //     }
+        //     catch (e) {
+        //         console.log(e);
+        //     } finally {
+        //         expect(response.statusCode).to.be.within(400, 500);
+        //         expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+        //     }
+        // });
 
 
     });

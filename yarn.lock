@@ -134,7 +134,7 @@ asap@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
 
-assertion-error@^1.1.0:
+assertion-error@^1.0.1, assertion-error@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
 
@@ -317,6 +317,12 @@ chai-exclude@^1.0.12:
   resolved "https://registry.yarnpkg.com/chai-exclude/-/chai-exclude-1.0.12.tgz#46fd69dc904ba06319f2d3f5b5060cfe179e2093"
   dependencies:
     fclone "^1.0.11"
+
+chai-files@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/chai-files/-/chai-files-1.4.0.tgz#0e25610fadc551b1eae79c2f4ee79faf2f842296"
+  dependencies:
+    assertion-error "^1.0.1"
 
 chai-http@^4.2.1:
   version "4.2.1"
