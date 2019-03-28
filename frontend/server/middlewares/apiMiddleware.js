@@ -451,6 +451,10 @@ router.get('/employee/:id/history', (req, res) =>
   ]),
 );
 
+router.get('/employee/:id/manager', (req, res) => res.send([]));
+
+router.get('/employee/manager/:id', (req, res) => res.send([]));
+
 router.use('*', (req, res, next) => res.send('NO ENDPOINT'));
 
 module.exports = router;

@@ -147,7 +147,7 @@ class EmployeeModalContent extends React.PureComponent {
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">POSITION</Typography>
               </TableCell>
-              <TableCell align="left">{profile.role && profile.role.name}</TableCell>
+              <TableCell align="left">{profile.roleName}</TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">

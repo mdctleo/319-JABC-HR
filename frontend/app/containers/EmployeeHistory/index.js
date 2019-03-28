@@ -122,7 +122,7 @@ export class EmployeeHistory extends React.PureComponent {
               {version.createdDate && this.formatDate(version.createdDate)}
             </TableCell>
             <TableCell onClick={() => this.handleClickVersion(version)}>
-              {version.fkCreator}
+              {version.creatorFirstname} {version.creatorLastname}
             </TableCell>
             <TableCell onClick={() => this.handleClickVersion(version)}>
               {version.changedFields && version.changedFields.join(', ')}
