@@ -540,10 +540,12 @@ BEGIN
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
   ELSE
-    SELECT *
-    FROM HR_RECORD
-    WHERE HR_RECORD.EMPLOYEE_ID = employee_id
-    ORDER BY VERSION DESC;
+    SELECT history.*, ROLE.ROLE_NAME AS ROLE_NAME FROM (SELECT HR_RECORD.*, creator.FIRST_NAME AS CREATOR_FIRST_NAME, creator.LAST_NAME AS CREATOR_LAST_NAME
+    FROM HR_RECORD LEFT JOIN LATEST_HR_RECORDS AS creator
+    ON HR_RECORD.CREATED_BY = creator.EMPLOYEE_ID
+    WHERE HR_RECORD.EMPLOYEE_ID = 1
+    ORDER BY VERSION DESC) history JOIN ROLE 
+    ON history.ROLE = ROLE.ROLE_ID;
   END IF;
 END //
 
@@ -792,6 +794,48 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
+-- procedure check_employee_manager
+--    - checks if the employe-manager link exists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS check_employee_manager;
+
+DELIMITER //
+
+CREATE PROCEDURE `check_employee_manager` (IN e_id INT, IN m_id INT)
+BEGIN
+  DECLARE emplChecker INT;
+  DECLARE managChecker INT;
+  DECLARE linkChecker INT;
+
+  SET emplChecker = 0;
+  SET managChecker = 0;
+  SET linkChecker = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = e_id;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO managChecker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
+
+  SELECT COUNT(MANAGER_ID) INTO linkChecker
+  FROM `MANAGER_EMPLOYEE`
+  WHERE `MANAGER_EMPLOYEE`.MANAGER_ID = m_id AND `MANAGER_EMPLOYEE`.EMPLOYEE_ID = e_id;
+
+  IF emplChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+  ELSEIF managChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager employee does not exist.';
+  ELSEIF linkChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee is not under the managed employees of the manager.';
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
 -- procedure get_employee_performance_plans
 --    - get the performance plans for a given employee,
 --    - provided the employee exists
@@ -1007,6 +1051,65 @@ BEGIN
   ELSE
     DELETE FROM MANAGER_EMPLOYEE
     WHERE MANAGER_ID = m_id AND EMPLOYEE_ID = e_id;
+  END IF;
+END //
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure delete_managers
+--    - unlink the managers of an employee
+--    - provided employee exist
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS delete_managers;
+
+DELIMITER //
+
+CREATE PROCEDURE `delete_managers` (IN e_id INT)
+BEGIN
+  DECLARE emplChecker INT;
+
+  SET emplChecker = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO emplChecker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = e_id;
+
+  IF emplChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
+  ELSE
+    DELETE FROM MANAGER_EMPLOYEE
+    WHERE EMPLOYEE_ID = e_id;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- procedure delete_employees
+--    - unlink the managers of a manager
+--    - provided manager exist
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS delete_employees;
+
+DELIMITER //
+
+CREATE PROCEDURE `delete_employees` (IN m_id INT)
+BEGIN
+  DECLARE managChecker INT;
+
+  SET managChecker = 0;
+
+  SELECT COUNT(EMPLOYEE_ID) INTO managChecker
+  FROM `EMPLOYEE`
+  WHERE `EMPLOYEE`.EMPLOYEE_ID = m_id;
+
+  IF managChecker = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Manager does not exist.';
+  ELSE
+    DELETE FROM MANAGER_EMPLOYEE
+    WHERE MANAGER_ID = m_id;
   END IF;
 END //
 

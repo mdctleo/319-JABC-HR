@@ -10,6 +10,7 @@ import {
   ADD_SECTION,
   DELETE_ROWS,
   DELETE_SECTION,
+  RESET,
   SET_PLAN_COPY,
   SET_REVIEW_COPY,
 } from './constants';
@@ -90,16 +91,24 @@ const deleteSection = (state, sectionId, isPlan) => {
 
 function performanceReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_PLAN_COPY:
+    case RESET:
+      return initialState;
+    case SET_PLAN_COPY: {
+      const sections = action.plan.sections;
+      action.plan.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
       return state.set(
         'selectedPlan',
         action.plan && fromJS(JSON.parse(JSON.stringify(action.plan))),
       );
-    case SET_REVIEW_COPY:
+    }
+    case SET_REVIEW_COPY: {
+      const sections = action.review.sections;
+      action.review.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
       return state.set(
         'selectedReview',
         action.review && fromJS(JSON.parse(JSON.stringify(action.review))),
       );
+    }
     case DELETE_ROWS:
       return deleteRows(state, action.sectionId, action.rowIds, action.isPlan);
     case ADD_ROW:

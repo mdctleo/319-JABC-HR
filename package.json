@@ -9,13 +9,13 @@
   "scripts": {
     "build": "tsc",
     "start": "node app.js",
-    "test": "yarn build && mocha src/test/**/*.js --timeout 999999",
-    "test-employee": "yarn build && mocha src/test/Employee.spec.js --timeout 999999",
-    "test-employee-onboarding": "yarn build && mocha src/test/EmployeeOnboarding.spec.js --timeout 999999",
-    "test-employee-performance": "yarn build && mocha src/test/EmployeePerformance.spec.js --timeout 999999",
-    "test-onboarding": "yarn build && mocha src/test/Onboarding.spec.js --timeout 999999",
-    "test-performance": "yarn build && mocha src/test/Performance.spec.js --timeout 999999",
-    "test-role": "yarn build && mocha src/test/Roles.spec.js --timeout 999999"
+    "test": "yarn build && mocha src/test/**/*.js --timeout 999999 --exit",
+    "test-employee": "yarn build && mocha src/test/Employee.spec.js --timeout 999999 --exit",
+    "test-employee-onboarding": "yarn build && mocha src/test/EmployeeOnboarding.spec.js --timeout 999999 --exit",
+    "test-employee-performance": "yarn build && mocha src/test/EmployeePerformance.spec.js --timeout 999999 --exit",
+    "test-onboarding": "yarn build && mocha src/test/Onboarding.spec.js --timeout 999999 --exit",
+    "test-performance": "yarn build && mocha src/test/Performance.spec.js --timeout 999999 --exit",
+    "test-role": "yarn build && mocha src/test/Roles.spec.js --timeout 999999 --exit"
   },
   "devDependencies": {
     "chai": "^4.2.0",

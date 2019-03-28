@@ -6,6 +6,11 @@ import {
   getRoles,
   updateEmployee,
   updateEmployeePassword,
+  setEmployeesOfManager,
+  setManagersOfEmployee,
+  getEmployees,
+  getManagersByEmployee,
+  getEmployeesByManager,
 } from 'api/saga';
 import { selectProfile, selectUser } from '../App/selectors';
 import { displayError } from 'containers/App/actions';
@@ -15,6 +20,9 @@ import {login} from '../Login/actions';
 export function* getProfileData() {
   const user = yield select(selectUser());
   yield call(getEmployee, user.id);
+  yield call(getManagersByEmployee, user);
+  yield call(getEmployeesByManager, user);
+  yield call(getEmployees);
   const profile = yield select(selectProfile);
   yield call(getRoles);
   if (profile.fkRole) {
@@ -25,6 +33,12 @@ export function* getProfileData() {
 export function* saveProfile(action) {
   try {
     yield call(updateEmployee, action.payload.profile);
+    if(action.payload.employees){
+      yield call(setEmployeesOfManager, action.payload.profile.id, action.payload.employees);
+    }
+    if(action.payload.managers){
+      yield call(setManagersOfEmployee, action.payload.profile.id, action.payload.managers);
+    }
     yield put(setEditing(false));
     yield call(getProfileData);
   } catch (e) {

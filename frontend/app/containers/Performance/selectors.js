@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { selectResource } from 'api/selector';
 import { initialState } from './reducer';
+import { selectProfile } from '../App/selectors';
 
 const selectPerformanceDomain = state => state.get('performance', initialState);
 
@@ -10,11 +11,15 @@ export const selectPerofrmanceDomainJS = createSelector(
 );
 
 export const selectPlanList = createSelector(
-  [selectResource('plan')],
-  plans => {
-    if (plans) {
+  [selectResource('plan'), selectProfile],
+  (plans, profile) => {
+    if (plans && profile) {
       const plansObj = plans.toJS();
       return Object.keys(plansObj)
+        .filter(key => {
+          const plan = plansObj[key];
+          return plan.fkEmployee === profile.id;
+        })
         .map(key => {
           const plan = plansObj[key];
           return {

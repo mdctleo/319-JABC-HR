@@ -4,6 +4,7 @@ import {
   ADD_EMPLOYEE,
   SAVE_EMPLOYEE,
   UPDATE_PASSWORD,
+  GET_EMPLOYEE_DATA,
 } from './constants';
 import {
   getEmployees,
@@ -11,6 +12,10 @@ import {
   createEmployee,
   updateEmployee,
   updateEmployeePassword,
+  setEmployeesOfManager,
+  setManagersOfEmployee,
+  getManagersByEmployee,
+  getEmployeesByManager,
 } from 'api/saga';
 import { setEditing } from './actions';
 import { displayError } from 'containers/App/actions';
@@ -32,6 +37,12 @@ export function* addEmployee(action) {
 export function* saveEmployee(action) {
   try {
     yield call(updateEmployee, action.employee);
+    if(action.employees){
+      yield call(setEmployeesOfManager, action.employee.id, action.employees);
+    }
+    if(action.managers){
+      yield call(setManagersOfEmployee, action.employee.id, action.managers);
+    }
     yield put(setEditing(false));
   } catch (e) {
     if (e.response) yield put(displayError(e.response.body.message));
@@ -46,8 +57,15 @@ export function* updatePassword(action) {
   }
 }
 
+export function* getEmployeeData(action) {
+  yield call(getManagersByEmployee, action.employee);
+  yield call(getEmployeesByManager, action.employee);
+  yield call(getEmployees);
+}
+
 export default function* rolesSaga() {
   yield takeLatest(GET_ALL_EMPLOYEES, getAllEmployees);
+  yield takeLatest(GET_EMPLOYEE_DATA, getEmployeeData);
   yield takeLatest(ADD_EMPLOYEE, addEmployee);
   yield takeLatest(SAVE_EMPLOYEE, saveEmployee);
   yield takeLatest(UPDATE_PASSWORD, updatePassword);

@@ -5,6 +5,7 @@
  */
 
 export const GET_ALL_EMPLOYEES = 'app/Employees/GET_ALL_EMPLOYEES';
+export const GET_EMPLOYEE_DATA = 'app/Employees/GET_EMPLOYEE_DATA';
 export const SELECT_PROFILE = 'app/Employees/SELECT_PROFILE';
 export const SET_EDITING = 'app/Employees/SET_EDITING';
 export const SAVE_EMPLOYEE = 'app/Employees/SAVE_EMPLOYEE';

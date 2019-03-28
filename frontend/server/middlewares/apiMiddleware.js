@@ -274,7 +274,7 @@ router.put('/role/:id', (req, res) => {
   });
 });
 
-router.get('/employee/:id/performance/plan', (req, res) =>
+router.get('/employee/12345/performance/plan', (req, res) =>
   res.send([
     {
       id: 1,
@@ -349,7 +349,7 @@ router.get('/employee/:id/performance/plan', (req, res) =>
   ]),
 );
 
-router.get('/employee/:id/performance/review', (req, res) =>
+router.get('/employee/12345/performance/review', (req, res) =>
   res.send([
     {
       id: 4,
@@ -358,6 +358,95 @@ router.get('/employee/:id/performance/review', (req, res) =>
       createDate: '2019-03-25',
       status: 0,
       sections: [],
+    },
+  ]),
+);
+
+router.get('/employee/:id/history', (req, res) =>
+  res.send([
+    {
+      id: 1,
+      sin: 111111111,
+      email: 'hradmin@jabc.com',
+      firstname: 'Tobias',
+      lastname: 'Flenderson',
+      fte: 1,
+      status: 1,
+      adminLevel: 2,
+      version: 4,
+      fkCreator: 1,
+      createdDate: '2019-03-28',
+      salary: 5000,
+      address: 'hr_test_road',
+      birthdate: '1969-11-30',
+      dateJoined: '1989-12-01',
+      vacationDays: 10,
+      remainingVacationDays: 2,
+      fkRole: 2,
+      phoneNumber: '+16041111111',
+    },
+    {
+      id: 1,
+      sin: 111111111,
+      email: 'hradmin@jabc.com',
+      firstname: 'Tobias',
+      lastname: 'Flenderson',
+      fte: 1,
+      status: 1,
+      adminLevel: 2,
+      version: 3,
+      fkCreator: 1,
+      createdDate: '2019-03-28',
+      salary: 5000,
+      address: 'hr_test_road',
+      birthdate: '1969-11-30',
+      dateJoined: '1989-12-01',
+      vacationDays: 20,
+      remainingVacationDays: 10,
+      fkRole: 2,
+      phoneNumber: '6041111111',
+    },
+    {
+      id: 1,
+      sin: 111111111,
+      email: 'hradmin@jabc.com',
+      firstname: 'Tobias',
+      lastname: 'Flenderson',
+      fte: 1,
+      status: 1,
+      adminLevel: 2,
+      version: 2,
+      fkCreator: 1,
+      createdDate: '2019-03-28',
+      salary: 200,
+      address: 'hr_test_road',
+      birthdate: '1969-11-30',
+      dateJoined: '1989-12-01',
+      vacationDays: 20,
+      remainingVacationDays: 10,
+      fkRole: 1,
+      phoneNumber: '6041111111',
+    },
+    {
+      id: 1,
+      sin: 111111111,
+      email: 'hradmin@jabc.com',
+      firstname: 'Toby',
+      lastname: 'Flenderson',
+      fte: 1,
+      status: 1,
+      adminLevel: 2,
+      version: 1,
+      fkCreator: 1,
+      createdDate: '1989-12-01',
+      salary: 200,
+      address: 'hr_test_road',
+      birthdate: '1969-11-30',
+      dateJoined: '1989-12-01',
+      vacationDays: 20,
+      remainingVacationDays: 10,
+      fkRole: 1,
+      phoneNumber: '6041111111',
     },
   ]),
 );

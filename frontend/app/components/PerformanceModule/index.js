@@ -284,11 +284,13 @@ class PerformanceModule extends React.Component {
     const createDate = [year, month, day].join('-');
     const plan = {
       fkEmployee: this.props.profile.id,
-      startYear: this.state.newPerformanceStart,
-      endYear:
+      startYear: parseInt(this.state.newPerformanceStart, 10),
+      endYear: parseInt(
         this.state.newPerformanceEnd === ''
           ? this.state.newPerformanceStart
           : this.state.newPerformanceEnd,
+        10,
+      ),
       status: 0,
       createDate,
     };

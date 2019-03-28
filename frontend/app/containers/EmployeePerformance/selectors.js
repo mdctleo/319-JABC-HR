@@ -4,17 +4,23 @@ import { initialState } from './reducer';
 
 const selectPerformanceDomain = state => state.get('employeePerformance', initialState);
 
+const getSelectedEmployee = (_, props) => props.selectedEmployee;
+
 export const selectPerofrmanceDomainJS = createSelector(
   [selectPerformanceDomain],
   performanceDomain => performanceDomain.toJS(),
 );
 
 export const selectPlanList = createSelector(
-  [selectResource('plan')],
-  plans => {
+  [selectResource('plan'), getSelectedEmployee],
+  (plans, selectedEmployee) => {
     if (plans) {
       const plansObj = plans.toJS();
       return Object.keys(plansObj)
+        .filter(key => {
+          const plan = plansObj[key];
+          return plan.fkEmployee === selectedEmployee.id;
+        })
         .map(key => {
           const plan = plansObj[key];
           return {

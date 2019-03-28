@@ -26,10 +26,10 @@ import ApiClient from '../ApiClient';
 export default class ICompetency {
     /**
     * Constructs a new <code>ICompetency</code>.
-    * A Competency contains info of competencies and objectives that each role need to fulfill 
+    * Competency, contains info of competencies and objectives that each role need to fulfill 
     * @alias module:model/ICompetency
     * @class
-    * @param fkRole {Number} Foreign key of the role
+    * @param fkRole {Number} role ID, Foreign key of the role
     */
 
     constructor(fkRole) {
@@ -75,20 +75,22 @@ export default class ICompetency {
     }
 
     /**
-    * The unique identifier of the Competency
+    * competency ID, the unique identifier of the Competency
     * @member {Number} id
     */
     id = undefined;
     /**
-    * Foreign key of the role
+    * role ID, Foreign key of the role
     * @member {Number} fkRole
     */
     fkRole = undefined;
     /**
+    * name, of the competency
     * @member {String} name
     */
     name = undefined;
     /**
+    * description, of the competency
     * @member {String} description
     */
     description = undefined;

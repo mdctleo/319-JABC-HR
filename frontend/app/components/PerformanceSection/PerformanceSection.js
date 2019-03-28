@@ -525,10 +525,10 @@ class PerformanceSection extends React.Component {
         >
           <DialogTitle id="form-dialog-title">Add Row</DialogTitle>
           <DialogContent>
-            {section.data.columns.map(column => (
+            {section.data.columns.map((column, index) => (
               <TextField
+                autoFocus={index === 0}
                 key={column.concat(section.id)}
-                autoFocus
                 margin="dense"
                 id={column.concat(section.id)}
                 label={column}

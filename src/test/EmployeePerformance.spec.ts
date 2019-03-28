@@ -91,6 +91,7 @@ describe("test related to /employee and performance", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             try {
@@ -111,6 +112,7 @@ describe("test related to /employee and performance", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.id = 3;
@@ -136,6 +138,7 @@ describe("test related to /employee and performance", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let performance = jsf.generate(schema.definitions.IPerformanceReview);
             performance.id = 3;
@@ -281,6 +284,7 @@ describe("test related to /employee and performance", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             await chai.request(SERVER)
                 .post(`${BASE_PATH}/3/manager/2`)
@@ -306,6 +310,7 @@ describe("test related to /employee and performance", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             await chai.request(SERVER)
                 .post(`${BASE_PATH}/3/manager/2`)
@@ -332,6 +337,7 @@ describe("test related to /employee and performance", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let workplan = jsf.generate(schema.definitions.IPerformancePlan);
             workplan.id = 3;
@@ -354,6 +360,7 @@ describe("test related to /employee and performance", () => {
             let response: any;
             jsf.option({
                 optionalsProbability: 1.0,
+                fixedProbabilities: true
             });
             let performance = jsf.generate(schema.definitions.IPerformanceReview);
             performance.id = 3;

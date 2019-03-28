@@ -68,8 +68,6 @@ export async function createRole(role: IRole, xAuthToken: String) {
         }
 
         await db.commit(conn);
-        await db.closeConnection(conn);
-
         return new JABCSuccess(JABCResponse.ROLE, `The role was created successfully.`);
     } catch (error) {
 		try {
@@ -77,9 +75,6 @@ export async function createRole(role: IRole, xAuthToken: String) {
         } catch (err) { }
 		throw error;
 	} finally {
-        try {
-            await db.rollback(conn);
-        } catch (err) { }
         try {
             await db.closeConnection(conn);
         } catch (err) { }
@@ -264,8 +259,6 @@ export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
         }
 
         await db.commit(conn);
-        await db.closeConnection(conn);
-
         return new JABCSuccess(JABCResponse.ROLE, `The role, ${role.name}, was updated successfully`);
     } catch (error) {
 		try {
@@ -273,9 +266,6 @@ export async function updateRole(id: Number, role: IRole, xAuthToken: String) {
         } catch (err) { }
 		throw error;
 	} finally {
-        try {
-            await db.rollback(conn);
-        } catch (err) { }
         try {
             await db.closeConnection(conn);
         } catch (err) { }

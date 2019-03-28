@@ -2407,22 +2407,21 @@
         "password" : {
           "type" : "string",
           "format" : "password",
-          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
+          "pattern" : "^aA_1(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}",
           "maxLength" : 40,
-          "description" : "password, used to sign into the system",
-          "faker" : "internet.password"
+          "description" : "password, used to sign into the system"
         },
         "firstname" : {
           "type" : "string",
           "maxLength" : 100,
           "description" : "first name, of an employee",
-          "faker": "name.firstname"
+          "faker":"name.firstName"
         },
         "lastname" : {
           "type" : "string",
           "maxLength" : 100,
           "description" : "last name, of an employee",
-          "faker": "name.lastname"
+          "faker": "name.lastName"
         },
         "fte" : {
           "type" : "integer",
@@ -2541,7 +2540,7 @@
         "password" : {
           "type" : "string",
           "format" : "password",
-          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
+          "pattern" : "^aA_1(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}",
           "maxLength" : 40,
           "description" : "password, used to sign into the system"
         },
@@ -3076,7 +3075,7 @@
         "password" : {
           "type" : "string",
           "format" : "password",
-          "pattern" : "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-:_+¿¡¬]).{8,}$",
+          "pattern" : "^aA_1(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}",
           "maxLength" : 40,
           "description" : "password, used to sign into the system"
         }

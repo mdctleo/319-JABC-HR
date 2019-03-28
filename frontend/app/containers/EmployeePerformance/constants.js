@@ -17,3 +17,4 @@ export const CREATE_PLAN = 'app/EmployeePerformance/CREATE_PLAN';
 export const CREATE_REVIEW = 'app/EmployeePerformance/CREATE_REVIEW';
 export const SAVE_PLAN = 'app/EmployeePerformance/SAVE_PLAN';
 export const SAVE_REVIEW = 'app/EmployeePerformance/SAVE_REVIEW';
+export const RESET = 'app/EmployeePerformance/RESET';

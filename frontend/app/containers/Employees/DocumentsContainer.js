@@ -13,10 +13,10 @@ const DocumentsContainer = props => {
     <Grid key={document.id} item xs={12} sm={6}>
       <Card className="document-card">
         <CardContent>
-          <Typography className="title" color="textSecondary" gutterBottom>
+          <Typography className="title" color="textSecondary" gutterBottom style={{ wordWrap: 'break-word'}}>
             {document.name}
           </Typography>
-          <Typography component="p">{document.description}</Typography>
+          <Typography component="p" style={{ wordWrap: 'break-word'}}>{document.description}</Typography>
           <Typography component="p">
             <b>Due: </b> {document.dueDate}
           </Typography>
