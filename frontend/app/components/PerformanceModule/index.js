@@ -24,6 +24,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+const uniqid = require('uniqid');
 
 const styles = theme => ({
   root: {
@@ -33,17 +34,21 @@ const styles = theme => ({
     paddingBottom: '100px',
   },
   sectionButton: {
-    display: 'block',
+    display: 'inline-block',
     color: 'white',
-    width: '150px',
-    margin: 'auto',
+    width: '170px',
     marginTop: '20px',
+    marginLeft: '5px',
+    marginRight: '5px',
     backgroundColor: '#ff6600',
     borderRadius: '15px',
     transition: '0.3s',
     '&:hover': {
       backgroundColor: '#ff944d',
     },
+  },
+  sectionButtonWrapper: {
+    textAlign: 'center',
   },
   editButton: {
     float: 'right',
@@ -272,6 +277,28 @@ class PerformanceModule extends React.Component {
     this.props.addSection(section, isPlan);
   };
 
+  // Build a Section from this user's competencies
+  addCompetencySection = isPlan => {
+    const section = {};
+    const columns = ["Name", "Description"];
+
+    const rows = [];
+    for (let competency of this.props.role.competencies) {
+      let row = {};
+      row.id = uniqid();
+      row.Name = competency.name;
+      row.Description = competency.description;
+      rows.push(row);
+    }
+
+    section.sectionName = "Competencies";
+    section.data = {};
+    section.data.columns = columns;
+    section.data.rows = rows;
+
+    this.props.addSection(section, isPlan);
+  };
+
   // Make a performance plan with the given plan year
   makePlan = () => {
     const d = new Date();
@@ -378,7 +405,7 @@ class PerformanceModule extends React.Component {
   };
 
   render() {
-    const { classes, selectedPlan, selectedReview, planList } = this.props;
+    const { classes, selectedPlan, selectedReview, planList, role } = this.props;
     const {
       columnsForNewSection,
       profile,
@@ -681,12 +708,20 @@ class PerformanceModule extends React.Component {
                       handleDeleteRows={this.openDeleteRowsDialog}
                       updateSection={(section) => this.props.updateSection(section, true)}
                     />
-                    <Button
-                      className={classes.sectionButton}
-                      onClick={this.openNewSectionDialog}
-                    >
-                      Add Section
-                    </Button>
+                    <div className={classes.sectionButtonWrapper}>
+                      <Button
+                        className={classes.sectionButton}
+                        onClick={this.openNewSectionDialog}
+                      >
+                        Add Section
+                      </Button>
+                      <Button
+                        className={classes.sectionButton}
+                        onClick={() => this.addCompetencySection(true)}
+                      >
+                        Add Competencies
+                      </Button>
+                    </div>
                   </div>
                 )}
               {selectedReview &&
@@ -721,12 +756,20 @@ class PerformanceModule extends React.Component {
                       handleDeleteRows={this.openDeleteRowsDialog}
                       updateSection={(section) => this.props.updateSection(section, false)}
                     />
-                    <Button
-                      className={classes.sectionButton}
-                      onClick={this.openNewSectionDialog}
-                    >
-                      Add Section
-                    </Button>
+                    <div className={classes.sectionButtonWrapper}>
+                      <Button
+                        className={classes.sectionButton}
+                        onClick={this.openNewSectionDialog}
+                      >
+                        Add Section
+                      </Button>
+                      <Button
+                        className={classes.sectionButton}
+                        onClick={() => this.addCompetencySection(false)}
+                      >
+                        Add Competencies
+                      </Button>
+                    </div>
                   </div>
                 )}
               {selectedPlan &&
@@ -771,7 +814,8 @@ PerformanceModule.propTypes = {
   createReview: PropTypes.func.isRequired,
   savePlan: PropTypes.func.isRequired,
   saveReview: PropTypes.func.isRequired,
-  updateSection: PropTypes.func.isRequired
+  updateSection: PropTypes.func.isRequired,
+  role: PropTypes.object
 };
 
 export default withStyles(styles)(PerformanceModule);

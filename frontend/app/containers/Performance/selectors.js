@@ -54,3 +54,13 @@ export const selectSelectedReview = createSelector(
     return selectedReview && selectedReview.toJS();
   },
 );
+
+export const selectRole = createSelector(
+  [selectProfile, selectResource('role')],
+  (profile, roles) => {
+    if (roles) {
+      return roles.get(`${profile.fkRole}`);
+    }
+    return null;
+  },
+);
