@@ -13,6 +13,7 @@ import Database from '../database/Database';
  **/
 export async function createDocumentType(documentType: IDocumentType, xAuthToken: String) {
 	try {
+		documentType = DocumentType.Prepare(documentType)
 		let res = await Database.getInstance().query('CALL create_doc_type(?,?)', [
 			documentType.name,
 			documentType.description,
@@ -292,6 +293,7 @@ export async function getOnboardingTaskFile(id: Number, xAuthToken: string) {
  **/
 export async function updateDocumentType(id: Number, documentType: IDocumentType, xAuthToken: String) {
 	try {
+		documentType = DocumentType.Prepare(documentType)
 		let res = await Database.getInstance().query('CALL update_doc_type(?,?,?)',
 			[
 				id,

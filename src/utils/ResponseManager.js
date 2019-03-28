@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../model/models");
-var utils = require('./writer');
 const DEBUG = process.env.DEBUG;
 class JABCResponse {
 }
@@ -31,7 +30,7 @@ JABCResponse.COMPETENCY = {
 };
 JABCResponse.UNHANDLED_ERROR = {
     error: 500,
-    message: 'There was a problem, try again later.'
+    message: 'Sorry there was a problem, try again later. If the problem persists, comunicate with the site manager.'
 };
 JABCResponse.NOT_FOUND = {
     error: 404,
@@ -113,7 +112,7 @@ class JABCSuccess {
 }
 exports.JABCSuccess = JABCSuccess;
 function PreValidator(req, res, next) {
-    req.body = utils.deleteDeepNulls(req.body);
+    req.body = deleteDeepNulls(req.body);
     next();
 }
 exports.PreValidator = PreValidator;
@@ -199,11 +198,90 @@ function ErrorHandler(err, req, res, next) {
         let error = new JABCError(JABCResponse.BAD_REQUEST, message);
         if (DEBUG)
             error.debugMessage = JSON.stringify(debugMessage);
-        utils.writeJson(res, error, error.responseCode);
+        RespondJson(res, error, error.responseCode);
     }
     else {
         next();
     }
 }
 exports.ErrorHandler = ErrorHandler;
+class ResponsePayload {
+    constructor(code, payload) {
+        this.code = code;
+        this.payload = payload;
+    }
+}
+exports.ResponsePayload = ResponsePayload;
+function RespondWithCode(code, payload) {
+    return new ResponsePayload(code, payload);
+}
+exports.RespondWithCode = RespondWithCode;
+function RespondJson(response, arg1, arg2) {
+    var code;
+    var payload;
+    if (arg1 && arg1 instanceof ResponsePayload) {
+        RespondJson(response, arg1.payload, arg1.code);
+        return;
+    }
+    if (arg2 && Number.isInteger(arg2)) {
+        code = arg2;
+    }
+    else {
+        if (arg1 && Number.isInteger(arg1)) {
+            code = arg1;
+        }
+    }
+    if (code && arg1) {
+        payload = arg1;
+    }
+    else if (arg1) {
+        payload = arg1;
+    }
+    if (!code) {
+        code = 200;
+    }
+    if (typeof payload === 'object') {
+        deleteDeepNulls(payload);
+        payload = JSON.stringify(payload, null, 2);
+        if (payload === '{}') {
+            payload = JSON.stringify(new JABCError(JABCResponse.UNHANDLED_ERROR), null, 2);
+        }
+    }
+    response.writeHead(code, { 'Content-Type': 'application/json' });
+    response.end(payload);
+}
+exports.RespondJson = RespondJson;
+function RespondFile(response, file, code = 200) {
+    response.writeHead(code, { 'Content-Type': file.mimetype });
+    response.end(file.buffer, 'binary');
+}
+exports.RespondFile = RespondFile;
+function deleteDeepNulls(data) {
+    if (typeof data === 'object') {
+        Object.keys(data).forEach((key) => {
+            if (data[key] == null || (typeof data[key] === 'number' && isNaN(data[key]))) {
+                delete data[key];
+            }
+            else {
+                deleteDeepNulls(data[key]);
+            }
+        });
+    }
+    return data;
+}
+exports.deleteDeepNulls = deleteDeepNulls;
+function deleteNulls(data) {
+    Object.keys(data).forEach((key) => (data[key] == null || (typeof data[key] === 'number' && isNaN(data[key]))) && delete data[key]);
+    return data;
+}
+exports.deleteNulls = deleteNulls;
+function deleteNullsArray(arr) {
+    let newArr = [];
+    for (let obj of arr) {
+        obj = deleteNulls(obj);
+        newArr.push(obj);
+    }
+    return newArr;
+}
+exports.deleteNullsArray = deleteNullsArray;
 //# sourceMappingURL=ResponseManager.js.map

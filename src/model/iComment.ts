@@ -77,4 +77,10 @@ export class Comment implements IComment{
         }
         return Comments
     }
+
+    static Prepare(rawComment: IComment) {
+        rawComment.fkPerformancePlan = (rawComment.fkPerformancePlan != undefined) ? rawComment.fkPerformancePlan : null;
+        rawComment.fkPerformanceReview = (rawComment.fkPerformanceReview != undefined) ? rawComment.fkPerformanceReview : null;
+        return rawComment;
+    }
 }

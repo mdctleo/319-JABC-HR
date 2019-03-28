@@ -56,8 +56,8 @@ export class Competency implements ICompetency{
     }
 
     static Prepare(rawCompetency: ICompetency) {
-        rawCompetency.name = (rawCompetency.name) ? rawCompetency.name : null;
-        rawCompetency.description = (rawCompetency.description) ? rawCompetency.description : null;
+        rawCompetency.name = (rawCompetency.name != undefined) ? rawCompetency.name : null;
+        rawCompetency.description = (rawCompetency.description != undefined) ? rawCompetency.description : null;
         return rawCompetency;
     }
 }

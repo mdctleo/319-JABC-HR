@@ -24,6 +24,7 @@ import Database from '../database/Database';
 import * as RoleService from './RolesService'
 import IDatabaseClient from '../database/IDatabaseClient';
 import * as Security from '../utils/Security';
+import Log from '../../util/Log';
 const JWT_KEY = process.env.JWT_KEY;
 const AES_KEY = process.env.AES_KEY;
 
@@ -40,19 +41,30 @@ const AES_KEY = process.env.AES_KEY;
  **/
 export async function completeOnboardingTask(id: Number, idOnboardingTask: Number, xAuthToken: string, document: any) {
 	try {
+		// Priviledge validation
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER && id != client.id) {
 			await isManagedBy(id, client.id)
 		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee can not complete other employee task.')
 		}
+		// File size validation
 		if (document) {
 			if (document.buffer.length > process.env.MAX_FILE)
 				throw new JABCError(JABCResponse.EMPLOYEE, 'The file exceeded the size limit of 16 mb')
 		} else {
 			document = { buffer: null, mimetype: null };
 		}
-		let res = await Database.getInstance().query('CALL complete_onboarding_task(?,?,?)', [
+		let res = await Database.getInstance().query('CALL get_onboarding_task(?)', [idOnboardingTask])
+		let task: IOnboardingTask = res[0][0][0];
+		// Date validation
+		let due = new Date(task.dueDate);
+		let now = new Date()
+		let nowString = now.toISOString().split('T')[0]
+		if(now > due && nowString !== task.dueDate){
+			throw new JABCError(JABCResponse.EMPLOYEE, 'Can\'t complete a task that has passed the due date')
+		}
+		await Database.getInstance().query('CALL complete_onboarding_task(?,?,?)', [
 			idOnboardingTask,
 			document.buffer,
 			document.mimetype
@@ -368,10 +380,12 @@ export async function getEmployee(id: Number, xAuthToken: string) {
 export async function getEmployeeHistory(id: Number, xAuthToken: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
-		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level can not get another employee information.')
+		if (id != client.id) {
+			if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+				await isManagedBy(id, client.id)
+			} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level can not get another employee information.')
+			}
 		}
 		let res = await Database.getInstance().query('CALL get_employee_history(?)', [id], JABCResponse.EMPLOYEE)
 		let employeeHistory = EmployeeHistory.Employees(res[0][0])
@@ -477,10 +491,12 @@ export async function getEmployeesByManager(idManager: Number, xAuthToken: strin
 export async function getOnboardingTasks(id: Number, xAuthToken: string, term: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
-		} else if (client.id != id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level, can not see other employees\' onboarding task')
+		if (id != client.id) {
+			if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+				await isManagedBy(id, client.id)
+			} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level, can not see other employees\' onboarding task')
+			}
 		}
 		let res = await Database.getInstance().query('CALL get_employee_tasks(?)', [id], JABCResponse.EMPLOYEE)
 		return OnboardingTask.OnboardingTasks(res[0][0])
@@ -501,10 +517,12 @@ export async function getOnboardingTasks(id: Number, xAuthToken: string, term: s
 export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER && id != client.id) {
-			await isManagedBy(id, client.id)
-		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level can not get another employee information.')
+		if (id != client.id) {
+			if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+				await isManagedBy(id, client.id)
+			} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level can not get another employee information.')
+			}
 		}
 		let res = await Database.getInstance().query('CALL get_managers_of_employee(?)', [id], JABCResponse.EMPLOYEE);
 		let managers = Employee.Employees(res[0][0], false);
@@ -533,10 +551,12 @@ export async function getManagersByEmployee(id: Number, xAuthToken: string) {
 export async function getPerformancePlans(id: Number, xAuthToken: string, term: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee;
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
-		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance plan of other employee.');
+		if (id != client.id) {
+			if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+				await isManagedBy(id, client.id)
+			} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level can not get another employee information.')
+			}
 		}
 		let res = await Database.getInstance().query('CALL get_employee_performance_plans(?)', [id], JABCResponse.EMPLOYEE);
 		let performancePlans = PerformancePlan.PerformancePlans(res[0][0]);
@@ -565,10 +585,12 @@ export async function getPerformancePlans(id: Number, xAuthToken: string, term: 
 export async function getPerformanceReviews(id: Number, xAuthToken: string, term: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
-		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.');
+		if (id != client.id) {
+			if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+				await isManagedBy(id, client.id)
+			} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not get the performance review of other employee.');
+			}
 		}
 		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE);
 		let performanceReviews = PerformanceReview.PerformanceReviews(res[0][0]);
@@ -769,10 +791,12 @@ export async function unlinkEmployeeManager(id: Number, idManager: Number, xAuth
 export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken: string, idAdmin: Number) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
-		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not update the information of another employee.');
+		if (id != client.id) {
+			if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+				await isManagedBy(id, client.id)
+			} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not update the information of another employee.');
+			}
 		}
 		if (employee.dateJoined != null && employee.birthdate != null) {
 			let dateJoined = new Date(employee.dateJoined)
@@ -784,7 +808,7 @@ export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken
 		employee = Employee.Prepare(employee)
 		let res = await Database.getInstance().query('CALL update_employee(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
 			id,
-			(idAdmin) ? idAdmin : client.id,
+			client.id,
 			employee.fkRole,
 			employee.sin,
 			employee.email,
@@ -820,10 +844,12 @@ export async function updateEmployee(id: Number, employee: IEmployee, xAuthToken
 export async function updateEmployeePassword(id: Number, employee: IEmployee, xAuthToken: string) {
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
-		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not update the information of another employee.');
+		if (id != client.id) {
+			if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+				await isManagedBy(id, client.id)
+			} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not update the information of another employee.');
+			}
 		}
 		employee = Employee.Prepare(employee)
 		let encryptedPassword = Security.EncryptAES(employee.password, AES_KEY);

@@ -58,8 +58,7 @@ export class Role implements IRole {
     }
 
     static Prepare(rawRole: IRole) {
-        rawRole.name = (rawRole.name) ? rawRole.name : null;
-        rawRole.description = (rawRole.description) ? rawRole.description : null;
+        rawRole.description = (rawRole.description != undefined) ? rawRole.description : null;
         return rawRole;
     }
 }

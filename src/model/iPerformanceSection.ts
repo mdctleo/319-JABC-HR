@@ -70,8 +70,8 @@ export class PerformanceSection implements IPerformanceSection{
     }
 
     static Prepare(rawPerformanceSection: IPerformanceSection){
-        rawPerformanceSection.fkPerformancePlan = (rawPerformanceSection.fkPerformancePlan) ? rawPerformanceSection.fkPerformancePlan : null;
-        rawPerformanceSection.fkPerformanceReview = (rawPerformanceSection.fkPerformanceReview) ? rawPerformanceSection.fkPerformanceReview : null;
+        rawPerformanceSection.fkPerformancePlan = (rawPerformanceSection.fkPerformancePlan != undefined) ? rawPerformanceSection.fkPerformancePlan : null;
+        rawPerformanceSection.fkPerformanceReview = (rawPerformanceSection.fkPerformanceReview != undefined) ? rawPerformanceSection.fkPerformanceReview : null;
         return rawPerformanceSection
     }
 }

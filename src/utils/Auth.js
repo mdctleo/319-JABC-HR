@@ -37,7 +37,7 @@ function default_1(req, res, next) {
             let error = err;
             if (!ResponseManager_1.JABCError.isError(error))
                 error = new ResponseManager_1.JABCError(ResponseManager_1.JABCResponse.UNAUTHORIZED);
-            utils.writeJson(res, error, error.responseCode);
+            ResponseManager_1.RespondJson(res, error, error.responseCode);
             res.end();
         }
     });
@@ -74,7 +74,7 @@ function Validate_AuthToken(req, res, securityOptions) {
                 return;
             }
             if (isLogin) {
-                utils.writeJson(res, loginResponse);
+                ResponseManager_1.RespondJson(res, loginResponse);
                 res.end();
             }
             else {

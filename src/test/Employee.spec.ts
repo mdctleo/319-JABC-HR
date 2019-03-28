@@ -992,8 +992,8 @@ describe("EmployeeService tests", () => {
                     response.body.forEach((employee: any) => {
                         expect(employee).to.be.jsonSchema(schema.definitions.IEmployeeHistory);
                     });
-                    expect(response.body[1].firstname).to.be.equal("Jim");
-                    expect(response.body[0].firstname).to.be.equal("Big Tuna");
+                    expect(response.body[0].firstname).to.be.equal("Jim");
+                    expect(response.body[1].firstname).to.be.equal("Big Tuna");
                 }
         });
 
