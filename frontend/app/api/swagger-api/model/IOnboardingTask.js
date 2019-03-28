@@ -27,14 +27,14 @@ import IDocumentType from './IDocumentType';
 export default class IOnboardingTask {
     /**
     * Constructs a new <code>IOnboardingTask</code>.
-    * An onboarding task required for the onbarding proccess of a new Employee, if the property [requireDoc] is set to 1, then the OnboardingTask require the employee to upload a document, and the fkDocumentType will  contain the id of the IDocumentType object with the template of the document to be filled by the employee.  Otherwise the [fkDocumentType] property will be null. 
+    * Onboarding task, required for the onbarding proccess of a new Employee, if the property [requireDoc] is set to 1, then the OnboardingTask require the employee to upload a document, and the fkDocumentType will  contain the id of the IDocumentType object with the template of the document to be filled by the employee.  Otherwise the [fkDocumentType] property will be null. 
     * @alias module:model/IOnboardingTask
     * @class
-    * @param fkEmployee {Number} The foreign key  of the Employee that needs to upload this Document
-    * @param createdDate {Date} The created date of this Document
-    * @param dueDate {Date} The due date of this Document
-    * @param requireDoc {Number} Wether the Onboarding task requires document upload or not.
-    * @param status {Number} Wether the Onboarding task is done or not
+    * @param fkEmployee {Number} employee ID, foreign key of the Employee that needs to upload this onboarding task
+    * @param createdDate {Date} created date, of this onboarding task
+    * @param dueDate {Date} due date, of this onboarding task
+    * @param requireDoc {Number} require doc, controls wether the Onboarding task requires document upload or not.
+    * @param status {Number} status, controls wether the Onboarding task is done or not
     */
 
     constructor(fkEmployee, createdDate, dueDate, requireDoc, status) {
@@ -101,51 +101,52 @@ export default class IOnboardingTask {
     }
 
     /**
-    * The unique identifier of the Role
+    * onboarding task ID, the unique identifier of the Role
     * @member {Number} id
     */
     id = undefined;
     /**
-    * The foreign key  of the DocumentType of this Document
+    * document template ID, foreign key of the DocumentType of this onboarding task
     * @member {Number} fkDocumentType
     */
     fkDocumentType = undefined;
     /**
-    * The foreign key  of the Employee that needs to upload this Document
+    * employee ID, foreign key of the Employee that needs to upload this onboarding task
     * @member {Number} fkEmployee
     */
     fkEmployee = undefined;
     /**
-    * The created date of this Document
+    * created date, of this onboarding task
     * @member {Date} createdDate
     */
     createdDate = undefined;
     /**
-    * The due date of this Document
+    * due date, of this onboarding task
     * @member {Date} dueDate
     */
     dueDate = undefined;
     /**
-    * Wether the Onboarding task requires document upload or not.
+    * require doc, controls wether the Onboarding task requires document upload or not.
     * @member {Number} requireDoc
     */
     requireDoc = undefined;
     /**
-    * Wether the Onboarding task is done or not
+    * status, controls wether the Onboarding task is done or not
     * @member {Number} status
     */
     status = undefined;
     /**
-    * The expiry date of this Document
+    * expiry date, of this onboarding task
     * @member {Date} expiryDate
     */
     expiryDate = undefined;
     /**
-    * The link to the file if it is required
+    * link to file, to the file if it is required
     * @member {String} file
     */
     file = undefined;
     /**
+    * description, of this onboarding task
     * @member {String} description
     */
     description = undefined;

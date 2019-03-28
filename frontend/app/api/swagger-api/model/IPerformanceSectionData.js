@@ -26,7 +26,7 @@ import ApiClient from '../ApiClient';
 export default class IPerformanceSectionData {
     /**
     * Constructs a new <code>IPerformanceSectionData</code>.
-    * The object that represents all the data of this performance section
+    * data, the object that represents all the data of this performance section
     * @alias module:model/IPerformanceSectionData
     * @class
     */
@@ -54,9 +54,9 @@ export default class IPerformanceSectionData {
     }
 
     /**
-    * @member {String} value
+    * @member {String} v_a_l_u_e
     */
-    value = undefined;
+    v_a_l_u_e = undefined;
 
 
 

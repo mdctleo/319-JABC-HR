@@ -26,11 +26,11 @@ import ApiClient from '../ApiClient';
 export default class ILogin {
     /**
     * Constructs a new <code>ILogin</code>.
-    * Represents the basic info to logged into the system
+    * Login, represents the basic info to logged into the system
     * @alias module:model/ILogin
     * @class
-    * @param email {String} 
-    * @param password {String} 
+    * @param email {String} email, used to sign into the system
+    * @param password {String} password, used to sign into the system
     */
 
     constructor(email, password) {
@@ -70,10 +70,12 @@ export default class ILogin {
     }
 
     /**
+    * email, used to sign into the system
     * @member {String} email
     */
     email = undefined;
     /**
+    * password, used to sign into the system
     * @member {String} password
     */
     password = undefined;

@@ -26,11 +26,11 @@ import ApiClient from '../ApiClient';
 export default class IFAQ {
     /**
     * Constructs a new <code>IFAQ</code>.
-    * A FAQ contains a question and answer, to help the employee while onboarding 
+    * Frequently Asked Question, contains a question and answer, to help the employee while onboarding 
     * @alias module:model/IFAQ
     * @class
-    * @param question {String} 
-    * @param answer {String} 
+    * @param question {String} description, of this FAQ
+    * @param answer {String} answer, of this FAQ
     */
 
     constructor(question, answer) {
@@ -73,15 +73,17 @@ export default class IFAQ {
     }
 
     /**
-    * The unique identifier of the FAQ
+    * FAQ ID, the unique identifier of the FAQ
     * @member {Number} id
     */
     id = undefined;
     /**
+    * description, of this FAQ
     * @member {String} question
     */
     question = undefined;
     /**
+    * answer, of this FAQ
     * @member {String} answer
     */
     answer = undefined;

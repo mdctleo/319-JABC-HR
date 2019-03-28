@@ -26,13 +26,13 @@ import ApiClient from '../ApiClient';
 export default class IVacation {
     /**
     * Constructs a new <code>IVacation</code>.
-    * A Vacation contains info of the employee asking for a vaction period 
+    * Vacation request, contains info of the employee asking for a vaction period 
     * @alias module:model/IVacation
     * @class
-    * @param fkEmployee {Number} The unique identifier of the Employee that requests the vacation
-    * @param requestedDays {Number} The number of vacation days the employee requested
-    * @param requestedStatus {Number} 
-    * @param _date {Date} The date when the employee requested the vacation
+    * @param fkEmployee {Number} employee ID, the unique identifier of the Employee that requests the vacation
+    * @param requestedDays {Number} requested days the number of vacation days the employee requested
+    * @param requestedStatus {Number} vacation request status, the number of vacation days the employee requested
+    * @param _date {Date} date, when the employee requested the vacation
     */
 
     constructor(fkEmployee, requestedDays, requestedStatus, _date) {
@@ -84,31 +84,32 @@ export default class IVacation {
     }
 
     /**
-    * The unique identifier of the Vacation
+    * vacation ID, the unique identifier of the Vacation
     * @member {Number} id
     */
     id = undefined;
     /**
-    * The unique identifier of the Employee that requests the vacation
+    * employee ID, the unique identifier of the Employee that requests the vacation
     * @member {Number} fkEmployee
     */
     fkEmployee = undefined;
     /**
-    * The unique identifier of the Employee that approves the vacation request
+    * approver ID, the unique identifier of the Employee that approves the vacation request
     * @member {Number} fkApprover
     */
     fkApprover = undefined;
     /**
-    * The number of vacation days the employee requested
+    * requested days the number of vacation days the employee requested
     * @member {Number} requestedDays
     */
     requestedDays = undefined;
     /**
+    * vacation request status, the number of vacation days the employee requested
     * @member {Number} requestedStatus
     */
     requestedStatus = undefined;
     /**
-    * The date when the employee requested the vacation
+    * date, when the employee requested the vacation
     * @member {Date} date
     */
     date = undefined;

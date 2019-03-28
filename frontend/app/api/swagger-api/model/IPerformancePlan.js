@@ -28,14 +28,14 @@ import IPerformanceSection from './IPerformanceSection';
 export default class IPerformancePlan {
     /**
     * Constructs a new <code>IPerformancePlan</code>.
-    * PerformancePlan contains info of the sections of a performance plan of an employee 
+    * Work plan, contains info of the sections of a performance plan of an employee 
     * @alias module:model/IPerformancePlan
     * @class
-    * @param fkEmployee {Number} Foreign key of the employee with this performance review
-    * @param createDate {Date} The date the performance review was created
-    * @param startYear {Number} The start year of the plan
-    * @param endYear {Number} The end year of the plan
-    * @param status {Number} 
+    * @param fkEmployee {Number} employee ID, Foreign key of the employee with this performance review
+    * @param createDate {Date} created date, the performance review was created
+    * @param startYear {Number} start year, of the plan
+    * @param endYear {Number} end year, of the plan
+    * @param status {Number} status, of the plan
     */
 
     constructor(fkEmployee, createDate, startYear, endYear, status) {
@@ -93,41 +93,42 @@ export default class IPerformancePlan {
     }
 
     /**
-    * The unique identifier of the Performance
+    * performance plan ID, the unique identifier of the Performance
     * @member {Number} id
     */
     id = undefined;
     /**
-    * Foreign key of the employee with this performance review
+    * employee ID, Foreign key of the employee with this performance review
     * @member {Number} fkEmployee
     */
     fkEmployee = undefined;
     /**
-    * The date the performance review was created
+    * created date, the performance review was created
     * @member {Date} createDate
     */
     createDate = undefined;
     /**
-    * The start year of the plan
+    * start year, of the plan
     * @member {Number} startYear
     */
     startYear = undefined;
     /**
-    * The end year of the plan
+    * end year, of the plan
     * @member {Number} endYear
     */
     endYear = undefined;
     /**
+    * status, of the plan
     * @member {Number} status
     */
     status = undefined;
     /**
-    * Contains all the IPerformanceSections Related to this IPerformancePlan
+    * sections, contains all the IPerformanceSections Related to this IPerformancePlan
     * @member {Array.<module:model/IPerformanceSection>} sections
     */
     sections = undefined;
     /**
-    * Contains all the comments of this performance review
+    * commentsm contains all the comments of this performance review
     * @member {Array.<module:model/IComment>} comments
     */
     comments = undefined;
