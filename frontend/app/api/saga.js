@@ -62,14 +62,14 @@ export function* createEmployee(employee) {
 }
 
 export function* getPerformancePlans(id) {
-  const plans = yield employeeApi.getPerformancePlans(id);
   yield put(clearResource('plan'));
+  const plans = yield employeeApi.getPerformancePlans(id);
   yield all(plans.map(p => put(setResource('plan', p.id, p))));
 }
 
 export function* getPerformanceReviews(id) {
-  const reviews = yield employeeApi.getPerformanceReviews(id);
   yield put(clearResource('review'));
+  const reviews = yield employeeApi.getPerformanceReviews(id);
   yield all(reviews.map(r => put(setResource('review', r.id, r))));
 }
 

@@ -33,7 +33,7 @@ const styles = theme => ({
     float: 'left',
     display: 'inline',
     color: '#black',
-    width: '100px',
+    width: '120px',
     backgroundColor: '#e5e5e5',
     borderRadius: '15px',
     transition: '0.3s',
@@ -135,7 +135,6 @@ class EditPerformanceSection extends React.Component {
                   key={colId}>
                   <TableCell key={'col-name'.concat(colId)}>
                     <TextField
-                      autoFocus
                       margin="dense"
                       key={'col-name'.concat(colId)}
                       id={'col-name'.concat(colId)}
@@ -156,7 +155,7 @@ class EditPerformanceSection extends React.Component {
                 </TableRow>
               ))}
               <TableRow className={classes.bottomRow}>
-                <TableCell >
+                <TableCell colSpan={section.data.columns.length + 1}>
                   <Button
                     className={classes.addButton}
                     onClick={addColumnForEditSection}

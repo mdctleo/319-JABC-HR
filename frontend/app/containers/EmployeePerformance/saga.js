@@ -39,9 +39,10 @@ export function* selectPlan(action) {
   }
   const reviews = yield select(selectResource('review'));
   if (reviews) {
-    yield put(
-      setReviewCopy(reviews.find(r => r.fkPerformancePlan === action.id)),
-    );
+    const review = reviews.find(r => r.fkPerformancePlan === action.id);
+    if (review) {
+      yield put(setReviewCopy(review));
+    }
   }
 }
 
@@ -82,7 +83,9 @@ export function* createPlan({ plan, selectedEmployee }) {
     const reviews = yield select(selectResource('review'));
     if (reviews) {
       yield put(
-        setReviewCopy(reviews.find(r => r.fkPerformancePlan === selectedEmployee.id)),
+        setReviewCopy(
+          reviews.find(r => r.fkPerformancePlan === selectedEmployee.id),
+        ),
       );
     }
   } catch (e) {

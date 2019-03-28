@@ -111,16 +111,20 @@ const deleteSection = (state, sectionId, isPlan) => {
 function performanceReducer(state = initialState, action) {
   switch (action.type) {
     case SET_PLAN_COPY: {
-      const sections = action.plan.sections;
-      action.plan.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
+      if (action.plan) {
+        const sections = action.plan.sections;
+        action.plan.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
+      }
       return state.set(
         'selectedPlan',
         action.plan && fromJS(JSON.parse(JSON.stringify(action.plan))),
       );
     }
     case SET_REVIEW_COPY: {
-      const sections = action.review.sections;
-      action.review.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
+      if (action.review) {
+        const sections = action.review.sections;
+        action.review.sections = sections.filter(s => s.data && s.data.columns && s.data.rows);
+      }
       return state.set(
         'selectedReview',
         action.review && fromJS(JSON.parse(JSON.stringify(action.review))),
