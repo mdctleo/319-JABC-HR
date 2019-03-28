@@ -33,8 +33,8 @@ const styles = theme => ({
     },
   },
   container: {
-      margin: '40px',
-  }
+    margin: '40px',
+  },
 });
 
 class EmployeeModalContent extends React.PureComponent {
@@ -75,10 +75,11 @@ class EmployeeModalContent extends React.PureComponent {
   }
 
   render() {
-    const { classes, profile, isAdmin, roleName } = this.props;
+    const { classes, profile, isAdmin } = this.props;
+    if (!profile) return null;
 
     return (
-        <div classes={classes.container}>
+      <div className={classes.container}>
         <Typography variant="h5" className={classes.title}>
           {profile.firstname} {profile.lastname}
         </Typography>
@@ -146,7 +147,7 @@ class EmployeeModalContent extends React.PureComponent {
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">POSITION</Typography>
               </TableCell>
-              <TableCell align="left">{roleName}</TableCell>
+              <TableCell align="left">{profile.role && profile.role.name}</TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
@@ -194,7 +195,7 @@ class EmployeeModalContent extends React.PureComponent {
             </TableRow>
           </TableBody>
         </Table>
-        </div>
+      </div>
     );
   }
 }
@@ -203,7 +204,6 @@ EmployeeModalContent.propTypes = {
   classes: PropTypes.object.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   profile: PropTypes.object,
-  roleName: PropTypes.string,
 };
 
 export default withStyles(styles)(EmployeeModalContent);

@@ -111,10 +111,10 @@ export default class IEmployeeHistory {
                 obj['address'] = ApiClient.convertToType(data['address'], 'String');
             }
             if (data.hasOwnProperty('birthdate')) {
-                obj['birthdate'] = ApiClient.convertToType(data['birthdate'], 'Date');
+                obj['birthdate'] = ApiClient.convertToType(data['birthdate'], 'String');
             }
             if (data.hasOwnProperty('dateJoined')) {
-                obj['dateJoined'] = ApiClient.convertToType(data['dateJoined'], 'Date');
+                obj['dateJoined'] = ApiClient.convertToType(data['dateJoined'], 'String');
             }
             if (data.hasOwnProperty('vacationDays')) {
                 obj['vacationDays'] = ApiClient.convertToType(data['vacationDays'], 'Number');

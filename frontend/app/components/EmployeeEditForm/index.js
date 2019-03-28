@@ -348,7 +348,7 @@ class EmployeeEditForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
-                value={profile.vacationDays}
+                value={profile.remainingVacationDays}
                 label="Vacation Days Remaining"
                 className={classes.textField}
                 margin="normal"
