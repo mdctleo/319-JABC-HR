@@ -117,11 +117,10 @@ class EditPerformanceSectionRow extends React.Component {
         <DialogContent>
           {section.data.columns.map(column => (
             <TextField
-              key={column.concat(indexOfEditRow)}
-              autoFocus
+              key={column.concat(section.id)}
               margin="dense"
               defaultValue={section.data.rows[indexOfEditRow][column]}
-              id={column.concat(indexOfEditRow)}
+              id={column.concat(section.id)}
               label={column}
               fullWidth
             />

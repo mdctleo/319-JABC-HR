@@ -562,7 +562,7 @@ class PerformanceModule extends React.Component {
               onClose={this.closeNewSectionDialog}
               aria-labelledby="form-dialog-title"
             >
-              <DialogTitle id="form-dialog-title">Add new Section</DialogTitle>
+              <DialogTitle id="form-dialog-title">Add Section</DialogTitle>
               <DialogContent>
                 <TextField
                   autoFocus
@@ -573,7 +573,6 @@ class PerformanceModule extends React.Component {
                 />
                 {columnsForNewSection.map((column, i) => (
                   <TextField
-                    autoFocus
                     key={i}
                     margin="dense"
                     id={'col-name'.concat(column)}

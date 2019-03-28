@@ -193,7 +193,7 @@ let EnhancedTableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        {numSelected === 0 ? (
+        {numSelected === 0 && (
           <div>
             <IconButton
               className={classes.actionButton}
@@ -210,7 +210,26 @@ let EnhancedTableToolbar = props => {
               <DeleteIcon />
             </IconButton>
           </div>
-        ) : (
+        )}
+        {numSelected === 1 && (
+          <div>
+            <IconButton
+              className={classes.actionButton}
+              onClick={props.openEditRowDialog}
+              size="small"
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              className={classes.actionButton}
+              onClick={props.handleDeleteSection}
+              size="small"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        )}
+        { numSelected > 1 && (
           <Tooltip title="Delete">
             <IconButton onClick={props.handleDeleteRows} aria-label="Delete">
               <DeleteIcon />
@@ -228,7 +247,8 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   handleDeleteSection: PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired,
-  openEditSectionDialog: PropTypes.func.isRequired
+  openEditSectionDialog: PropTypes.func.isRequired,
+  openEditRowDialog: PropTypes.func.isRequired
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
@@ -349,8 +369,19 @@ class PerformanceSection extends React.Component {
     this.setState({ openEditSectionDialog: false });
   };
 
-  openEditRowDialog = (index) => {
-    this.setState({ openEditRowDialog: true, indexOfEditRow: index });
+  // Find index of the one row that is selected,
+  // Open it for edit
+  openEditRowDialog = () => {
+    let indexSelected = 0;
+    let rows = this.state.section.data.rows;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].id === this.state.selected[0]) {
+        indexSelected = i;
+        break;
+      }
+    }
+
+    this.setState({ openEditRowDialog: true, indexOfEditRow: indexSelected });
   };
 
   closeEditRowDialog = () => {
@@ -463,12 +494,27 @@ class PerformanceSection extends React.Component {
   };
 
   saveEditedRow = () => {
-    console.log("Saved!");
+    const section = this.props.section;
+    const newRow = {};
+
+    newRow.id = uniqid();
+    for (const column of section.data.columns) {
+      newRow[column] = document.getElementById(
+        column.concat(section.id),
+      ).value;
+    }
+
+    section.data.rows.splice(this.state.indexOfEditRow, 1, newRow);
+    console.log(section.data.rows);
+
+    this.props.updateSection(section);
+    this.setState( {selected: []} );
+    this.closeEditRowDialog();
   };
 
   render() {
     const { classes, section } = this.props;
-    const { columnsForEditSection, openEditSectionDialog, editSectionError, openAddRowDialog, selected } = this.state;
+    const { columnsForEditSection, openAddRowDialog, selected } = this.state;
     const that = this;
 
     return (
@@ -479,7 +525,7 @@ class PerformanceSection extends React.Component {
           aria-labelledby="form-dialog-title"
           fullWidth
         >
-          <DialogTitle id="form-dialog-title">Add new row</DialogTitle>
+          <DialogTitle id="form-dialog-title">Add Row</DialogTitle>
           <DialogContent>
             {section.data.columns.map(column => (
               <TextField
@@ -529,6 +575,7 @@ class PerformanceSection extends React.Component {
             handleDeleteRows={that.handleDeleteRows}
             handleDeleteSection={that.handleDeleteSection}
             openEditSectionDialog={that.openEditSectionDialog}
+            openEditRowDialog={that.openEditRowDialog}
           />
           <div className={classes.tableWrapper}>
             <Table className={classes.table}>
@@ -539,12 +586,12 @@ class PerformanceSection extends React.Component {
                 rowCount={section.data.rows.length}
               />
               <TableBody>
-                {section.data.rows.map((item, index) => {
+                {section.data.rows.map((item) => {
                   const isSelected = that.isSelected(item.id);
                   return (
                     <TableRow
                       hover
-                      onClick={() => that.openEditRowDialog(index)}
+                      onClick={event => that.handleClick(event, item.id)}
                       role="checkbox"
                       aria-checked={isSelected}
                       selected={isSelected}
@@ -553,7 +600,6 @@ class PerformanceSection extends React.Component {
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
-                          onClick={event => that.handleClick(event, item.id)}
                           checked={isSelected} />
                       </TableCell>
                       {section.data.columns.map(column => (
@@ -569,8 +615,7 @@ class PerformanceSection extends React.Component {
                     <Button
                       className={classes.addButton}
                       onClick={this.openNewRowDialog}
-                      size="small"
-                    >
+                      size="small">
                       ADD ROW
                     </Button>
                   </TableCell>
