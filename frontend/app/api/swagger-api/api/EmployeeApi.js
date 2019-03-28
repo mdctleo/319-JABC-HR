@@ -1132,6 +1132,134 @@ export default class EmployeeApi {
 
 
     /**
+     * update all the managed Employees of a manager with the provided [idManager]
+     * This will delete all previous links to managers of the employee with [idManager]  
+     * @param {Number} idManager Employee that will manage the employees
+     * @param {Array.<module:model/Number>} employees array of ids of the employees that will be managed
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
+     */
+    setEmployeesOfManagerWithHttpInfo(idManager, employees, opts) {
+      opts = opts || {};
+      let postBody = employees;
+
+      // verify the required parameter 'idManager' is set
+      if (idManager === undefined || idManager === null) {
+        throw new Error("Missing the required parameter 'idManager' when calling setEmployeesOfManager");
+      }
+
+      // verify the required parameter 'employees' is set
+      if (employees === undefined || employees === null) {
+        throw new Error("Missing the required parameter 'employees' when calling setEmployeesOfManager");
+      }
+
+
+      let pathParams = {
+        'idManager': idManager
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IApiResponse;
+
+      return this.apiClient.callApi(
+        '/employee/manager/{idManager}', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * update all the managed Employees of a manager with the provided [idManager]
+     * This will delete all previous links to managers of the employee with [idManager]  
+     * @param {Number} idManager Employee that will manage the employees
+     * @param {Array.<module:model/Number>} employees array of ids of the employees that will be managed
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
+     */
+    setEmployeesOfManager(idManager, employees, opts) {
+      return this.setEmployeesOfManagerWithHttpInfo(idManager, employees, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * update all the Managers of an employee with the provided [id]
+     * This will delete all previous links to managers of the employee with [id]  
+     * @param {Number} id id of the Employee to set the Managers
+     * @param {Array.<module:model/Number>} managers array of ids of the managers
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IApiResponse} and HTTP response
+     */
+    setManagersOfEmployeeWithHttpInfo(id, managers, opts) {
+      opts = opts || {};
+      let postBody = managers;
+
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling setManagersOfEmployee");
+      }
+
+      // verify the required parameter 'managers' is set
+      if (managers === undefined || managers === null) {
+        throw new Error("Missing the required parameter 'managers' when calling setManagersOfEmployee");
+      }
+
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+        'X-Auth-Token': opts['xAuthToken']
+      };
+      let formParams = {
+      };
+
+      let authNames = ['AuthToken'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = IApiResponse;
+
+      return this.apiClient.callApi(
+        '/employee/{id}/manager', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType
+      );
+    }
+
+    /**
+     * update all the Managers of an employee with the provided [id]
+     * This will delete all previous links to managers of the employee with [id]  
+     * @param {Number} id id of the Employee to set the Managers
+     * @param {Array.<module:model/Number>} managers array of ids of the managers
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.xAuthToken Auth Token that grants access to the system
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IApiResponse}
+     */
+    setManagersOfEmployee(id, managers, opts) {
+      return this.setManagersOfEmployeeWithHttpInfo(id, managers, opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
      * Unlinks employee from his manager
      * Deletes the relation between employee with [id] and the employee with [idManager]
      * @param {Number} id Employee to be unmanaged by another

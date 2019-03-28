@@ -28,13 +28,13 @@ import IPerformanceSection from './IPerformanceSection';
 export default class IPerformanceReview {
     /**
     * Constructs a new <code>IPerformanceReview</code>.
-    * PerformanceReview contains info of the sections of a performance plan of an employee 
+    * Performance review, contains info of the sections of a performance plan of an employee 
     * @alias module:model/IPerformanceReview
     * @class
-    * @param fkEmployee {Number} Foreign key of the employee with this performance review
-    * @param fkPerformancePlan {Number} Foreign key of the performance plan
-    * @param createDate {Date} The date the performance review was created
-    * @param status {Number} 
+    * @param fkEmployee {Number} employee ID, Foreign key of the employee with this performance review
+    * @param fkPerformancePlan {Number} performance plan ID, Foreign key of the performance plan
+    * @param createDate {Date} created date, the performance review was created
+    * @param status {Number} status, of the review
     */
 
     constructor(fkEmployee, fkPerformancePlan, createDate, status) {
@@ -89,36 +89,37 @@ export default class IPerformanceReview {
     }
 
     /**
-    * The unique identifier of the Performance
+    * performance review ID, the unique identifier of the Performance
     * @member {Number} id
     */
     id = undefined;
     /**
-    * Foreign key of the employee with this performance review
+    * employee ID, Foreign key of the employee with this performance review
     * @member {Number} fkEmployee
     */
     fkEmployee = undefined;
     /**
-    * Foreign key of the performance plan
+    * performance plan ID, Foreign key of the performance plan
     * @member {Number} fkPerformancePlan
     */
     fkPerformancePlan = undefined;
     /**
-    * The date the performance review was created
+    * created date, the performance review was created
     * @member {Date} createDate
     */
     createDate = undefined;
     /**
+    * status, of the review
     * @member {Number} status
     */
     status = undefined;
     /**
-    * Contains all the IPerformanceSections Related to this IPerformanceReview
+    * sections, contains all the IPerformanceSections Related to this IPerformanceReview
     * @member {Array.<module:model/IPerformanceSection>} sections
     */
     sections = undefined;
     /**
-    * Contains all the comments of this performance review
+    * comments, contains all the comments of this performance review
     * @member {Array.<module:model/IComment>} comments
     */
     comments = undefined;

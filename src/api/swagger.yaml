@@ -329,6 +329,50 @@ paths:
       security:
       - AuthToken: []
       x-swagger-router-controller: "Employee"
+    put:
+      tags:
+      - "Employee"
+      summary: "update all the Managers of an employee with the provided [id]"
+      description: "This will delete all previous links to managers of the employee\
+        \ with [id] \n"
+      operationId: "setManagersOfEmployee"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id of the Employee to set the Managers"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "managers"
+        description: "array of ids of the managers"
+        required: true
+        schema:
+          type: "array"
+          items:
+            type: "integer"
+            format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
   /employee/{id}/manager/{idManager}:
     post:
       tags:
@@ -441,6 +485,50 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/IEmployee"
+        401:
+          description: "unauthorized access"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+        default:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/IApiResponse"
+      security:
+      - AuthToken: []
+      x-swagger-router-controller: "Employee"
+    put:
+      tags:
+      - "Employee"
+      summary: "update all the managed Employees of a manager with the provided [idManager]"
+      description: "This will delete all previous links to managers of the employee\
+        \ with [idManager] \n"
+      operationId: "setEmployeesOfManager"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Auth Token that grants access to the system"
+        required: false
+        type: "string"
+      - name: "idManager"
+        in: "path"
+        description: "Employee that will manage the employees"
+        required: true
+        type: "integer"
+        format: "uint64"
+      - in: "body"
+        name: "employees"
+        description: "array of ids of the employees that will be managed"
+        required: true
+        schema:
+          type: "array"
+          items:
+            type: "integer"
+            format: "uint64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/IApiResponse"
         401:
           description: "unauthorized access"
           schema:
@@ -2590,8 +2678,8 @@ definitions:
         maxLength: 45
       role:
         $ref: "#/definitions/IRole"
-    description: "An Employee contains all the current information of a current or\
-      \ onboarding employee\n"
+    description: "Employee, contains all the current information of a current or onboarding\
+      \ employee\n"
     example:
       firstname: "firstname"
       fkRole: 1
@@ -2740,8 +2828,8 @@ definitions:
         maxLength: 45
       role:
         $ref: "#/definitions/IRole"
-    description: "An Employee contains all the current information of a current or\
-      \ onboarding employee\n"
+    description: "Employee, contains all the current information of a current or onboarding\
+      \ employee\n"
     example:
       firstname: "firstname"
       fkRole: 1
@@ -2800,8 +2888,8 @@ definitions:
         description: "role competencies, contains all the competencies of this role"
         items:
           $ref: "#/definitions/ICompetency"
-    description: "An Role is contains all the current information of a current or\
-      \ onboarding employee\n"
+    description: "Role, is contains all the current information of a current or onboarding\
+      \ employee\n"
     example:
       name: "name"
       description: "description"
@@ -2839,7 +2927,7 @@ definitions:
         type: "string"
         description: "description, of the competency"
         maxLength: 2512
-    description: "A Competency contains info of competencies and objectives that each\
+    description: "Competency, contains info of competencies and objectives that each\
       \ role need to fulfill\n"
     example:
       fkRole: 1
@@ -2888,7 +2976,8 @@ definitions:
         type: "string"
         format: "date"
         description: "date, when the employee requested the vacation"
-    description: "A Vacation contains info of the employee asking for a vaction period\n"
+    description: "Vacation request, contains info of the employee asking for a vaction\
+      \ period\n"
     example:
       date: "2000-01-23"
       requestedDays: 1
@@ -2957,12 +3046,11 @@ definitions:
         maxLength: 2512
       type:
         $ref: "#/definitions/IDocumentType"
-    description: "An onboarding task required for the onbarding proccess of a new\
-      \ Employee, if the property [requireDoc] is\nset to 1, then the OnboardingTask\
-      \ require the employee to upload a document, and the fkDocumentType will \n\
-      contain the id of the IDocumentType object with the template of the document\
-      \ to be filled by the employee. \nOtherwise the [fkDocumentType] property will\
-      \ be null.\n"
+    description: "Onboarding task, required for the onbarding proccess of a new Employee,\
+      \ if the property [requireDoc] is\nset to 1, then the OnboardingTask require\
+      \ the employee to upload a document, and the fkDocumentType will \ncontain the\
+      \ id of the IDocumentType object with the template of the document to be filled\
+      \ by the employee. \nOtherwise the [fkDocumentType] property will be null.\n"
     example:
       expiryDate: "2000-01-23"
       createdDate: "2000-01-23"
@@ -3002,8 +3090,8 @@ definitions:
         type: "string"
         description: "link to file, if the document has a template, this will be the\
           \ link to access it"
-    description: "A DocumentType contains info of the template support document for\
-      \ the onboarding process\n"
+    description: "Document template, contains info of the template support document\
+      \ for the onboarding process\n"
     example:
       file: "file"
       name: "name"
@@ -3065,8 +3153,8 @@ definitions:
         description: "commentsm contains all the comments of this performance review"
         items:
           $ref: "#/definitions/IComment"
-    description: "PerformancePlan contains info of the sections of a performance plan\
-      \ of an employee\n"
+    description: "Work plan, contains info of the sections of a performance plan of\
+      \ an employee\n"
     example:
       comments:
       - fkCommenter: 1
@@ -3146,7 +3234,7 @@ definitions:
         description: "comments, contains all the comments of this performance review"
         items:
           $ref: "#/definitions/IComment"
-    description: "PerformanceReview contains info of the sections of a performance\
+    description: "Performance review, contains info of the sections of a performance\
       \ plan of an employee\n"
     example:
       comments:
@@ -3210,8 +3298,8 @@ definitions:
         example: 1
         description: "performance review ID, the unique identifier of the Performance\
           \ Review that owns this section"
-    description: "A JSON object containing all the information of a section in either\
-      \ PerformancePlan or PerformanceReview\n"
+    description: "Performance section, a JSON object containing all the information\
+      \ of a section in either PerformancePlan or PerformanceReview\n"
     example:
       sectionName: "sectionName"
       data:
@@ -3257,7 +3345,7 @@ definitions:
         type: "string"
         format: "date"
         description: "date, when the Comment was created"
-    description: "A Comment contains what another employee thinks about the performance\
+    description: "Comment, contains what another employee thinks about the performance\
       \ record of another employee\n"
     example:
       fkCommenter: 1
@@ -3286,8 +3374,8 @@ definitions:
         type: "string"
         description: "answer, of this FAQ"
         maxLength: 2512
-    description: "A FAQ contains a question and answer, to help the employee while\
-      \ onboarding\n"
+    description: "Frequently Asked Question, contains a question and answer, to help\
+      \ the employee while onboarding\n"
     example:
       question: "question"
       answer: "answer"
@@ -3309,7 +3397,7 @@ definitions:
         description: "password, used to sign into the system"
         maxLength: 40
         pattern: "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[;,#?!@$%^&*:._+¿¡¬]).{8,}$"
-    description: "Represents the basic info to logged into the system"
+    description: "Login, represents the basic info to logged into the system"
     example:
       password: "password"
       email: "email"

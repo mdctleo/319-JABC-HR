@@ -27,11 +27,11 @@ import IPerformanceSectionData from './IPerformanceSectionData';
 export default class IPerformanceSection {
     /**
     * Constructs a new <code>IPerformanceSection</code>.
-    * A JSON object containing all the information of a section in either PerformancePlan or PerformanceReview 
+    * Performance section, a JSON object containing all the information of a section in either PerformancePlan or PerformanceReview 
     * @alias module:model/IPerformanceSection
     * @class
     * @param data {module:model/IPerformanceSectionData} 
-    * @param sectionName {String} 
+    * @param sectionName {String} section name, of this performance section
     */
 
     constructor(data, sectionName) {
@@ -80,7 +80,7 @@ export default class IPerformanceSection {
     }
 
     /**
-    * The unique identifier of the Performance
+    * section ID, the unique identifier of the Performance
     * @member {Number} id
     */
     id = undefined;
@@ -89,16 +89,17 @@ export default class IPerformanceSection {
     */
     data = undefined;
     /**
+    * section name, of this performance section
     * @member {String} sectionName
     */
     sectionName = undefined;
     /**
-    * The unique identifier of the Performance Plan that owns this section
+    * performance plan ID, the unique identifier of the Performance Plan that owns this section
     * @member {Number} fkPerformancePlan
     */
     fkPerformancePlan = undefined;
     /**
-    * The unique identifier of the Performance Review that owns this section
+    * performance review ID, the unique identifier of the Performance Review that owns this section
     * @member {Number} fkPerformanceReview
     */
     fkPerformanceReview = undefined;

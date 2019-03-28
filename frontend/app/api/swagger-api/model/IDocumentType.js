@@ -26,10 +26,10 @@ import ApiClient from '../ApiClient';
 export default class IDocumentType {
     /**
     * Constructs a new <code>IDocumentType</code>.
-    * A DocumentType contains info of the template support document for the onboarding process 
+    * Document template, contains info of the template support document for the onboarding process 
     * @alias module:model/IDocumentType
     * @class
-    * @param name {String} 
+    * @param name {String} name, of document template
     */
 
     constructor(name) {
@@ -75,20 +75,22 @@ export default class IDocumentType {
     }
 
     /**
-    * The unique identifier of the DocumentType
+    * document template ID, the unique identifier of the DocumentType
     * @member {Number} id
     */
     id = undefined;
     /**
+    * name, of document template
     * @member {String} name
     */
     name = undefined;
     /**
+    * description, of document template
     * @member {String} description
     */
     description = undefined;
     /**
-    * If the document has a template, this will be the link to access it
+    * link to file, if the document has a template, this will be the link to access it
     * @member {String} file
     */
     file = undefined;

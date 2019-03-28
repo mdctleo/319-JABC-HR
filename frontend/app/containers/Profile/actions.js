@@ -12,11 +12,13 @@ export function getProfileData() {
   };
 }
 
-export function saveProfile(profile) {
+export function saveProfile(profile, employees, managers) {
   return {
     type: SAVE_PROFILE,
     payload: {
       profile,
+      employees,
+      managers
     },
   };
 }

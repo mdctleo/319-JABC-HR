@@ -13,6 +13,8 @@ export class Priviledges{
         'getManagersByEmployee': IEmployee.adminLevelEnum.STAFF,
         'linkEmployeeManager': IEmployee.adminLevelEnum.HR_ADMIN,
         'unlinkEmployeeManager': IEmployee.adminLevelEnum.HR_ADMIN,
+        'setEmployeesOfManager': IEmployee.adminLevelEnum.HR_ADMIN,
+        'setManagersOfEmployee': IEmployee.adminLevelEnum.HR_ADMIN,
         'getEmployeesByManager': IEmployee.adminLevelEnum.MANAGER,
         'getEmployeeHistory': IEmployee.adminLevelEnum.MANAGER,
         'getOnboardingTasks': IEmployee.adminLevelEnum.STAFF,

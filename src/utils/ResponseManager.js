@@ -128,34 +128,42 @@ function ErrorHandler(err, req, res, next) {
                 let typeProperties = [];
                 let importantMessage = false;
                 for (let error of err.results.errors) {
+                    let property;
+                    try {
+                        property = error.description.split(',')[0];
+                    }
+                    catch (errr) {
+                        importantMessage = true;
+                        break;
+                    }
                     switch (error.code) {
                         case JABCResponse.ValidatorCodes.MISSING:
                             missingProperties.push(error.message.split(":")[1].trim());
                             break;
                         case JABCResponse.ValidatorCodes.FORMAT:
-                            invalidProperties.push(error.path[0]);
+                            invalidProperties.push(property);
                             break;
                         case JABCResponse.ValidatorCodes.TYPE:
-                            typeProperties.push(error.path[0]);
+                            typeProperties.push(property);
                             break;
                         case JABCResponse.ValidatorCodes.MINIMUM:
-                            message = error.message.replace('Value', `Property ${error.description.split(',')[0]} with value,`);
+                            message = error.message.replace('Value', `Property ${property} with value,`);
                             importantMessage = true;
                             break;
                         case JABCResponse.ValidatorCodes.MAXIMUM:
-                            message = error.message.replace('Value', `Property ${error.description.split(',')[0]} with value,`);
+                            message = error.message.replace('Value', `Property ${property} with value,`);
                             importantMessage = true;
                             break;
                         case JABCResponse.ValidatorCodes.MIN_LENGTH:
-                            message = error.message.replace('String', `Property ${error.description.split(',')[0]}`);
+                            message = error.message.replace('String', `Property ${property}`);
                             importantMessage = true;
                             break;
                         case JABCResponse.ValidatorCodes.MAX_LENGTH:
-                            message = error.message.replace('String', `Property ${error.description.split(',')[0]}`);
+                            message = error.message.replace('String', `Property ${property}`);
                             importantMessage = true;
                             break;
                         case JABCResponse.ValidatorCodes.PATTERN:
-                            message = error.message.replace('String', `Property ${error.description.split(',')[0]}`);
+                            message = error.message.replace('String', `Property ${property}`);
                             importantMessage = true;
                             if (error.path[0] === 'password') {
                                 message = `Property password, does not meet the requirements for a good password.\n Please use at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character [#,?,!,@,$,%,^,&,*,-,:,_,+,¿,¡,¬]`;

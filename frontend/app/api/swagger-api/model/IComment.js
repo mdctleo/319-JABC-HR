@@ -26,12 +26,12 @@ import ApiClient from '../ApiClient';
 export default class IComment {
     /**
     * Constructs a new <code>IComment</code>.
-    * A Comment contains what another employee thinks about the performance record of another employee 
+    * Comment, contains what another employee thinks about the performance record of another employee 
     * @alias module:model/IComment
     * @class
-    * @param fkCommenter {Number} Foreign key of Employee that created the Comment
-    * @param comment {String} 
-    * @param _date {Date} The date when the Comment was created
+    * @param fkCommenter {Number} commenter ID, Foreign key of Employee that created the Comment
+    * @param comment {String} comment, text of this comment
+    * @param _date {Date} date, when the Comment was created
     */
 
     constructor(fkCommenter, comment, _date) {
@@ -83,31 +83,32 @@ export default class IComment {
     }
 
     /**
-    * The unique identifier of the Comment
+    * comment ID, the unique identifier of the Comment
     * @member {Number} id
     */
     id = undefined;
     /**
-    * Foreign key of PerformancePlan that has this Comment
+    * performance plan ID, Foreign key of PerformancePlan that has this Comment
     * @member {Number} fkPerformancePlan
     */
     fkPerformancePlan = undefined;
     /**
-    * Foreign key of PerformanceReview that has this Comment
+    * performance review ID, Foreign key of PerformanceReview that has this Comment
     * @member {Number} fkPerformanceReview
     */
     fkPerformanceReview = undefined;
     /**
-    * Foreign key of Employee that created the Comment
+    * commenter ID, Foreign key of Employee that created the Comment
     * @member {Number} fkCommenter
     */
     fkCommenter = undefined;
     /**
+    * comment, text of this comment
     * @member {String} comment
     */
     comment = undefined;
     /**
-    * The date when the Comment was created
+    * date, when the Comment was created
     * @member {Date} date
     */
     date = undefined;
