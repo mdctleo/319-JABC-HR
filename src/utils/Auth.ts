@@ -1,4 +1,4 @@
-import { JABCError, JABCResponse } from './ResponseManager';
+import { JABCError, JABCResponse, RespondJson } from './ResponseManager';
 import { Priviledges } from './Priviledges';
 import * as EmployeeService from '../service/EmployeeService';
 import { IEmployee } from '../model/models';
@@ -18,7 +18,7 @@ export default async function (req: any, res: any, next: any) {
         let error = err
         if(!JABCError.isError(error))
             error = new JABCError(JABCResponse.UNAUTHORIZED)
-        utils.writeJson(res, error, error.responseCode);
+        RespondJson(res, error, error.responseCode);
         res.end()
     }
 }
@@ -59,7 +59,7 @@ function Validate_AuthToken(req: any, res: any, securityOptions: any) {
                 }
                 if (isLogin) {
                     // The token is used to recover user info
-                    utils.writeJson(res, loginResponse)
+                    RespondJson(res, loginResponse)
                     res.end()
                 } else {
                     resolve();

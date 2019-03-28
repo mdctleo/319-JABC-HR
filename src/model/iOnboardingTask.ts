@@ -119,11 +119,11 @@ export class OnboardingTask implements IOnboardingTask{
     }
 
     static Prepare(rawOnboardingTask: IOnboardingTask){
-        rawOnboardingTask.fkDocumentType = (rawOnboardingTask.fkDocumentType) ? rawOnboardingTask.fkDocumentType : null;
-        rawOnboardingTask.expiryDate = (rawOnboardingTask.expiryDate) ? rawOnboardingTask.expiryDate : null;
-        rawOnboardingTask.file = (rawOnboardingTask.file) ? rawOnboardingTask.file : null;
-        rawOnboardingTask.description = (rawOnboardingTask.description) ? rawOnboardingTask.description : null;
-        rawOnboardingTask.type = (rawOnboardingTask.type) ? rawOnboardingTask.type : null;
+        rawOnboardingTask.fkDocumentType = (rawOnboardingTask.fkDocumentType != undefined) ? rawOnboardingTask.fkDocumentType : null;
+        rawOnboardingTask.expiryDate = (rawOnboardingTask.expiryDate != undefined) ? rawOnboardingTask.expiryDate : null;
+        rawOnboardingTask.file = (rawOnboardingTask.file != undefined) ? rawOnboardingTask.file : null;
+        rawOnboardingTask.description = (rawOnboardingTask.description != undefined) ? rawOnboardingTask.description : null;
+        rawOnboardingTask.type = (rawOnboardingTask.type != undefined) ? rawOnboardingTask.type : null;
         return rawOnboardingTask
     }
 

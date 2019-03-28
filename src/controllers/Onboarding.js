@@ -1,6 +1,6 @@
 'use strict';
 
-var utils = require('../utils/writer.js');
+var ResponseManager = require('../utils/ResponseManager');
 var Onboarding = require('../service/OnboardingService');
 
 module.exports.createDocumentType = function createDocumentType (req, res, next) {
@@ -8,10 +8,10 @@ module.exports.createDocumentType = function createDocumentType (req, res, next)
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.createDocumentType(documentType,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -20,10 +20,10 @@ module.exports.createFAQ = function createFAQ (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.createFAQ(faq,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -32,10 +32,10 @@ module.exports.deleteDocumentType = function deleteDocumentType (req, res, next)
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.deleteDocumentType(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -44,10 +44,10 @@ module.exports.deleteFAQ = function deleteFAQ (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.deleteFAQ(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -56,10 +56,10 @@ module.exports.deleteOnboardingTask = function deleteOnboardingTask (req, res, n
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.deleteOnboardingTask(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -71,10 +71,10 @@ module.exports.getAllOnboardingTasks = function getAllOnboardingTasks (req, res,
   var status = req.swagger.params['status'].value;
   Onboarding.getAllOnboardingTasks(xAuthToken,start,end,id,status)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -83,10 +83,10 @@ module.exports.getDocumentType = function getDocumentType (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getDocumentType(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -95,10 +95,10 @@ module.exports.getDocumentTypeFile = function getDocumentTypeFile (req, res, nex
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getDocumentTypeFile(id,xAuthToken)
     .then(function (response) {
-      utils.writeFile(res, response, response.responseCode);
+      ResponseManager.RespondFile(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -106,10 +106,10 @@ module.exports.getDocumentTypes = function getDocumentTypes (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getDocumentTypes(xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -118,10 +118,10 @@ module.exports.getFAQ = function getFAQ (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getFAQ(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -129,10 +129,10 @@ module.exports.getFAQs = function getFAQs (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getFAQs(xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -141,10 +141,10 @@ module.exports.getOnboardingTask = function getOnboardingTask (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getOnboardingTask(id,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -153,10 +153,10 @@ module.exports.getOnboardingTaskFile = function getOnboardingTaskFile (req, res,
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.getOnboardingTaskFile(id,xAuthToken)
     .then(function (response) {
-      utils.writeFile(res, response, response.responseCode);
+      ResponseManager.RespondFile(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -166,10 +166,10 @@ module.exports.updateDocumentType = function updateDocumentType (req, res, next)
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.updateDocumentType(id,documentType,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -179,10 +179,10 @@ module.exports.updateFAQ = function updateFAQ (req, res, next) {
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.updateFAQ(id,faq,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -192,10 +192,10 @@ module.exports.updateOnboardingTask = function updateOnboardingTask (req, res, n
   var xAuthToken = req.swagger.params['X-Auth-Token'].value;
   Onboarding.updateOnboardingTask(id,onboardingTask,xAuthToken)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };
 
@@ -205,9 +205,9 @@ module.exports.uploadTemplateDocumentType = function uploadTemplateDocumentType 
   var document = req.swagger.params['document'].value;
   Onboarding.uploadTemplateDocumentType(id,xAuthToken,document)
     .then(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     })
     .catch(function (response) {
-      utils.writeJson(res, response, response.responseCode);
+      ResponseManager.RespondJson(res, response, response.responseCode);
     });
 };

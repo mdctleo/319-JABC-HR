@@ -7,7 +7,7 @@ Priviledges.operations = {
     'getEmployees': models_1.IEmployee.adminLevelEnum.MANAGER,
     'createEmployee': models_1.IEmployee.adminLevelEnum.HR_ADMIN,
     'getEmployee': models_1.IEmployee.adminLevelEnum.STAFF,
-    'updateEmployee': models_1.IEmployee.adminLevelEnum.STAFF,
+    'updateEmployee': models_1.IEmployee.adminLevelEnum.MANAGER,
     'deleteEmployee': models_1.IEmployee.adminLevelEnum.MANAGER,
     'updateEmployeePassword': models_1.IEmployee.adminLevelEnum.STAFF,
     'getManagersByEmployee': models_1.IEmployee.adminLevelEnum.STAFF,

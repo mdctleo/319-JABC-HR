@@ -54,6 +54,12 @@ export class DocumentType implements IDocumentType{
         return documentTypes
     }
 
+    static Prepare(rawDocumentType: IDocumentType) {
+        rawDocumentType.description = (rawDocumentType.description != undefined) ? rawDocumentType.description : null;
+        rawDocumentType.file = (rawDocumentType.file != undefined) ? rawDocumentType.file : null;
+        return rawDocumentType;
+    }
+
     getLink(){
         return `http://${process.env.HOST}:${process.env.PORT}/JABC/1.0.0/onboarding/documentType/${this.id}/file`
     }

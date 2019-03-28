@@ -1,6 +1,5 @@
 import { IApiResponse } from '../model/models'
 import Log from '../../util/Log';
-var utils = require('./writer')
 
 const DEBUG = process.env.DEBUG;
 
@@ -38,7 +37,7 @@ export class JABCResponse {
 
     static UNHANDLED_ERROR = {
         error: 500,
-        message: 'There was a problem, try again later.'
+        message: 'Sorry there was a problem, try again later. If the problem persists, comunicate with the site manager.'
     }
     static NOT_FOUND = {
         error: 404,
@@ -57,8 +56,8 @@ export class JABCResponse {
         message: 'We can\'t process the sent data, please check the format.'
     }
 }
-export namespace JABCResponse{
-    export type ValidatorCodes = 'SCHEMA_VALIDATION_FAILED' |'OBJECT_MISSING_REQUIRED_PROPERTY' |'INVALID_TYPE' |'INVALID_FORMAT'  ;
+export namespace JABCResponse {
+    export type ValidatorCodes = 'SCHEMA_VALIDATION_FAILED' | 'OBJECT_MISSING_REQUIRED_PROPERTY' | 'INVALID_TYPE' | 'INVALID_FORMAT';
     export const ValidatorCodes = {
         SCHEMA: 'SCHEMA_VALIDATION_FAILED',
         MISSING: 'OBJECT_MISSING_REQUIRED_PROPERTY',
@@ -131,9 +130,9 @@ export class JABCSuccess implements IApiResponse {
     }
 }
 
-export function PreValidator(req: any, res: any, next: any){
+export function PreValidator(req: any, res: any, next: any) {
     // Delete any null value
-    req.body = utils.deleteDeepNulls(req.body)
+    req.body = deleteDeepNulls(req.body)
     next()
 }
 
@@ -142,80 +141,167 @@ export function ErrorHandler(err: any, req: any, res: any, next: any) {
         var debugMessage = null;
         var message = JABCResponse.BAD_REQUEST.message;
         if (err.failedValidation) {
-            if(err.results !== undefined){
+            if (err.results !== undefined) {
                 let missingProperties = []
                 let invalidProperties = []
                 let typeProperties = []
                 let importantMessage = false
-                for(let error of err.results.errors){
+                for (let error of err.results.errors) {
                     let property;
-                    try{ 
+                    try {
                         property = error.description.split(',')[0]
-                    }catch(errr){
+                    } catch (errr) {
                         importantMessage = true;
                         break;
                     }
 
-                    switch(error.code){
+                    switch (error.code) {
                         case JABCResponse.ValidatorCodes.MISSING:
                             missingProperties.push(error.message.split(":")[1].trim())
-                        break;
+                            break;
                         case JABCResponse.ValidatorCodes.FORMAT:
                             invalidProperties.push(property)
-                        break;
+                            break;
                         case JABCResponse.ValidatorCodes.TYPE:
                             typeProperties.push(property)
-                        break;
+                            break;
                         case JABCResponse.ValidatorCodes.MINIMUM:
                             message = error.message.replace('Value', `Property ${property} with value,`);
                             importantMessage = true
-                        break
+                            break
                         case JABCResponse.ValidatorCodes.MAXIMUM:
                             message = error.message.replace('Value', `Property ${property} with value,`);
                             importantMessage = true
-                        break
+                            break
                         case JABCResponse.ValidatorCodes.MIN_LENGTH:
                             message = error.message.replace('String', `Property ${property}`);
                             importantMessage = true
-                        break
+                            break
                         case JABCResponse.ValidatorCodes.MAX_LENGTH:
                             message = error.message.replace('String', `Property ${property}`);
                             importantMessage = true
-                        break
+                            break
                         case JABCResponse.ValidatorCodes.PATTERN:
                             message = error.message.replace('String', `Property ${property}`);
                             importantMessage = true
-                            if(error.path[0] === 'password'){
+                            if (error.path[0] === 'password') {
                                 message = `Property password, does not meet the requirements for a good password.\n Please use at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character [#,?,!,@,$,%,^,&,*,-,:,_,+,¿,¡,¬]`;
                             }
-                        break
+                            break
                     }
                 }
-                if(!importantMessage){
+                if (!importantMessage) {
                     let messages = []
-                    if(missingProperties.length>0) messages.push(`${(missingProperties.length==1)? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length==1)? 'is' : 'are'} missing`)
-                    if(invalidProperties.length>0) messages.push(`${(invalidProperties.length==1)? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`)
-                    if(typeProperties.length>0) messages.push(`${(typeProperties.length==1)? 'Property' : 'Properties'}: ${typeProperties.join(", ")}, have an invalid type`)
-                    
+                    if (missingProperties.length > 0) messages.push(`${(missingProperties.length == 1) ? 'Property' : 'Properties'}: ${missingProperties.join(", ")}, ${(missingProperties.length == 1) ? 'is' : 'are'} missing`)
+                    if (invalidProperties.length > 0) messages.push(`${(invalidProperties.length == 1) ? 'Property' : 'Properties'}: ${invalidProperties.join(", ")}, have an invalid format`)
+                    if (typeProperties.length > 0) messages.push(`${(typeProperties.length == 1) ? 'Property' : 'Properties'}: ${typeProperties.join(", ")}, have an invalid type`)
+
                     message = `${messages.join('; ')}.`;
                 }
-            }else{
+            } else {
                 debugMessage = {
                     code: err.code,
                     path: err.path,
                     paramName: err.paramName
                 };
             }
-        }else if(err.type == 'entity.parse.failed'){
+        } else if (err.type == 'entity.parse.failed') {
             message = 'Please send the data in a correct JSON format'
-        }else{
+        } else {
             debugMessage = err;
         }
         let error = new JABCError(JABCResponse.BAD_REQUEST, message)
         if (DEBUG)
             error.debugMessage = JSON.stringify(debugMessage);
-        utils.writeJson(res, error, error.responseCode)
+        RespondJson(res, error, error.responseCode)
     } else {
         next()
     }
+}
+
+// ########################### Response handler
+
+export class ResponsePayload {
+    code: any;
+    payload: any;
+
+    constructor(code: any, payload: any) {
+        this.code = code;
+        this.payload = payload;
+    }
+}
+
+export function RespondWithCode(code: any, payload: any) {
+    return new ResponsePayload(code, payload);
+}
+
+export function RespondJson(response: any, arg1: any, arg2?: any) {
+    var code;
+    var payload;
+
+    if (arg1 && arg1 instanceof ResponsePayload) {
+        RespondJson(response, arg1.payload, arg1.code);
+        return;
+    }
+
+    if (arg2 && Number.isInteger(arg2)) {
+        code = arg2;
+    }
+    else {
+        if (arg1 && Number.isInteger(arg1)) {
+            code = arg1;
+        }
+    }
+    if (code && arg1) {
+        payload = arg1;
+    }
+    else if (arg1) {
+        payload = arg1;
+    }
+
+    if (!code) {
+        // if no response code given, we default to 200
+        code = 200;
+    }
+    if (typeof payload === 'object') {
+        deleteDeepNulls(payload)
+        payload = JSON.stringify(payload, null, 2);
+        if(payload === '{}'){
+            payload = JSON.stringify(new JABCError(JABCResponse.UNHANDLED_ERROR), null, 2)
+        }
+    }
+    response.writeHead(code, { 'Content-Type': 'application/json' });
+    response.end(payload);
+}
+
+export function RespondFile(response: any, file: any, code: any = 200) {
+    response.writeHead(code, {'Content-Type': file.mimetype });
+    response.end(file.buffer, 'binary');
+}
+
+export function deleteDeepNulls(data: any) {
+    if (typeof data === 'object') {
+        Object.keys(data).forEach((key) => {
+            if (data[key] == null || (typeof data[key] === 'number' && isNaN(data[key]))) {
+                delete data[key]
+            } else {
+                deleteDeepNulls(data[key])
+            }
+        });
+    }
+    return data
+}
+
+export function deleteNulls(data: any) {
+    Object.keys(data).forEach((key) => (data[key] == null || (typeof data[key] === 'number' && isNaN(data[key]))) && delete data[key]);
+    return data
+}
+
+export function deleteNullsArray(arr: any) {
+    let newArr = []
+    for (let obj of arr) {
+        obj = deleteNulls(obj)
+        newArr.push(obj)
+    }
+    return newArr
 }

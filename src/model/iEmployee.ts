@@ -118,7 +118,7 @@ export class Employee implements IEmployee{
 
     constructor(rawEmployee: any, sensitive = true){
         this.id = rawEmployee.EMPLOYEE_ID;
-        this.sin = (sensitive) ? rawEmployee.SIN : 100000000;
+        this.sin = (sensitive != undefined) ? rawEmployee.SIN : 100000000;
         this.email = rawEmployee.EMAIL;
         this.password = rawEmployee.PASSWORD;
         this.firstname = rawEmployee.FIRST_NAME;
@@ -146,16 +146,16 @@ export class Employee implements IEmployee{
     }
 
     static Prepare(rawEmployee: IEmployee){
-        rawEmployee.salary = (rawEmployee.salary) ? rawEmployee.salary : null;
-        rawEmployee.address = (rawEmployee.address) ? rawEmployee.address : null;
-        rawEmployee.birthdate = (rawEmployee.birthdate) ? rawEmployee.birthdate : null;
-        rawEmployee.dateJoined = (rawEmployee.dateJoined) ? rawEmployee.dateJoined : null;
-        rawEmployee.vacationDays = (rawEmployee.vacationDays) ? rawEmployee.vacationDays : null;
-        rawEmployee.remainingVacationDays = (rawEmployee.remainingVacationDays) ? rawEmployee.remainingVacationDays : null;
-        rawEmployee.fkRole = (rawEmployee.fkRole) ? rawEmployee.fkRole : null;
-        rawEmployee.phoneNumber = (rawEmployee.phoneNumber) ? rawEmployee.phoneNumber : null;
-        rawEmployee.role = (rawEmployee.role) ? rawEmployee.role : null;
-        rawEmployee.password = (rawEmployee.password) ? rawEmployee.password : null;
+        rawEmployee.salary = (rawEmployee.salary != undefined) ? rawEmployee.salary : null;
+        rawEmployee.address = (rawEmployee.address != undefined) ? rawEmployee.address : null;
+        rawEmployee.birthdate = (rawEmployee.birthdate != undefined) ? rawEmployee.birthdate : null;
+        rawEmployee.dateJoined = (rawEmployee.dateJoined != undefined) ? rawEmployee.dateJoined : null;
+        rawEmployee.vacationDays = (rawEmployee.vacationDays != undefined) ? rawEmployee.vacationDays : null;
+        rawEmployee.remainingVacationDays = (rawEmployee.remainingVacationDays != undefined) ? rawEmployee.remainingVacationDays : null;
+        rawEmployee.fkRole = (rawEmployee.fkRole != undefined) ? rawEmployee.fkRole : null;
+        rawEmployee.phoneNumber = (rawEmployee.phoneNumber != undefined) ? rawEmployee.phoneNumber : null;
+        rawEmployee.role = (rawEmployee.role != undefined) ? rawEmployee.role : null;
+        rawEmployee.password = (rawEmployee.password != undefined) ? rawEmployee.password : null;
         return rawEmployee
     }
 }
