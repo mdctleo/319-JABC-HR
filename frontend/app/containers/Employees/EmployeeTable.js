@@ -251,6 +251,7 @@ class EmployeeTable extends React.PureComponent {
   };
 
   handleClickProfile = (event, profile) => {
+    this.props.getEmployeeData(profile);
     this.props.selectProfile(profile);
   };
 
@@ -374,6 +375,7 @@ EmployeeTable.propTypes = {
   tableSettings: PropTypes.object.isRequired,
   updateTableSettings: PropTypes.func.isRequired,
   generateReport: PropTypes.func.isRequired,
+  getEmployeeData: PropTypes.func,
 };
 
 export default withStyles(styles)(EmployeeTable);

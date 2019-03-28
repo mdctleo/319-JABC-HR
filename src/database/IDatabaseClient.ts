@@ -1,8 +1,10 @@
 import {JABCResponse, JABCError, JABCResponseType} from '../utils/ResponseManager'
+import Log from "../../util/Log";
 
 export class DatabaseConnectionError extends JABCError {
     constructor(...args: any[]) {
         super(JABCResponse.UNHANDLED_ERROR, args);
+        Log.error(args[0])
     }
 }
 
@@ -10,8 +12,10 @@ export class DatabaseWriteError extends JABCError {
     constructor(service: JABCResponseType, error: any, log: string) {
         if(error.sqlState == '45000'){
             super(service, error.message);
+            Log.info(log)
         }else{
             super(JABCResponse.UNHANDLED_ERROR, log);
+            Log.error(log)
         }
     }
 }
@@ -20,8 +24,10 @@ export class DatabaseQueryError extends JABCError {
     constructor(service: JABCResponseType, error: any, log: string) {
         if(error.sqlState == '45000'){
             super(service, error.message);
+            Log.info(log)
         }else{
             super(JABCResponse.UNHANDLED_ERROR, log);
+            Log.error(log)
         }
     }
 }

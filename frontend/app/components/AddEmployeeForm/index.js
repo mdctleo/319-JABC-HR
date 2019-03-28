@@ -177,6 +177,7 @@ class AddEmployeeForm extends React.PureComponent {
             </Typography>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 value={profile.firstname}
                 label="First Name"
                 className={classes.textField}
@@ -188,6 +189,7 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 value={profile.lastname}
                 label="Last Name"
                 className={classes.textField}
@@ -199,6 +201,7 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 value={profile.email}
                 label="Email"
                 className={classes.textField}
@@ -210,6 +213,7 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 value={profile.sin}
                 label="SIN"
                 className={classes.textField}
@@ -277,6 +281,7 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.status}
                 label="Status"
@@ -336,6 +341,7 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.fte}
                 label="Employee Type"
@@ -367,6 +373,7 @@ class AddEmployeeForm extends React.PureComponent {
             </div>
             <div className={classes.fieldContainer}>
               <TextField
+                required
                 select
                 value={profile.adminLevel}
                 label="Admin Level"

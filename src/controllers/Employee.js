@@ -234,6 +234,32 @@ module.exports.login = function login(req, res, next) {
     });
 };
 
+module.exports.setEmployeesOfManager = function setEmployeesOfManager (req, res, next) {
+  var idManager = req.swagger.params['idManager'].value;
+  var employees = req.swagger.params['employees'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Employee.setEmployeesOfManager(idManager,employees,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
+module.exports.setManagersOfEmployee = function setManagersOfEmployee (req, res, next) {
+  var id = req.swagger.params['id'].value;
+  var managers = req.swagger.params['managers'].value;
+  var xAuthToken = req.swagger.params['X-Auth-Token'].value;
+  Employee.setManagersOfEmployee(id,managers,xAuthToken)
+    .then(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response, response.responseCode);
+    });
+};
+
 module.exports.unlinkEmployeeManager = function unlinkEmployeeManager(req, res, next) {
   var id = req.swagger.params['id'].value;
   var idManager = req.swagger.params['idManager'].value;

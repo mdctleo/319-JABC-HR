@@ -99,6 +99,12 @@ class EmployeeDisplay extends React.PureComponent {
         </Typography>
         <Table className={classes.displayTable}>
           <TableBody>
+          <TableRow className={classes.row}>
+              <TableCell align="left" className={classes.rightCell}>
+                <Typography variant="caption">EMAIL</Typography>
+              </TableCell>
+              <TableCell align="left" className={classes.rightCell}>{profile.email}</TableCell>
+            </TableRow>
             <TableRow className={classes.row}>
               <TableCell align="left" className={classes.rightCell}>
                 <Typography variant="caption">SIN</Typography>

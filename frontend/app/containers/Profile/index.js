@@ -10,7 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { selectProfile } from '../App/selectors';
-import { selectRole, selectProfileDomainJS, selectAllRoles } from './selectors';
+import { selectRole, selectProfileDomainJS, selectAllRoles, selectAllEmployees, selectEmployees, selectManagers } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import actions from './actions';
@@ -96,8 +96,8 @@ class Profile extends React.PureComponent {
     this.props.setEditing(true);
   };
 
-  saveProfile = profile => {
-    this.props.saveProfile(profile);
+  saveProfile = (...profile) => {
+    this.props.saveProfile(...profile);
   };
 
   cancelEdit = () => {
@@ -189,6 +189,10 @@ class Profile extends React.PureComponent {
               editing && (
                 <EmployeeEditForm
                   profile={profile}
+                  currentEmployee={this.props.currentEmployee}
+                  allEmployees={this.props.allEmployees}
+                  managers={this.props.selectManagers}
+                  employees={this.props.selectEmployees}
                   saveProfile={this.saveProfile}
                   cancelEdit={this.cancelEdit}
                   allRoles={allRoles}
@@ -220,6 +224,10 @@ const mapStateToProps = createStructuredSelector({
   role: selectRole,
   profileDomain: selectProfileDomainJS,
   allRoles: selectAllRoles,
+  currentEmployee: selectProfile,
+  allEmployees: selectAllEmployees,
+  selectEmployees: selectEmployees,
+  selectManagers: selectManagers,
 });
 
 const mapDispatchToProps = {

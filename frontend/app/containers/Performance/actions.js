@@ -18,6 +18,7 @@ import {
   SELECT_PLAN,
   SET_PLAN_COPY,
   SET_REVIEW_COPY,
+  UPDATE_SECTION
 } from './constants';
 
 export function getAllPlans() {
@@ -73,6 +74,14 @@ export function addSection(section, isPlan) {
   };
 }
 
+export function updateSection(section, isPlan) {
+  return {
+    type: UPDATE_SECTION,
+    section,
+    isPlan,
+  };
+}
+
 export function deleteSection(sectionId, isPlan) {
   return {
     type: DELETE_SECTION,
@@ -122,6 +131,7 @@ export default {
   deleteRows,
   addRow,
   addSection,
+  updateSection,
   deleteSection,
   deletePerformance,
   createPlan,

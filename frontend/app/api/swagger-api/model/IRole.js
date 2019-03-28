@@ -27,10 +27,10 @@ import ICompetency from './ICompetency';
 export default class IRole {
     /**
     * Constructs a new <code>IRole</code>.
-    * An Role is contains all the current information of a current or onboarding employee 
+    * Role, is contains all the current information of a current or onboarding employee 
     * @alias module:model/IRole
     * @class
-    * @param name {String} 
+    * @param name {String} name, of the role
     */
 
     constructor(name) {
@@ -76,20 +76,22 @@ export default class IRole {
     }
 
     /**
-    * The unique identifier of the Role
+    * role ID, the unique identifier of the Role
     * @member {Number} id
     */
     id = undefined;
     /**
+    * name, of the role
     * @member {String} name
     */
     name = undefined;
     /**
+    * description, of the role
     * @member {String} description
     */
     description = undefined;
     /**
-    * Contains all the competencies of this role
+    * role competencies, contains all the competencies of this role
     * @member {Array.<module:model/ICompetency>} competencies
     */
     competencies = undefined;

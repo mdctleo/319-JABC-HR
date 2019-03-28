@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { selectResource } from 'api/selector';
+import { selectResource, selectCollection } from 'api/selector';
 import { initialState } from './reducer';
 
 const selectEmployeeDomain = state => state.get('employees', initialState);
@@ -93,5 +93,25 @@ export const selectSelectedEmployees = createSelector(
       return selected.map(id => employees.get(`${id}`));
     }
     return null;
+  },
+);
+
+export const selectEmployees = createSelector(
+  [selectCollection('employeesOfManager')],
+  employees => {
+    if (employees) {
+      return Object.keys(employees).map(key => employees[key]);
+    }
+    return [];
+  },
+);
+
+export const selectManagers = createSelector(
+  [selectCollection('managersOfEmployee')],
+  employees => {
+    if (employees) {
+      return Object.keys(employees).map(key => employees[key]);
+    }
+    return [];
   },
 );

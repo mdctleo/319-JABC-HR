@@ -16,12 +16,14 @@ import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import Toolbar from '@material-ui/core/Toolbar';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import EditPerformanceSection from "./EditPerformanceSection";
 const uniqid = require('uniqid');
 
 const styles = theme => ({
@@ -90,6 +92,19 @@ const styles = theme => ({
   bottomRow: {
     height: '60px',
   },
+  spacer: {
+    flex: '1 1 100%',
+  },
+  actionButton: {
+    float: 'right',
+    display: 'inline',
+    color: theme.palette.text.secondary,
+    // borderRadius: '15px',
+    marginLeft: '10px',
+  },
+  colNameField: {
+    flex: '0 0 auto',
+  },
 });
 
 class EnhancedTableHead extends React.Component {
@@ -107,7 +122,7 @@ class EnhancedTableHead extends React.Component {
             />
           </TableCell>
           {section.data.columns.map(column => (
-            <TableCell key={column.concat(-1)}>{column}</TableCell>
+            <TableCell key={column.concat("-1")}>{column}</TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -139,7 +154,7 @@ const toolbarStyles = theme => ({
           backgroundColor: theme.palette.secondary.dark,
         },
   spacer: {
-    flex: '1 1 100%',
+    flex: '1 1 50%',
   },
   actions: {
     color: theme.palette.text.secondary,
@@ -147,8 +162,8 @@ const toolbarStyles = theme => ({
   title: {
     flex: '0 0 auto',
   },
-  deleteButton: {
-    float: 'right',
+  actionButton: {
+    float: 'left',
     display: 'inline',
     color: theme.palette.text.secondary,
     // borderRadius: '15px',
@@ -163,8 +178,7 @@ let EnhancedTableToolbar = props => {
     <Toolbar
       className={classNames(classes.root, {
         [classes.highlight]: numSelected > 0,
-      })}
-    >
+      })}>
       <div className={classes.title}>
         {numSelected > 0 ? (
           <Typography color="inherit" variant="subtitle1">
@@ -179,13 +193,22 @@ let EnhancedTableToolbar = props => {
       <div className={classes.spacer} />
       <div className={classes.actions}>
         {numSelected === 0 ? (
-          <IconButton
-            className={classes.deleteButton}
-            onClick={props.handleDeleteSection}
-            size="small"
-          >
-            <DeleteIcon />
-          </IconButton>
+          <div>
+            <IconButton
+              className={classes.actionButton}
+              onClick={props.openEditSectionDialog}
+              size="small"
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              className={classes.actionButton}
+              onClick={props.handleDeleteSection}
+              size="small"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </div>
         ) : (
           <Tooltip title="Delete">
             <IconButton onClick={props.handleDeleteRows} aria-label="Delete">
@@ -204,14 +227,37 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   handleDeleteSection: PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired,
+  openEditSectionDialog: PropTypes.func.isRequired
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
 class PerformanceSection extends React.Component {
-  state = {
-    openAddRowDialog: false,
-    selected: [],
+  constructor(props) {
+    super(props);
+
+    let columnsForEditSection = [];
+    for (let i = 0; i < props.section.data.columns.length; i++) {
+      columnsForEditSection.push(i);
+    }
+
+    this.state = {
+      section: props.section,
+      openAddRowDialog: false,
+      openEditSectionDialog: false,
+      editSectionError: null,
+      selected: [],
+      columnsForEditSection: columnsForEditSection
+    };
+  }
+
+  resetColumnsForEditSection = () => {
+    let columnsForEditSection = [];
+    for (let i = 0; i < props.section.data.columns.length; i++) {
+      columnsForEditSection.push(i);
+    }
+
+    this.setState({columnsForEditSection: columnsForEditSection});
   };
 
   handleDeleteRows = () => {
@@ -287,25 +333,143 @@ class PerformanceSection extends React.Component {
     this.setState({ openAddRowDialog: false });
   };
 
+  openEditSectionDialog = () => {
+    let columnsForEditSection = [];
+    for (let i = 0; i < this.state.section.data.columns.length; i++) {
+      columnsForEditSection.push(i);
+    }
+
+    this.setState({ openEditSectionDialog: true, columnsForEditSection: columnsForEditSection });
+  };
+
+  closeEditSectionDialog = () => {
+    this.setState({ openEditSectionDialog: false });
+  };
+
+  // Saves edited section
+  saveEditedSection = () => {
+    let editCols = this.state.columnsForEditSection;
+    let section = {};
+    let columns = [];
+
+    // Handle columns of updated section
+    for (const editCol of editCols) {
+      columns.push(document.getElementById('col-name'.concat(editCol)).value);
+    }
+    for (let i = 0; i < columns.length; i++) {
+      for (let j = i + 1; j < columns.length; j++) {
+        if (columns[i] === columns[j]) {
+          this.setState({
+            editSectionError: 'Columns must have different names',
+          });
+          return;
+        }
+      }
+    }
+    this.setState({
+      editSectionError: null,
+    });
+
+    // Handle rows of updated section
+    let rows = [];
+    for (let dataRow of this.state.section.data.rows) {
+      let row = {id: dataRow.id};
+
+      for (let i = 0; i < columns.length; i++) {
+        let currColumn = columns[i];
+        let colId = editCols[i];
+
+        // If column unchanged and exists in data row
+        if (dataRow.hasOwnProperty(currColumn) && dataRow[currColumn]) {
+          row[currColumn] = dataRow[currColumn];
+        }
+        // If column name changed but has data in data row
+        else if (colId < this.state.section.data.columns.length) {
+          let oldColumn = this.state.section.data.columns[colId];
+          row[currColumn] = dataRow[oldColumn];
+        }
+        // Completely new column added to section
+        else {
+          row[currColumn] = null;
+        }
+      }
+
+      rows.push(row);
+    }
+
+    // Make new section as updated section
+    section.id = this.state.section.id;
+    section.sectionName = document.getElementById('sectionName').value;
+    section.fkPerformancePlan = this.state.section.fkPerformancePlan;
+    section.data = {};
+    section.data.columns = columns;
+    section.data.rows = rows;
+
+    // Reset columnsForEditSection
+    let columnsForEditSection = [];
+    for (let i = 0; i < columns.length; i++) {
+      columnsForEditSection.push(i);
+    }
+
+    this.setState({
+      section: section,
+      openEditSectionDialog: false,
+      columnsForEditSection: columnsForEditSection,
+    });
+
+    this.props.updateSection(section, true);
+  };
+
+  // New column ids will never clash with existing column ids
+  // because they are at least the length of the existing columns
+  getNextColId = () => {
+    let max = this.state.section.data.columns.length;
+    for (let colForEditSection of this.state.columnsForEditSection) {
+      if (colForEditSection > max) {
+        max = colForEditSection;
+      }
+    }
+
+    return max + 1;
+  };
+
+  // Mark column to be removed when this section is being edited
+  rmColumnForEditSection = (colId) => {
+    let colsForEditSection = this.state.columnsForEditSection.filter(function(column) {
+      return column !== colId;
+    });
+
+    this.setState({ columnsForEditSection: colsForEditSection });
+  };
+
+  addColumnForEditSection = () => {
+    this.setState(prevState => ({
+      columnsForEditSection: [
+        ...prevState.columnsForEditSection,
+        this.getNextColId()
+      ],
+    }));
+  };
+
   render() {
     const { classes, section } = this.props;
-    const { openAddRowDialog, selected } = this.state;
+    const { columnsForEditSection, openEditSectionDialog, editSectionError, openAddRowDialog, selected } = this.state;
     const that = this;
 
     return (
       <div>
         <Dialog
-          open={that.state.openAddRowDialog}
+          open={openAddRowDialog}
           onClose={this.closeNewRowDialog}
           aria-labelledby="form-dialog-title"
           fullWidth
         >
           <DialogTitle id="form-dialog-title">Add new row</DialogTitle>
           <DialogContent>
-            {section.data.columns.map(column => (
+            {section.data.columns.map((column, index) => (
               <TextField
+                autoFocus={index === 0}
                 key={column.concat(section.id)}
-                autoFocus
                 margin="dense"
                 id={column.concat(section.id)}
                 label={column}
@@ -322,6 +486,18 @@ class PerformanceSection extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <EditPerformanceSection
+          openEditSectionDialog={this.state.openEditSectionDialog}
+          closeEditSectionDialog={this.closeEditSectionDialog}
+          section={section}
+          columnsForEditSection={columnsForEditSection}
+          addColumnForEditSection={this.addColumnForEditSection}
+          rmColumnForEditSection={this.rmColumnForEditSection}
+          saveEditedSection={this.saveEditedSection}
+          editSectionError={this.state.editSectionError}
+        />
+
         <Paper className={classes.root}>
           <EnhancedTableToolbar
             sectionName={section.sectionName}
@@ -329,6 +505,7 @@ class PerformanceSection extends React.Component {
             numSelected={selected.length}
             handleDeleteRows={that.handleDeleteRows}
             handleDeleteSection={that.handleDeleteSection}
+            openEditSectionDialog={that.openEditSectionDialog}
           />
           <div className={classes.tableWrapper}>
             <Table className={classes.table}>
@@ -388,6 +565,7 @@ PerformanceSection.propTypes = {
   handleDeleteSection: PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired,
   handleAddRow: PropTypes.func.isRequired,
+  updateSection: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(PerformanceSection);

@@ -13,6 +13,8 @@ Priviledges.operations = {
     'getManagersByEmployee': models_1.IEmployee.adminLevelEnum.STAFF,
     'linkEmployeeManager': models_1.IEmployee.adminLevelEnum.HR_ADMIN,
     'unlinkEmployeeManager': models_1.IEmployee.adminLevelEnum.HR_ADMIN,
+    'setEmployeesOfManager': models_1.IEmployee.adminLevelEnum.HR_ADMIN,
+    'setManagersOfEmployee': models_1.IEmployee.adminLevelEnum.HR_ADMIN,
     'getEmployeesByManager': models_1.IEmployee.adminLevelEnum.MANAGER,
     'getEmployeeHistory': models_1.IEmployee.adminLevelEnum.MANAGER,
     'getOnboardingTasks': models_1.IEmployee.adminLevelEnum.STAFF,

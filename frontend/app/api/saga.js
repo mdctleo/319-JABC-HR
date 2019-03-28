@@ -23,6 +23,16 @@ export function* getEmployees() {
   yield all(employees.map(e => put(setResource('employee', e.id, e))));
 }
 
+export function* getManagersByEmployee(employee) {
+  const employees = yield employeeApi.getManagersByEmployee(employee.id, { inactive: true });
+  yield put(setCollection('managersOfEmployee', employees));
+}
+
+export function* getEmployeesByManager(manager) {
+  const employees = yield employeeApi.getEmployeesByManager(manager.id, { inactive: true });
+  yield put(setCollection('employeesOfManager', employees));
+}
+
 export function* updateEmployee(employee) {
   if (employee.birthdate === '') employee.birthdate = null;
   if (employee.dateJoined === '') employee.dateJoined = null;
@@ -36,6 +46,14 @@ export function* updateEmployee(employee) {
 export function* updateEmployeePassword(employee) {
   const employeeObj = IEmployee.constructFromObject(employee);
   yield employeeApi.updateEmployeePassword(employee.id, employeeObj);
+}
+
+export function* setEmployeesOfManager(idManager, employees) {
+  yield employeeApi.setEmployeesOfManager(idManager, employees);
+}
+
+export function* setManagersOfEmployee(idEmployee, managers) {
+  yield employeeApi.setManagersOfEmployee(idEmployee, managers);
 }
 
 export function* createEmployee(employee) {
@@ -53,6 +71,11 @@ export function* getPerformanceReviews(id) {
   const reviews = yield employeeApi.getPerformanceReviews(id);
   yield put(clearResource('review'));
   yield all(reviews.map(r => put(setResource('review', r.id, r))));
+}
+
+export function* getEmployeeHistory(id) {
+  const history = yield employeeApi.getEmployeeHistory(id);
+  yield put(setResource('history', id, history));
 }
 
 export function* createPerformancePlan(employeeId, plan) {

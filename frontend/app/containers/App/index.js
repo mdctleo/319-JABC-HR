@@ -61,15 +61,17 @@ export class App extends React.PureComponent {
           onboarding={!!this.props.user && this.props.user.status === 2}
         />
         <Contents>
-          <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/performance" component={Performance} />
-            <Route path="/(onboarding|documents)" component={Onboarding} />
-            <Route path="/employees" component={Employees} />
-            <Route path="/roles" component={Roles} />
-            <Route component={NotFoundPage} />
-          </Switch>
+          {this.props.user && (
+            <Switch>
+              <Route exact path="/" component={HomePage} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/performance" component={Performance} />
+              <Route path="/(onboarding|documents)" component={Onboarding} />
+              <Route path="/employees" component={Employees} />
+              <Route path="/roles" component={Roles} />
+              <Route component={NotFoundPage} />
+            </Switch>
+          )}
         </Contents>
       </div>
     );

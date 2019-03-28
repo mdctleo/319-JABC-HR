@@ -8,6 +8,7 @@ import { fromJS } from 'immutable';
 import {
   ADD_ROW,
   ADD_SECTION,
+  UPDATE_SECTION,
   DELETE_ROWS,
   DELETE_SECTION,
   SET_PLAN_COPY,
@@ -73,6 +74,25 @@ const addSection = (state, section, isPlan) => {
   return state.set(performanceName, newPerformance);
 };
 
+const updateSection = (state, section, isPlan) => {
+  const performanceName = isPlan ? 'selectedPlan' : 'selectedReview';
+  const performance = state.get(performanceName);
+  const sections = performance.get('sections');
+  const sectionIndex = sections.findIndex(s => s.get('id') === section.id);
+  if (sectionIndex >= 0) {
+    const updatedSection = fromJS({
+      ...section,
+      fkPerformancePlan: sections.get(sectionIndex).get('fkPerformancePlan')
+    });
+    const newPerformance = performance.set(
+      'sections',
+      sections.splice(sectionIndex, 1, updatedSection),
+    );
+    return state.set(performanceName, newPerformance);
+  }
+  return state;
+};
+
 const deleteSection = (state, sectionId, isPlan) => {
   const performanceName = isPlan ? 'selectedPlan' : 'selectedReview';
   const performance = state.get(performanceName);
@@ -112,6 +132,8 @@ function performanceReducer(state = initialState, action) {
       return addRow(state, action.sectionId, action.row, action.isPlan);
     case ADD_SECTION:
       return addSection(state, action.section, action.isPlan);
+    case UPDATE_SECTION:
+      return updateSection(state, action.section, action.isPlan);
     case DELETE_SECTION:
       return deleteSection(state, action.sectionId, action.isPlan);
     default:

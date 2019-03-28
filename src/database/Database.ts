@@ -32,7 +32,7 @@ export default class Database implements IDatabaseClient {
             return response;
         } catch (err) {
             const errMsg: string = `Database::Failed to perform query: ${query}, with err: ${err}`;
-            Log.error(errMsg);
+            // Log.error(errMsg);
             try{
                 conn.release();
             }catch(e){}
@@ -45,7 +45,7 @@ export default class Database implements IDatabaseClient {
             return await conn.execute(query, params);
         } catch (err) {
             const errMsg: string = `Database::Failed to perform query: ${query}, with err: ${err}`;
-            Log.error(errMsg);
+            // Log.error(errMsg);
             throw new DatabaseQueryError(responseType, err, errMsg);
         }
     }
@@ -56,7 +56,7 @@ export default class Database implements IDatabaseClient {
             return;
         } catch (err) {
             const errMsg: string = `Database::Failed to initialize transaction, with err: ${err}`;
-            Log.error(errMsg);
+            // Log.error(errMsg);
             throw new DatabaseQueryError(responseType, err, errMsg);
         }
     }
@@ -67,7 +67,7 @@ export default class Database implements IDatabaseClient {
             return;
         } catch (err) {
             const errMsg: string = `Database::Failed to commit transaction, with err: ${err}`;
-            Log.error(errMsg);
+            // Log.error(errMsg);
             throw new DatabaseQueryError(responseType, err, errMsg);
         }
     }
@@ -78,7 +78,7 @@ export default class Database implements IDatabaseClient {
             return;
         } catch (err) {
             const errMsg: string = `Database::Failed to rollback transaction, with err: ${err}`;
-            Log.error(errMsg);
+            // Log.error(errMsg);
             throw new DatabaseQueryError(responseType, err, errMsg);
         }
     }
@@ -93,7 +93,7 @@ export default class Database implements IDatabaseClient {
             return response;
         } catch (err) {
             const errMsg: string = `Database::Failed to perform query: ${query}, with err: ${err}`;
-            Log.error(errMsg);
+            // Log.error(errMsg);
             try{
                 conn.release();
             }catch(e){}
@@ -106,8 +106,8 @@ export default class Database implements IDatabaseClient {
             return await this.pool.getConnection();
         } catch (err) {
             const errMsg: string = `Database::Failed to open connection: ${err}`;
-            Log.error(errMsg);
-            throw new DatabaseWriteError(responseType, err, errMsg);
+            // Log.error(errMsg);
+            throw new DatabaseConnectionError(responseType, errMsg);
         }
     }
 
@@ -116,7 +116,7 @@ export default class Database implements IDatabaseClient {
             await conn.release();
         } catch (err) {
             const errMsg: string = `Database::failed to close connection: ${err}`;
-            Log.error(errMsg);
+            // Log.error(errMsg);
             throw new DatabaseConnectionError(errMsg);
         }
     }
