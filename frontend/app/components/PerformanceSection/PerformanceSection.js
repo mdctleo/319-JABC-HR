@@ -195,42 +195,50 @@ let EnhancedTableToolbar = props => {
       <div className={classes.actions}>
         {numSelected === 0 && (
           <div>
-            <IconButton
-              className={classes.actionButton}
-              onClick={props.openEditSectionDialog}
-              size="small"
-            >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              className={classes.actionButton}
-              onClick={props.handleDeleteSection}
-              size="small"
-            >
-              <DeleteIcon />
-            </IconButton>
+            <Tooltip title={"Edit Section"}>
+              <IconButton
+                className={classes.actionButton}
+                onClick={props.openEditSectionDialog}
+                size="small"
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={"Delete Section"}>
+              <IconButton
+                className={classes.actionButton}
+                onClick={props.handleDeleteSection}
+                size="small"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         )}
         {numSelected === 1 && (
           <div>
-            <IconButton
-              className={classes.actionButton}
-              onClick={props.openEditRowDialog}
-              size="small"
-            >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              className={classes.actionButton}
-              onClick={props.handleDeleteRows}
-              size="small"
-            >
-              <DeleteIcon />
-            </IconButton>
+            <Tooltip title={"Edit Row"}>
+              <IconButton
+                className={classes.actionButton}
+                onClick={props.openEditRowDialog}
+                size="small"
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete Row">
+              <IconButton
+                className={classes.actionButton}
+                onClick={props.handleDeleteRows}
+                size="small"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         )}
         { numSelected > 1 && (
-          <Tooltip title="Delete">
+          <Tooltip title="Delete Rows">
             <IconButton onClick={props.handleDeleteRows} aria-label="Delete">
               <DeleteIcon />
             </IconButton>
