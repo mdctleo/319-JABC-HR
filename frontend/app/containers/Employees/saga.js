@@ -12,6 +12,8 @@ import {
   createEmployee,
   updateEmployee,
   updateEmployeePassword,
+  setEmployeesOfManager,
+  setManagersOfEmployee,
   getManagersByEmployee,
   getEmployeesByManager,
 } from 'api/saga';
@@ -35,6 +37,12 @@ export function* addEmployee(action) {
 export function* saveEmployee(action) {
   try {
     yield call(updateEmployee, action.employee);
+    if(action.employees){
+      yield call(setEmployeesOfManager, action.employee.id, action.employees);
+    }
+    if(action.managers){
+      yield call(setManagersOfEmployee, action.employee.id, action.managers);
+    }
     yield put(setEditing(false));
   } catch (e) {
     if (e.response) yield put(displayError(e.response.body.message));

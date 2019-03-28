@@ -34,7 +34,7 @@ export default class Log {
     public static debug(...args: any[]): void {
         if(Log.level != 'VERBOSE') return;
         const timeNow: string = Log.currentTime();
-        console.info(`${Log.FgGreen}${Log.Dim}<D> %s: ${Log.Reset}${Log.FgGreen}${Log.Bright}`, timeNow, ...args, Log.Reset);
+        console.info(`${Log.FgGreen}${Log.Dim}${Log.Bright}<D> %s: ${Log.Reset}${Log.FgGreen}`, timeNow, ...args, Log.Reset);
     }
 
     public static trace(...args: any[]): void {
@@ -48,7 +48,7 @@ export default class Log {
         if(Log.level != 'VERBOSE')
             if(Log.level != 'INFO') return;
         const timeNow: string = Log.currentTime();
-        console.info(`${Log.FgBlue}${Log.Dim}<I> %s: ${Log.Reset}${Log.FgBlue}${Log.Bright}`, timeNow, ...args, Log.Reset);
+        console.info(`${Log.FgBlue}${Log.Dim}${Log.Bright}<I> %s: ${Log.Reset}${Log.FgBlue}`, timeNow, ...args, Log.Reset);
     }
 
     public static warn(...args: any[]): void {
@@ -57,13 +57,13 @@ export default class Log {
             if(Log.level != 'WARN')
                 if(Log.level != 'INFO') return;
         const timeNow: string = Log.currentTime();
-        console.warn(`${Log.FgYellow}${Log.Dim}<W> %s: ${Log.Reset}${Log.FgYellow}${Log.Bright}`, timeNow, ...args, Log.Reset);
+        console.warn(`${Log.FgYellow}${Log.Dim}${Log.Bright}<W> %s: ${Log.Reset}${Log.FgYellow}`, timeNow, ...args, Log.Reset);
     }
 
     public static error(...args: any[]): void {
         if(Log.level == 'SILENT') return;
         const timeNow: string = Log.currentTime();
-        console.error(`${Log.FgRed}${Log.Dim}<E> %s: ${Log.Reset}${Log.FgRed}${Log.Bright}`, timeNow, ...args, Log.Reset);
+        console.error(`${Log.FgRed}${Log.Dim}${Log.Bright}<E> %s: ${Log.Reset}${Log.FgRed}`, timeNow, ...args, Log.Reset);
     }
 
     private static currentTime(): string {

@@ -97,29 +97,27 @@ const styles = theme => ({
 class EmployeeEditForm extends React.PureComponent {
   constructor(props) {
     super(props);
-    console.log(props.profile);
-    console.log(props.currentEmployee);
-    console.log(props.allEmployees);
-    console.log(props.managers);
-    console.log(props.employees);
-
     this.state = {
       profile: { ...props.profile, fkRole: props.profile.fkRole || '' },
       dialog: false,
       managers: props.managers.map(this.toSelectOption),
       employees: props.employees.map(this.toSelectOption),
     };
-    
+
     this.selectionEmployees = props.allEmployees.filter(employee => {
-     return employee.adminLevel == STAFF
+      return (employee.adminLevel === STAFF || (employee.adminLevel > STAFF && this.props.profile.adminLevel === HR_ADMIN)) && employee.id !== this.props.profile.id;
     }).map(this.toSelectOption)
     this.selectionManagers = props.allEmployees.filter(employee => {
       return employee.adminLevel > STAFF
     }).concat(props.managers).map(this.toSelectOption)
   }
 
-  toSelectOption = employee =>{
-    return { value: employee.id, label: `${employee.firstname} ${employee.lastname}`}
+  toSelectOption = employee => {
+    return { value: employee.id, label: `${employee.firstname} ${employee.lastname}` }
+  }
+
+  toIds = selection => {
+    return selection.value
   }
 
   handleChange = name => event => {
@@ -146,17 +144,30 @@ class EmployeeEditForm extends React.PureComponent {
   };
 
   handleEmployees = employees => {
-    console.log(employees)
-    this.setState({employees: employees})
+    this.setState({ employees: employees })
   }
 
   handleManagers = managers => {
-    console.log(managers)
-    this.setState({managers: managers})
+    this.setState({ managers: managers })
+  }
+
+  handleSave = () => {
+    let mIds = this.state.managers.map(this.toIds);
+    let eIds = this.state.employees.map(this.toIds);
+    if(this.props.currentEmployee.adminLevel === STAFF){
+      eIds = mIds = null;
+    }
+    if(this.props.currentEmployee.adminLevel === MANAGER){
+      mIds = null;
+    }
+    if(this.props.profile.adminLevel === STAFF){
+      eIds = null;
+    }
+    this.props.saveProfile(this.state.profile, eIds, mIds)
   }
 
   render() {
-    const { classes, saveProfile, cancelEdit, allRoles, add, currentEmployee } = this.props;
+    const { classes, cancelEdit, allRoles, add, currentEmployee } = this.props;
     const { profile, dialog, managers, employees } = this.state;
 
     return (
@@ -402,9 +413,9 @@ class EmployeeEditForm extends React.PureComponent {
                 </MenuItem>
               </TextField>
             </div>
-            {(profile.adminLevel == STAFF && (this.selectionManagers.length > 0 || currentEmployee.adminLevel == STAFF))  && (
+            {(profile.adminLevel == STAFF && (this.selectionManagers.length > 0 || currentEmployee.adminLevel == STAFF)) && (
               <div>
-                {this.selectionManagers.length == 0  && (
+                {this.selectionManagers.length == 0 && (
                   <Typography
                     className={classes.subHeading}
                     variant="subtitle1"
@@ -413,7 +424,7 @@ class EmployeeEditForm extends React.PureComponent {
                     No Manager(s)
                   </Typography>
                 )}
-                {this.selectionManagers.length > 0  && (
+                {this.selectionManagers.length > 0 && (
                   <div>
                     <Typography
                       className={classes.subHeading}
@@ -449,7 +460,7 @@ class EmployeeEditForm extends React.PureComponent {
             )}
             {(currentEmployee.adminLevel > STAFF && profile.adminLevel > STAFF) && (
               <div>
-                {(this.selectionEmployees.length == 0  && currentEmployee.adminLevel == MANAGER) && (
+                {(this.selectionEmployees.length == 0 && currentEmployee.adminLevel == MANAGER) && (
                   <Typography
                     className={classes.subHeading}
                     variant="subtitle1"
@@ -509,7 +520,7 @@ class EmployeeEditForm extends React.PureComponent {
         </Button>
         <Button
           className={classes.formButton}
-          onClick={() => saveProfile(profile)}
+          onClick={this.handleSave}
         >
           Save
         </Button>

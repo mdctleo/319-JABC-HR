@@ -335,7 +335,7 @@ class EnhancedTable extends React.Component {
             handleBackButton={this.handleBackButton}
             editing={editing}
             setEditing={this.props.setEditing}
-            saveProfile={profile => this.props.saveEmployee(profile)}
+            saveProfile={this.props.saveEmployee}
             updatePassword={this.props.updatePassword}
           />
         )}

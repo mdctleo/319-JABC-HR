@@ -58,10 +58,12 @@ export function addEmployee(employee) {
   };
 }
 
-export function saveEmployee(employee) {
+export function saveEmployee(employee, employees, managers) {
   return {
     type: SAVE_EMPLOYEE,
     employee,
+    employees,
+    managers
   };
 }
 

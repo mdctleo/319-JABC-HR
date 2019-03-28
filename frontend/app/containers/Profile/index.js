@@ -96,8 +96,8 @@ class Profile extends React.PureComponent {
     this.props.setEditing(true);
   };
 
-  saveProfile = profile => {
-    this.props.saveProfile(profile);
+  saveProfile = (...profile) => {
+    this.props.saveProfile(...profile);
   };
 
   cancelEdit = () => {

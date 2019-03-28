@@ -48,6 +48,14 @@ export function* updateEmployeePassword(employee) {
   yield employeeApi.updateEmployeePassword(employee.id, employeeObj);
 }
 
+export function* setEmployeesOfManager(idManager, employees) {
+  yield employeeApi.setEmployeesOfManager(idManager, employees);
+}
+
+export function* setManagersOfEmployee(idEmployee, managers) {
+  yield employeeApi.setManagersOfEmployee(idEmployee, managers);
+}
+
 export function* createEmployee(employee) {
   const employeeObj = IEmployee.constructFromObject(employee);
   yield employeeApi.createEmployee(employeeObj);

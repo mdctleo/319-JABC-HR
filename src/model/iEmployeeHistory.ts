@@ -115,6 +115,9 @@ export class EmployeeHistory implements IEmployeeHistory{
     fkRole?: number;
     phoneNumber?: string;
     role?: IRole;
+    roleName?: string;
+    creatorFirstname?: string;
+    creatorLastname?: string;
 
     constructor(rawEmployee: any){
         this.id = rawEmployee.EMPLOYEE_ID;
@@ -137,6 +140,10 @@ export class EmployeeHistory implements IEmployeeHistory{
         this.remainingVacationDays = rawEmployee.REMAINING_VACATION_DAYS;
         this.fkRole = rawEmployee.ROLE;
         this.phoneNumber = rawEmployee.PHONE_NUMBER;
+        this.phoneNumber = rawEmployee.PHONE_NUMBER;
+        this.roleName = rawEmployee.ROLE_NAME;
+        this.creatorFirstname = rawEmployee.CREATOR_FIRST_NAME;
+        this.creatorLastname = rawEmployee.CREATOR_LAST_NAME;
     }
 
     static Employees(rawEmployees: any[]){
