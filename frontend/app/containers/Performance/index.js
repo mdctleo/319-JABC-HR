@@ -13,6 +13,7 @@ import {
   selectPlanList,
   selectSelectedPlan,
   selectSelectedReview,
+  selectRole
 } from './selectors';
 import actions from './actions';
 import connect from 'react-redux/es/connect/connect';
@@ -161,10 +162,11 @@ const styles = theme => ({
 class PerformancePage extends React.Component {
   componentDidMount() {
     this.props.getAllPlans();
+    this.props.getRole();
   }
 
   render() {
-    const { planList, selectedPlan, selectedReview, profile } = this.props;
+    const { planList, selectedPlan, selectedReview, profile, role } = this.props;
 
     return (
       <div>
@@ -184,6 +186,7 @@ class PerformancePage extends React.Component {
           savePlan={this.props.savePlan}
           saveReview={this.props.saveReview}
           updateSection={this.props.updateSection}
+          role={role}
         />
       </div>
     );
@@ -206,7 +209,9 @@ PerformancePage.propTypes = {
   createReview: PropTypes.func.isRequired,
   savePlan: PropTypes.func.isRequired,
   saveReview: PropTypes.func.isRequired,
-  updateSection: PropTypes.func.isRequired
+  updateSection: PropTypes.func.isRequired,
+  getRole: PropTypes.func.isRequired,
+  role: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -214,6 +219,7 @@ const mapStateToProps = createStructuredSelector({
   selectedPlan: selectSelectedPlan,
   selectedReview: selectSelectedReview,
   profile: selectProfile,
+  role: selectRole
 });
 
 const mapDispatchToProps = {

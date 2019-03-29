@@ -18,3 +18,4 @@ export const CREATE_PLAN = 'app/Performance/CREATE_PLAN';
 export const CREATE_REVIEW = 'app/Performance/CREATE_REVIEW';
 export const SAVE_PLAN = 'app/Performance/SAVE_PLAN';
 export const SAVE_REVIEW = 'app/Performance/SAVE_REVIEW';
+export const GET_ROLE = 'app/Performance/GET_ROLE';

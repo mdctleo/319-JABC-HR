@@ -18,7 +18,8 @@ import {
   SELECT_PLAN,
   SET_PLAN_COPY,
   SET_REVIEW_COPY,
-  UPDATE_SECTION
+  UPDATE_SECTION,
+  GET_ROLE
 } from './constants';
 
 export function getAllPlans() {
@@ -125,6 +126,12 @@ export function saveReview(isPublished) {
   };
 }
 
+export function getRole() {
+  return {
+    type: GET_ROLE,
+  };
+}
+
 export default {
   getAllPlans,
   selectPlan,
@@ -138,4 +145,5 @@ export default {
   createReview,
   savePlan,
   saveReview,
+  getRole,
 };
