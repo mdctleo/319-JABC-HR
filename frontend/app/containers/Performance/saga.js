@@ -137,7 +137,9 @@ export function* saveReview({ isPublished }) {
 export function* getPerformanceRole() {
   const profile = yield select(selectProfile);
   try {
-    yield call(getRole, profile.id);
+    if (profile.fkRole) {
+      yield call(getRole, profile.fkRole);
+    }
   } catch (e) {}
 }
 
