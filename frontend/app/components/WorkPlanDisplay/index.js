@@ -102,7 +102,7 @@ WorkPlanDisplay.propTypes = {
   handleDeleteSection: PropTypes.func.isRequired,
   handleDeleteRows: PropTypes.func.isRequired,
   handleAddRow: PropTypes.func.isRequired,
-  updateSection: PropTypes.func.isRequired
+  updateSection: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(WorkPlanDisplay);
