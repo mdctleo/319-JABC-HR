@@ -69,6 +69,9 @@ export const selectHistory = createSelector(
                   }
                 }
               }
+              if (changedFields.length === 0) {
+                return list;
+              }
             }
             return list.push({ ...h, changedFields });
           }, fromJS([]))
