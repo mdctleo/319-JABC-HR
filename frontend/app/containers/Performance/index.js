@@ -187,6 +187,7 @@ class PerformancePage extends React.Component {
           saveReview={this.props.saveReview}
           updateSection={this.props.updateSection}
           role={role}
+          canEditReview={false}
         />
       </div>
     );

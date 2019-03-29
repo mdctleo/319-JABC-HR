@@ -186,7 +186,7 @@ class PerformanceModule extends React.Component {
       openPublishedDialog: false,
       openSavedDialog: false,
       openNoRoleDialog: false,
-      openNoCompetenciesDialog: false
+      openNoCompetenciesDialog: false,
     };
   }
 
@@ -285,9 +285,9 @@ class PerformanceModule extends React.Component {
   // Build a Section from this user's competencies
   addCompetencySection = isPlan => {
     if (!this.props.role) {
-      this.setState({openNoRoleDialog: true});
+      this.setState({ openNoRoleDialog: true });
     } else if (this.props.role.competencies.length === 0) {
-      this.setState({openNoCompetenciesDialog: true});
+      this.setState({ openNoCompetenciesDialog: true });
     } else {
       const section = {};
       const columns = ['Name', 'Description'];
@@ -458,6 +458,7 @@ class PerformanceModule extends React.Component {
       selectedReview,
       planList,
       role,
+      canEditReview,
     } = this.props;
     const {
       columnsForNewSection,
@@ -575,7 +576,10 @@ class PerformanceModule extends React.Component {
                 This employee's role has no competencies.
               </DialogTitle>
               <DialogActions>
-                <Button onClick={this.closeNoCompetenciesDialog} color="primary">
+                <Button
+                  onClick={this.closeNoCompetenciesDialog}
+                  color="primary"
+                >
                   OK
                 </Button>
               </DialogActions>
@@ -645,7 +649,8 @@ class PerformanceModule extends React.Component {
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
-                This {value === 0 ? ("Work Plan") : ("Performance Review")} has been published!
+                This {value === 0 ? 'Work Plan' : 'Performance Review'} has been
+                published!
               </DialogTitle>
               <DialogActions>
                 <Button onClick={this.closePublishedDialog} color="primary">
@@ -660,7 +665,8 @@ class PerformanceModule extends React.Component {
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
-                This {value === 0 ? ("Work Plan") : ("Performance Review")} has been saved!
+                This {value === 0 ? 'Work Plan' : 'Performance Review'} has been
+                saved!
               </DialogTitle>
               <DialogActions>
                 <Button onClick={this.closeSavedDialog} color="primary">
@@ -802,13 +808,13 @@ class PerformanceModule extends React.Component {
                       className={classes.saveButton}
                       onClick={() => this.savePlan(false)}
                     >
-                      Save Draft
+                      {selectedPlan.status === 0 ? 'Save Draft' : 'Unpublish'}
                     </Button>
                     <Button
                       className={classes.saveButton}
                       onClick={() => this.savePlan(true)}
                     >
-                      Publish
+                      {selectedPlan.status === 0 ? 'Publish' : 'Save Changes'}
                     </Button>
                     <WorkPlanDisplay
                       sections={selectedPlan.sections}
@@ -843,24 +849,28 @@ class PerformanceModule extends React.Component {
               {selectedReview &&
                 value === 1 && (
                   <div className="profile-card">
-                    <Button
-                      className={classes.deleteWPButton}
-                      onClick={this.openCheckDeleteDocDialog}
-                    >
-                      Delete Review
-                    </Button>
-                    <Button
-                      className={classes.saveButton}
-                      onClick={() => this.saveReview(false)}
-                    >
-                      Save Draft
-                    </Button>
-                    <Button
-                      className={classes.saveButton}
-                      onClick={() => this.saveReview(true)}
-                    >
-                      Publish
-                    </Button>
+                    {canEditReview && (
+                      <React.Fragment>
+                        <Button
+                          className={classes.deleteWPButton}
+                          onClick={this.openCheckDeleteDocDialog}
+                        >
+                          Delete Review
+                        </Button>
+                        <Button
+                          className={classes.saveButton}
+                          onClick={() => this.saveReview(false)}
+                        >
+                          {selectedReview.status === 0 ? 'Save Draft' : 'Unpublish'}
+                        </Button>
+                        <Button
+                          className={classes.saveButton}
+                          onClick={() => this.saveReview(true)}
+                        >
+                          {selectedReview.status === 0 ? 'Publish' : 'Save Changes'}
+                        </Button>
+                      </React.Fragment>
+                    )}
                     <PerformanceReviewDisplay
                       sections={selectedReview.sections}
                       year={selectedPlanYear}
@@ -874,21 +884,24 @@ class PerformanceModule extends React.Component {
                         this.props.updateSection(section, false)
                       }
                       role={role}
+                      canEditReview={canEditReview}
                     />
-                    <div className={classes.sectionButtonWrapper}>
-                      <Button
-                        className={classes.sectionButton}
-                        onClick={this.openNewSectionDialog}
-                      >
-                        Add Section
-                      </Button>
-                      <Button
-                        className={classes.sectionButton}
-                        onClick={() => this.addCompetencySection(false)}
-                      >
-                        Add Competencies
-                      </Button>
-                    </div>
+                    {canEditReview && (
+                      <div className={classes.sectionButtonWrapper}>
+                        <Button
+                          className={classes.sectionButton}
+                          onClick={this.openNewSectionDialog}
+                        >
+                          Add Section
+                        </Button>
+                        <Button
+                          className={classes.sectionButton}
+                          onClick={() => this.addCompetencySection(false)}
+                        >
+                          Add Competencies
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               {selectedPlan &&
@@ -897,16 +910,17 @@ class PerformanceModule extends React.Component {
                   <div className="profile-card">
                     <Typography>
                       You currently have no performance review for this work
-                      plan. Click on the button below to add a performance
-                      review for this plan:{' '}
+                      plan.
                     </Typography>
-                    <Button
-                      className={classes.addDocButton}
-                      value={0}
-                      onClick={this.makeReview}
-                    >
-                      Add Review
-                    </Button>
+                    {canEditReview && (
+                      <Button
+                        className={classes.addDocButton}
+                        value={0}
+                        onClick={this.makeReview}
+                      >
+                        Add Review
+                      </Button>
+                    )}
                   </div>
                 )}
             </div>
@@ -935,6 +949,7 @@ PerformanceModule.propTypes = {
   saveReview: PropTypes.func.isRequired,
   updateSection: PropTypes.func.isRequired,
   role: PropTypes.object,
+  canEditReview: PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(PerformanceModule);
