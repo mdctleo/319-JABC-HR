@@ -55,6 +55,7 @@ export function* deletePerformance(action) {
       const plan = yield select(selectSelectedPlan);
       yield call(deletePerformancePlan, plan.id);
       yield put(setPlanCopy(null));
+      yield put(setReviewCopy(null));
       yield call(getAllPlans);
     } else {
       const review = yield select(selectSelectedReview);
