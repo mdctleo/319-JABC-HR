@@ -160,9 +160,12 @@ const styles = theme => ({
 
 class PerformancePage extends React.Component {
   componentDidMount() {
-    this.props.reset();
-    this.props.getAllPlans(this.props.selectedEmployee);
-    this.props.getRole(this.props.selectedEmployee);
+    const { reset, getAllPlans, getRole, selectedEmployee } = this.props;
+    reset();
+    getAllPlans(selectedEmployee);
+    if (selectedEmployee.fkRole) {
+      getRole(selectedEmployee);
+    }
   }
 
   render() {
