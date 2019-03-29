@@ -152,6 +152,8 @@ class Profile extends React.PureComponent {
                     profile={profile}
                     roleName={role && role.name}
                     isAdmin={isAdmin}
+                    managers={this.props.managers}
+                    employees={this.props.employees}
                   />
                   <Button
                     className={classes.resetButton}
@@ -175,6 +177,8 @@ class Profile extends React.PureComponent {
                     profile={profile}
                     roleName={role && role.name}
                     isAdmin={isAdmin}
+                    managers={this.props.managers}
+                    employees={this.props.employees}
                   />
                   <Button
                     className={classes.resetButton}
@@ -191,8 +195,8 @@ class Profile extends React.PureComponent {
                   profile={profile}
                   currentEmployee={this.props.currentEmployee}
                   allEmployees={this.props.allEmployees}
-                  managers={this.props.selectManagers}
-                  employees={this.props.selectEmployees}
+                  managers={this.props.managers}
+                  employees={this.props.employees}
                   saveProfile={this.saveProfile}
                   cancelEdit={this.cancelEdit}
                   allRoles={allRoles}
@@ -217,6 +221,8 @@ Profile.propTypes = {
   profileDomain: PropTypes.object,
   allRoles: PropTypes.array,
   history: PropTypes.object,
+  managers: PropTypes.array.isRequired,
+  employees: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -226,8 +232,8 @@ const mapStateToProps = createStructuredSelector({
   allRoles: selectAllRoles,
   currentEmployee: selectProfile,
   allEmployees: selectAllEmployees,
-  selectEmployees: selectEmployees,
-  selectManagers: selectManagers,
+  employees: selectEmployees,
+  managers: selectManagers,
 });
 
 const mapDispatchToProps = {

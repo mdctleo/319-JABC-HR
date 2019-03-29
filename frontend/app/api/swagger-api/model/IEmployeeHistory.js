@@ -128,6 +128,15 @@ export default class IEmployeeHistory {
             if (data.hasOwnProperty('phoneNumber')) {
                 obj['phoneNumber'] = ApiClient.convertToType(data['phoneNumber'], 'String');
             }
+            if (data.hasOwnProperty('creatorFirstname')) {
+                obj['creatorFirstname'] = ApiClient.convertToType(data['creatorFirstname'], 'String');
+            }
+            if (data.hasOwnProperty('creatorLastname')) {
+                obj['creatorLastname'] = ApiClient.convertToType(data['creatorLastname'], 'String');
+            }
+            if (data.hasOwnProperty('roleName')) {
+                obj['roleName'] = ApiClient.convertToType(data['roleName'], 'String');
+            }
             if (data.hasOwnProperty('role')) {
                 obj['role'] = IRole.constructFromObject(data['role']);
             }
@@ -235,6 +244,21 @@ export default class IEmployeeHistory {
     * @member {String} phoneNumber
     */
     phoneNumber = undefined;
+    /**
+    * first name, of an employee creator
+    * @member {String} creatorFirstname
+    */
+    creatorFirstname = undefined;
+    /**
+    * last name, of an employee creator
+    * @member {String} creatorLastname
+    */
+    creatorLastname = undefined;
+    /**
+    * role name
+    * @member {String} roleName
+    */
+    roleName = undefined;
     /**
     * @member {module:model/IRole} role
     */

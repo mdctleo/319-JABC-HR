@@ -451,6 +451,79 @@ router.get('/employee/:id/history', (req, res) =>
   ]),
 );
 
+router.get('/employee/:id/manager', (req, res) => res.send([]));
+
+router.get('/employee/manager/:id', (req, res) => res.send([]));
+
+router.get('/employee/:id/task', (req, res) =>
+  res.send([
+    {
+      id: 1,
+      fkDocumentType: 1,
+      fkEmployee: 12345,
+      createdDate: '2019-03-28',
+      requireDoc: 1,
+      status: 0,
+      file: 'http://localhost:8080/JABC/1.0.0/onboarding/task/1/file',
+      description: "Don't forget",
+    },
+    {
+      id: 5,
+      fkDocumentType: 1,
+      fkEmployee: 12345,
+      createdDate: '2019-03-28',
+      requireDoc: 1,
+      status: 0,
+      file: 'http://localhost:8080/JABC/1.0.0/onboarding/task/1/file',
+      description: "Don't forget",
+    },
+    {
+      id: 2,
+      fkEmployee: 12345,
+      createdDate: '2019-03-06',
+      dueDate: '2019-03-14',
+      requireDoc: 0,
+      status: 0,
+      expiryDate: '2019-03-31',
+      file: 'http://localhost:8080/JABC/1.0.0/onboarding/task/2/file',
+      description: 'Breakfast',
+    },
+    {
+      id: 3,
+      fkEmployee: 12345,
+      fkDocumentType: 1,
+      createdDate: '2019-03-06',
+      dueDate: '2019-03-14',
+      requireDoc: 1,
+      status: 1,
+      expiryDate: '2019-03-31',
+      file: 'http://localhost:8080/JABC/1.0.0/onboarding/task/3/file',
+      description: 'This is very important',
+    },
+    {
+      id: 4,
+      fkEmployee: 2,
+      fkDocumentType: 1,
+      createdDate: '2019-03-06',
+      dueDate: '2019-03-14',
+      requireDoc: 1,
+      status: 1,
+      expiryDate: '2019-03-31',
+      file: 'http://localhost:8080/JABC/1.0.0/onboarding/task/3/file',
+      description: 'This shouldnt show up',
+    },
+  ]),
+);
+
+router.get('/onboarding/documentType/:id', (req, res) =>
+  res.send({
+    id: 1,
+    name: 'Criminal Record Check',
+    file: 'http://localhost:8080/JABC/1.0.0/onboarding/documentType/1/file',
+    description: 'Please submit a criminal record check',
+  }),
+);
+
 router.use('*', (req, res, next) => res.send('NO ENDPOINT'));
 
 module.exports = router;

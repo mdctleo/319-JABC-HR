@@ -144,6 +144,8 @@ class EmployeeViewPage extends React.PureComponent {
                   isAdmin
                   profile={selectedEmployee}
                   roleName={role && role.name}
+                  managers={this.props.managers}
+                  employees={this.props.employees}
                 />
               </div>
             )}

@@ -1,4 +1,4 @@
-import { put, all } from 'redux-saga/effects';
+import { put, all, call } from 'redux-saga/effects';
 import { setResource, setCollection, clearResource } from './actions';
 import {
   EmployeeApi,
@@ -8,10 +8,14 @@ import {
   PerformanceApi,
   IPerformancePlan,
   IPerformanceReview,
+  OnboardingApi,
 } from 'api/swagger-api';
 const employeeApi = new EmployeeApi();
 const rolesApi = new RolesApi();
 const performanceApi = new PerformanceApi();
+const onboardingApi = new OnboardingApi();
+
+// Employee Api
 
 export function* getEmployee(id) {
   const employee = yield employeeApi.getEmployee(id);
@@ -24,13 +28,25 @@ export function* getEmployees() {
 }
 
 export function* getManagersByEmployee(employee) {
-  const employees = yield employeeApi.getManagersByEmployee(employee.id, { inactive: true });
-  yield put(setCollection('managersOfEmployee', employees));
+  try {
+    const employees = yield employeeApi.getManagersByEmployee(employee.id, {
+      inactive: true,
+    });
+    yield put(setCollection('managersOfEmployee', employees));
+  } catch (e) {
+    yield put(setCollection('managersOfEmployee', null));
+  }
 }
 
 export function* getEmployeesByManager(manager) {
-  const employees = yield employeeApi.getEmployeesByManager(manager.id, { inactive: true });
-  yield put(setCollection('employeesOfManager', employees));
+  try {
+    const employees = yield employeeApi.getEmployeesByManager(manager.id, {
+      inactive: true,
+    });
+    yield put(setCollection('employeesOfManager', employees));
+  } catch (e) {
+    yield put(setCollection('employeesOfManager', null));
+  }
 }
 
 export function* updateEmployee(employee) {
@@ -61,6 +77,15 @@ export function* createEmployee(employee) {
   yield employeeApi.createEmployee(employeeObj);
 }
 
+export function* getOnboardingTasks(id) {
+  const tasks = yield employeeApi.getOnboardingTasks(id);
+  const putTasks = tasks.map(t => put(setResource('task', t.id, t)));
+  const getDocTypes = tasks
+    .filter(t => t.fkDocumentType)
+    .map(t => call(getDocumentType, t.fkDocumentType));
+  yield all([...putTasks, ...getDocTypes]);
+}
+
 export function* getPerformancePlans(id) {
   yield put(clearResource('plan'));
   const plans = yield employeeApi.getPerformancePlans(id);
@@ -87,6 +112,16 @@ export function* createPerformanceReview(employeeId, review) {
   const reviewObj = IPerformanceReview.constructFromObject(review);
   yield employeeApi.createPerformanceReview(employeeId, reviewObj);
 }
+
+export function* linkEmployeeManager(id, idManager) {
+  yield employeeApi.linkEmployeeManager(id, idManager);
+}
+
+export function* unLinkEmployeeManager(id, idManager) {
+  yield employeeApi.unLinkEmployeeManager(id, idManager);
+}
+
+// Roles Api
 
 export function* getRole(id) {
   const role = yield rolesApi.getRole(id);
@@ -120,6 +155,8 @@ export function* createRole(role) {
   yield rolesApi.createRole(roleObj);
 }
 
+// Performance Api
+
 export function* deletePerformancePlan(id) {
   yield performanceApi.deletePerformancePlan(id);
 }
@@ -138,10 +175,9 @@ export function* updatePerformanceReview(review) {
   yield performanceApi.updatePerformanceReview(review.id, reviewObj);
 }
 
-export function* linkEmployeeManager(id, idManager) {
-  yield employeeApi.linkEmployeeManager(id, idManager);
-}
+// Onboarding Api
 
-export function* unLinkEmployeeManager(id, idManager) {
-  yield employeeApi.unLinkEmployeeManager(id, idManager);
+export function* getDocumentType(id) {
+  const docType = yield onboardingApi.getDocumentType(id);
+  yield put(setResource('documentType', docType.id, docType));
 }

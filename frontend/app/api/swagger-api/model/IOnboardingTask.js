@@ -73,10 +73,10 @@ export default class IOnboardingTask {
                 obj['fkEmployee'] = ApiClient.convertToType(data['fkEmployee'], 'Number');
             }
             if (data.hasOwnProperty('createdDate')) {
-                obj['createdDate'] = ApiClient.convertToType(data['createdDate'], 'Date');
+                obj['createdDate'] = ApiClient.convertToType(data['createdDate'], 'String');
             }
             if (data.hasOwnProperty('dueDate')) {
-                obj['dueDate'] = ApiClient.convertToType(data['dueDate'], 'Date');
+                obj['dueDate'] = ApiClient.convertToType(data['dueDate'], 'String');
             }
             if (data.hasOwnProperty('requireDoc')) {
                 obj['requireDoc'] = ApiClient.convertToType(data['requireDoc'], 'Number');
@@ -85,7 +85,7 @@ export default class IOnboardingTask {
                 obj['status'] = ApiClient.convertToType(data['status'], 'Number');
             }
             if (data.hasOwnProperty('expiryDate')) {
-                obj['expiryDate'] = ApiClient.convertToType(data['expiryDate'], 'Date');
+                obj['expiryDate'] = ApiClient.convertToType(data['expiryDate'], 'String');
             }
             if (data.hasOwnProperty('file')) {
                 obj['file'] = ApiClient.convertToType(data['file'], 'String');
