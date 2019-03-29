@@ -183,6 +183,8 @@ class PerformanceModule extends React.Component {
       rowIDSToDelete: [],
       newPerformanceEnd: '',
       newPerformanceStart: '',
+      openPublishedDialog: false,
+      openSavedDialog: false
     };
   }
 
@@ -386,6 +388,14 @@ class PerformanceModule extends React.Component {
     this.setState({ openDeleteRowsDialog: false });
   };
 
+  closePublishedDialog = () => {
+    this.setState({ openPublishedDialog: false });
+  };
+
+  closeSavedDialog = () => {
+    this.setState({ openSavedDialog: false });
+  };
+
   openDeleteSectionDialog = sectionId => {
     this.setState({ openDeleteSectionDialog: true });
     this.setState({ sectionIDToDelete: sectionId });
@@ -403,6 +413,26 @@ class PerformanceModule extends React.Component {
   handleDeletePerformance = isPlan => {
     this.props.deletePerformance(isPlan);
     this.setState({ openCheckDeleteDocDialog: false });
+  };
+
+  savePlan = publish => {
+    this.props.savePlan(publish);
+
+    if (publish) {
+      this.setState({ openPublishedDialog: true });
+    } else {
+      this.setState({ openSavedDialog: true });
+    }
+  };
+
+  saveReview = publish => {
+    this.props.saveReview(publish);
+
+    if (publish) {
+      this.setState({ openPublishedDialog: true });
+    } else {
+      this.setState({ openSavedDialog: true });
+    }
   };
 
   render() {
@@ -564,6 +594,36 @@ class PerformanceModule extends React.Component {
             </Dialog>
 
             <Dialog
+              open={this.state.openPublishedDialog}
+              onClose={this.closePublishedDialog}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                This {value === 0 ? ("Work Plan") : ("Performance Review")} has been published!
+              </DialogTitle>
+              <DialogActions>
+                <Button onClick={this.closePublishedDialog} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Dialog
+              open={this.state.openSavedDialog}
+              onClose={this.closeSavedDialog}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                This {value === 0 ? ("Work Plan") : ("Performance Review")} has been saved!
+              </DialogTitle>
+              <DialogActions>
+                <Button onClick={this.closeSavedDialog} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Dialog
               open={this.state.openDeleteSectionDialog}
               onClose={this.closeDeleteSectionDialog}
               aria-labelledby="form-dialog-title"
@@ -694,13 +754,13 @@ class PerformanceModule extends React.Component {
                     </Button>
                     <Button
                       className={classes.saveButton}
-                      onClick={() => this.props.savePlan(false)}
+                      onClick={() => this.savePlan(false)}
                     >
                       Save Draft
                     </Button>
                     <Button
                       className={classes.saveButton}
-                      onClick={() => this.props.savePlan(true)}
+                      onClick={() => this.savePlan(true)}
                     >
                       Publish
                     </Button>
@@ -745,13 +805,13 @@ class PerformanceModule extends React.Component {
                     </Button>
                     <Button
                       className={classes.saveButton}
-                      onClick={() => this.props.saveReview(false)}
+                      onClick={() => this.saveReview(false)}
                     >
                       Save Draft
                     </Button>
                     <Button
                       className={classes.saveButton}
-                      onClick={() => this.props.saveReview(true)}
+                      onClick={() => this.saveReview(true)}
                     >
                       Publish
                     </Button>
