@@ -126,9 +126,10 @@ export function saveReview(isPublished) {
   };
 }
 
-export function getRole() {
+export function getRole(profileId) {
   return {
     type: GET_ROLE,
+    profileId,
   };
 }
 

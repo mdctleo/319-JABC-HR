@@ -162,7 +162,7 @@ const styles = theme => ({
 class PerformancePage extends React.Component {
   componentDidMount() {
     this.props.getAllPlans();
-    this.props.getRole();
+    this.props.getRole(this.props.profile.fkRole);
   }
 
   render() {
