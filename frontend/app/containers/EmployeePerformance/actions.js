@@ -20,6 +20,7 @@ import {
   SET_PLAN_COPY,
   SET_REVIEW_COPY,
   UPDATE_SECTION,
+  GET_ROLE,
 } from './constants';
 
 export function getAllPlans(selectedEmployee) {
@@ -136,6 +137,13 @@ export function reset() {
   };
 }
 
+export function getRole(selectedEmployee) {
+  return {
+    type: GET_ROLE,
+    selectedEmployee,
+  };
+}
+
 export default {
   getAllPlans,
   selectPlan,
@@ -150,4 +158,5 @@ export default {
   saveReview,
   reset,
   updateSection,
+  getRole,
 };
