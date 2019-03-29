@@ -7,6 +7,7 @@ import {
   CREATE_REVIEW,
   SAVE_PLAN,
   SAVE_REVIEW,
+  GET_ROLE
 } from './constants';
 import {
   getPerformancePlans,
@@ -17,6 +18,7 @@ import {
   createPerformanceReview,
   updatePerformancePlan,
   updatePerformanceReview,
+  getRole
 } from 'api/saga';
 import { selectResource } from 'api/selector';
 import { setPlanCopy, setReviewCopy } from './actions';
@@ -134,6 +136,13 @@ export function* saveReview({ isPublished }) {
   }
 }
 
+export function* getPerformanceRole({ selectedEmployee }) {
+  try {
+    console.log(selectedEmployee.id);
+    yield call(getRole, selectedEmployee.id);
+  } catch (e) {}
+}
+
 export default function* performanceSaga() {
   yield takeLatest(GET_ALL_PLANS, getAllPlans);
   yield takeLatest(SELECT_PLAN, selectPlan);
@@ -142,4 +151,5 @@ export default function* performanceSaga() {
   yield takeLatest(CREATE_REVIEW, createReview);
   yield takeLatest(SAVE_PLAN, savePlan);
   yield takeLatest(SAVE_REVIEW, saveReview);
+  yield takeLatest(GET_ROLE, getPerformanceRole);
 }
