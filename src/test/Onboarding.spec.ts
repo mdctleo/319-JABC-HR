@@ -95,7 +95,7 @@ describe("test related /onboarding", () => {
             }
         });
 
-        it("Should return error for non existent onboarding task", async () => {
+        it("Should return error for getting non existent onboarding task", async () => {
             let response: any;
 
             try {
@@ -281,6 +281,22 @@ describe("test related /onboarding", () => {
                 console.log(e);
             } finally {
                 expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should not be able to delete already deleted task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/task/2`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
                 expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
             }
         });
@@ -524,6 +540,24 @@ describe("test related /onboarding", () => {
             }
         });
 
+        it("Should not be able to delete an already deleted documentType", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/documentType/4`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+
+
+            }
+        });
+
         it("Should be able to see the deletion of documentType", async () => {
             let response: any;
 
@@ -745,6 +779,22 @@ describe("test related /onboarding", () => {
             }
         });
 
+        it("Should not be able to delete an already deleted FAQ", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/faq/1`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
         it("Should be display one FAQ", async () => {
             let response: any;
 
@@ -758,7 +808,7 @@ describe("test related /onboarding", () => {
             } finally {
                 expect(response.statusCode).to.be.equal(200);
                 expect(response.body.length).to.be.equal(1);
-                expect(response.body[0].question).to.be.equal("test quesiton");
+                expect(response.body[0].question).to.be.equal("test question");
             }
         });
 
