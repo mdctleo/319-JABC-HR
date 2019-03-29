@@ -271,6 +271,12 @@ const COLUMNS = {
     label: 'Lastname',
   },
   fte: { id: 'fte', numeric: 'false', disablePadding: false, label: 'FTE' },
+  status: {
+    id: 'status',
+    numeric: 'false',
+    disablePadding: false,
+    label: 'Status',
+  },
   adminLevel: {
     id: 'adminLevel',
     numeric: 'false',
@@ -340,6 +346,7 @@ class GenerateReport extends React.PureComponent {
       sin: false,
       email: false,
       fte: false,
+      status: false,
       adminLevel: false,
       salary: false,
       address: false,
@@ -361,6 +368,34 @@ class GenerateReport extends React.PureComponent {
       return 1;
     }
     return 0;
+  }
+
+  getStatus(status) {
+    switch (status) {
+      case 0:
+        return 'Inactive';
+      case 1:
+        return 'Active';
+      case 2:
+        return 'Onboarding';
+      case 3:
+        return 'Probation';
+      default:
+        return '';
+    }
+  }
+
+  getAdminLevel(adminLevel) {
+    switch (adminLevel) {
+      case 0:
+        return 'Employee';
+      case 1:
+        return 'Manager';
+      case 2:
+        return 'Admin';
+      default:
+        return '';
+    }
   }
 
   stableSort(array, cmp) {
@@ -427,7 +462,10 @@ class GenerateReport extends React.PureComponent {
     for (const employee of this.props.employees) {
       const data = [];
       for (const col of this.state.columns) {
-        data.push(col.id === 'role' ? (employee.role && employee.role.name) : employee[col.id]);
+        data.push(col.id === 'role' ? (employee.role && employee.role.name) : 
+                                      col.id === 'adminLevel' ? getAdminLevel(employee[col.id]) : 
+                                                                col.id === 'status' ? getStatus(employee[col.id]) : 
+                                                                                      employee[col.id]);
       }
       rows.push(data.join());
     }
@@ -549,7 +587,9 @@ class GenerateReport extends React.PureComponent {
                   .map(n => (
                     <TableRow key={n.id} hover tabIndex={-1} selected={false}>
                       {this.state.columns.map(column => {
-                        const value = column.id === 'role' ? (n.role && n.role.name) : n[column.id];
+                        const value = column.id === 'adminLevel' ? this.getAdminLevel(n[column.id]) : 
+                                                  column.id === 'status' ? this.getStatus(n[column.id]) : 
+                                                                          n[column.id];
                         return (
                         <TableCell key={column.id} align="left">{value}</TableCell>
                       )})}
