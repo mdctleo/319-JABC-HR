@@ -30,7 +30,7 @@ export function* addEmployee(action) {
     yield call(getEmployees);
     yield put(setEditing(false));
   } catch (e) {
-    if (e.response) yield put(displayError(e.response.body.message));
+    yield put(displayError(e.response ? e.response.body.message : e.message));
   }
 }
 
@@ -46,7 +46,7 @@ export function* saveEmployee(action) {
     yield put(setEditing(false));
     yield call(getEmployeeData, action);
   } catch (e) {
-    if (e.response) yield put(displayError(e.response.body.message));
+    yield put(displayError(e.response ? e.response.body.message : e.message));
   }
 }
 
@@ -54,14 +54,20 @@ export function* updatePassword(action) {
   try {
     yield call(updateEmployeePassword, action.employee);
   } catch (e) {
-    if (e.response) yield put(displayError(e.response.body.message));
+    yield put(displayError(e.response ? e.response.body.message : e.message));
   }
 }
 
 export function* getEmployeeData(action) {
-  yield call(getManagersByEmployee, action.employee);
-  yield call(getEmployeesByManager, action.employee);
-  yield call(getEmployees);
+  try {
+    yield call(getManagersByEmployee, action.employee);
+    yield call(getEmployeesByManager, action.employee);
+  } catch (e) {}
+  try {
+    yield call(getEmployees);
+  } catch (e) {
+    yield put(displayError(e.response ? e.response.body.message : e.message));
+  }
 }
 
 export default function* rolesSaga() {
