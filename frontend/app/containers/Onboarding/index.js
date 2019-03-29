@@ -5,110 +5,38 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import UploadIcon from '@material-ui/icons/FileCopy';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
+
+import injectSaga from 'utils/injectSaga';
+import injectReducer from 'utils/injectReducer';
+import { selectPendingTasks, selectDoneTasks } from './selectors';
+import { selectProfile } from '../App/selectors';
+import reducer from './reducer';
+import saga from './saga';
+import Modal from '@material-ui/core/Modal/Modal';
+import Typography from '@material-ui/core/Typography/Typography';
+import List from '@material-ui/core/List/List';
+import ListSubheader from '@material-ui/core/ListSubheader/ListSubheader';
+import ListItem from '@material-ui/core/ListItem/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon/ListItemIcon';
+import DraftIcon from '@material-ui/core/SvgIcon/SvgIcon';
+import AppBar from '@material-ui/core/AppBar/AppBar';
+import Tabs from '@material-ui/core/Tabs/Tabs';
+import Tab from '@material-ui/core/Tab/Tab';
+import DocumentsContainer from './DocumentsContainer';
+import Snackbar from '@material-ui/core/Snackbar/Snackbar';
 import CallIcon from '@material-ui/icons/Call';
-import DraftIcon from '@material-ui/icons/Drafts';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Fab from '@material-ui/core/Fab';
-import Snackbar from '@material-ui/core/Snackbar';
-import TextField from '@material-ui/core/TextField';
 
-const DocumentsContainer = props => {
-  const docs = props.documents.map((document, index) => (
-    <Grid key={document.id} item xs={12} sm={6}>
-      <Card className="document-card">
-        <CardContent>
-          <Typography className="title" color="textSecondary" gutterBottom style={{wordWrap: 'break-word'}}>
-            {document.name}
-          </Typography>
-          <Typography component="p" style={{wordWrap: 'break-word'}}>{document.description}</Typography>
-          <Typography component="p">
-            <b>Due: </b> {document.dueDate}
-          </Typography>
-          {!document.done && (
-            <div>
-              <Fab
-                color="primary"
-                component="label"
-                size="medium"
-                style={{ marginRight: 15, marginTop: 15 }}
-              >
-                <UploadIcon />
-                <input
-                  type="file"
-                  style={{ display: 'none' }}
-                  onChange={e => props.onFileLoad(e, props.documents, index)}
-                  data-document-id={document.id}
-                />
-              </Fab>
-              <TextField
-                disabled
-                id="standard-disabled"
-                value={document.fileName}
-                margin="normal"
-                style={{ width: 'calc(100% - 80px)' }}
-              />
-            </div>
-          )}
-        </CardContent>
-        {!document.done && (
-          <CardActions>
-            <Button
-              size="small"
-              color="primary"
-              onClick={() => props.onUpload(document, index)}
-            >
-              Upload
-            </Button>
-            <Button size="small" color="secondary">
-              Download template
-            </Button>
-          </CardActions>
-        )}
-        {document.done && (
-          <CardActions>
-            <Button size="small" color="primary">
-              Download
-            </Button>
-          </CardActions>
-        )}
-      </Card>
-    </Grid>
-  ));
-  return (
-    <Grid container spacing={16} style={{ paddingTop: 25 }}>
-      {docs}
-    </Grid>
-  );
-};
-
-DocumentsContainer.propTypes = {
-  documents: PropTypes.array.isRequired,
-  onFileLoad: PropTypes.func.isRequired,
-  onUpload: PropTypes.func.isRequired,
-};
+import actions from './actions';
+import PropTypes from 'prop-types';
 
 /* eslint-disable react/prefer-stateless-function */
-export default class Onboarding extends React.PureComponent {
+export class Onboarding extends React.PureComponent {
   state = {
     tabValue: 0,
     openHelp: false,
-    documentsActive: [],
-    documentsDone: [],
     openSnack: false,
   };
 
@@ -124,33 +52,6 @@ export default class Onboarding extends React.PureComponent {
     this.setState({ tabValue: value });
   };
 
-  documents = [
-    {
-      id: 1,
-      name: 'Criminal record',
-      description: 'Please upload your criminal record.',
-      dueDate: '20/02/2019',
-      done: false,
-      fileName: 'None',
-    },
-    {
-      id: 2,
-      name: 'Visa',
-      description: 'Please upload your visa.',
-      dueDate: '20/02/2019',
-      done: false,
-      fileName: 'None',
-    },
-    {
-      id: 3,
-      name: 'Insurance form',
-      description: 'Please upload your insurance form.',
-      dueDate: '20/02/2019',
-      done: true,
-      fileName: 'None',
-    },
-  ];
-
   fileLoad(e, documents, i) {
     const newDocuments = documents;
     newDocuments[i].fileName = e.target.files[0].name;
@@ -159,16 +60,7 @@ export default class Onboarding extends React.PureComponent {
   }
 
   componentDidMount() {
-    const newDocumentsActive = this.documents.filter(
-      document => !document.done,
-    );
-    this.setState({
-      documentsActive: newDocumentsActive,
-    });
-    const newDocumentsDone = this.documents.filter(document => document.done);
-    this.setState({
-      documentsDone: newDocumentsDone,
-    });
+    this.props.getTasks();
   }
 
   documentUpload(document, i) {
@@ -189,9 +81,11 @@ export default class Onboarding extends React.PureComponent {
   }
 
   render() {
+    const { pendingTasks, doneTasks } = this.props;
+
     return (
       <div>
-        <h1>Welcome, Jane!</h1>
+        <h1>Welcome, {this.props.user && this.props.user.firstname}!</h1>
         <div className="onboarding-content">
           <Modal
             aria-labelledby="onboarding-modal-title"
@@ -227,21 +121,21 @@ export default class Onboarding extends React.PureComponent {
           <div className="documents">
             <AppBar position="static">
               <Tabs value={this.state.tabValue} onChange={this.handleChangeTab}>
-                <Tab label={`Active (${this.state.documentsActive.length})`} />
-                <Tab label={`Done (${this.state.documentsDone.length})`} />
+                <Tab label={`Active (${pendingTasks.length})`} />
+                <Tab label={`Done (${doneTasks.length})`} />
                 <Tab label="Get Help" onClick={this.handleOpenHelp} />
               </Tabs>
             </AppBar>
             {this.state.tabValue === 0 && (
               <DocumentsContainer
-                documents={this.state.documentsActive}
+                documents={pendingTasks}
                 onFileLoad={(e, docs, i) => this.fileLoad(e, docs, i)}
                 onUpload={(doc, i) => this.documentUpload(doc, i)}
               />
             )}
             {this.state.tabValue === 1 && (
               <DocumentsContainer
-                documents={this.state.documentsDone}
+                documents={doneTasks}
                 onFileLoad={this.fileLoad}
               />
             )}
@@ -263,6 +157,34 @@ export default class Onboarding extends React.PureComponent {
     );
   }
 }
-Onboarding.contextTypes = {
-  muiTheme: PropTypes.object,
+
+Onboarding.propTypes = {
+  user: PropTypes.object,
+  getTasks: PropTypes.func.isRequired,
+  pendingTasks: PropTypes.array.isRequired,
+  doneTasks: PropTypes.array.isRequired,
 };
+
+const mapStateToProps = createStructuredSelector({
+  user: selectProfile,
+  pendingTasks: selectPendingTasks,
+  doneTasks: selectDoneTasks,
+});
+
+const mapDispatchToProps = {
+  ...actions,
+};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withReducer = injectReducer({ key: 'onboarding', reducer });
+const withSaga = injectSaga({ key: 'onboarding', saga });
+
+export default compose(
+  withReducer,
+  withSaga,
+  withConnect,
+)(Onboarding);
