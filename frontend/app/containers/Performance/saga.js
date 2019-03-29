@@ -134,12 +134,9 @@ export function* saveReview({ isPublished }) {
   }
 }
 
-export function* getPerformanceRole() {
-  const profile = yield select(selectProfile);
+export function* getPerformanceRole({ profileId }) {
   try {
-    if (profile.fkRole) {
-      yield call(getRole, profile.fkRole);
-    }
+    yield call(getRole, profileId);
   } catch (e) {}
 }
 

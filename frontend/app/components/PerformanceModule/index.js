@@ -284,7 +284,7 @@ class PerformanceModule extends React.Component {
 
   // Build a Section from this user's competencies
   addCompetencySection = isPlan => {
-    if (this.props.role === undefined) {
+    if (this.props.role === null) {
       this.setState({openNoRoleDialog: true});
     } else if (this.props.role.competencies.length === 0) {
       this.setState({openNoCompetenciesDialog: true});
