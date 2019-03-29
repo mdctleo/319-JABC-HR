@@ -137,9 +137,10 @@ export function reset() {
   };
 }
 
-export function getRole() {
+export function getRole(selectedEmployee) {
   return {
     type: GET_ROLE,
+    selectedEmployee,
   };
 }
 

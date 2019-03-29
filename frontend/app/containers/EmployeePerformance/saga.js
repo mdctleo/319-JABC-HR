@@ -28,14 +28,10 @@ import { selectSelectedPlan, selectSelectedReview } from './selectors';
 export function* getAllPlans({ selectedEmployee }) {
   try {
     yield call(getPerformancePlans, selectedEmployee.id);
-  } catch (e) {
-    yield put(displayError(e.response ? e.response.body.message : e.message));
-  }
+  } catch (e) {}
   try {
     yield call(getPerformanceReviews, selectedEmployee.id);
-  } catch (e) {
-    yield put(displayError(e.response ? e.response.body.message : e.message));
-  }
+  } catch (e) {}
 }
 
 export function* selectPlan(action) {
@@ -138,9 +134,10 @@ export function* saveReview({ isPublished }) {
 
 export function* getPerformanceRole({ selectedEmployee }) {
   try {
-    console.log(selectedEmployee.id);
-    yield call(getRole, selectedEmployee.id);
-  } catch (e) {}
+    yield call(getRole, selectedEmployee.fkRole);
+  } catch (e) {
+    yield put(displayError(e.response ? e.response.body.message : e.message));
+  }
 }
 
 export default function* performanceSaga() {
