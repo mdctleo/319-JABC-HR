@@ -240,6 +240,8 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 			await isManagedBy(id, client.id)
 		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance review of other employee.')
+		} else if (client.id === id && client.adminLevel !== IEmployee.adminLevelEnum.HR_ADMIN) {
+            throw new JABCError(JABCResponse.EMPLOYEE, 'An employee can not create its own performance review')
 		}
 		db = Database.getInstance();
 		conn = await db.initConnection();
