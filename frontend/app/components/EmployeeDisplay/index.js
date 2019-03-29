@@ -26,8 +26,8 @@ const styles = theme => ({
   },
   displayTable: {
     marginTop: '20px',
-    tableLayout: 'fixed', 
-    width: '100%'
+    tableLayout: 'fixed',
+    width: '100%',
   },
   leftCell: {
     width: '50%',
@@ -39,8 +39,8 @@ const styles = theme => ({
     },
   },
   rightCell: {
-    wordWrap: 'break-word'
-  }
+    wordWrap: 'break-word',
+  },
 });
 
 class EmployeeDisplay extends React.PureComponent {
@@ -81,7 +81,14 @@ class EmployeeDisplay extends React.PureComponent {
   }
 
   render() {
-    const { classes, profile, isAdmin, roleName } = this.props;
+    const {
+      classes,
+      profile,
+      isAdmin,
+      roleName,
+      managers,
+      employees,
+    } = this.props;
 
     return (
       <div className="profile-card">
@@ -99,35 +106,45 @@ class EmployeeDisplay extends React.PureComponent {
         </Typography>
         <Table className={classes.displayTable}>
           <TableBody>
-          <TableRow className={classes.row}>
+            <TableRow className={classes.row}>
               <TableCell align="left" className={classes.rightCell}>
                 <Typography variant="caption">EMAIL</Typography>
               </TableCell>
-              <TableCell align="left" className={classes.rightCell}>{profile.email}</TableCell>
+              <TableCell align="left" className={classes.rightCell}>
+                {profile.email}
+              </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell align="left" className={classes.rightCell}>
                 <Typography variant="caption">SIN</Typography>
               </TableCell>
-              <TableCell align="left" className={classes.rightCell}>{profile.sin}</TableCell>
+              <TableCell align="left" className={classes.rightCell}>
+                {profile.sin}
+              </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">BIRTH DATE</Typography>
               </TableCell>
-              <TableCell align="left" className={classes.rightCell}>{profile.birthdate}</TableCell>
+              <TableCell align="left" className={classes.rightCell}>
+                {profile.birthdate}
+              </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">ADDRESS</Typography>
               </TableCell>
-              <TableCell align="left" className={classes.rightCell}>{profile.address}</TableCell>
+              <TableCell align="left" className={classes.rightCell}>
+                {profile.address}
+              </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">PHONE NUMBER</Typography>
               </TableCell>
-              <TableCell align="left" className={classes.rightCell}>{profile.phoneNumber}</TableCell>
+              <TableCell align="left" className={classes.rightCell}>
+                {profile.phoneNumber}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -145,7 +162,9 @@ class EmployeeDisplay extends React.PureComponent {
                 <TableCell className={classes.leftCell} align="left">
                   <Typography variant="caption">DATE JOINED</Typography>
                 </TableCell>
-                <TableCell align="left" className={classes.rightCell}>{profile.dateJoined}</TableCell>
+                <TableCell align="left" className={classes.rightCell}>
+                  {profile.dateJoined}
+                </TableCell>
               </TableRow>
             )}
             {isAdmin && (
@@ -153,21 +172,26 @@ class EmployeeDisplay extends React.PureComponent {
                 <TableCell className={classes.leftCell} align="left">
                   <Typography variant="caption">STATUS</Typography>
                 </TableCell>
-                <TableCell align="left" className={classes.rightCell}>{this.getStatus()}</TableCell>
+                <TableCell align="left" className={classes.rightCell}>
+                  {this.getStatus()}
+                </TableCell>
               </TableRow>
             )}
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">POSITION</Typography>
               </TableCell>
-              <TableCell align="left" className={classes.rightCell}>{roleName}</TableCell>
+              <TableCell align="left" className={classes.rightCell}>
+                {roleName}
+              </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">SALARY</Typography>
               </TableCell>
               <TableCell align="left" className={classes.rightCell}>
-                {!isNaN(profile.salary) && this.salaryFormatter.format(profile.salary)}
+                {!isNaN(profile.salary) &&
+                  this.salaryFormatter.format(profile.salary)}
               </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
@@ -182,7 +206,9 @@ class EmployeeDisplay extends React.PureComponent {
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">ANNUAL VACATION DAYS</Typography>
               </TableCell>
-              <TableCell align="left" className={classes.rightCell}>{profile.vacationDays}</TableCell>
+              <TableCell align="left" className={classes.rightCell}>
+                {profile.vacationDays}
+              </TableCell>
             </TableRow>
             <TableRow className={classes.row}>
               <TableCell className={classes.leftCell} align="left">
@@ -198,14 +224,36 @@ class EmployeeDisplay extends React.PureComponent {
               <TableCell className={classes.leftCell} align="left">
                 <Typography variant="caption">ADMIN LEVEL</Typography>
               </TableCell>
-              <TableCell align="left" className={classes.rightCell}>{this.getAdminLevel()}</TableCell>
-            </TableRow>
-            <TableRow className={classes.row}>
-              <TableCell className={classes.leftCell} align="left">
-                <Typography variant="caption">MANAGER(S)</Typography>
+              <TableCell align="left" className={classes.rightCell}>
+                {this.getAdminLevel()}
               </TableCell>
-              <TableCell align="left" className={classes.rightCell} />
             </TableRow>
+            {managers &&
+              managers.length > 0 && (
+                <TableRow className={classes.row}>
+                  <TableCell className={classes.leftCell} align="left">
+                    <Typography variant="caption">MANAGER(S)</Typography>
+                  </TableCell>
+                  <TableCell align="left" className={classes.rightCell}>
+                    {managers
+                      .map(e => `${e.firstname} ${e.lastname}`)
+                      .join(', ')}
+                  </TableCell>
+                </TableRow>
+              )}
+            {employees &&
+              employees.length > 0 && (
+                <TableRow className={classes.row}>
+                  <TableCell className={classes.leftCell} align="left">
+                    <Typography variant="caption">EMPLOYEE(S)</Typography>
+                  </TableCell>
+                  <TableCell align="left" className={classes.rightCell}>
+                    {employees
+                      .map(e => `${e.firstname} ${e.lastname}`)
+                      .join(', ')}
+                  </TableCell>
+                </TableRow>
+              )}
           </TableBody>
         </Table>
       </div>
@@ -218,6 +266,8 @@ EmployeeDisplay.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   profile: PropTypes.object,
   roleName: PropTypes.string,
+  managers: PropTypes.array.isRequired,
+  employees: PropTypes.array.isRequired,
 };
 
 export default withStyles(styles)(EmployeeDisplay);

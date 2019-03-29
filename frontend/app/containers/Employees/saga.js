@@ -44,6 +44,7 @@ export function* saveEmployee(action) {
       yield call(setManagersOfEmployee, action.employee.id, action.managers);
     }
     yield put(setEditing(false));
+    yield call(getEmployeeData, action);
   } catch (e) {
     if (e.response) yield put(displayError(e.response.body.message));
   }

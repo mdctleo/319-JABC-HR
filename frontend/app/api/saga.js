@@ -28,13 +28,25 @@ export function* getEmployees() {
 }
 
 export function* getManagersByEmployee(employee) {
-  const employees = yield employeeApi.getManagersByEmployee(employee.id, { inactive: true });
-  yield put(setCollection('managersOfEmployee', employees));
+  try {
+    const employees = yield employeeApi.getManagersByEmployee(employee.id, {
+      inactive: true,
+    });
+    yield put(setCollection('managersOfEmployee', employees));
+  } catch (e) {
+    yield put(setCollection('managersOfEmployee', null));
+  }
 }
 
 export function* getEmployeesByManager(manager) {
-  const employees = yield employeeApi.getEmployeesByManager(manager.id, { inactive: true });
-  yield put(setCollection('employeesOfManager', employees));
+  try {
+    const employees = yield employeeApi.getEmployeesByManager(manager.id, {
+      inactive: true,
+    });
+    yield put(setCollection('employeesOfManager', employees));
+  } catch (e) {
+    yield put(setCollection('employeesOfManager', null));
+  }
 }
 
 export function* updateEmployee(employee) {
@@ -68,7 +80,9 @@ export function* createEmployee(employee) {
 export function* getOnboardingTasks(id) {
   const tasks = yield employeeApi.getOnboardingTasks(id);
   const putTasks = tasks.map(t => put(setResource('task', t.id, t)));
-  const getDocTypes = tasks.filter(t => t.fkDocumentType).map(t => call(getDocumentType, t.fkDocumentType));
+  const getDocTypes = tasks
+    .filter(t => t.fkDocumentType)
+    .map(t => call(getDocumentType, t.fkDocumentType));
   yield all([...putTasks, ...getDocTypes]);
 }
 
