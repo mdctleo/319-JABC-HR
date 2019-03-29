@@ -484,6 +484,7 @@ class EmployeeEditForm extends React.PureComponent {
                       </Typography>
                       <div className={classes.fieldContainer}>
                         <Select
+                          isDisabled={currentEmployee.adminLevel !== HR_ADMIN}
                           defaultValue={[]}
                           isMulti
                           name="employees"
