@@ -183,6 +183,8 @@ class PerformanceModule extends React.Component {
       rowIDSToDelete: [],
       newPerformanceEnd: '',
       newPerformanceStart: '',
+      openNoRoleDialog: false,
+      openNoCompetenciesDialog: false
     };
   }
 
@@ -280,24 +282,30 @@ class PerformanceModule extends React.Component {
 
   // Build a Section from this user's competencies
   addCompetencySection = isPlan => {
-    const section = {};
-    const columns = ['Name', 'Description'];
+    if (this.props.role === undefined) {
+      this.setState({openNoRoleDialog: true});
+    } else if (this.props.role.competencies.length === 0) {
+      this.setState({openNoCompetenciesDialog: true});
+    } else {
+      const section = {};
+      const columns = ['Name', 'Description'];
 
-    const rows = [];
-    for (const competency of this.props.role.competencies) {
-      const row = {};
-      row.id = uniqid();
-      row.Name = competency.name;
-      row.Description = competency.description;
-      rows.push(row);
+      const rows = [];
+      for (const competency of this.props.role.competencies) {
+        const row = {};
+        row.id = uniqid();
+        row.Name = competency.name;
+        row.Description = competency.description;
+        rows.push(row);
+      }
+
+      section.sectionName = 'Competencies';
+      section.data = {};
+      section.data.columns = columns;
+      section.data.rows = rows;
+
+      this.props.addSection(section, isPlan);
     }
-
-    section.sectionName = 'Competencies';
-    section.data = {};
-    section.data.columns = columns;
-    section.data.rows = rows;
-
-    this.props.addSection(section, isPlan);
   };
 
   // Make a performance plan with the given plan year
@@ -393,6 +401,14 @@ class PerformanceModule extends React.Component {
 
   closeDeleteSectionDialog = (sectionId, ids) => {
     this.setState({ openDeleteSectionDialog: false });
+  };
+
+  closeNoRoleDialog = () => {
+    this.setState({ openNoRoleDialog: false });
+  };
+
+  closeNoCompetenciesDialog = () => {
+    this.setState({ openNoCompetenciesDialog: false });
   };
 
   handleDeleteSection = isPlan => {
@@ -500,6 +516,36 @@ class PerformanceModule extends React.Component {
                   Cancel
                 </Button>
                 <Button onClick={this.makePlan} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Dialog
+              open={this.state.openNoRoleDialog}
+              onClose={this.closeNoRoleDialog}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                This employee has no role to get competencies from.
+              </DialogTitle>
+              <DialogActions>
+                <Button onClick={this.closeNoRoleDialog} color="primary">
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Dialog
+              open={this.state.openNoCompetenciesDialog}
+              onClose={this.closeNoCompetenciesDialog}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">
+                This employee's role has no competencies.
+              </DialogTitle>
+              <DialogActions>
+                <Button onClick={this.closeNoCompetenciesDialog} color="primary">
                   OK
                 </Button>
               </DialogActions>
