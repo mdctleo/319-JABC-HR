@@ -220,14 +220,15 @@ class PerformanceModule extends React.Component {
         <MenuItem key={-1} value={0}>
           Add Year
         </MenuItem>
-        {planList.map(plan => (
-          <MenuItem key={plan.id} value={plan.id}>
-            {plan.startYear +
-              (plan.endYear && plan.endYear !== plan.startYear
-                ? `/${plan.endYear}`
-                : '')}
-          </MenuItem>
-        ))}
+        {planList &&
+          planList.map(plan => (
+            <MenuItem key={plan.id} value={plan.id}>
+              {plan.startYear +
+                (plan.endYear && plan.endYear !== plan.startYear
+                  ? `/${plan.endYear}`
+                  : '')}
+            </MenuItem>
+          ))}
       </Select>
     );
   }
@@ -280,18 +281,18 @@ class PerformanceModule extends React.Component {
   // Build a Section from this user's competencies
   addCompetencySection = isPlan => {
     const section = {};
-    const columns = ["Name", "Description"];
+    const columns = ['Name', 'Description'];
 
     const rows = [];
-    for (let competency of this.props.role.competencies) {
-      let row = {};
+    for (const competency of this.props.role.competencies) {
+      const row = {};
       row.id = uniqid();
       row.Name = competency.name;
       row.Description = competency.description;
       rows.push(row);
     }
 
-    section.sectionName = "Competencies";
+    section.sectionName = 'Competencies';
     section.data = {};
     section.data.columns = columns;
     section.data.rows = rows;
@@ -405,7 +406,13 @@ class PerformanceModule extends React.Component {
   };
 
   render() {
-    const { classes, selectedPlan, selectedReview, planList, role } = this.props;
+    const {
+      classes,
+      selectedPlan,
+      selectedReview,
+      planList,
+      role,
+    } = this.props;
     const {
       columnsForNewSection,
       profile,
@@ -706,7 +713,9 @@ class PerformanceModule extends React.Component {
                         this.props.addRow(sectionId, row, true)
                       }
                       handleDeleteRows={this.openDeleteRowsDialog}
-                      updateSection={(section) => this.props.updateSection(section, true)}
+                      updateSection={section =>
+                        this.props.updateSection(section, true)
+                      }
                       role={role}
                     />
                     <div className={classes.sectionButtonWrapper}>
@@ -755,7 +764,9 @@ class PerformanceModule extends React.Component {
                         this.props.addRow(sectionId, row, false)
                       }
                       handleDeleteRows={this.openDeleteRowsDialog}
-                      updateSection={(section) => this.props.updateSection(section, false)}
+                      updateSection={section =>
+                        this.props.updateSection(section, false)
+                      }
                       role={role}
                     />
                     <div className={classes.sectionButtonWrapper}>
@@ -817,7 +828,7 @@ PerformanceModule.propTypes = {
   savePlan: PropTypes.func.isRequired,
   saveReview: PropTypes.func.isRequired,
   updateSection: PropTypes.func.isRequired,
-  role: PropTypes.object
+  role: PropTypes.object,
 };
 
 export default withStyles(styles)(PerformanceModule);

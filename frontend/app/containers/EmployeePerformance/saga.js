@@ -26,10 +26,14 @@ import { selectSelectedPlan, selectSelectedReview } from './selectors';
 export function* getAllPlans({ selectedEmployee }) {
   try {
     yield call(getPerformancePlans, selectedEmployee.id);
-  } catch (e) {}
+  } catch (e) {
+    yield put(displayError(e.response ? e.response.body.message : e.message));
+  }
   try {
     yield call(getPerformanceReviews, selectedEmployee.id);
-  } catch (e) {}
+  } catch (e) {
+    yield put(displayError(e.response ? e.response.body.message : e.message));
+  }
 }
 
 export function* selectPlan(action) {
