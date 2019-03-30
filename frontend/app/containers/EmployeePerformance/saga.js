@@ -7,7 +7,7 @@ import {
   CREATE_REVIEW,
   SAVE_PLAN,
   SAVE_REVIEW,
-  GET_ROLE
+  GET_ROLE,
 } from './constants';
 import {
   getPerformancePlans,
@@ -18,7 +18,7 @@ import {
   createPerformanceReview,
   updatePerformancePlan,
   updatePerformanceReview,
-  getRole
+  getRole,
 } from 'api/saga';
 import { selectResource } from 'api/selector';
 import { setPlanCopy, setReviewCopy } from './actions';
@@ -68,7 +68,10 @@ export function* deletePerformance(action) {
 
 export function* createPlan({ plan, selectedEmployee }) {
   try {
-    yield call(createPerformancePlan, selectedEmployee.id, plan);
+    yield call(createPerformancePlan, selectedEmployee.id, {
+      ...plan,
+      status: 1,
+    });
     yield call(getAllPlans, { selectedEmployee });
     const plans = yield select(selectResource('plan'));
     if (plans) {
