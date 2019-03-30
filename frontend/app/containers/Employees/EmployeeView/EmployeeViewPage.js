@@ -135,15 +135,15 @@ class EmployeeViewPage extends React.PureComponent {
           {currentTab === 1 &&
             !editing && (
               <div>
-                {currentEmployee.adminLevel >= 2 ||
-                  (currentEmployee.id !== selectedEmployee.id && (
-                    <Button
-                      className={classes.editButton}
-                      onClick={() => this.props.setEditing(true)}
-                    >
-                      Edit
-                    </Button>
-                  ))}
+                {(currentEmployee.adminLevel >= 2 ||
+                  currentEmployee.id !== selectedEmployee.id) && (
+                  <Button
+                    className={classes.editButton}
+                    onClick={() => this.props.setEditing(true)}
+                  >
+                    Edit
+                  </Button>
+                )}
                 <EmployeeDisplay
                   isAdmin
                   profile={selectedEmployee}
