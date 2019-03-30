@@ -508,12 +508,14 @@ describe("PerformanceService tests", () => {
         it("Should be able to update a specific review, created date in the future ", async () => {
             let response: any;
             jsf.option({
+                fixedProbabilities: true,
                 optionalsProbability: 1.0
             });
             let review = jsf.generate(schema.definitions.IPerformanceReview);
             review.createdDate = "2025-01-01";
             review.sections = [];
             review.comments = [];
+            review.fkEmployee = 3;
             let section = jsf.generate(schema.definitions.IPerformanceSection);
             section.data = '{"pid": 102, "name": "name2"}';
             review.sections.push(section);
