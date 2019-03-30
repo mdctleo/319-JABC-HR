@@ -322,6 +322,392 @@ describe("test related /onboarding", () => {
 
     });
 
+    describe("/onboarding/task + /onboarding/task{id}", async () => {
+        let HEADERS: any = null;
+
+        before(async () => {
+            TestSetup.resetDb();
+            HEADERS = await TestSetup.login("manager");
+            // creates two tasks
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+                ignoreProperties: ["type"]
+            });
+            let task0 = jsf.generate(schema.definitions.IOnboardingTask);
+            task0.dueDate = "2019-03-04";
+            task0.createdDate = "2019-02-02";
+            task0.fkEmployee = 2;
+            task0.fkDocumentType = 1;
+            task0.requireDoc = 1;
+            task0.status = 0;
+            let task1 = jsf.generate(schema.definitions.IOnboardingTask);
+            task1.dueDate = "2019-03-04";
+            task1.createdDate = "2019-02-02";
+            task1.fkEmployee = 3;
+            task1.fkDocumentType = 2;
+            task1.requireDoc = 1;
+            task1.status = 0;
+            let task2 = jsf.generate(schema.definitions.IOnboardingTask);
+            task1.dueDate = "2019-03-04";
+            task1.createdDate = "2019-02-02";
+            task1.fkEmployee = 4;
+            task1.fkDocumentType = 2;
+            task1.requireDoc = 1;
+            task1.status = 0;
+
+
+            await chai.request(SERVER)
+                .post(`/JABC/1.0.0/employee/2/task`)
+                .set(HEADERS)
+                .send(task0);
+            await chai.request(SERVER)
+                .post(`/JABC/1.0.0/employee/3/task`)
+                .set(HEADERS)
+                .send(task1);
+            await chai.request(SERVER)
+                .post(`/JABC/1.0.0/employee/4/task`)
+                .set(HEADERS)
+                .send(task2);
+            await chai.request(SERVER)
+                .post(`/JABC/1.0.0/employee/3/manager/2`)
+                .set(HEADERS);
+
+
+            return HEADERS;
+        });
+
+        it("Should return error for getting non existent onboarding task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/88`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+
+        it("Should return error for getting an employee they manage's onboarding task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/2`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should return error for getting an employee they dont manage's onboarding task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/3`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to get own onboarding task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/1`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IOnboardingTask);
+                expect(response.body.fkEmployee).to.be.equal(4);
+            }
+        });
+
+        it("Should return error for updating non-existent onboarding Task", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+                ignoreProperties: ["type"]
+            });
+            let task0 = jsf.generate(schema.definitions.IOnboardingTask);
+            task0.dueDate = "2019-03-04";
+            task0.createdDate = "2019-02-03";
+            task0.fkEmployee = 3;
+            task0.fkDocumentType = 1;
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/task/88`)
+                    .set(HEADERS)
+                    .send(task0);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should return error for updating own Task", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+                ignoreProperties: ["type"]
+            });
+            let task0 = jsf.generate(schema.definitions.IOnboardingTask);
+            task0.dueDate = "2019-03-04";
+            task0.createdDate = "2019-02-03";
+            task0.fkEmployee = 3;
+            task0.fkDocumentType = 1;
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/task/1`)
+                    .set(HEADERS)
+                    .send(task0);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+
+
+        it("Should return error for updating managed employee's Task", async () => {
+            let response: any;
+            jsf.option({
+                alwaysFakeOptionals: true,
+                fixedProbabilities: true,
+                ignoreProperties: ["type"]
+            });
+            let task0 = jsf.generate(schema.definitions.IOnboardingTask);
+            task0.dueDate = "2019-03-04";
+            task0.createdDate = "2019-02-03";
+            task0.fkEmployee = 3;
+            task0.fkDocumentType = 1;
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/task/2`)
+                    .set(HEADERS)
+                    .send(task0);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to complete own onboarding task, ie changing status", async () => {
+            let response: any;
+            let task0 = jsf.generate(schema.definitions.IOnboardingTask);
+            task0.status = 1;
+
+
+            try {
+                response = await chai.request(SERVER)
+                    .put(`${BASE_PATH}/task/1`)
+                    .set(HEADERS)
+                    .send(task0);
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should see the update", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/1`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IOnboardingTask);
+                expect(response.body.status).to.be.equal(1);
+            }
+        });
+
+        it("Should not be able to get file of non existent task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/88/file`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+
+        it("Should not be able to get file of task, before it is uploaded/completed", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/1/file`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should be able to get file of own task, after it is completed", async () => {
+            let response: any;
+            let tempBuf = fs.readFileSync('src/utils/resources/young_obi_wan.jpg');
+
+            await chai.request(SERVER)
+                .put(`/JABC/1.0.0/employee/2/task/1`)
+                .type('form-data')
+                .set(HEADERS)
+                .attach('document', tempBuf,
+                    'young_obi_wan.jpg');
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/1/file`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.equal(200);
+                expect(response.body).to.be.deep.equal(tempBuf);
+            }
+        });
+
+        it("Should not be able to get uploaded file of managed employee, after it is completed", async () => {
+            let response: any;
+            let tempBuf = fs.readFileSync('src/utils/resources/young_obi_wan.jpg');
+
+            let employeeHeader = await TestSetup.login("employee");
+            await chai.request(SERVER)
+                .put(`/JABC/1.0.0/employee/3/task/2`)
+                .type('form-data')
+                .set(employeeHeader)
+                .attach('document', tempBuf,
+                    'young_obi_wan.jpg');
+
+            try {
+                response = await chai.request(SERVER)
+                    .get(`${BASE_PATH}/task/1/file`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should not be able to delete non existing task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/task/88`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should not be able to delete own task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/task/1`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should not be able to delete managed employees task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/task/2`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+        it("Should not be able to delete non managed employees task", async () => {
+            let response: any;
+
+            try {
+                response = await chai.request(SERVER)
+                    .delete(`${BASE_PATH}/task/3`)
+                    .set(HEADERS)
+            }
+            catch (e) {
+                console.log(e);
+            } finally {
+                expect(response.statusCode).to.be.within(400, 500);
+                expect(response.body).to.be.jsonSchema(schema.definitions.IApiResponse);
+            }
+        });
+
+    });
+
     describe("/onboarding/documentType", async () => {
         let HEADERS: any = null;
 
