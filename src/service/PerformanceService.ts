@@ -68,7 +68,7 @@ export async function deleteComment(id: Number, idComment: Number, xAuthToken: s
 export async function deletePerformancePlan(id: Number, xAuthToken: string) {
     try {
         const performancePlan = await getPerformancePlan(id, xAuthToken)
-		await Database.getInstance().query('CALL delete_performance_plan(?)', [id], JABCResponse.PERFORMANCE)
+        await Database.getInstance().query('CALL delete_performance_plan(?)', [id], JABCResponse.PERFORMANCE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The performance plan was successfully deleted')
 	} catch (error) {
 		throw error;
@@ -87,6 +87,11 @@ export async function deletePerformancePlan(id: Number, xAuthToken: string) {
 export async function deletePerformanceReview(id: Number, xAuthToken: string) {
     try {
         const performanceReview = await getPerformanceReview(id, xAuthToken)
+        const client = (await Auth(xAuthToken)).employee
+        if (client.id == performanceReview.fkEmployee && client.adminLevel != IEmployee.adminLevelEnum.HR_ADMIN) {
+            throw new JABCError(JABCResponse.EMPLOYEE, 'Can not delete your own performance review')
+
+        }
 		await Database.getInstance().query('CALL delete_performance_review(?)', [id], JABCResponse.PERFORMANCE)
 		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The performance review was successfully deleted')
 	} catch (error) {
@@ -178,6 +183,8 @@ export async function getPerformanceReview(id: Number, xAuthToken: string) {
 			await isManagedBy(performanceReview.fkEmployee, client.id)
 		}else if(client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id != performanceReview.fkEmployee){
             throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not manage other employee\'s performance review.')
+        } else if (performanceReview.status == 0 && performanceReview.fkEmployee === client.id && client.adminLevel !== IEmployee.adminLevelEnum.HR_ADMIN) {
+            throw new JABCError(JABCResponse.EMPLOYEE,'An employee can not see its own performance review when unpublished' )
         }
         performanceReview.sections = PerformanceSection.PerformanceSections(res[0][1])
         performanceReview.comments = Comment.Comments(res[0][2])
@@ -284,7 +291,12 @@ export async function updatePerformanceReview(id: Number, performanceReview: IPe
     let db: IDatabaseClient;
     let conn: any;
 	try {
-		const performanceReview_ = await getPerformanceReview(id, xAuthToken)
+        const performanceReview_ = await getPerformanceReview(id, xAuthToken)
+        const client = (await Auth(xAuthToken)).employee
+        if (client.id == performanceReview_.fkEmployee && client.adminLevel != IEmployee.adminLevelEnum.HR_ADMIN) {
+            throw new JABCError(JABCResponse.EMPLOYEE, 'Can not update your own performance review')
+        }
+
         db = Database.getInstance();
         conn = await db.initConnection();
         await db.beginTransaction(conn);
