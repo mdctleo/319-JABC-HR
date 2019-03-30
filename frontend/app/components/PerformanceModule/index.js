@@ -221,11 +221,9 @@ class PerformanceModule extends React.Component {
         value={selectedPlan ? selectedPlan.id : 0}
         onChange={this.selectYear}
       >
-      { (profile.adminLevel > 1 || !ownPage) &&
         <MenuItem key={-1} value={0}>
-          Add Year
+          Add Work Plan
         </MenuItem>
-      }
         {planList &&
           planList.map(plan => (
             <MenuItem key={plan.id} value={plan.id}>
@@ -479,7 +477,7 @@ class PerformanceModule extends React.Component {
     return (
       <div>
         <h1>Performance</h1>
-        {(profile.adminLevel > 1 || !ownPage) && planList.length > 0 &&
+        {planList.length !== 0 &&
         <FormControl className={classes.formControl}>
           <InputLabel>Year</InputLabel>
           {this.generateDropdown()}
@@ -767,63 +765,62 @@ class PerformanceModule extends React.Component {
             </Dialog>
             <div>
               {!selectedPlan &&
-                planList.length === 0 && ((profile.adminLevel > 1) || !ownPage) && (
+                planList.length === 0 && !ownPage && (
                   <div className="profile-card">
                     <Typography>
                       This profile currently has no performance documents. Click on the
-                      button below to add its first Performance Documents for a
-                      given year:{' '}
+                      button below to add its first set of documents:{' '}
                     </Typography>
                     <Button
                       className={classes.addDocButton}
                       value={0}
                       onClick={this.openNewPlanDialog}
                     >
-                      Add Year
+                      Add Documents
                     </Button>
                   </div>
                 )}
-              {!selectedPlan &&
-                planList.length === 0 && ownPage && (profile.adminLevel < 2) && (
-                  <div className="profile-card">
-                    <Typography>
-                      You currently have no performance documents.
-                    </Typography>
-                  </div>
-                )}
                 {!selectedPlan &&
-                planList.length !== 0 && ownPage && (profile.adminLevel < 2) && (
+                planList.length === 0 && ownPage && (value === 0 || profile.adminLevel < 2) && (
                   <div className="profile-card">
                     <Typography>
-                      Select a year in the dropdown above to view your performance documents.
-                    </Typography>
-                  </div>
-                )}
-              {!selectedPlan &&
-                planList.length !== 0 && ((profile.adminLevel > 1) || !ownPage) && (
-                  <div className="profile-card">
-                    <Typography>
-                      Click on the button below to add a Performance Document
-                      for a given year or select a year in the drop down above.{' '}
+                      Your profile currently has no work plans. Click on the
+                      button below to add your first Work Plan:{' '}
                     </Typography>
                     <Button
                       className={classes.addDocButton}
                       value={0}
                       onClick={this.openNewPlanDialog}
                     >
-                      Add Year
+                      Add Work Plan
+                    </Button>
+                  </div>
+                )}
+                {!selectedPlan &&
+                planList.length !== 0 && (
+                  <div className="profile-card">
+                    <Typography>
+                      Select a Work Plan from the drop down above, or add a new Work Plan below.{' '}
+                    </Typography>
+                    <Button
+                      className={classes.addDocButton}
+                      value={0}
+                      onClick={this.openNewPlanDialog}
+                    >
+                      Add Work Plan
                     </Button>
                   </div>
                 )}
               {selectedPlan &&
                 value === 0 && (
                   <div className="profile-card">
+                    { profile.adminLevel > 0 &&
                     <Button
                       className={classes.deleteWPButton}
                       onClick={this.openCheckDeleteDocDialog}
                     >
                       Delete Plan
-                    </Button>
+                    </Button>}
                     <Button
                       className={classes.saveButton}
                       onClick={() => this.savePlan(false)}
@@ -871,12 +868,13 @@ class PerformanceModule extends React.Component {
                   <div className="profile-card">
                     {canEditReview && (
                       <React.Fragment>
+                        { (profile.adminLevel > 1 || !ownPage) &&
                         <Button
                           className={classes.deleteWPButton}
                           onClick={this.openCheckDeleteDocDialog}
                         >
                           Delete Review
-                        </Button>
+                        </Button> }
                         <Button
                           className={classes.saveButton}
                           onClick={() => this.saveReview(false)}
@@ -926,7 +924,7 @@ class PerformanceModule extends React.Component {
                 )}
               {selectedPlan &&
                 value === 1 &&
-                !selectedReview && (
+                !selectedReview && (profile.adminLevel > 1 || !ownPage) && (
                   <div className="profile-card">
                     <Typography>
                       You currently have no performance review for this work
