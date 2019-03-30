@@ -479,7 +479,7 @@ class PerformanceModule extends React.Component {
     return (
       <div>
         <h1>Performance</h1>
-        {(profile.adminLevel > 1 || !ownPage || planList.length > 0) &&
+        {(profile.adminLevel > 1 || !ownPage) && planList.length > 0 &&
         <FormControl className={classes.formControl}>
           <InputLabel>Year</InputLabel>
           {this.generateDropdown()}
