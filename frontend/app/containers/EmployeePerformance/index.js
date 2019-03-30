@@ -13,8 +13,9 @@ import {
   selectPlanList,
   selectSelectedPlan,
   selectSelectedReview,
-  selectRole
+  selectRole,
 } from './selectors';
+import { selectProfile } from '../App/selectors';
 import actions from './actions';
 import connect from 'react-redux/es/connect/connect';
 import reducer from './reducer';
@@ -174,7 +175,8 @@ class PerformancePage extends React.Component {
       selectedPlan,
       selectedReview,
       selectedEmployee,
-      role
+      role,
+      currentUser,
     } = this.props;
 
     return (
@@ -198,6 +200,9 @@ class PerformancePage extends React.Component {
           savePlan={this.props.savePlan}
           saveReview={this.props.saveReview}
           role={role}
+          canEditReview={currentUser.id !== selectedEmployee.id || currentUser.adminLevel >= 2}
+          ownPage={currentUser.id === selectedEmployee.id}
+          currentUserAdminLevel={currentUser.adminLevel}
         />
       </div>
     );
@@ -223,14 +228,16 @@ PerformancePage.propTypes = {
   reset: PropTypes.func.isRequired,
   updateSection: PropTypes.func.isRequired,
   role: PropTypes.object,
-  getRole: PropTypes.func.isRequired
+  getRole: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
   planList: selectPlanList,
   selectedPlan: selectSelectedPlan,
   selectedReview: selectSelectedReview,
-  role: selectRole
+  role: selectRole,
+  currentUser: selectProfile,
 });
 
 const mapDispatchToProps = {

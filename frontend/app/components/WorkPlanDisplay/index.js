@@ -86,6 +86,7 @@ class WorkPlanDisplay extends React.Component {
               handleAddRow={that.props.handleAddRow}
               handleDeleteRows={that.props.handleDeleteRows}
               updateSection={(newSection) => that.updateSection(newSection)}
+              canEditReview
             />
           ))}
       </div>

@@ -186,7 +186,7 @@ class PerformanceModule extends React.Component {
       openPublishedDialog: false,
       openSavedDialog: false,
       openNoRoleDialog: false,
-      openNoCompetenciesDialog: false
+      openNoCompetenciesDialog: false,
     };
   }
 
@@ -214,7 +214,7 @@ class PerformanceModule extends React.Component {
   // Generate a dropdown list depending on what years of performance plans
   // are available.
   generateDropdown() {
-    const { planList, selectedPlan } = this.props;
+    const { profile, planList, selectedPlan, ownPage } = this.props;
 
     return (
       <Select
@@ -222,7 +222,7 @@ class PerformanceModule extends React.Component {
         onChange={this.selectYear}
       >
         <MenuItem key={-1} value={0}>
-          Add Year
+          Add Work Plan
         </MenuItem>
         {planList &&
           planList.map(plan => (
@@ -285,9 +285,9 @@ class PerformanceModule extends React.Component {
   // Build a Section from this user's competencies
   addCompetencySection = isPlan => {
     if (!this.props.role) {
-      this.setState({openNoRoleDialog: true});
+      this.setState({ openNoRoleDialog: true });
     } else if (this.props.role.competencies.length === 0) {
-      this.setState({openNoCompetenciesDialog: true});
+      this.setState({ openNoCompetenciesDialog: true });
     } else {
       const section = {};
       const columns = ['Name', 'Description'];
@@ -458,6 +458,9 @@ class PerformanceModule extends React.Component {
       selectedReview,
       planList,
       role,
+      canEditReview,
+      ownPage,
+      currentUserAdminLevel,
     } = this.props;
     const {
       columnsForNewSection,
@@ -475,10 +478,12 @@ class PerformanceModule extends React.Component {
     return (
       <div>
         <h1>Performance</h1>
-        <FormControl className={classes.formControl}>
-          <InputLabel>Year</InputLabel>
-          {this.generateDropdown()}
-        </FormControl>
+        {planList.length !== 0 && (
+          <FormControl className={classes.formControl}>
+            <InputLabel>Year</InputLabel>
+            {this.generateDropdown()}
+          </FormControl>
+        )}
         <Paper className={classes.root}>
           <div>
             <AppBar position="static" className={classes.appBar}>
@@ -575,7 +580,10 @@ class PerformanceModule extends React.Component {
                 This employee's role has no competencies.
               </DialogTitle>
               <DialogActions>
-                <Button onClick={this.closeNoCompetenciesDialog} color="primary">
+                <Button
+                  onClick={this.closeNoCompetenciesDialog}
+                  color="primary"
+                >
                   OK
                 </Button>
               </DialogActions>
@@ -645,7 +653,8 @@ class PerformanceModule extends React.Component {
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
-                This {value === 0 ? ("Work Plan") : ("Performance Review")} has been published!
+                This {value === 0 ? 'Work Plan' : 'Performance Review'} has been
+                published!
               </DialogTitle>
               <DialogActions>
                 <Button onClick={this.closePublishedDialog} color="primary">
@@ -660,7 +669,8 @@ class PerformanceModule extends React.Component {
               aria-labelledby="form-dialog-title"
             >
               <DialogTitle id="form-dialog-title">
-                This {value === 0 ? ("Work Plan") : ("Performance Review")} has been saved!
+                This {value === 0 ? 'Work Plan' : 'Performance Review'} has been
+                saved!
               </DialogTitle>
               <DialogActions>
                 <Button onClick={this.closeSavedDialog} color="primary">
@@ -757,19 +767,37 @@ class PerformanceModule extends React.Component {
             </Dialog>
             <div>
               {!selectedPlan &&
-                planList.length === 0 && (
+                planList.length === 0 &&
+                !ownPage && (
                   <div className="profile-card">
                     <Typography>
-                      You currently have no performance documents. Click on the
-                      button below to add your first Performance Documents for a
-                      given year:{' '}
+                      This profile currently has no performance documents. Click
+                      on the button below to add its first set of documents:{' '}
                     </Typography>
                     <Button
                       className={classes.addDocButton}
                       value={0}
                       onClick={this.openNewPlanDialog}
                     >
-                      Add Year
+                      Add Documents
+                    </Button>
+                  </div>
+                )}
+              {!selectedPlan &&
+                planList.length === 0 &&
+                ownPage &&
+                (value === 0 || profile.adminLevel < 2) && (
+                  <div className="profile-card">
+                    <Typography>
+                      Your profile currently has no work plans. Click on the
+                      button below to add your first Work Plan:{' '}
+                    </Typography>
+                    <Button
+                      className={classes.addDocButton}
+                      value={0}
+                      onClick={this.openNewPlanDialog}
+                    >
+                      Add Work Plan
                     </Button>
                   </div>
                 )}
@@ -777,38 +805,40 @@ class PerformanceModule extends React.Component {
                 planList.length !== 0 && (
                   <div className="profile-card">
                     <Typography>
-                      Click on the button below to add a Performance Document
-                      for a given year or select a year in the drop down above.{' '}
+                      Select a Work Plan from the drop down above, or add a new
+                      Work Plan below.{' '}
                     </Typography>
                     <Button
                       className={classes.addDocButton}
                       value={0}
                       onClick={this.openNewPlanDialog}
                     >
-                      Add Year
+                      Add Work Plan
                     </Button>
                   </div>
                 )}
               {selectedPlan &&
                 value === 0 && (
                   <div className="profile-card">
-                    <Button
-                      className={classes.deleteWPButton}
-                      onClick={this.openCheckDeleteDocDialog}
-                    >
-                      Delete Plan
-                    </Button>
+                    {currentUserAdminLevel >= 1 && (
+                      <Button
+                        className={classes.deleteWPButton}
+                        onClick={this.openCheckDeleteDocDialog}
+                      >
+                        Delete Plan
+                      </Button>
+                    )}
                     <Button
                       className={classes.saveButton}
                       onClick={() => this.savePlan(false)}
                     >
-                      Save Draft
+                      {selectedPlan.status === 0 ? 'Save Draft' : 'Unpublish'}
                     </Button>
                     <Button
                       className={classes.saveButton}
                       onClick={() => this.savePlan(true)}
                     >
-                      Publish
+                      {selectedPlan.status === 0 ? 'Publish' : 'Save Changes'}
                     </Button>
                     <WorkPlanDisplay
                       sections={selectedPlan.sections}
@@ -843,24 +873,34 @@ class PerformanceModule extends React.Component {
               {selectedReview &&
                 value === 1 && (
                   <div className="profile-card">
-                    <Button
-                      className={classes.deleteWPButton}
-                      onClick={this.openCheckDeleteDocDialog}
-                    >
-                      Delete Review
-                    </Button>
-                    <Button
-                      className={classes.saveButton}
-                      onClick={() => this.saveReview(false)}
-                    >
-                      Save Draft
-                    </Button>
-                    <Button
-                      className={classes.saveButton}
-                      onClick={() => this.saveReview(true)}
-                    >
-                      Publish
-                    </Button>
+                    {canEditReview && (
+                      <React.Fragment>
+                        {(profile.adminLevel > 1 || !ownPage) && (
+                          <Button
+                            className={classes.deleteWPButton}
+                            onClick={this.openCheckDeleteDocDialog}
+                          >
+                            Delete Review
+                          </Button>
+                        )}
+                        <Button
+                          className={classes.saveButton}
+                          onClick={() => this.saveReview(false)}
+                        >
+                          {selectedReview.status === 0
+                            ? 'Save Draft'
+                            : 'Unpublish'}
+                        </Button>
+                        <Button
+                          className={classes.saveButton}
+                          onClick={() => this.saveReview(true)}
+                        >
+                          {selectedReview.status === 0
+                            ? 'Publish'
+                            : 'Save Changes'}
+                        </Button>
+                      </React.Fragment>
+                    )}
                     <PerformanceReviewDisplay
                       sections={selectedReview.sections}
                       year={selectedPlanYear}
@@ -874,21 +914,24 @@ class PerformanceModule extends React.Component {
                         this.props.updateSection(section, false)
                       }
                       role={role}
+                      canEditReview={canEditReview}
                     />
-                    <div className={classes.sectionButtonWrapper}>
-                      <Button
-                        className={classes.sectionButton}
-                        onClick={this.openNewSectionDialog}
-                      >
-                        Add Section
-                      </Button>
-                      <Button
-                        className={classes.sectionButton}
-                        onClick={() => this.addCompetencySection(false)}
-                      >
-                        Add Competencies
-                      </Button>
-                    </div>
+                    {canEditReview && (
+                      <div className={classes.sectionButtonWrapper}>
+                        <Button
+                          className={classes.sectionButton}
+                          onClick={this.openNewSectionDialog}
+                        >
+                          Add Section
+                        </Button>
+                        <Button
+                          className={classes.sectionButton}
+                          onClick={() => this.addCompetencySection(false)}
+                        >
+                          Add Competencies
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               {selectedPlan &&
@@ -897,16 +940,17 @@ class PerformanceModule extends React.Component {
                   <div className="profile-card">
                     <Typography>
                       You currently have no performance review for this work
-                      plan. Click on the button below to add a performance
-                      review for this plan:{' '}
+                      plan.
                     </Typography>
-                    <Button
-                      className={classes.addDocButton}
-                      value={0}
-                      onClick={this.makeReview}
-                    >
-                      Add Review
-                    </Button>
+                    {canEditReview && (
+                      <Button
+                        className={classes.addDocButton}
+                        value={0}
+                        onClick={this.makeReview}
+                      >
+                        Add Review
+                      </Button>
+                    )}
                   </div>
                 )}
             </div>
@@ -935,6 +979,9 @@ PerformanceModule.propTypes = {
   saveReview: PropTypes.func.isRequired,
   updateSection: PropTypes.func.isRequired,
   role: PropTypes.object,
+  canEditReview: PropTypes.bool.isRequired,
+  ownPage: PropTypes.bool.isRequired,
+  currentUserAdminLevel: PropTypes.number().isRequired,
 };
 
 export default withStyles(styles)(PerformanceModule);

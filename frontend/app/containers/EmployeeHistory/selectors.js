@@ -35,7 +35,7 @@ const getFieldName = key => {
       return 'Remaining Vacation Days';
     case 'phoneNumber':
       return 'Phone Number';
-    case 'fkRole':
+    case 'roleName':
       return 'Role';
     default:
       return '';
@@ -62,7 +62,10 @@ export const selectHistory = createSelector(
                   key !== 'fkCreator' &&
                   key !== 'createdDate' &&
                   key !== 'role' &&
-                  key !== 'changedFields'
+                  key !== 'changedFields' &&
+                  key !== 'creatorFirstname' &&
+                  key !== 'creatorLastname' &&
+                  key !== 'fkRole'
                 ) {
                   if (last[key] !== h[key]) {
                     changedFields.push(getFieldName(key));
