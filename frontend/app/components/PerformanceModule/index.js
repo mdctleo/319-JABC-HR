@@ -460,6 +460,7 @@ class PerformanceModule extends React.Component {
       role,
       canEditReview,
       ownPage,
+      currentUserAdminLevel,
     } = this.props;
     const {
       columnsForNewSection,
@@ -477,11 +478,12 @@ class PerformanceModule extends React.Component {
     return (
       <div>
         <h1>Performance</h1>
-        {planList.length !== 0 &&
-        <FormControl className={classes.formControl}>
-          <InputLabel>Year</InputLabel>
-          {this.generateDropdown()}
-        </FormControl>}
+        {planList.length !== 0 && (
+          <FormControl className={classes.formControl}>
+            <InputLabel>Year</InputLabel>
+            {this.generateDropdown()}
+          </FormControl>
+        )}
         <Paper className={classes.root}>
           <div>
             <AppBar position="static" className={classes.appBar}>
@@ -765,11 +767,12 @@ class PerformanceModule extends React.Component {
             </Dialog>
             <div>
               {!selectedPlan &&
-                planList.length === 0 && !ownPage && (
+                planList.length === 0 &&
+                !ownPage && (
                   <div className="profile-card">
                     <Typography>
-                      This profile currently has no performance documents. Click on the
-                      button below to add its first set of documents:{' '}
+                      This profile currently has no performance documents. Click
+                      on the button below to add its first set of documents:{' '}
                     </Typography>
                     <Button
                       className={classes.addDocButton}
@@ -780,8 +783,10 @@ class PerformanceModule extends React.Component {
                     </Button>
                   </div>
                 )}
-                {!selectedPlan &&
-                planList.length === 0 && ownPage && (value === 0 || profile.adminLevel < 2) && (
+              {!selectedPlan &&
+                planList.length === 0 &&
+                ownPage &&
+                (value === 0 || profile.adminLevel < 2) && (
                   <div className="profile-card">
                     <Typography>
                       Your profile currently has no work plans. Click on the
@@ -796,11 +801,12 @@ class PerformanceModule extends React.Component {
                     </Button>
                   </div>
                 )}
-                {!selectedPlan &&
+              {!selectedPlan &&
                 planList.length !== 0 && (
                   <div className="profile-card">
                     <Typography>
-                      Select a Work Plan from the drop down above, or add a new Work Plan below.{' '}
+                      Select a Work Plan from the drop down above, or add a new
+                      Work Plan below.{' '}
                     </Typography>
                     <Button
                       className={classes.addDocButton}
@@ -814,13 +820,14 @@ class PerformanceModule extends React.Component {
               {selectedPlan &&
                 value === 0 && (
                   <div className="profile-card">
-                    { profile.adminLevel > 0 &&
-                    <Button
-                      className={classes.deleteWPButton}
-                      onClick={this.openCheckDeleteDocDialog}
-                    >
-                      Delete Plan
-                    </Button>}
+                    {currentUserAdminLevel >= 1 && (
+                      <Button
+                        className={classes.deleteWPButton}
+                        onClick={this.openCheckDeleteDocDialog}
+                      >
+                        Delete Plan
+                      </Button>
+                    )}
                     <Button
                       className={classes.saveButton}
                       onClick={() => this.savePlan(false)}
@@ -868,24 +875,29 @@ class PerformanceModule extends React.Component {
                   <div className="profile-card">
                     {canEditReview && (
                       <React.Fragment>
-                        { (profile.adminLevel > 1 || !ownPage) &&
-                        <Button
-                          className={classes.deleteWPButton}
-                          onClick={this.openCheckDeleteDocDialog}
-                        >
-                          Delete Review
-                        </Button> }
+                        {(profile.adminLevel > 1 || !ownPage) && (
+                          <Button
+                            className={classes.deleteWPButton}
+                            onClick={this.openCheckDeleteDocDialog}
+                          >
+                            Delete Review
+                          </Button>
+                        )}
                         <Button
                           className={classes.saveButton}
                           onClick={() => this.saveReview(false)}
                         >
-                          {selectedReview.status === 0 ? 'Save Draft' : 'Unpublish'}
+                          {selectedReview.status === 0
+                            ? 'Save Draft'
+                            : 'Unpublish'}
                         </Button>
                         <Button
                           className={classes.saveButton}
                           onClick={() => this.saveReview(true)}
                         >
-                          {selectedReview.status === 0 ? 'Publish' : 'Save Changes'}
+                          {selectedReview.status === 0
+                            ? 'Publish'
+                            : 'Save Changes'}
                         </Button>
                       </React.Fragment>
                     )}
@@ -924,7 +936,7 @@ class PerformanceModule extends React.Component {
                 )}
               {selectedPlan &&
                 value === 1 &&
-                !selectedReview && (profile.adminLevel > 1 || !ownPage) && (
+                !selectedReview && (
                   <div className="profile-card">
                     <Typography>
                       You currently have no performance review for this work
@@ -969,6 +981,7 @@ PerformanceModule.propTypes = {
   role: PropTypes.object,
   canEditReview: PropTypes.bool.isRequired,
   ownPage: PropTypes.bool.isRequired,
+  currentUserAdminLevel: PropTypes.number().isRequired,
 };
 
 export default withStyles(styles)(PerformanceModule);

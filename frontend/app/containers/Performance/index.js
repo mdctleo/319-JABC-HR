@@ -187,8 +187,9 @@ class PerformancePage extends React.Component {
           saveReview={this.props.saveReview}
           updateSection={this.props.updateSection}
           role={role}
-          canEditReview={false}
+          canEditReview={profile.adminLevel >= 2}
           ownPage={true}
+          currentUserAdminLevel={profile.adminLevel}
         />
       </div>
     );

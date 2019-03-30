@@ -200,8 +200,9 @@ class PerformancePage extends React.Component {
           savePlan={this.props.savePlan}
           saveReview={this.props.saveReview}
           role={role}
-          canEditReview={currentUser.id !== selectedEmployee.id}
+          canEditReview={currentUser.id !== selectedEmployee.id || currentUser.adminLevel >= 2}
           ownPage={currentUser.id === selectedEmployee.id}
+          currentUserAdminLevel={currentUser.adminLevel}
         />
       </div>
     );
