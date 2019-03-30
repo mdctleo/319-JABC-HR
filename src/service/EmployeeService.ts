@@ -563,6 +563,12 @@ export async function getPerformancePlans(id: Number, xAuthToken: string, term: 
 		}
 		let res = await Database.getInstance().query('CALL get_employee_performance_plans(?)', [id], JABCResponse.EMPLOYEE);
 		let performancePlans = PerformancePlan.PerformancePlans(res[0][0]);
+		if (id != client.id) {
+			performancePlans = performancePlans.filter(performancePlan => {
+				return performancePlan.status === 1;
+			});
+		}
+
 
 		for (let performancePlan of performancePlans) {
 			let resSections = await Database.getInstance().query('CALL get_performance_plan_sections(?)', [performancePlan.id]);
@@ -596,7 +602,13 @@ export async function getPerformanceReviews(id: Number, xAuthToken: string, term
 			}
 		}
 		let res = await Database.getInstance().query('CALL get_employee_performance_reviews(?)', [id], JABCResponse.EMPLOYEE);
-		let performanceReviews = PerformanceReview.PerformanceReviews(res[0][0]);
+        let performanceReviews = PerformanceReview.PerformanceReviews(res[0][0]);
+		if (id === client.id) {
+			// only show published review to reviews that belong to the employee
+			performanceReviews = performanceReviews.filter((performanceReview) => {
+				return performanceReview.status == 1;
+			})
+        }
 
 		for (let performanceReview of performanceReviews) {
 			let resSections = await Database.getInstance().query('CALL get_performance_review_sections(?)', [performanceReview.id]);
