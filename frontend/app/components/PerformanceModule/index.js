@@ -214,16 +214,18 @@ class PerformanceModule extends React.Component {
   // Generate a dropdown list depending on what years of performance plans
   // are available.
   generateDropdown() {
-    const { planList, selectedPlan } = this.props;
+    const { profile, planList, selectedPlan, ownPage } = this.props;
 
     return (
       <Select
         value={selectedPlan ? selectedPlan.id : 0}
         onChange={this.selectYear}
       >
+      { (profile.adminLevel > 1 || !ownPage) &&
         <MenuItem key={-1} value={0}>
           Add Year
         </MenuItem>
+      }
         {planList &&
           planList.map(plan => (
             <MenuItem key={plan.id} value={plan.id}>
@@ -459,6 +461,7 @@ class PerformanceModule extends React.Component {
       planList,
       role,
       canEditReview,
+      ownPage,
     } = this.props;
     const {
       columnsForNewSection,
@@ -476,10 +479,11 @@ class PerformanceModule extends React.Component {
     return (
       <div>
         <h1>Performance</h1>
+        {(profile.adminLevel > 1 || !ownPage || planList.length > 0) &&
         <FormControl className={classes.formControl}>
           <InputLabel>Year</InputLabel>
           {this.generateDropdown()}
-        </FormControl>
+        </FormControl>}
         <Paper className={classes.root}>
           <div>
             <AppBar position="static" className={classes.appBar}>
@@ -763,11 +767,11 @@ class PerformanceModule extends React.Component {
             </Dialog>
             <div>
               {!selectedPlan &&
-                planList.length === 0 && (
+                planList.length === 0 && ((profile.adminLevel > 1) || !ownPage) && (
                   <div className="profile-card">
                     <Typography>
-                      You currently have no performance documents. Click on the
-                      button below to add your first Performance Documents for a
+                      This profile currently has no performance documents. Click on the
+                      button below to add its first Performance Documents for a
                       given year:{' '}
                     </Typography>
                     <Button
@@ -780,7 +784,23 @@ class PerformanceModule extends React.Component {
                   </div>
                 )}
               {!selectedPlan &&
-                planList.length !== 0 && (
+                planList.length === 0 && ownPage && (profile.adminLevel < 2) && (
+                  <div className="profile-card">
+                    <Typography>
+                      You currently have no performance documents.
+                    </Typography>
+                  </div>
+                )}
+                {!selectedPlan &&
+                planList.length !== 0 && ownPage && (profile.adminLevel < 2) && (
+                  <div className="profile-card">
+                    <Typography>
+                      Select a year in the dropdown above to view your performance documents.
+                    </Typography>
+                  </div>
+                )}
+              {!selectedPlan &&
+                planList.length !== 0 && ((profile.adminLevel > 1) || !ownPage) && (
                   <div className="profile-card">
                     <Typography>
                       Click on the button below to add a Performance Document
@@ -950,6 +970,7 @@ PerformanceModule.propTypes = {
   updateSection: PropTypes.func.isRequired,
   role: PropTypes.object,
   canEditReview: PropTypes.bool.isRequired,
+  ownPage: PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(PerformanceModule);

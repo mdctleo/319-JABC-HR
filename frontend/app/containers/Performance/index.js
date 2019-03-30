@@ -188,6 +188,7 @@ class PerformancePage extends React.Component {
           updateSection={this.props.updateSection}
           role={role}
           canEditReview={false}
+          ownPage={true}
         />
       </div>
     );
