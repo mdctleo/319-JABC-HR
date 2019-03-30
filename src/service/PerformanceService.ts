@@ -160,6 +160,8 @@ export async function getPerformancePlan(id: Number, xAuthToken: string) {
                 await isManagedBy(performancePlan.fkEmployee, client.id)
             } else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
                 throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not manage other employee\'s performance plan.')
+            } else if (performancePlan.status === 0) {
+                throw new JABCError(JABCResponse.EMPLOYEE, 'This performance plan is unpublished right now, only available to the creator');
             }
         }
         performancePlan.sections = PerformanceSection.PerformanceSections(res[0][1])
@@ -190,8 +192,8 @@ export async function getPerformanceReview(id: Number, xAuthToken: string) {
             throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not manage other employee\'s performance review.')
         }
 
-        if (performanceReview.status == 0 && performanceReview.fkEmployee === client.id && client.adminLevel !== IEmployee.adminLevelEnum.HR_ADMIN) {
-            throw new JABCError(JABCResponse.EMPLOYEE,'An employee can not see its own performance review when unpublished' )
+        if (performanceReview.status === 0 && performanceReview.fkEmployee === client.id && client.adminLevel !== IEmployee.adminLevelEnum.HR_ADMIN) {
+            throw new JABCError(JABCResponse.EMPLOYEE,'An employee can not see their own performance review when unpublished' );
         }
 
         performanceReview.sections = PerformanceSection.PerformanceSections(res[0][1])
