@@ -177,11 +177,13 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 	let conn: any;
 	try {
 		const client = (await Auth(xAuthToken)).employee
-		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
-		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance plan of other employee.')
-		}
+		if (client.id !== id) {
+            if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
+                await isManagedBy(id, client.id)
+            } else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+                throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance plan of other employee.')
+            }
+        }
 		db = Database.getInstance()
 		conn = await db.initConnection()
 		await db.beginTransaction(conn)
@@ -238,11 +240,10 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 		const client = (await Auth(xAuthToken)).employee
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
 			await isManagedBy(id, client.id)
-		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id !== id) {
-			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance review of other employee.')
-		} else if (client.id === id && client.adminLevel !== IEmployee.adminLevelEnum.HR_ADMIN) {
-            throw new JABCError(JABCResponse.EMPLOYEE, 'An employee can not create its own performance review')
+		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
+			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance review')
 		}
+
 		db = Database.getInstance();
 		conn = await db.initConnection();
 		await db.beginTransaction(conn);
