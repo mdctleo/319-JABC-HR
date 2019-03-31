@@ -1,0 +1,21 @@
+version: '3'
+services:
+
+  database:
+    image: oecmjabc/jabc-hr_database
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    ports:
+    - "3307:3306"
+    volumes:
+    - database-volume:/var/lib/mysql
+
+  backend:
+    image: oecmjabc/jabc-hr_backend
+    ports:
+    - "8080:8080"
+    network_mode: host
+
+volumes:
+  database-volume:
+
