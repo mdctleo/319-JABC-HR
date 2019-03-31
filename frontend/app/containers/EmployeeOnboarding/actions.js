@@ -4,14 +4,23 @@
  *
  */
 
-import { DEFAULT_ACTION } from './constants';
+import { GET_TASKS, DOWNLOAD_FILE } from './constants';
 
-export function defaultAction() {
+export function getTasks(selectedEmployeeId) {
   return {
-    type: DEFAULT_ACTION,
+    type: GET_TASKS,
+    selectedEmployeeId,
+  };
+}
+
+export function downloadFile(id) {
+  return {
+    type: DOWNLOAD_FILE,
+    id,
   };
 }
 
 export default {
-
+  getTasks,
+  downloadFile,
 };

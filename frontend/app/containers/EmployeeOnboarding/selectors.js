@@ -1,23 +1,27 @@
 import { createSelector } from 'reselect';
-import { initialState } from './reducer';
+import { selectResource } from 'api/selector';
 
-/**
- * Direct selector to the employeeOnboarding state domain
- */
+const getSelectedEmployee = (_, props) => props.selectedEmployee;
 
-const selectEmployeeOnboardingDomain = state =>
-  state.get('employeeOnboarding', initialState);
-
-/**
- * Other specific selectors
- */
-
-/**
- * Default selector used by EmployeeOnboarding
- */
-
-const makeSelectEmployeeOnboarding = () =>
-  createSelector(selectEmployeeOnboardingDomain, substate => substate.toJS());
-
-export default makeSelectEmployeeOnboarding;
-export { selectEmployeeOnboardingDomain };
+export const selectTasks = createSelector(
+  [selectResource('task'), selectResource('documentType'), getSelectedEmployee],
+  (tasks, documentTypes, selectedEmployee) => {
+    if (tasks && selectedEmployee) {
+      const tasksObj = tasks.toJS();
+      return Object.keys(tasksObj)
+        .filter(key => {
+          const task = tasksObj[key];
+          return task.fkEmployee === selectedEmployee.id;
+        })
+        .map(key => {
+          const task = tasksObj[key];
+          let documentType = null;
+          if (task.fkDocumentType && documentTypes) {
+            documentType = documentTypes.get(`${task.fkDocumentType}`);
+          }
+          return { ...task, documentType };
+        });
+    }
+    return [];
+  },
+);

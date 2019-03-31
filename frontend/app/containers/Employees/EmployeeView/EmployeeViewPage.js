@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 
 import EmployeePerformance from '../../EmployeePerformance';
-import EmployeeOnboarding from './EmployeeOnboarding';
+import EmployeeOnboarding from '../../EmployeeOnboarding/Loadable';
 import EmployeeHistory from '../../EmployeeHistory/Loadable';
 
 const styles = theme => ({
@@ -172,7 +172,7 @@ class EmployeeViewPage extends React.PureComponent {
           {currentTab === 2 && (
             <EmployeePerformance selectedEmployee={selectedEmployee} />
           )}
-          {currentTab === 3 && <EmployeeOnboarding />}
+          {currentTab === 3 && <EmployeeOnboarding selectedEmployee={selectedEmployee} />}
           {currentTab === 4 && (
             <EmployeeHistory selectedEmployee={selectedEmployee} />
           )}

@@ -26,6 +26,7 @@ import TextField from '@material-ui/core/TextField/TextField';
 import DialogActions from '@material-ui/core/DialogActions/DialogActions';
 import orange from '@material-ui/core/colors/orange';
 import { withStyles } from '@material-ui/core';
+import {selectTasks} from './selectors';
 
 const styles = theme => ({
   root: {
@@ -218,32 +219,9 @@ export class EmployeeOnboarding extends React.PureComponent {
     editOIDialog: false,
   };
 
-  documents = [
-    {
-      id: 1,
-      name: 'Criminal record',
-      description: 'Please upload your criminal record.',
-      dueDate: '20/02/2019',
-      done: false,
-      fileName: 'None',
-    },
-    {
-      id: 2,
-      name: 'Visa',
-      description: 'Please upload your visa.',
-      dueDate: '20/02/2019',
-      done: false,
-      fileName: 'None',
-    },
-    {
-      id: 3,
-      name: 'Insurance form',
-      description: 'Please upload your insurance form.',
-      dueDate: '20/02/2019',
-      done: true,
-      fileName: 'None',
-    },
-  ];
+  componentDidMount() {
+    this.props.getTasks(this.props.selectedEmployee.id);
+  }
 
   handleAddOI = () => {
     this.setState({ addOIDialog: true });
@@ -268,7 +246,7 @@ export class EmployeeOnboarding extends React.PureComponent {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, tasks } = this.props;
     const { addOIDialog, editOIDialog } = this.state;
     return (
       <div className="profile-card">
@@ -280,7 +258,7 @@ export class EmployeeOnboarding extends React.PureComponent {
             Add Onboarding Item
           </Button>
         </div>
-        <DocumentsContainer documents={this.documents} />
+        <DocumentsContainer documents={tasks} downloadFile={this.props.downloadFile} />
         <Dialog
           open={addOIDialog}
           onClose={this.handleCloseAddOIDialog}
@@ -374,10 +352,16 @@ export class EmployeeOnboarding extends React.PureComponent {
 }
 
 EmployeeOnboarding.propTypes = {
+  selectedEmployee: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
+  getTasks: PropTypes.func.isRequired,
+  tasks: PropTypes.array.isRequired,
+  downloadFile: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = createStructuredSelector({});
+const mapStateToProps = createStructuredSelector({
+  tasks: selectTasks,
+});
 
 const mapDispatchToProps = {
   ...actions,
