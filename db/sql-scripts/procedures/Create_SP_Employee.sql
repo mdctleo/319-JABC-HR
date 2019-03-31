@@ -832,7 +832,7 @@ DELIMITER ;
 
 -- -----------------------------------------------------
 -- procedure get_employee_performance_plans
---    - get the performance plans for a given employee,
+--    - get the work plans for a given employee,
 --    - provided the employee exists
 -- -----------------------------------------------------
 DROP PROCEDURE IF EXISTS get_employee_performance_plans;
@@ -858,7 +858,7 @@ BEGIN
   IF checker = 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
   ELSEIF checker2 = 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee does not have any performance plan.';
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee does not have any work plan.';
   ELSE
     SELECT *
     FROM `PERFORMANCE_PLAN` 
