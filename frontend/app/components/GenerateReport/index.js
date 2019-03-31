@@ -370,7 +370,7 @@ class GenerateReport extends React.PureComponent {
     return 0;
   }
 
-  getStatus(status) {
+  static getStatus(status) {
     switch (status) {
       case 0:
         return 'Inactive';
@@ -385,7 +385,7 @@ class GenerateReport extends React.PureComponent {
     }
   }
 
-  getAdminLevel(adminLevel) {
+  static getAdminLevel(adminLevel) {
     switch (adminLevel) {
       case 0:
         return 'Employee';
@@ -451,6 +451,21 @@ class GenerateReport extends React.PureComponent {
     this.setState(columns);
   };
 
+  static getTextFromColumn(column, employee) {
+    let field = '';
+    if (column.id === 'role') {
+      field = employee.role ? employee.role.name : '';
+    } else if (column.id === 'adminLevel') {
+      field = GenerateReport.getAdminLevel(employee[column.id]);
+    } else if (column.id === 'status') {
+      field = GenerateReport.getStatus(employee[column.id]);
+    } else {
+      field = employee[column.id];
+    }
+    field = field.replace(/[\n\r]+/g, ' ');
+    return field;
+  }
+
   handleGenerate = () => {
     const element = document.createElement('a');
     const rows = [];
@@ -462,17 +477,17 @@ class GenerateReport extends React.PureComponent {
     for (const employee of this.props.employees) {
       const data = [];
       for (const col of this.state.columns) {
-        data.push(col.id === 'role' ? (employee.role && employee.role.name) : 
-                                      col.id === 'adminLevel' ? getAdminLevel(employee[col.id]) : 
-                                                                col.id === 'status' ? getStatus(employee[col.id]) : 
-                                                                                      employee[col.id]);
+        let field = GenerateReport.getTextFromColumn(col, employee);
+        field = field.replace(/,/g, '');
+        data.push(field);
       }
       rows.push(data.join());
     }
-    const file = new Blob([rows.join('\n')], { type: 'text/csv' });
     element.style.display = 'none';
-    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(rows.join('\n')));
-    // element.href = URL.createObjectURL(file);
+    element.setAttribute(
+      'href',
+      `data:text/csv;charset=utf-8,${encodeURIComponent(rows.join('\n'))}`,
+    );
     element.download = `${this.state.reportName}.csv`;
     document.body.appendChild(element);
     element.click();
@@ -486,19 +501,21 @@ class GenerateReport extends React.PureComponent {
   render() {
     return (
       <Grid container>
-        <Typography variant="h5" className={this.props.classes.subTitle}>Generate Report</Typography>
+        <Typography variant="h5" className={this.props.classes.subTitle}>
+          Generate Report
+        </Typography>
         <Grid item md={4} className={this.props.classes.section1}>
           <Card className={this.props.classes.card}>
-          <FormControl>
-          <FormLabel component="legend">Report Title</FormLabel>
-            <TextField
-              value={this.state.reportName}
-              className={this.props.classes.textField}
-              margin="normal"
-              variant="outlined"
-              onChange={this.handleNameChange}
-              fullWidth
-            />
+            <FormControl>
+              <FormLabel component="legend">Report Title</FormLabel>
+              <TextField
+                value={this.state.reportName}
+                className={this.props.classes.textField}
+                margin="normal"
+                variant="outlined"
+                onChange={this.handleNameChange}
+                fullWidth
+              />
             </FormControl>
             <FormControl component="fieldset">
               <FormLabel component="legend">Columns</FormLabel>
@@ -520,19 +537,25 @@ class GenerateReport extends React.PureComponent {
                 ))}
               </FormGroup>
             </FormControl>
-            </Card>
+          </Card>
         </Grid>
         <Grid item xs={12} md={8} className={this.props.classes.section2}>
-        <div className={this.props.classes.reportNameDiv}>
-        <Typography variant="h6" color="textSecondary" className={this.props.classes.reportName}> {this.state.reportName} </Typography>
-        <Button
+          <div className={this.props.classes.reportNameDiv}>
+            <Typography
+              variant="h6"
+              color="textSecondary"
+              className={this.props.classes.reportName}
+            >
+              {this.state.reportName}
+            </Typography>
+            <Button
               className={this.props.classes.generateButton}
               onClick={this.handleGenerate}
             >
               Export Report
             </Button>
-        </div>
-        <div className={this.props.classes.tableWrapper}>
+          </div>
+          <div className={this.props.classes.tableWrapper}>
             <Table
               className={this.props.classes.table}
               aria-labelledby="tableTitle"
@@ -587,12 +610,12 @@ class GenerateReport extends React.PureComponent {
                   .map(n => (
                     <TableRow key={n.id} hover tabIndex={-1} selected={false}>
                       {this.state.columns.map(column => {
-                        const value = column.id === 'adminLevel' ? this.getAdminLevel(n[column.id]) : 
-                                                  column.id === 'status' ? this.getStatus(n[column.id]) : 
-                                                                          n[column.id];
                         return (
-                        <TableCell key={column.id} align="left">{value}</TableCell>
-                      )})}
+                          <TableCell key={column.id} align="left">
+                            {GenerateReport.getTextFromColumn(column, n)}
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
                   ))}
               </TableBody>

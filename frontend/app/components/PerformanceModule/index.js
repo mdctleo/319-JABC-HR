@@ -981,7 +981,7 @@ PerformanceModule.propTypes = {
   role: PropTypes.object,
   canEditReview: PropTypes.bool.isRequired,
   ownPage: PropTypes.bool.isRequired,
-  currentUserAdminLevel: PropTypes.number().isRequired,
+  currentUserAdminLevel: PropTypes.number.isRequired,
 };
 
 export default withStyles(styles)(PerformanceModule);

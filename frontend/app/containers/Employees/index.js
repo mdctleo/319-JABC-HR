@@ -221,7 +221,7 @@ const styles = theme => ({
   },
 });
 
-class EnhancedTable extends React.Component {
+class Employees extends React.Component {
   componentDidMount() {
     this.props.getAllEmployees();
   }
@@ -351,7 +351,7 @@ class EnhancedTable extends React.Component {
   }
 }
 
-EnhancedTable.propTypes = {
+Employees.propTypes = {
   classes: PropTypes.object.isRequired,
   allEmployees: PropTypes.array,
   allRoles: PropTypes.object,
@@ -401,4 +401,4 @@ export default compose(
   withSaga,
   withConnect,
   withStyles(styles),
-)(EnhancedTable);
+)(Employees);
