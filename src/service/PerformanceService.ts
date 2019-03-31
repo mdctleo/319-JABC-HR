@@ -70,10 +70,10 @@ export async function deletePerformancePlan(id: Number, xAuthToken: string) {
         const performancePlan = await getPerformancePlan(id, xAuthToken)
         const client = (await Auth(xAuthToken)).employee
         if (client.adminLevel === IEmployee.adminLevelEnum.STAFF) {
-            throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not delete performance plan');
+            throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not delete work plan');
         }
         await Database.getInstance().query('CALL delete_performance_plan(?)', [id], JABCResponse.PERFORMANCE)
-		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The performance plan was successfully deleted')
+		return new JABCSuccess(JABCResponse.EMPLOYEE, 'The work plan was successfully deleted')
 	} catch (error) {
 		throw error;
 	}
@@ -157,11 +157,15 @@ export async function getPerformancePlan(id: Number, xAuthToken: string) {
         let performancePlan = new PerformancePlan(res[0][0][0])
         if (client.id !== performancePlan.fkEmployee) {
             if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-                await isManagedBy(performancePlan.fkEmployee, client.id)
+                try{
+                    await isManagedBy(performancePlan.fkEmployee, client.id)
+                }catch(e){
+                    throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with MANAGER level, can not get a work plan for non managed employee.')	
+                }
             } else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-                throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not manage other employee\'s performance plan.')
+                throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not manage other employee\'s work plan.')
             } else if (performancePlan.status === 0) {
-                throw new JABCError(JABCResponse.EMPLOYEE, 'This performance plan is unpublished right now, only available to the creator');
+                throw new JABCError(JABCResponse.EMPLOYEE, 'This work plan is unpublished right now, only available to the creator');
             }
         }
         performancePlan.sections = PerformanceSection.PerformanceSections(res[0][1])
@@ -187,7 +191,11 @@ export async function getPerformanceReview(id: Number, xAuthToken: string) {
         let res = await Database.getInstance().query('CALL get_performance_review(?)', [id], JABCResponse.PERFORMANCE)
         let performanceReview = new PerformanceReview(res[0][0][0])
         if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER && client.id !== performanceReview.fkEmployee) {
-			await isManagedBy(performanceReview.fkEmployee, client.id)
+            try{
+                await isManagedBy(performanceReview.fkEmployee, client.id)
+            }catch(e){
+                throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with MANAGER level, can not get a performance review for non managed employee.')	
+            }
 		}else if(client.adminLevel == IEmployee.adminLevelEnum.STAFF && client.id != performanceReview.fkEmployee){
             throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF admin level can not manage other employee\'s performance review.')
         }
@@ -274,7 +282,7 @@ export async function updatePerformancePlan(id: Number, performancePlan: IPerfor
         }
 
         await db.commit(conn);
-		return new JABCSuccess(JABCResponse.PERFORMANCE, `The performance plan was updated successfully`);
+		return new JABCSuccess(JABCResponse.PERFORMANCE, `The work plan was updated successfully`);
 	} catch (error) {
 		try {
 			await db.rollback(conn)

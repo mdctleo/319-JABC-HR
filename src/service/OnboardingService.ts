@@ -337,7 +337,7 @@ export async function updateFAQ(id: Number, faq: IFAQ, xAuthToken: String) {
  **/
 export async function updateOnboardingTask(id: Number, onboardingTask: IOnboardingTask, xAuthToken: String) {
 	try {
-		onboardingTask = OnboardingTask.Prepare(onboardingTask)
+        onboardingTask = OnboardingTask.Prepare(onboardingTask);
 		let res = await Database.getInstance().query('CALL update_onboarding_task(?,?,?,?,?,?,?,?)',
 			[
 				id,
@@ -348,7 +348,8 @@ export async function updateOnboardingTask(id: Number, onboardingTask: IOnboardi
 				onboardingTask.expiryDate,
 				onboardingTask.description,
 				onboardingTask.requireDoc,
-			], JABCResponse.ONBOARDING)
+			], JABCResponse.ONBOARDING);
+
 		return new JABCSuccess(JABCResponse.ONBOARDING, `The onboarding task was updated successfuly`)
 	} catch (error) {
 		throw error;

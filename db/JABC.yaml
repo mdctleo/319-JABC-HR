@@ -2315,7 +2315,6 @@ definitions:
     # - id
     - fkEmployee
     - createdDate
-    - dueDate
     - requireDoc
     - status
     properties:
