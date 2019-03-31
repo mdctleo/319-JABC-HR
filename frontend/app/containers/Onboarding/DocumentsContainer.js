@@ -20,6 +20,14 @@ class DocumentsContainer extends React.PureComponent {
     }));
   };
 
+  downloadTemplate = (document) => {
+    window.open(document.template,'_blank')
+  }
+
+  downloadFile = (document) => {
+    window.open(document.file,'_blank')
+  }
+
   render() {
     const { expiry } = this.state;
     const { documents, onFileLoad, onUpload } = this.props;
@@ -81,7 +89,7 @@ class DocumentsContainer extends React.PureComponent {
                   size="small"
                   color="secondary"
                   onClick={() =>
-                    this.props.downloadTemplate(document.fkDocumentType)
+                    this.downloadTemplate(document)
                   }
                 >
                   Download template
@@ -94,7 +102,7 @@ class DocumentsContainer extends React.PureComponent {
             <Button
               size="small"
               color="primary"
-              onClick={() => this.props.downloadFile(document.id)}
+              onClick={() => this.downloadFile(document)}
             >
               Download
             </Button>

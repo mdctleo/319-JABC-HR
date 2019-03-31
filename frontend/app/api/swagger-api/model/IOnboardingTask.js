@@ -90,6 +90,9 @@ export default class IOnboardingTask {
             if (data.hasOwnProperty('file')) {
                 obj['file'] = ApiClient.convertToType(data['file'], 'String');
             }
+            if (data.hasOwnProperty('template')) {
+                obj['template'] = ApiClient.convertToType(data['template'], 'String');
+            }
             if (data.hasOwnProperty('description')) {
                 obj['description'] = ApiClient.convertToType(data['description'], 'String');
             }

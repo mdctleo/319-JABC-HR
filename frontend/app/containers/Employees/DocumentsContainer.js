@@ -58,7 +58,7 @@ const DocumentsContainer = props => {
               size="small"
               color="primary"
               disabled={document.status === 0}
-              onClick={() => props.downloadFile(document.id)}
+              onClick={() => window.open(document.file,'_blank')}
             >
               Download
             </Button>
