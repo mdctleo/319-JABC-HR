@@ -44,8 +44,8 @@ DELIMITER ;
 
 -- -----------------------------------------------------
 -- procedure create_performance_plan_comment
---    - create a performance plan comment for the given employee,
---    - only if the performance plan exists
+--    - create a work plan comment for the given employee,
+--    - only if the work plan exists
 -- -----------------------------------------------------
 DROP PROCEDURE IF EXISTS create_performance_plan_comment;
 
@@ -108,8 +108,8 @@ DELIMITER ;
 
 -- -----------------------------------------------------
 -- procedure delete_performance_plan
---    - delete a performance plan
---    - only if the performance plan exists
+--    - delete a work plan
+--    - only if the work plan exists
 -- -----------------------------------------------------
 DROP PROCEDURE IF EXISTS delete_performance_plan;
 
@@ -439,8 +439,8 @@ DELIMITER ;
 
 -- -----------------------------------------------------
 -- procedure delete_plan_sections
---    - delete sections for a given performance plan
---    - only if the performance plan exists
+--    - delete sections for a given work plan
+--    - only if the work plan exists
 -- -----------------------------------------------------
 DROP PROCEDURE IF EXISTS delete_plan_sections;
 
@@ -499,7 +499,7 @@ DELIMITER ;
 
 -- -----------------------------------------------------
 -- procedure get_performance_plan_sections
---    - get performance plan's sections
+--    - get work plan's sections
 -- -----------------------------------------------------
 DROP PROCEDURE IF EXISTS get_performance_plan_sections;
 

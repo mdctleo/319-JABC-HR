@@ -2989,7 +2989,6 @@ definitions:
     type: "object"
     required:
     - "createdDate"
-    - "dueDate"
     - "fkEmployee"
     - "requireDoc"
     - "status"

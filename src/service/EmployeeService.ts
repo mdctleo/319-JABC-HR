@@ -89,7 +89,11 @@ export async function createOnboardingTask(id: Number, onboardingTask: IOnboardi
 	try {
 		const client = (await Auth(xAuthToken)).employee
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
+			try{
+				await isManagedBy(id, client.id)
+			}catch(e){
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with MANAGER level, can not create a new onboarding task for non managed employee.')	
+			}
 		} else if (id != client.id && client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee can not create a task for other employee.')
 		}
@@ -179,15 +183,19 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		const client = (await Auth(xAuthToken)).employee
 		if (client.id !== id) {
             if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-                await isManagedBy(id, client.id)
+                try{
+					await isManagedBy(id, client.id)
+				}catch(e){
+					throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with MANAGER level, can not create a new work plan for non managed employee.')	
+				}
             } else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
-                throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance plan of other employee.')
+                throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new work plan of other employee.')
             }
         }
 		db = Database.getInstance()
 		conn = await db.initConnection()
 		await db.beginTransaction(conn)
-		// Insert performance plan
+		// Insert work plan
 		let res = await db.rawQuery(conn, 'CALL create_employee_performance_plan(?,?,?,?,?)', [
 			id,
 			performance.startYear,
@@ -210,7 +218,7 @@ export async function createPerformancePlan(id: Number, performance: IPerformanc
 		}
 
 		await db.commit(conn)
-		return new JABCSuccess(JABCResponse.EMPLOYEE, `The performance plan was registered successfully`)
+		return new JABCSuccess(JABCResponse.EMPLOYEE, `The work plan was registered successfully`)
 	} catch (error) {
 		try {
 			await db.rollback(conn)
@@ -239,7 +247,11 @@ export async function createPerformanceReview(id: Number, performance: IPerforma
 	try {
 		const client = (await Auth(xAuthToken)).employee
 		if (client.adminLevel == IEmployee.adminLevelEnum.MANAGER) {
-			await isManagedBy(id, client.id)
+			try{
+				await isManagedBy(id, client.id)
+			}catch(e){
+				throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with MANAGER level, can not create a new performance review for non managed employee.')	
+			}
 		} else if (client.adminLevel == IEmployee.adminLevelEnum.STAFF) {
 			throw new JABCError(JABCResponse.EMPLOYEE, 'An employee with STAFF level, can not create a new performance review')
 		}

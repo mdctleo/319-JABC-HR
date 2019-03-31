@@ -14,7 +14,7 @@ import { PerformanceSection, IPerformanceSection } from './iPerformanceSection';
 
 
 /**
- * PerformanceReview contains info of the sections of a performance plan of an employee 
+ * PerformanceReview contains info of the sections of a work plan of an employee 
  */
 export interface IPerformanceReview { 
     /**
@@ -26,7 +26,7 @@ export interface IPerformanceReview {
      */
     fkEmployee: number;
     /**
-     * Foreign key of the performance plan
+     * Foreign key of the work plan
      */
     fkPerformancePlan: number;
     createDate: string;
@@ -52,7 +52,7 @@ export class PerformanceReview implements IPerformanceReview{
      */
     fkEmployee: number;
     /**
-     * Foreign key of the performance plan
+     * Foreign key of the work plan
      */
     fkPerformancePlan: number;
     createDate: string;
