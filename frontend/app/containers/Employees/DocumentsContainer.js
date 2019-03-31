@@ -9,44 +9,63 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const DocumentsContainer = props => {
-  const docs = props.documents.map((document) => (
+  const docs = props.documents.map(document => (
     <Grid key={document.id} item xs={12} sm={6}>
       <Card className="document-card">
         <CardContent>
-          <Typography className="title" color="textSecondary" gutterBottom style={{ wordWrap: 'break-word'}}>
-            {document.name}
-          </Typography>
-          <Typography component="p" style={{ wordWrap: 'break-word'}}>{document.description}</Typography>
+          {document.documentType && (
+            <Typography
+              className="title"
+              color="textSecondary"
+              gutterBottom
+              style={{ wordWrap: 'break-word' }}
+            >
+              {document.documentType.name}
+            </Typography>
+          )}
+          {document.documentType &&
+            document.documentType.description && (
+              <Typography component="p" style={{ wordWrap: 'break-word' }}>
+                {document.documentType.description}
+              </Typography>
+            )}
+          {document.description && (
+            <Typography component="p" style={{ wordWrap: 'break-word' }}>
+              {document.description}
+            </Typography>
+          )}
+          {document.dueDate && (
+            <Typography component="p">
+              <b>Due: </b> {document.dueDate}
+            </Typography>
+          )}
           <Typography component="p">
-            <b>Due: </b> {document.dueDate}
-          </Typography>
-          <Typography component="p">
-            {!document.done && (
+            {document.status === 0 && (
               <Chip
                 label="Pending"
                 color="secondary"
                 style={{ marginTop: 10 }}
               />
             )}
-            {document.done && (
+            {document.status === 1 && (
               <Chip label="Done" color="primary" style={{ marginTop: 10 }} />
             )}
           </Typography>
         </CardContent>
         <CardActions>
-          {document.done && (
-            <Button size="small" color="primary">
+          {document.requireDoc === 1 && (
+            <Button
+              size="small"
+              color="primary"
+              disabled={document.status === 0}
+              onClick={() => props.downloadFile(document.id)}
+            >
               Download
             </Button>
           )}
-          {!document.done && (
-            <Button size="small" color="primary" disabled>
-              Download
-            </Button>
-          )}
-          <Button size="small" color="secondary">
+          {/* <Button size="small" color="secondary">
             Edit
-          </Button>
+          </Button> */}
         </CardActions>
       </Card>
     </Grid>
@@ -61,6 +80,7 @@ const DocumentsContainer = props => {
 
 DocumentsContainer.propTypes = {
   documents: PropTypes.array.isRequired,
+  downloadFile: PropTypes.func.isRequired,
 };
 
 export default DocumentsContainer;
