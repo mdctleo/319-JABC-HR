@@ -47,7 +47,7 @@ class DocumentsContainer extends React.PureComponent {
               <TextField
                 disabled
                 id="standard-disabled"
-                value={document.fileName}
+                value={(document.fileData && document.fileData.name) || ''}
                 margin="normal"
                 style={{ width: 'calc(100% - 80px)' }}
               />
@@ -71,25 +71,42 @@ class DocumentsContainer extends React.PureComponent {
               <Button
                 size="small"
                 color="primary"
-                onClick={() => onUpload(document, index)}
+                onClick={() => onUpload(document, expiry[document.id])}
+                disabled={!document.fileData}
               >
                 Submit
               </Button>
-              <Button size="small" color="secondary">
-                Download template
-              </Button>
+              {document.fkDocumentType && (
+                <Button
+                  size="small"
+                  color="secondary"
+                  onClick={() =>
+                    this.props.downloadTemplate(document.fkDocumentType)
+                  }
+                >
+                  Download template
+                </Button>
+              )}
             </React.Fragment>
           );
         } else {
           buttons = (
-            <Button size="small" color="primary">
+            <Button
+              size="small"
+              color="primary"
+              onClick={() => this.props.downloadFile(document.id)}
+            >
               Download
             </Button>
           );
         }
       } else if (document.status === 0) {
         buttons = (
-          <Button size="small" color="primary">
+          <Button
+            size="small"
+            color="primary"
+            onClick={() => onUpload(document, expiry[document.id])}
+          >
             Done
           </Button>
         );
@@ -145,6 +162,8 @@ DocumentsContainer.propTypes = {
   documents: PropTypes.array.isRequired,
   onFileLoad: PropTypes.func.isRequired,
   onUpload: PropTypes.func.isRequired,
+  downloadTemplate: PropTypes.func.isRequired,
+  downloadFile: PropTypes.func.isRequired,
 };
 
 export default DocumentsContainer;

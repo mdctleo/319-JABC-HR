@@ -9,6 +9,7 @@ import {
   IPerformancePlan,
   IPerformanceReview,
   OnboardingApi,
+  IOnboardingTask,
 } from 'api/swagger-api';
 const employeeApi = new EmployeeApi();
 const rolesApi = new RolesApi();
@@ -121,6 +122,10 @@ export function* unLinkEmployeeManager(id, idManager) {
   yield employeeApi.unLinkEmployeeManager(id, idManager);
 }
 
+export function* completeOnboardingTask(id, taskId, document) {
+  yield employeeApi.completeOnboardingTask(id, taskId, { document });
+}
+
 // Roles Api
 
 export function* getRole(id) {
@@ -180,4 +185,19 @@ export function* updatePerformanceReview(review) {
 export function* getDocumentType(id) {
   const docType = yield onboardingApi.getDocumentType(id);
   yield put(setResource('documentType', docType.id, docType));
+}
+
+export function* updateOnboardingTask(id, task) {
+  const taskObj = IOnboardingTask.constructFromObject(task);
+  yield onboardingApi.updateOnboardingTask(id, taskObj);
+}
+
+export function* getDocumentTypeFile(id) {
+  const file = yield onboardingApi.getDocumentTypeFile(id);
+  console.log(file);
+}
+
+export function* getOnboardingTaskFile(id) {
+  const file = yield onboardingApi.getOnboardingTaskFile(id);
+  console.log(file);
 }
