@@ -20,12 +20,22 @@ export function* uploadDocument({ document, expiry }) {
   const profile = yield select(selectProfile);
   try {
     yield call(updateOnboardingTask, newDocument.id, newDocument);
-    yield call(
-      completeOnboardingTask,
-      profile.id,
-      newDocument.id,
-      document.fileData,
-    );
+
+    if (document.requireDoc === 0) {
+      yield call(
+        completeOnboardingTask,
+        profile.id,
+        newDocument.id,
+        "",
+      );
+    } else {
+      yield call(
+        completeOnboardingTask,
+        profile.id,
+        newDocument.id,
+        document.fileData,
+      );
+    }
     yield call(getTasks);
   } catch (e) {
     yield put(displayError(e.response ? e.response.body.message : e.message));

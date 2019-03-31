@@ -1,6 +1,6 @@
 /**
  * JABC
- * This API provides all the functions needed to manage  the JABC HR system. 
+ * This API provides all the functions needed to manage  the JABC HR system.
  *
  * OpenAPI spec version: 1.0.0
  * Contact: jabraham9719@gmail.com
@@ -31,7 +31,7 @@ import IVacation from '../model/IVacation';
 export default class EmployeeApi {
 
     /**
-    * Constructs a new EmployeeApi. 
+    * Constructs a new EmployeeApi.
     * @alias module:api/EmployeeApi
     * @class
     * @param {module:ApiClient} [apiClient] Optional API client implementation to use,
@@ -45,7 +45,7 @@ export default class EmployeeApi {
 
     /**
      * completes the OnboardingTask with [idOnboardingTask] for the employee with [id]
-     * If the OnboardingTask requires a document to be completed, then the parameter [document] must be provided to successfully complete the OnboardingTask. 
+     * If the OnboardingTask requires a document to be completed, then the parameter [document] must be provided to successfully complete the OnboardingTask.
      * @param {Number} id id of the searched Employee
      * @param {Number} idOnboardingTask id of the OnboardingTask to be completed
      * @param {Object} opts Optional parameters
@@ -95,7 +95,7 @@ export default class EmployeeApi {
 
     /**
      * completes the OnboardingTask with [idOnboardingTask] for the employee with [id]
-     * If the OnboardingTask requires a document to be completed, then the parameter [document] must be provided to successfully complete the OnboardingTask. 
+     * If the OnboardingTask requires a document to be completed, then the parameter [document] must be provided to successfully complete the OnboardingTask.
      * @param {Number} id id of the searched Employee
      * @param {Number} idOnboardingTask id of the OnboardingTask to be completed
      * @param {Object} opts Optional parameters
@@ -542,7 +542,7 @@ export default class EmployeeApi {
 
     /**
      * get all the history of the employee with [id]
-     * This returns all the history data of the employee with [id].  
+     * This returns all the history data of the employee with [id].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -583,7 +583,7 @@ export default class EmployeeApi {
 
     /**
      * get all the history of the employee with [id]
-     * This returns all the history data of the employee with [id].  
+     * This returns all the history data of the employee with [id].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -599,7 +599,7 @@ export default class EmployeeApi {
 
     /**
      * get all the Employees
-     * This returns all the active Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [inactive] is provided this returns the all the Employees of the system including the inactive ones. If [term] is provided this returns the Employees of the system that match with the [term]. 
+     * This returns all the active Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [inactive] is provided this returns the all the Employees of the system including the inactive ones. If [term] is provided this returns the Employees of the system that match with the [term].
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @param {String} opts.term Search term for filter the data
@@ -641,7 +641,7 @@ export default class EmployeeApi {
 
     /**
      * get all the Employees
-     * This returns all the active Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [inactive] is provided this returns the all the Employees of the system including the inactive ones. If [term] is provided this returns the Employees of the system that match with the [term]. 
+     * This returns all the active Employees of the system.  If [start] and [end] are provided, it will return all employees with a birthday between those dates If [inactive] is provided this returns the all the Employees of the system including the inactive ones. If [term] is provided this returns the Employees of the system that match with the [term].
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
      * @param {String} opts.term Search term for filter the data
@@ -660,7 +660,7 @@ export default class EmployeeApi {
 
     /**
      * get all the Employees that are managed by employee with [idManager]
-     * This returns all the Employees that are managed by employee with [idManager]. 
+     * This returns all the Employees that are managed by employee with [idManager].
      * @param {Number} idManager Employee that will manage the employee with [id]
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -701,7 +701,7 @@ export default class EmployeeApi {
 
     /**
      * get all the Employees that are managed by employee with [idManager]
-     * This returns all the Employees that are managed by employee with [idManager]. 
+     * This returns all the Employees that are managed by employee with [idManager].
      * @param {Number} idManager Employee that will manage the employee with [id]
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -717,7 +717,7 @@ export default class EmployeeApi {
 
     /**
      * get all the Managers of an employee with the provided [id]
-     * This returns all the Employees of the system that manage the employee with the [id].  
+     * This returns all the Employees of the system that manage the employee with the [id].
      * @param {Number} id id of the Employee with the searched Managers
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -758,7 +758,7 @@ export default class EmployeeApi {
 
     /**
      * get all the Managers of an employee with the provided [id]
-     * This returns all the Employees of the system that manage the employee with the [id].  
+     * This returns all the Employees of the system that manage the employee with the [id].
      * @param {Number} id id of the Employee with the searched Managers
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -774,7 +774,7 @@ export default class EmployeeApi {
 
     /**
      * get all the OnboardingTasks of the employee with [id]
-     * This returns all the OnboardingTasks of the system.  If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term].  
+     * This returns all the OnboardingTasks of the system.  If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -817,7 +817,7 @@ export default class EmployeeApi {
 
     /**
      * get all the OnboardingTasks of the employee with [id]
-     * This returns all the OnboardingTasks of the system.  If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term].  
+     * This returns all the OnboardingTasks of the system.  If [term] is provided this returns the OnboardingTasks of the Employee that match with the [term].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -834,7 +834,7 @@ export default class EmployeeApi {
 
     /**
      * get all the PerformancePlans of the employee with [id]
-     * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].  
+     * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -877,7 +877,7 @@ export default class EmployeeApi {
 
     /**
      * get all the PerformancePlans of the employee with [id]
-     * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].  
+     * This returns all the PerformancePlans of the system. If [term] is provided this returns the PerformancePlans of the Employee that match with the [term].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -894,7 +894,7 @@ export default class EmployeeApi {
 
     /**
      * get all the PerformanceReviews of the employee with [id]
-     * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].  
+     * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -937,7 +937,7 @@ export default class EmployeeApi {
 
     /**
      * get all the PerformanceReviews of the employee with [id]
-     * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].  
+     * This returns all the PerformanceReviews of the system. If [term] is provided this returns the PerformanceReviews of the Employee that match with the [term].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -954,7 +954,7 @@ export default class EmployeeApi {
 
     /**
      * get all the Vacations of the employee with [id]
-     * This returns all the Vacations of the system.  If [term] is provided this returns the Vacations of the Employee that match with the [term].  
+     * This returns all the Vacations of the system.  If [term] is provided this returns the Vacations of the Employee that match with the [term].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -997,7 +997,7 @@ export default class EmployeeApi {
 
     /**
      * get all the Vacations of the employee with [id]
-     * This returns all the Vacations of the system.  If [term] is provided this returns the Vacations of the Employee that match with the [term].  
+     * This returns all the Vacations of the system.  If [term] is provided this returns the Vacations of the Employee that match with the [term].
      * @param {Number} id id of the searched Employee
      * @param {Object} opts Optional parameters
      * @param {String} opts.xAuthToken Auth Token that grants access to the system
@@ -1133,7 +1133,7 @@ export default class EmployeeApi {
 
     /**
      * update all the managed Employees of a manager with the provided [idManager]
-     * This will delete all previous links to managers of the employee with [idManager]  
+     * This will delete all previous links to managers of the employee with [idManager]
      * @param {Number} idManager Employee that will manage the employees
      * @param {Array.<module:model/Number>} employees array of ids of the employees that will be managed
      * @param {Object} opts Optional parameters
@@ -1180,7 +1180,7 @@ export default class EmployeeApi {
 
     /**
      * update all the managed Employees of a manager with the provided [idManager]
-     * This will delete all previous links to managers of the employee with [idManager]  
+     * This will delete all previous links to managers of the employee with [idManager]
      * @param {Number} idManager Employee that will manage the employees
      * @param {Array.<module:model/Number>} employees array of ids of the employees that will be managed
      * @param {Object} opts Optional parameters
@@ -1197,7 +1197,7 @@ export default class EmployeeApi {
 
     /**
      * update all the Managers of an employee with the provided [id]
-     * This will delete all previous links to managers of the employee with [id]  
+     * This will delete all previous links to managers of the employee with [id]
      * @param {Number} id id of the Employee to set the Managers
      * @param {Array.<module:model/Number>} managers array of ids of the managers
      * @param {Object} opts Optional parameters
@@ -1244,7 +1244,7 @@ export default class EmployeeApi {
 
     /**
      * update all the Managers of an employee with the provided [id]
-     * This will delete all previous links to managers of the employee with [id]  
+     * This will delete all previous links to managers of the employee with [id]
      * @param {Number} id id of the Employee to set the Managers
      * @param {Array.<module:model/Number>} managers array of ids of the managers
      * @param {Object} opts Optional parameters
