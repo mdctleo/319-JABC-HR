@@ -489,13 +489,12 @@ router.get('/employee/:id/task', (req, res) =>
     },
     {
       id: 5,
-      fkDocumentType: 1,
       fkEmployee: 12345,
       createdDate: '2019-03-28',
       requireDoc: 1,
       status: 0,
       file: 'http://localhost:8080/JABC/1.0.0/onboarding/task/1/file',
-      description: "Don't forget",
+      description: 'Upload your passport',
     },
     {
       id: 2,

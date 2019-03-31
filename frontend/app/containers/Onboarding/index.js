@@ -21,13 +21,15 @@ import List from '@material-ui/core/List/List';
 import ListSubheader from '@material-ui/core/ListSubheader/ListSubheader';
 import ListItem from '@material-ui/core/ListItem/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon/ListItemIcon';
-import DraftIcon from '@material-ui/core/SvgIcon/SvgIcon';
+import DraftIcon from '@material-ui/icons/Drafts';
 import AppBar from '@material-ui/core/AppBar/AppBar';
 import Tabs from '@material-ui/core/Tabs/Tabs';
 import Tab from '@material-ui/core/Tab/Tab';
 import DocumentsContainer from './DocumentsContainer';
 import Snackbar from '@material-ui/core/Snackbar/Snackbar';
 import CallIcon from '@material-ui/icons/Call';
+import Button from '@material-ui/core/Button';
+import Toolbar from '@material-ui/core/Toolbar';
 
 import actions from './actions';
 import PropTypes from 'prop-types';
@@ -54,10 +56,10 @@ export class Onboarding extends React.PureComponent {
 
   fileLoad(e, documents, i) {
     const newDocuments = documents;
-    newDocuments[i].fileName = e.target.files[0].name;
+    newDocuments[i].fileData = e.target.files[0];
     this.setState({ documentsActive: newDocuments });
     this.forceUpdate();
-  }
+  };
 
   componentDidMount() {
     this.props.getTasks();
@@ -120,25 +122,26 @@ export class Onboarding extends React.PureComponent {
           </Modal>
           <div className="documents">
             <AppBar position="static">
-              <Tabs value={this.state.tabValue} onChange={this.handleChangeTab}>
-                <Tab label={`Active (${pendingTasks.length})`} />
-                <Tab label={`Done (${doneTasks.length})`} />
-                <Tab label="Get Help" onClick={this.handleOpenHelp} />
-              </Tabs>
+              <Toolbar style={{ minHeight: 0 }}>
+                <Tabs
+                  value={this.state.tabValue}
+                  onChange={this.handleChangeTab}
+                >
+                  <Tab label={`Active (${pendingTasks.length})`} />
+                  <Tab label={`Done (${doneTasks.length})`} />
+                </Tabs>
+                <Button color="inherit" onClick={this.handleOpenHelp}>
+                  Get Help
+                </Button>
+              </Toolbar>
             </AppBar>
-            {this.state.tabValue === 0 && (
-              <DocumentsContainer
-                documents={pendingTasks}
-                onFileLoad={(e, docs, i) => this.fileLoad(e, docs, i)}
-                onUpload={(doc, i) => this.documentUpload(doc, i)}
-              />
-            )}
-            {this.state.tabValue === 1 && (
-              <DocumentsContainer
-                documents={doneTasks}
-                onFileLoad={this.fileLoad}
-              />
-            )}
+            <DocumentsContainer
+              documents={this.state.tabValue === 0 ? pendingTasks : doneTasks}
+              onFileLoad={(e, documents, i) => this.fileLoad(e, documents, i)}
+              onUpload={this.props.uploadDocument}
+              downloadTemplate={this.props.downloadTemplate}
+              downloadFile={this.props.downloadFile}
+            />
           </div>
           <Snackbar
             open={this.state.openSnack}
@@ -163,6 +166,9 @@ Onboarding.propTypes = {
   getTasks: PropTypes.func.isRequired,
   pendingTasks: PropTypes.array.isRequired,
   doneTasks: PropTypes.array.isRequired,
+  uploadDocument: PropTypes.func.isRequired,
+  downloadTemplate: PropTypes.func.isRequired,
+  downloadFile: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({

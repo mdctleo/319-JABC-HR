@@ -222,6 +222,7 @@ class AddEmployeeForm extends React.PureComponent {
                 fullWidth
                 onChange={this.handleChange('sin')}
                 type="number"
+                placeholder="123456789"
               />
             </div>
             <div className={classes.fieldContainer}>
