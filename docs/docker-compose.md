@@ -34,7 +34,8 @@ The following is a guide for developers to understand and update the latest imag
 2. Install [Docker Compose](https://docs.docker.com/compose/install/). 
 
     Docker Compose should be included in Windows installations.  
-    
+   
+Note that you may need to restart your system in order for Docker to run properly.  
 
 ## Using Docker Hub 
 
