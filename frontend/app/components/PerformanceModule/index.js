@@ -354,7 +354,7 @@ class PerformanceModule extends React.Component {
     const createDate = [year, month, day].join('-');
     const review = {
       fkEmployee: this.props.profile.id,
-      status: 0,
+      status: this.props.ownPage ? 1 : 0,
       createDate,
       fkPerformancePlan: this.props.selectedPlan.id,
     };
@@ -785,8 +785,7 @@ class PerformanceModule extends React.Component {
                 )}
               {!selectedPlan &&
                 planList.length === 0 &&
-                ownPage &&
-                (value === 0 || profile.adminLevel < 2) && (
+                ownPage && (
                   <div className="profile-card">
                     <Typography>
                       Your profile currently has no work plans. Click on the
