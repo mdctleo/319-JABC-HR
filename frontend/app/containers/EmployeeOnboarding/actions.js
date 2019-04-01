@@ -4,12 +4,18 @@
  *
  */
 
-import { GET_TASKS, DOWNLOAD_FILE, CREATE_TASK } from './constants';
+import { GET_TASKS, DOWNLOAD_FILE, CREATE_TASK, GET_ALL_DOC_TYPES } from './constants';
 
 export function getTasks(selectedEmployeeId) {
   return {
     type: GET_TASKS,
     selectedEmployeeId,
+  };
+}
+
+export function getAllDocTypes() {
+  return {
+    type: GET_ALL_DOC_TYPES,
   };
 }
 
@@ -31,5 +37,6 @@ export function createTask(selectedEmployeeId, onboardingTask) {
 export default {
   getTasks,
   downloadFile,
-  createTask
+  createTask,
+  getAllDocTypes
 };

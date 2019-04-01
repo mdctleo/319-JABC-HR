@@ -10,6 +10,7 @@ import {
   IPerformanceReview,
   OnboardingApi,
   IOnboardingTask,
+  IDocumentType
 } from 'api/swagger-api';
 const employeeApi = new EmployeeApi();
 const rolesApi = new RolesApi();
@@ -186,6 +187,16 @@ export function* updatePerformanceReview(review) {
 }
 
 // Onboarding Api
+
+export function* getDocumentTypes() {
+  const docTypes = yield onboardingApi.getDocumentTypes();
+  yield put(setCollection('docTypes', docTypes));
+}
+
+export function* createDocumentType(docType) {
+  const docTypeObj = IDocumentType.constructFromObject(docType);
+  yield onboardingApi.createDocumentType(docTypeObj);
+}
 
 export function* getDocumentType(id) {
   const docType = yield onboardingApi.getDocumentType(id);

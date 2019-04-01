@@ -25,9 +25,10 @@ import DialogContent from '@material-ui/core/DialogContent/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText/DialogContentText';
 import TextField from '@material-ui/core/TextField/TextField';
 import DialogActions from '@material-ui/core/DialogActions/DialogActions';
+import MenuItem from '@material-ui/core/MenuItem';
 import orange from '@material-ui/core/colors/orange';
 import { withStyles } from '@material-ui/core';
-import {selectTasks} from './selectors';
+import {selectTasks, selectAllDocTypes} from './selectors';
 
 const styles = theme => ({
   root: {
@@ -218,11 +219,18 @@ export class EmployeeOnboarding extends React.PureComponent {
   state = {
     addOIDialog: false,
     editOIDialog: false,
+    selectedDocType: ""
   };
 
   componentDidMount() {
+    this.props.getAllDocTypes();
     this.props.getTasks(this.props.selectedEmployee.id);
   }
+
+  handleChange = event => {
+    const { value } = event.target;
+    this.setState( {selectedDocType: value} );
+  };
 
   handleAddOI = () => {
     this.setState({ addOIDialog: true });
@@ -237,6 +245,7 @@ export class EmployeeOnboarding extends React.PureComponent {
       id,
       name,
       description,
+      fkDocumentType: this.state.selectedDocType,
       fkEmployee: this.props.selectedEmployee.id,
       requireDoc: 0,
       status: 0
@@ -251,8 +260,8 @@ export class EmployeeOnboarding extends React.PureComponent {
   };
 
   render() {
-    const { classes, tasks } = this.props;
-    const { addOIDialog, editOIDialog } = this.state;
+    const { allDocTypes, classes, tasks } = this.props;
+    const { selectedDocType, addOIDialog, editOIDialog } = this.state;
     const { pendingTasks, doneTasks } = this.props;
 
     return (
@@ -275,6 +284,27 @@ export class EmployeeOnboarding extends React.PureComponent {
         >
           <DialogTitle id="addOI-dialog-title">Add Onboarding Item</DialogTitle>
           <DialogContent>
+            <TextField
+              select
+              label="Document Type"
+              className={classes.addOIDialogField}
+              margin="normal"
+              variant="outlined"
+              value={selectedDocType}
+              id="addOI-dialog-fkDocType"
+              fullWidth
+              onChange={this.handleChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {allDocTypes &&
+              allDocTypes.map(docType => (
+                <MenuItem key={docType.id} value={docType.id}>
+                  {docType.name}
+                </MenuItem>
+              ))}
+            </TextField>
             <TextField
               autoFocus
               margin="dense"
@@ -354,11 +384,14 @@ EmployeeOnboarding.propTypes = {
   getTasks: PropTypes.func.isRequired,
   tasks: PropTypes.array.isRequired,
   downloadFile: PropTypes.func.isRequired,
-  createTask: PropTypes.func.isRequired
+  createTask: PropTypes.func.isRequired,
+  allDocTypes: PropTypes.array,
+  getAllDocTypes: PropTypes.func.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({
   tasks: selectTasks,
+  allDocTypes: selectAllDocTypes,
 });
 
 const mapDispatchToProps = {
