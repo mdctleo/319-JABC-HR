@@ -17,7 +17,8 @@ import reducer from './reducer';
 import saga from './saga';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
-import DocumentsContainer from '../Employees/DocumentsContainer';
+import TasksContainer from '../../components/TasksContainer';
+import DocumentsContainer from '../Employees/DocumentsContainer'
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent/DialogContent';
@@ -228,26 +229,32 @@ export class EmployeeOnboarding extends React.PureComponent {
   };
 
   handleAddOIDialog = () => {
-    const id = this.documents.length;
+    const id = this.props.tasks.length;
     const name = document.getElementById('addOI-dialog-name').value;
-    const description = document.getElementById('addOI-dialog-description')
-      .value;
-    const date = document.getElementById('addOI-dialog-date').value;
-    const newDoc = {
+    const description = document.getElementById('addOI-dialog-description').value;
+
+    const onboardingTask = {
       id,
       name,
       description,
-      dueDate: date,
-      done: false,
-      fileName: 'None',
+      fkEmployee: this.props.selectedEmployee.id,
+      requireDoc: 0,
+      status: 0
     };
-    this.documents.push(newDoc);
+
+    this.props.createTask(this.props.selectedEmployee.id, onboardingTask);
     this.setState({ addOIDialog: false });
+  };
+
+  handleCloseAddOIDialog = () => {
+    this.setState({addOIDialog: false });
   };
 
   render() {
     const { classes, tasks } = this.props;
     const { addOIDialog, editOIDialog } = this.state;
+    const { pendingTasks, doneTasks } = this.props;
+
     return (
       <div className="profile-card">
         <div className={classes.onBoardingHeader}>
@@ -258,7 +265,9 @@ export class EmployeeOnboarding extends React.PureComponent {
             Add Onboarding Item
           </Button>
         </div>
-        <DocumentsContainer documents={tasks} downloadFile={this.props.downloadFile} />
+        <DocumentsContainer documents={tasks}
+                        downloadFile={this.props.downloadFile} />
+
         <Dialog
           open={addOIDialog}
           onClose={this.handleCloseAddOIDialog}
@@ -266,9 +275,6 @@ export class EmployeeOnboarding extends React.PureComponent {
         >
           <DialogTitle id="addOI-dialog-title">Add Onboarding Item</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Enter the information for the new onbording item:
-            </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
@@ -278,19 +284,10 @@ export class EmployeeOnboarding extends React.PureComponent {
               fullWidth
             />
             <TextField
-              autoFocus
               margin="dense"
               className={classes.addOIDialogField}
               id="addOI-dialog-description"
               label="Description"
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              className={classes.addOIDialogField}
-              id="addOI-dialog-date"
-              label="Due Date"
               fullWidth
             />
           </DialogContent>
@@ -303,6 +300,8 @@ export class EmployeeOnboarding extends React.PureComponent {
             </Button>
           </DialogActions>
         </Dialog>
+
+
         <Dialog
           open={editOIDialog}
           onClose={this.handleCloseEditOIDialog}
@@ -321,7 +320,6 @@ export class EmployeeOnboarding extends React.PureComponent {
               fullWidth
             />
             <TextField
-              autoFocus
               margin="dense"
               className={classes.editOIDialogField}
               id="editOI-dialog-description"
@@ -329,7 +327,6 @@ export class EmployeeOnboarding extends React.PureComponent {
               fullWidth
             />
             <TextField
-              autoFocus
               margin="dense"
               className={classes.editOIDialogField}
               id="editOI-dialog-date"
@@ -357,6 +354,7 @@ EmployeeOnboarding.propTypes = {
   getTasks: PropTypes.func.isRequired,
   tasks: PropTypes.array.isRequired,
   downloadFile: PropTypes.func.isRequired,
+  createTask: PropTypes.func.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({

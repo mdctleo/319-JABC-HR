@@ -4,7 +4,7 @@
  *
  */
 
-import { GET_TASKS, DOWNLOAD_FILE } from './constants';
+import { GET_TASKS, DOWNLOAD_FILE, CREATE_TASK } from './constants';
 
 export function getTasks(selectedEmployeeId) {
   return {
@@ -20,7 +20,16 @@ export function downloadFile(id) {
   };
 }
 
+export function createTask(selectedEmployeeId, onboardingTask) {
+  return {
+    type: CREATE_TASK,
+    selectedEmployeeId,
+    onboardingTask
+  };
+}
+
 export default {
   getTasks,
   downloadFile,
+  createTask
 };

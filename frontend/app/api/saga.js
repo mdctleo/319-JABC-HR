@@ -122,6 +122,11 @@ export function* unLinkEmployeeManager(id, idManager) {
   yield employeeApi.unLinkEmployeeManager(id, idManager);
 }
 
+export function* createOnboardingTask(employeeId, task) {
+  const taskObj = IOnboardingTask.constructFromObject(task);
+  yield employeeApi.createOnboardingTask(employeeId, taskObj);
+}
+
 export function* completeOnboardingTask(id, taskId, document) {
   yield employeeApi.completeOnboardingTask(id, taskId, { document });
 }
