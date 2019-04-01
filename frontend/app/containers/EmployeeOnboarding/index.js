@@ -250,8 +250,8 @@ export class EmployeeOnboarding extends React.PureComponent {
   handleAddOIDialog = () => {
     const id = this.props.tasks.length;
     const description = document.getElementById('addOI-dialog-description').value;
-    const expiryDate = document.getElementById('addOI-dialog-expiryDate').value;
-    const dueDate = document.getElementById('addOI-dialog-dueDate').value;
+    const expiryDate = document.getElementById('addOI-dialog-expiryDate').value || undefined;
+    const dueDate = document.getElementById('addOI-dialog-dueDate').value || undefined;
 
     const onboardingTask = {
       id,
