@@ -17,18 +17,20 @@ import reducer from './reducer';
 import saga from './saga';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
-import TasksContainer from '../../components/TasksContainer';
 import DocumentsContainer from '../Employees/DocumentsContainer'
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText/DialogContentText';
 import TextField from '@material-ui/core/TextField/TextField';
 import DialogActions from '@material-ui/core/DialogActions/DialogActions';
 import MenuItem from '@material-ui/core/MenuItem';
 import orange from '@material-ui/core/colors/orange';
 import { withStyles } from '@material-ui/core';
 import {selectTasks, selectAllDocTypes} from './selectors';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
+import Radio from '@material-ui/core/Radio';
 
 const styles = theme => ({
   root: {
@@ -212,6 +214,9 @@ const styles = theme => ({
   addOIDialogField: {
     marginBottom: '30px',
   },
+  group: {
+    margin: `${theme.spacing.unit}px 0`,
+  },
 });
 
 /* eslint-disable react/prefer-stateless-function */
@@ -219,7 +224,8 @@ export class EmployeeOnboarding extends React.PureComponent {
   state = {
     addOIDialog: false,
     editOIDialog: false,
-    selectedDocType: ""
+    selectedDocType: "",
+    requireDoc: "0"
   };
 
   componentDidMount() {
@@ -232,37 +238,44 @@ export class EmployeeOnboarding extends React.PureComponent {
     this.setState( {selectedDocType: value} );
   };
 
+  handleChangeRequiredDoc = event => {
+    const { value } = event.target;
+    this.setState( {selectedDocType: "", requireDoc: value} );
+  };
+
   handleAddOI = () => {
     this.setState({ addOIDialog: true });
   };
 
   handleAddOIDialog = () => {
     const id = this.props.tasks.length;
-    const name = document.getElementById('addOI-dialog-name').value;
     const description = document.getElementById('addOI-dialog-description').value;
+    const expiryDate = document.getElementById('addOI-dialog-expiryDate').value;
+    const dueDate = document.getElementById('addOI-dialog-dueDate').value;
 
     const onboardingTask = {
       id,
       name,
       description,
+      expiryDate,
+      dueDate,
       fkDocumentType: this.state.selectedDocType,
       fkEmployee: this.props.selectedEmployee.id,
-      requireDoc: 0,
+      requireDoc: this.state.requireDoc,
       status: 0
     };
 
     this.props.createTask(this.props.selectedEmployee.id, onboardingTask);
-    this.setState({ addOIDialog: false });
+    this.handleCloseAddOIDialog();
   };
 
   handleCloseAddOIDialog = () => {
-    this.setState({addOIDialog: false });
+    this.setState({addOIDialog: false, selectedDocType: "", requireDoc: 0 });
   };
 
   render() {
     const { allDocTypes, classes, tasks } = this.props;
-    const { selectedDocType, addOIDialog, editOIDialog } = this.state;
-    const { pendingTasks, doneTasks } = this.props;
+    const { requireDoc, selectedDocType, addOIDialog, editOIDialog } = this.state;
 
     return (
       <div className="profile-card">
@@ -274,7 +287,7 @@ export class EmployeeOnboarding extends React.PureComponent {
             Add Onboarding Item
           </Button>
         </div>
-        <DocumentsContainer documents={tasks}
+        <DocumentsContainer tasks={tasks}
                         downloadFile={this.props.downloadFile} />
 
         <Dialog
@@ -284,7 +297,26 @@ export class EmployeeOnboarding extends React.PureComponent {
         >
           <DialogTitle id="addOI-dialog-title">Add Onboarding Item</DialogTitle>
           <DialogContent>
-            <TextField
+            <FormLabel component="legend">Onboarding Type</FormLabel>
+            <RadioGroup
+              aria-label="Onboarding Type"
+              name="onboardingType"
+              className={classes.group}
+              value={requireDoc}
+              onChange={this.handleChangeRequiredDoc}
+            >
+              <FormControlLabel
+                value="0"
+                control={<Radio color="primary" />}
+                label="Task"
+              />
+              <FormControlLabel
+                value="1"
+                control={<Radio color="primary" />}
+                label="Document"
+              />
+            </RadioGroup>
+            {requireDoc === "1" && <TextField
               select
               label="Document Type"
               className={classes.addOIDialogField}
@@ -304,21 +336,27 @@ export class EmployeeOnboarding extends React.PureComponent {
                   {docType.name}
                 </MenuItem>
               ))}
-            </TextField>
-            <TextField
-              autoFocus
-              margin="dense"
-              className={classes.addOIDialogField}
-              id="addOI-dialog-name"
-              label="Name"
-              fullWidth
-            />
+            </TextField>}
             <TextField
               margin="dense"
               className={classes.addOIDialogField}
               id="addOI-dialog-description"
               label="Description"
               fullWidth
+            />
+            <TextField
+              label="Due Date"
+              id="addOI-dialog-dueDate"
+              className={classes.addOIDialogField}
+              fullWidth
+              placeholder="2019-01-31"
+            />
+            <TextField
+              label="Expiry Date"
+              id="addOI-dialog-expiryDate"
+              className={classes.addOIDialogField}
+              fullWidth
+              placeholder="2019-01-31"
             />
           </DialogContent>
           <DialogActions>
