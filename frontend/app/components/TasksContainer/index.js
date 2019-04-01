@@ -80,9 +80,7 @@ class TasksCOntainer extends React.PureComponent {
                 <Button
                   size="small"
                   color="secondary"
-                  onClick={() =>
-                    this.props.downloadTemplate(document.fkDocumentType)
-                  }
+                  onClick={() => window.open(document.template, '_blank')}
                 >
                   Download template
                 </Button>
@@ -94,7 +92,7 @@ class TasksCOntainer extends React.PureComponent {
             <Button
               size="small"
               color="primary"
-              onClick={() => this.props.downloadFile(document.id)}
+              onClick={() => window.open(document.file, '_blank')}
             >
               Download
             </Button>
