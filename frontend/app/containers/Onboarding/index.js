@@ -108,13 +108,13 @@ export class Onboarding extends React.PureComponent {
                     <ListItemIcon>
                       <DraftIcon />
                     </ListItemIcon>
-                    <a href="mailto:help@jabc.com">help@jabc.com</a>
+                    <a href="mailto:info@jabc.org">info@jabc.org</a>
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <CallIcon />
                     </ListItemIcon>
-                    <a href="tel:7771234567">7771234567</a>
+                    <a href="tel:6046883887">(604)-688-3887</a>
                   </ListItem>
                 </List>
               </Typography>
