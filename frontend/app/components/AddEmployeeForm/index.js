@@ -106,7 +106,7 @@ class AddEmployeeForm extends React.PureComponent {
       numbers: true,
       symbols: true,
       strict: true,
-    });
+    }) + '!';
     blankProfile.fkRole = '';
 
     this.state = {
@@ -395,7 +395,7 @@ class AddEmployeeForm extends React.PureComponent {
                 </MenuItem>
               </TextField>
             </div>
-            <Typography
+            {/* <Typography
               className={classes.subHeading}
               variant="subtitle1"
               color="textSecondary"
@@ -449,6 +449,7 @@ class AddEmployeeForm extends React.PureComponent {
                 </div>
               </div>
             )}
+            */}
           </Grid>
         </Grid>
         <NewEmployeeDialog

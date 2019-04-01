@@ -37,7 +37,7 @@ class SetPasswordDialog extends React.PureComponent {
       numbers: true,
       symbols: true,
       strict: true,
-    });
+    }) + '!';
   }
 
   handleClose = () => {
