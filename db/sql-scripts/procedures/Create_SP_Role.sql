@@ -9,8 +9,8 @@ DROP PROCEDURE IF EXISTS create_role;
 
 DELIMITER //
 
-CREATE PROCEDURE `create_role` (IN role_name VARCHAR(48)
-, IN description VARCHAR(45)
+CREATE PROCEDURE `create_role` (IN role_name VARCHAR(100)
+, IN description VARCHAR(2512)
 )
 BEGIN
   DECLARE checker INT;
@@ -103,7 +103,7 @@ DROP PROCEDURE IF EXISTS get_role_with_name;
 
 DELIMITER //
 
-CREATE PROCEDURE `get_role_with_name` (IN role_name VARCHAR(48))
+CREATE PROCEDURE `get_role_with_name` (IN role_name VARCHAR(100))
 BEGIN
   DECLARE checker INT;
 
