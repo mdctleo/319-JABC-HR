@@ -250,14 +250,12 @@ export class EmployeeOnboarding extends React.PureComponent {
   handleAddOIDialog = () => {
     const id = this.props.tasks.length;
     const description = document.getElementById('addOI-dialog-description').value;
-    const expiryDate = document.getElementById('addOI-dialog-expiryDate').value || undefined;
     const dueDate = document.getElementById('addOI-dialog-dueDate').value || undefined;
 
     const onboardingTask = {
       id,
       name,
       description,
-      expiryDate,
       dueDate,
       fkDocumentType: this.state.selectedDocType,
       fkEmployee: this.props.selectedEmployee.id,
@@ -316,7 +314,7 @@ export class EmployeeOnboarding extends React.PureComponent {
                 label="Document"
               />
             </RadioGroup>
-            {requireDoc === "1" && <TextField
+            {/* requireDoc === "1" && <TextField
               select
               label="Document Type"
               className={classes.addOIDialogField}
@@ -336,7 +334,7 @@ export class EmployeeOnboarding extends React.PureComponent {
                   {docType.name}
                 </MenuItem>
               ))}
-            </TextField>}
+            </TextField> */}
             <TextField
               margin="dense"
               className={classes.addOIDialogField}
@@ -347,13 +345,6 @@ export class EmployeeOnboarding extends React.PureComponent {
             <TextField
               label="Due Date"
               id="addOI-dialog-dueDate"
-              className={classes.addOIDialogField}
-              fullWidth
-              placeholder="2019-01-31"
-            />
-            <TextField
-              label="Expiry Date"
-              id="addOI-dialog-expiryDate"
               className={classes.addOIDialogField}
               fullWidth
               placeholder="2019-01-31"

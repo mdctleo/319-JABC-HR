@@ -150,6 +150,11 @@ class DocumentsContainer extends React.PureComponent {
                   <b>Due: </b> {document.dueDate}
                 </Typography>
               )}
+              {document.expiryDate && (
+                <Typography component="p">
+                  <b>Expires on: </b> {document.expiryDate}
+                </Typography>
+              )}
               {content}
             </CardContent>
             <CardActions>{buttons}</CardActions>
