@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { selectResource } from 'api/selector';
+import { selectResource, selectCollection } from 'api/selector';
 
 const getSelectedEmployee = (_, props) => props.selectedEmployee;
 
@@ -21,6 +21,16 @@ export const selectTasks = createSelector(
           }
           return { ...task, documentType };
         });
+    }
+    return [];
+  },
+);
+
+export const selectAllDocTypes = createSelector(
+  [selectCollection('docTypes')],
+  docTypes => {
+    if (docTypes) {
+      return Object.keys(docTypes).map(key => docTypes[key]);
     }
     return [];
   },

@@ -10,7 +10,7 @@ import UploadIcon from '@material-ui/icons/FileCopy';
 import Fab from '@material-ui/core/Fab';
 import TextField from '@material-ui/core/TextField';
 
-class DocumentsContainer extends React.PureComponent {
+class TasksCOntainer extends React.PureComponent {
   state = { expiry: {} };
 
   changeExpiry = (event, id) => {
@@ -19,14 +19,6 @@ class DocumentsContainer extends React.PureComponent {
       expiry: { ...prevState.expiry, [id]: value },
     }));
   };
-
-  downloadTemplate = (document) => {
-    window.open(document.template,'_blank')
-  }
-
-  downloadFile = (document) => {
-    window.open(document.file,'_blank')
-  }
 
   render() {
     const { expiry } = this.state;
@@ -89,7 +81,7 @@ class DocumentsContainer extends React.PureComponent {
                   size="small"
                   color="secondary"
                   onClick={() =>
-                    this.downloadTemplate(document)
+                    this.props.downloadTemplate(document.fkDocumentType)
                   }
                 >
                   Download template
@@ -102,7 +94,7 @@ class DocumentsContainer extends React.PureComponent {
             <Button
               size="small"
               color="primary"
-              onClick={() => this.downloadFile(document)}
+              onClick={() => this.props.downloadFile(document.id)}
             >
               Download
             </Button>
@@ -135,11 +127,11 @@ class DocumentsContainer extends React.PureComponent {
                 </Typography>
               )}
               {document.documentType &&
-                document.documentType.description && (
-                  <Typography component="p" style={{ wordWrap: 'break-word' }}>
-                    {document.documentType.description}
-                  </Typography>
-                )}
+              document.documentType.description && (
+                <Typography component="p" style={{ wordWrap: 'break-word' }}>
+                  {document.documentType.description}
+                </Typography>
+              )}
               {document.description && (
                 <Typography component="p" style={{ wordWrap: 'break-word' }}>
                   {document.description}
@@ -148,11 +140,6 @@ class DocumentsContainer extends React.PureComponent {
               {document.dueDate && (
                 <Typography component="p">
                   <b>Due: </b> {document.dueDate}
-                </Typography>
-              )}
-              {document.expiryDate && (
-                <Typography component="p">
-                  <b>Expires on: </b> {document.expiryDate}
                 </Typography>
               )}
               {content}
@@ -171,7 +158,7 @@ class DocumentsContainer extends React.PureComponent {
   }
 }
 
-DocumentsContainer.propTypes = {
+TasksCOntainer.propTypes = {
   tasks: PropTypes.array.isRequired,
   onFileLoad: PropTypes.func.isRequired,
   onUpload: PropTypes.func.isRequired,
@@ -179,4 +166,4 @@ DocumentsContainer.propTypes = {
   downloadFile: PropTypes.func.isRequired,
 };
 
-export default DocumentsContainer;
+export default TasksCOntainer;

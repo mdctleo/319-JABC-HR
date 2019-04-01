@@ -2988,7 +2988,6 @@ definitions:
   IOnboardingTask:
     type: "object"
     required:
-    - "createdDate"
     - "fkEmployee"
     - "requireDoc"
     - "status"

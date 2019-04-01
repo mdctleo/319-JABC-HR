@@ -25,7 +25,7 @@ import DraftIcon from '@material-ui/icons/Drafts';
 import AppBar from '@material-ui/core/AppBar/AppBar';
 import Tabs from '@material-ui/core/Tabs/Tabs';
 import Tab from '@material-ui/core/Tab/Tab';
-import DocumentsContainer from './DocumentsContainer';
+import TasksContainer from '../../components/TasksContainer';
 import Snackbar from '@material-ui/core/Snackbar/Snackbar';
 import CallIcon from '@material-ui/icons/Call';
 import Button from '@material-ui/core/Button';
@@ -135,8 +135,8 @@ export class Onboarding extends React.PureComponent {
                 </Button>
               </Toolbar>
             </AppBar>
-            <DocumentsContainer
-              documents={this.state.tabValue === 0 ? pendingTasks : doneTasks}
+            <TasksContainer
+              tasks={this.state.tabValue === 0 ? pendingTasks : doneTasks}
               onFileLoad={(e, documents, i) => this.fileLoad(e, documents, i)}
               onUpload={this.props.uploadDocument}
               downloadTemplate={this.props.downloadTemplate}

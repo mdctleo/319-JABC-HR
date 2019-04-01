@@ -125,6 +125,7 @@ export class OnboardingTask implements IOnboardingTask{
 
     static Prepare(rawOnboardingTask: IOnboardingTask){
         rawOnboardingTask.fkDocumentType = (rawOnboardingTask.fkDocumentType != undefined) ? rawOnboardingTask.fkDocumentType : null;
+        rawOnboardingTask.createdDate = (rawOnboardingTask.createdDate != undefined) ? rawOnboardingTask.createdDate : new Date().toISOString().slice(0, 10);
         rawOnboardingTask.expiryDate = (rawOnboardingTask.expiryDate != undefined) ? rawOnboardingTask.expiryDate : null;
         rawOnboardingTask.dueDate = (rawOnboardingTask.dueDate != undefined) ? rawOnboardingTask.dueDate : null;
         rawOnboardingTask.file = (rawOnboardingTask.file != undefined) ? rawOnboardingTask.file : null;

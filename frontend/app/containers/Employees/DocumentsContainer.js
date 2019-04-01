@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const DocumentsContainer = props => {
-  const docs = props.documents.map(document => (
+  const tasks = props.tasks.map(document => (
     <Grid key={document.id} item xs={12} sm={6}>
       <Card className="document-card">
         <CardContent>
@@ -39,6 +39,11 @@ const DocumentsContainer = props => {
               <b>Due: </b> {document.dueDate}
             </Typography>
           )}
+          {document.expiryDate && (
+            <Typography component="p">
+              <b>Expires on: </b> {document.expiryDate}
+            </Typography>
+          )}
           <Typography component="p">
             {document.status === 0 && (
               <Chip
@@ -63,9 +68,6 @@ const DocumentsContainer = props => {
               Download
             </Button>
           )}
-          {/* <Button size="small" color="secondary">
-            Edit
-          </Button> */}
         </CardActions>
       </Card>
     </Grid>
@@ -73,13 +75,13 @@ const DocumentsContainer = props => {
 
   return (
     <Grid container spacing={16} style={{ paddingTop: 25 }}>
-      {docs}
+      {tasks}
     </Grid>
   );
 };
 
 DocumentsContainer.propTypes = {
-  documents: PropTypes.array.isRequired,
+  tasks: PropTypes.array.isRequired,
   downloadFile: PropTypes.func.isRequired,
 };
 
