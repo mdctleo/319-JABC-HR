@@ -2314,7 +2314,6 @@ definitions:
     required:
     # - id
     - fkEmployee
-    - createdDate
     - requireDoc
     - status
     properties:
@@ -2361,6 +2360,9 @@ definitions:
       file:
         type: string
         description: link to file, to the file if it is required
+      template:
+        type: string
+        description: link to template file, if it is provided
       description:
         type: string
         maxLength: 2512

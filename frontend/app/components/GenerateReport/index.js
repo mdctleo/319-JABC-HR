@@ -288,6 +288,7 @@ const COLUMNS = {
     numeric: 'true',
     disablePadding: false,
     label: 'Salary',
+    currency: true
   },
   address: {
     id: 'address',
@@ -385,6 +386,17 @@ class GenerateReport extends React.PureComponent {
     }
   }
 
+  static getFTE(fte) {
+    switch (fte) {
+      case 0:
+        return 'Part time';
+      case 1:
+        return 'Full time';
+      default:
+        return '';
+    }
+  }
+
   static getAdminLevel(adminLevel) {
     switch (adminLevel) {
       case 0:
@@ -459,10 +471,18 @@ class GenerateReport extends React.PureComponent {
       field = GenerateReport.getAdminLevel(employee[column.id]);
     } else if (column.id === 'status') {
       field = GenerateReport.getStatus(employee[column.id]);
+    } else if (column.id === 'fte') {
+      field = GenerateReport.getFTE(employee[column.id]);
     } else {
       field = employee[column.id];
     }
-    field = field.replace(/[\n\r]+/g, ' ');
+    if (typeof field === 'number') {
+      if (column.currency) {
+        field = `$${field.toFixed(2)}`
+      }
+    } else {
+      field = field.replace(/[\n\r]+/g, ' ');
+    }
     return field;
   }
 
@@ -605,7 +625,7 @@ class GenerateReport extends React.PureComponent {
                   .slice(
                     this.state.page * this.state.rowsPerPage,
                     this.state.page * this.state.rowsPerPage +
-                      this.state.rowsPerPage,
+                    this.state.rowsPerPage,
                   )
                   .map(n => (
                     <TableRow key={n.id} hover tabIndex={-1} selected={false}>

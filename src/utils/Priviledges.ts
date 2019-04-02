@@ -34,7 +34,7 @@ export class Priviledges{
         // Onboarding service
         'getAllOnboardingTasks': IEmployee.adminLevelEnum.MANAGER,
         'getOnboardingTask': IEmployee.adminLevelEnum.MANAGER,
-        'updateOnboardingTask': IEmployee.adminLevelEnum.MANAGER,
+        'updateOnboardingTask': IEmployee.adminLevelEnum.STAFF,
         'deleteOnboardingTask': IEmployee.adminLevelEnum.MANAGER,
         'getOnboardingTaskFile': IEmployee.adminLevelEnum.PUBLIC,
         'getDocumentTypes': IEmployee.adminLevelEnum.STAFF,

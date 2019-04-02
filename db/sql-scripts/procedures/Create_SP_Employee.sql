@@ -22,16 +22,23 @@ CREATE PROCEDURE `create_onboarding_task` (IN employee_id INT
 , IN require_doc TINYINT
 )
 BEGIN
-    DECLARE typeChecker INT;
     DECLARE emplChecker INT;
-    SET typeChecker = 0;
+   	DECLARE typeChecker INT;
+
     SET emplChecker = 0;
-    SELECT COUNT(DOC_TYPE_ID) INTO typeChecker FROM `DOC_TYPE` WHERE `DOC_TYPE`.DOC_TYPE_ID = type_id;
+    SET typeChecker = 0;
+
     SELECT COUNT(EMPLOYEE_ID) INTO emplChecker FROM `HR_RECORD` WHERE `HR_RECORD`.EMPLOYEE_ID = employee_id;
 
-    IF typeChecker = 0 THEN
-      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Document type does not exist.';
-    ELSEIF emplChecker = 0 THEN
+    IF type_id IS NOT NULL THEN
+      SELECT COUNT(DOC_TYPE_ID) INTO typeChecker FROM `DOC_TYPE` WHERE `DOC_TYPE`.DOC_TYPE_ID = type_id;
+
+      IF typeChecker = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Document type does not exist.';
+      END IF;
+    END IF;
+
+    IF emplChecker = 0 THEN
       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Employee does not exist.';
     ELSE
       INSERT INTO ONBOARDING_TASK (EMPLOYEE_ID, DOC_TYPE_ID, CREATED_DATE, DUE_DATE, EXPIRY_DATE, DESCRIPTION, REQUIRE_DOC)
@@ -68,10 +75,10 @@ BEGIN
       SELECT REQUIRE_DOC INTO requireChecker FROM `ONBOARDING_TASK` WHERE `ONBOARDING_TASK`.ONBOARDING_TASK_ID = onboarding_task_id;
       IF requireChecker = 0 THEN
         UPDATE ONBOARDING_TASK SET
-        ONBOARDING_TASK.STATUS = 1 WHERE ONBOARDING_TASK_ID = onboarding_task_id;
+        ONBOARDING_TASK.STATUS = 1 WHERE ONBOARDING_TASK.ONBOARDING_TASK_ID = onboarding_task_id;
       ELSE
         UPDATE ONBOARDING_TASK SET
-        ONBOARDING_TASK.STATUS = 1, ONBOARDING_TASK.ACTUAL_FILE = actual_file, ONBOARDING_TASK.MIME_TYPE = mime_type  WHERE ONBOARDING_TASK_ID = onboarding_task_id;
+        ONBOARDING_TASK.STATUS = 1, ONBOARDING_TASK.ACTUAL_FILE = actual_file, ONBOARDING_TASK.MIME_TYPE = mime_type  WHERE ONBOARDING_TASK.ONBOARDING_TASK_ID = onboarding_task_id;
       END IF;
     END IF;
 END //

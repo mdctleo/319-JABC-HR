@@ -46,7 +46,7 @@ export const selectAllEmployees = createSelector(
     if (employees) {
       const tableSettings = employeeDomain.get('tableSettings');
       const employeesObj = employees.toJS();
-      let list = Object.keys(employeesObj).map(key => employeesObj[key]);
+      let list = Object.keys(employeesObj).map(key => key && employeesObj[key]);
       const search = tableSettings.get('search').toLowerCase();
       if (search !== '') {
         list = list.filter(

@@ -94,6 +94,10 @@ export class OnboardingTask implements IOnboardingTask{
      * The link to the file if it is required
      */
     file?: string;
+    /**
+     * The link to the template if it is provided
+     */
+    template?: string;
     description?: string;
     type?: IDocumentType;
 
@@ -107,6 +111,7 @@ export class OnboardingTask implements IOnboardingTask{
         this.status = rawOnboardingTask.STATUS;
         this.expiryDate = rawOnboardingTask.EXPIRY_DATE;
         this.file = this.getLink();
+        this.template = this.getTemplateLink();
         this.description = rawOnboardingTask.DESCRIPTION;
     }
 
@@ -120,7 +125,9 @@ export class OnboardingTask implements IOnboardingTask{
 
     static Prepare(rawOnboardingTask: IOnboardingTask){
         rawOnboardingTask.fkDocumentType = (rawOnboardingTask.fkDocumentType != undefined) ? rawOnboardingTask.fkDocumentType : null;
+        rawOnboardingTask.createdDate = (rawOnboardingTask.createdDate != undefined) ? rawOnboardingTask.createdDate : new Date().toISOString().slice(0, 10);
         rawOnboardingTask.expiryDate = (rawOnboardingTask.expiryDate != undefined) ? rawOnboardingTask.expiryDate : null;
+        rawOnboardingTask.dueDate = (rawOnboardingTask.dueDate != undefined) ? rawOnboardingTask.dueDate : null;
         rawOnboardingTask.file = (rawOnboardingTask.file != undefined) ? rawOnboardingTask.file : null;
         rawOnboardingTask.description = (rawOnboardingTask.description != undefined) ? rawOnboardingTask.description : null;
         rawOnboardingTask.type = (rawOnboardingTask.type != undefined) ? rawOnboardingTask.type : null;
@@ -129,5 +136,12 @@ export class OnboardingTask implements IOnboardingTask{
 
     getLink(){
         return `http://${process.env.HOST}:${process.env.PORT}/JABC/1.0.0/onboarding/task/${this.id}/file`
+    }
+
+    getTemplateLink(){
+        if(this.fkDocumentType == undefined){
+            return null
+        }
+        return `http://${process.env.HOST}:${process.env.PORT}/JABC/1.0.0/onboarding/documentType/${this.fkDocumentType}/file`
     }
 }

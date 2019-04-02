@@ -32,7 +32,7 @@ Priviledges.operations = {
     'deleteVacation': models_1.IEmployee.adminLevelEnum.STAFF,
     'getAllOnboardingTasks': models_1.IEmployee.adminLevelEnum.MANAGER,
     'getOnboardingTask': models_1.IEmployee.adminLevelEnum.MANAGER,
-    'updateOnboardingTask': models_1.IEmployee.adminLevelEnum.MANAGER,
+    'updateOnboardingTask': models_1.IEmployee.adminLevelEnum.STAFF,
     'deleteOnboardingTask': models_1.IEmployee.adminLevelEnum.MANAGER,
     'getOnboardingTaskFile': models_1.IEmployee.adminLevelEnum.PUBLIC,
     'getDocumentTypes': models_1.IEmployee.adminLevelEnum.STAFF,

@@ -2988,7 +2988,6 @@ definitions:
   IOnboardingTask:
     type: "object"
     required:
-    - "createdDate"
     - "fkEmployee"
     - "requireDoc"
     - "status"
@@ -3039,6 +3038,9 @@ definitions:
       file:
         type: "string"
         description: "link to file, to the file if it is required"
+      template:
+        type: "string"
+        description: "link to template file, if it is provided"
       description:
         type: "string"
         description: "description, of this onboarding task"

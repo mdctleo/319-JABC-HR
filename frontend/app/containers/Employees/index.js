@@ -275,6 +275,7 @@ class Employees extends React.Component {
       allRoles,
       selectedEmployee,
       selectedEmployeeList,
+      currentEmployee
     } = this.props;
     const { tableSettings, editing, generatingReport } = employeeDomain;
 
@@ -299,7 +300,7 @@ class Employees extends React.Component {
       </Paper>
     ) : (
       <React.Fragment>
-        {!selectedEmployee && (
+        {!selectedEmployee && currentEmployee.adminLevel > 1 && (
           <Button className={classes.addButton} onClick={this.handleAddButton}>
             Add Employee
           </Button>

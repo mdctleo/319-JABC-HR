@@ -1,6 +1,8 @@
 'use strict';
 
 require('dotenv').config()
+const publicIp = require('public-ip');
+
 var fs = require('fs'),
     path = require('path'),
     http = require('http');
@@ -26,6 +28,14 @@ var options = {
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
 var spec = fs.readFileSync(path.join(__dirname,'./src/api/swagger.yaml'), 'utf8');
 var swaggerDoc = jsyaml.safeLoad(spec);
+
+async function InitializeServer(){
+  process.env.HOST = await publicIp.v4();
+  // Start the server
+  http.createServer(app).listen(serverPort, function () {
+    Log.info(`Your server is listening on port ${serverPort} (http://${process.env.HOST}:${serverPort})`);
+  });
+}
 
 // Initialize the Swagger middleware
 swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
@@ -57,9 +67,6 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
       res.sendFile(path.join(__dirname,'./frontend/build/index.html'))
   );
 
-  // Start the server
-  http.createServer(app).listen(serverPort, function () {
-    Log.info(`Your server is listening on port ${serverPort} (http://localhost:${serverPort})`);
-  });
+  InitializeServer()
 
 });

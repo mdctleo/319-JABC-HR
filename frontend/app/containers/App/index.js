@@ -63,7 +63,7 @@ export class App extends React.PureComponent {
         <Contents>
           {this.props.user && (
             <Switch>
-              <Route exact path="/" component={HomePage} />
+              <Route exact path="/" component={Profile} />
               <Route path="/profile" component={Profile} />
               <Route path="/performance" component={Performance} />
               <Route path="/(onboarding|documents)" component={Onboarding} />

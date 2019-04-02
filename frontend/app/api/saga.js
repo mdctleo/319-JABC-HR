@@ -9,6 +9,8 @@ import {
   IPerformancePlan,
   IPerformanceReview,
   OnboardingApi,
+  IOnboardingTask,
+  IDocumentType
 } from 'api/swagger-api';
 const employeeApi = new EmployeeApi();
 const rolesApi = new RolesApi();
@@ -121,6 +123,15 @@ export function* unLinkEmployeeManager(id, idManager) {
   yield employeeApi.unLinkEmployeeManager(id, idManager);
 }
 
+export function* createOnboardingTask(employeeId, task) {
+  const taskObj = IOnboardingTask.constructFromObject(task);
+  yield employeeApi.createOnboardingTask(employeeId, taskObj);
+}
+
+export function* completeOnboardingTask(id, taskId, document) {
+  yield employeeApi.completeOnboardingTask(id, taskId, { document });
+}
+
 // Roles Api
 
 export function* getRole(id) {
@@ -177,7 +188,32 @@ export function* updatePerformanceReview(review) {
 
 // Onboarding Api
 
+export function* getDocumentTypes() {
+  const docTypes = yield onboardingApi.getDocumentTypes();
+  yield put(setCollection('docTypes', docTypes));
+}
+
+export function* createDocumentType(docType) {
+  const docTypeObj = IDocumentType.constructFromObject(docType);
+  yield onboardingApi.createDocumentType(docTypeObj);
+}
+
 export function* getDocumentType(id) {
   const docType = yield onboardingApi.getDocumentType(id);
   yield put(setResource('documentType', docType.id, docType));
+}
+
+export function* updateOnboardingTask(id, task) {
+  const taskObj = IOnboardingTask.constructFromObject(task);
+  yield onboardingApi.updateOnboardingTask(id, taskObj);
+}
+
+export function* getDocumentTypeFile(id) {
+  const file = yield onboardingApi.getDocumentTypeFile(id);
+  console.log(file);
+}
+
+export function* getOnboardingTaskFile(id) {
+  const file = yield onboardingApi.getOnboardingTaskFile(id);
+  console.log(file);
 }
