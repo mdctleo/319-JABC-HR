@@ -2,6 +2,7 @@ version: '3'
 services:
 
   database:
+    container_name: jabc_db
     image: oecmjabc/jabc-hr_database
     environment:
     - MYSQL_ROOT_PASSWORD=root
@@ -18,4 +19,5 @@ services:
 
 volumes:
   database-volume:
+
 

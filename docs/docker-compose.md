@@ -5,14 +5,33 @@ The following is a guide for developers to understand and update the latest imag
 
 ## Setup 
 
-#### Linux and Unix Systems 
+#### Amazon EC2 Linux Systems 
+
+
+1. Install Docker and Docker Compose: 
+    
+   Copy the files in _/installation_ to your desired directory in the EC2 Machine. 
+
+2. Run: 
+    
+    `chmod +x install-docker-compose.sh`
+    
+    `./install-docker-compose.sh`
+
+4. Once the script finishes running, reboot the machine by running: `sudo reboot`
+
+5. Log back into the machine and run: 
+
+    `docker-compose -f docker-compose.prod.yml -p jabc-hr up -d`
+    
+    Note that it takes a few minutes before you can log back into the system after the reboot. 
+
+#### Other Linux and Unix Systems 
 
 1. Install Docker: 
    
    For MacOS Systems, run: `brew cask install docker`
-   
-   For Amazon Linux systems, run `sudo yum install docker`
-   
+      
    For other systems, check the [Docker installation documentation](https://docs.docker.com/install/).
 
 2. Install [Docker Compose](https://docs.docker.com/compose/install/). 
@@ -45,9 +64,9 @@ Before deploying to production, ensure that the latest version of the Docker ima
 
 2. Tag your images to be pushed into the Docker Hub repositories: 
 
-    `docker tag jabc-hr_database oecmjabc/jabc-hr_backend`
+    `docker tag jabc-hr_database oecmjabc/jabc-hr_database`
     
-    `docker tag jabc-hr_backend oecmjabc/jabc-hr_database`
+    `docker tag jabc-hr_backend oecmjabc/jabc-hr_backend`
     
     If your Docker images have a different name, check for the image name by running: 
     

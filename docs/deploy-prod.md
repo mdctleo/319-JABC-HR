@@ -8,9 +8,11 @@ This is the process you should follow when deploying the JABC HR system onto a c
     
     `$ docker v`
     
-2. Copy the contents of the docker-compose.prod.yml file to your desired directory and name the file _docker-compose.yml_.
+2. If running on a remote server, ensure that port `8080` is open to the world `0.0.0.0/0`. 
+    
+3. Copy the contents of the _docker-compose.prod.yml_ file to your desired directory and name the file _docker-compose.yml_.
 
-3. Run:
+4. Run:
     
     `docker-compose up` 
 
