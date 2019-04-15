@@ -26,6 +26,7 @@ import RoleDisplay from '../../components/RoleDisplay';
 import EmployeeEditForm from '../../components/EmployeeEditForm';
 import Button from '@material-ui/core/Button';
 import ChangePasswordDialog from '../../components/ChangePasswordDialog';
+import VacationDatePickers from "../../components/VacationDatePicker";
 
 const styles = theme => ({
   root: {
@@ -136,6 +137,7 @@ class Profile extends React.PureComponent {
             >
               <Tab disableRipple label="Profile" />
               {role && <Tab disableRipple label="Role" />}
+              <Tab disableRipple label="Vacation Request" />
             </Tabs>
           </AppBar>
           <div className="profile-card">
@@ -203,6 +205,9 @@ class Profile extends React.PureComponent {
                 />
               )}
             {activeTab === 1 && <RoleDisplay role={role} />}
+            {activeTab === 2 && (
+              <VacationDatePickers/>
+            )}
           </div>
         </Paper>
       </div>
